@@ -1,20 +1,18 @@
-import java.util.Stack;
-
 public class RemoveOutermostParentheses {
     private static String removeOuterParentheses(String S) {
-        Stack<Character> openParentheses = new Stack<>();
+        int openParentheses = 0;
         StringBuilder res = new StringBuilder();
 
         for (int i = 0; i < S.length(); i++) {
             if (S.charAt(i) == '(') {
-                if (!openParentheses.empty()) {
+                if (openParentheses != 0) {
                     res.append(S.charAt(i));
                 }
-                openParentheses.push(S.charAt(i));
+                openParentheses++;
             }
             if (S.charAt(i) == ')') {
-                openParentheses.pop();
-                if (!openParentheses.empty()) {
+                openParentheses--;
+                if (openParentheses != 0) {
                     res.append(S.charAt(i));
                 }
             }
