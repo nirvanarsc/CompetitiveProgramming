@@ -1,4 +1,8 @@
-class DefangingIPAddress {
+import java.util.regex.Pattern;
+
+final class DefangingIPAddress {
+
+    private static final Pattern PATTERN = Pattern.compile("\\.");
 
     public static void main(String[] args) {
         System.out.println(defangIPaddr("255.100.50.0"));
@@ -6,6 +10,6 @@ class DefangingIPAddress {
     }
 
     private static String defangIPaddr(String address) {
-        return address.replaceAll("\\.", "[.]");
+        return PATTERN.matcher(address).replaceAll("[.]");
     }
 }

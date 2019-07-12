@@ -1,5 +1,6 @@
 public class RangeBSTSum {
-    public class TreeNode {
+
+    public static class TreeNode {
         int val;
         TreeNode left;
         TreeNode right;
@@ -9,7 +10,7 @@ public class RangeBSTSum {
         }
     }
 
-    private int rangeSumBST(TreeNode root, int L, int R) {
+    private static int rangeSumBST(TreeNode root, int L, int R) {
         while (true) {
             if (root == null) {
                 return 0;

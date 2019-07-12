@@ -1,12 +1,13 @@
-public class JewelsAndStones {
+public final class JewelsAndStones {
+
     public static void main(String[] args) {
         System.out.println(numJewelsInStones("aA", "aAAbbbb"));
         System.out.println(numJewelsInStones("z", "ZZ"));
     }
 
     private static int numJewelsInStones(String J, String S) {
-        char[] jewels = J.toCharArray();
-        char[] stones = S.toCharArray();
+        final char[] jewels = J.toCharArray();
+        final char[] stones = S.toCharArray();
 
         int res = 0;
 
@@ -19,8 +20,8 @@ public class JewelsAndStones {
         return res;
     }
 
-    private static boolean contains(char[] J, char curr) {
-        for (char c: J) {
+    private static boolean contains(char[] chars, char curr) {
+        for (char c : chars) {
             if(c == curr) {
                 return true;
             }

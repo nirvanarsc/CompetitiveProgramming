@@ -1,14 +1,14 @@
-public class FlippingAnImage {
+public final class FlippingAnImage {
 
     public static void main(String[] args) {
-        int[][] image1 = new int[][]{
+        final int[][] image1 = {
                 new int[]{1, 1, 0, 0},
                 new int[]{1, 0, 0, 1},
                 new int[]{0, 1, 1, 1},
                 new int[]{1, 0, 1, 0}
         };
 
-        int[][] image2 = new int[][]{
+        final int[][] image2 = {
                 new int[]{1, 1, 0},
                 new int[]{1, 0, 0},
                 new int[]{0, 1, 1},
@@ -20,17 +20,20 @@ public class FlippingAnImage {
 
     }
 
-    private static int[][] flipAndInvertImage(int[][] A) {
-        int n = A.length;
-        for (int[] row : A)
-            for (int i = 0; i * 2 < n; i++)
-                if (row[i] == row[n - i - 1])
+    private static int[][] flipAndInvertImage(int[][] a) {
+        final int n = a.length;
+        for (int[] row : a) {
+            for (int i = 0; i * 2 < n; i++) {
+                if (row[i] == row[n - i - 1]) {
                     row[i] = row[n - i - 1] ^= 1;
-        return A;
+                }
+            }
+        }
+        return a;
     }
 
-    private static void printImage(int[][] A) {
-        for (int row[] : A) {
+    private static void printImage(int[][] a) {
+        for (int[] row : a) {
             for (int i : row) {
                 System.out.print(i + " ");
             }

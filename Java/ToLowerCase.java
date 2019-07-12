@@ -1,4 +1,4 @@
-public class ToLowerCase {
+public final class ToLowerCase {
 
     public static void main(String[] args) {
         System.out.println(toLowerCase("Hello"));
@@ -6,7 +6,7 @@ public class ToLowerCase {
     }
 
     private static String toLowerCase(String str) {
-        char[] chars = str.toCharArray();
+        final char[] chars = str.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             if ('A' <= chars[i] && chars[i] <= 'Z') {
                 chars[i] += ' ';
