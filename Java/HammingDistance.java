@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Contract;
-
 public class HammingDistance {
 
     public static void main(String[] args) {
@@ -26,7 +24,6 @@ public class HammingDistance {
     }
 
     // https://tech.liuchao.me/2016/11/count-bits-of-integer/
-    @Contract(pure = true)
     private static int countSetBits(int num) {
         int count = 0;
         while (num != 0) {

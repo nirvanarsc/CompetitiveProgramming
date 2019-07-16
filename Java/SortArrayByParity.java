@@ -14,7 +14,7 @@ public final class SortArrayByParity {
     }
 
     // In place 98.56% for memory, but SLOW
-    public static int[] sortArrayByParity(int[] a) {
+    private static int[] sortArrayByParity(int[] a) {
         final Comparator<Integer> byParity = Comparator.comparingInt(o -> o % 2);
 
         System.arraycopy(Arrays.stream(a)
@@ -30,7 +30,7 @@ public final class SortArrayByParity {
     Runtime: 1 ms, faster than 100.00% of Java online submissions for Sort Array By Parity.
     Memory Usage: 40.6 MB, less than 91.03% of Java online submissions for Sort Array By Parity.
      */
-    public static int[] sortArrayByParity2(int[] a) {
+    private static int[] sortArrayByParity2(int[] a) {
         final int[] res = new int[a.length];
         int even = 0;
         int odd = a.length - 1;
@@ -44,7 +44,7 @@ public final class SortArrayByParity {
     }
 
     // Same runtime & memory as above, but in place
-    public static int[] sortArrayByParity3(int[] a) {
+    private static int[] sortArrayByParity3(int[] a) {
         for (int i = 0, j = 0; j < a.length; j++) {
             if (a[j] % 2 == 0) {
                 final int tmp = a[i];

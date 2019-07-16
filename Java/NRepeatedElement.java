@@ -6,7 +6,7 @@ public final class NRepeatedElement {
         System.out.println(repeatedNTimes(new int[] { 5, 1, 5, 2, 5, 3, 5, 4 }));
     }
 
-    public static int repeatedNTimes(int[] a) {
+    private static int repeatedNTimes(int[] a) {
         final HashSet<Integer> integers = new HashSet<>();
 
         for (int value : a) {

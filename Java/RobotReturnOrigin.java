@@ -1,6 +1,3 @@
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 public class RobotReturnOrigin {
 
     public static void main(String[] args) {
@@ -8,8 +5,7 @@ public class RobotReturnOrigin {
         System.out.println(judgeCircle("LL"));
     }
 
-    @Contract(pure = true)
-    private static boolean judgeCircle(@NotNull String moves) {
+    private static boolean judgeCircle(String moves) {
         int v = 0, h = 0;
         for (char c : moves.toCharArray()) {
             switch (c) {
