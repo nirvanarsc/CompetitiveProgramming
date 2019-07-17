@@ -1,10 +1,10 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public class UniqueEmailAddresses {
+public final class UniqueEmailAddresses {
 
     public static void main(String[] args) {
-        String[] emails = {
+        final String[] emails = {
                 "test.email+alex@leetcode.com",
                 "test.e.mail+bob.cathy@leetcode.com",
                 "testemail+david@lee.tcode.com"
@@ -13,7 +13,7 @@ public class UniqueEmailAddresses {
     }
 
     private static int numUniqueEmails(String[] emails) {
-        Set<String> unique = new HashSet<>();
+        final Set<String> unique = new HashSet<>();
         for (String email : emails) {
             parseEmail(email, unique);
         }
@@ -23,12 +23,12 @@ public class UniqueEmailAddresses {
     }
 
     private static void parseEmail(String email, Set<String> set) {
-        String[] strings = email.split("@");
-        if (strings.length > 2 || strings[0].length() == 0 || strings[1].length() == 0) {
+        final String[] strings = email.split("@");
+        if (strings.length > 2 || strings[0].isEmpty() || strings[1].isEmpty()) {
             return;
         }
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         for (char c : strings[0].toCharArray()) {
             if (c == '.') {
@@ -39,7 +39,7 @@ public class UniqueEmailAddresses {
             }
             sb.append(c);
         }
-        sb.append("@");
+        sb.append('@');
         sb.append(strings[1]);
         set.add(sb.toString());
     }

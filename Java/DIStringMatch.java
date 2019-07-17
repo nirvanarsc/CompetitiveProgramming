@@ -1,4 +1,4 @@
-public class DIStringMatch {
+public final class DIStringMatch {
 
     public static void main(String[] args) {
         for (int i : diStringMatch("IDID")) {
@@ -8,8 +8,10 @@ public class DIStringMatch {
     }
 
     private static int[] diStringMatch(String S) {
-        int l = S.length(), currI = 0, currD = l;
-        int[] res = new int[l + 1];
+        final int l = S.length();
+        final int[] res = new int[l + 1];
+        int currI = 0;
+        int currD = l;
         for (int i = 0; i < l; i++) {
             res[i] = S.charAt(i) == 'I' ? currI++ : currD--;
         }

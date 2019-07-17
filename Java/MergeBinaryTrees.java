@@ -1,6 +1,6 @@
 public class MergeBinaryTrees {
 
-    public class TreeNode {
+    public static class TreeNode {
         int val;
         TreeNode left;
         TreeNode right;
@@ -10,14 +10,14 @@ public class MergeBinaryTrees {
         }
     }
 
-    private TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+    private static TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
         if (t1 == null) {
             return t2;
         }
         if (t2 == null) {
             return t1;
         }
-        TreeNode res = new TreeNode(t1.val + t2.val);
+        final TreeNode res = new TreeNode(t1.val + t2.val);
         res.left = mergeTrees(t1.left, t2.left);
         res.right = mergeTrees(t1.right, t2.right);
         return res;
