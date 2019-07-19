@@ -1,4 +1,4 @@
-public class HammingDistance {
+public final class HammingDistance {
 
     public static void main(String[] args) {
         System.out.println(hammingDistance(1, 4));

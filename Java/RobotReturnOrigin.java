@@ -1,4 +1,4 @@
-public class RobotReturnOrigin {
+public final class RobotReturnOrigin {
 
     public static void main(String[] args) {
         System.out.println(judgeCircle("UD"));
