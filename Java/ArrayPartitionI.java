@@ -17,8 +17,8 @@ public final class ArrayPartitionI {
     }
 
     private static int arrayPairSum2(int[] nums) {
-        int n = 10000;
-        int sorted[] = new int[2*n + 1];
+        final int n = 10000;
+        final int[] sorted = new int[2 * n + 1];
         for (int num : nums) { sorted[num + n]++; }
 
         int sum = 0;
