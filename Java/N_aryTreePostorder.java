@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class N_aryTreePostorder {
+    List<Integer> list = new ArrayList<>();
 
     private static final class Node {
         public int val;
@@ -17,22 +19,35 @@ public class N_aryTreePostorder {
     }
 
     // Iterative
-    public List<Integer> postorder(Node root) {
+    public List<Integer> postorder1(Node root) {
+        final LinkedList<Integer> list = new LinkedList<>();
         if (root == null) {
-            return Collections.emptyList();
+            return list;
         }
 
         final LinkedList<Node> stack = new LinkedList<>(Collections.singletonList(root));
-        final LinkedList<Integer> res = new LinkedList<>(Collections.singletonList(root.val));
 
         while (!stack.isEmpty()) {
             root = stack.pop();
-            stack.addAll(root.children);
-            for (int i = root.children.size() - 1; i >= 0; i--) {
-                res.push(root.children.get(i).val);
-            }
+            list.push(root.val);
+            root.children.forEach(stack::push);
         }
 
-        return res;
+        return list;
+    }
+
+    // Recursive
+    public List<Integer> postorder2(Node root) {
+        if (root == null) {
+            return list;
+        }
+
+        for (Node node : root.children) {
+            postorder2(node);
+        }
+
+        list.add(root.val);
+
+        return list;
     }
 }

@@ -1,11 +1,10 @@
-import static java.util.Collections.singletonList;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class N_aryTreePreorder {
-    public List<Integer> list = new ArrayList<>();
+    List<Integer> list = new ArrayList<>();
 
     private static final class Node {
         public int val;
@@ -26,14 +25,12 @@ public class N_aryTreePreorder {
             return list;
         }
 
-        final LinkedList<Node> stack = new LinkedList<>(singletonList(root));
+        final LinkedList<Node> stack = new LinkedList<>(Collections.singletonList(root));
 
         while (!stack.isEmpty()) {
             root = stack.pop();
             list.add(root.val);
-            for (int i = root.children.size() - 1; i >= 0; i--) {
-                stack.push(root.children.get(i));
-            }
+            stack.addAll(0, root.children);
         }
 
         return list;
