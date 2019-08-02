@@ -10,8 +10,6 @@ public class N_aryTreePostorder {
         public int val;
         public List<Node> children;
 
-        private Node() {}
-
         private Node(int _val, List<Node> _children) {
             val = _val;
             children = _children;

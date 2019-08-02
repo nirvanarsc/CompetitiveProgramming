@@ -10,15 +10,15 @@ public final class OccurrencesAfterBigram {
         final String first = "we";
         final String second = "will";
 
-        for (String s : findOcurrences(text, first, second)) {
+        for (String s : findOccurrences(text, first, second)) {
             System.out.println(s);
         }
-        for (String s : findOcurrences2(text, first, second)) {
+        for (String s : findOccurrences2(text, first, second)) {
             System.out.println(s);
         }
     }
 
-    public static String[] findOcurrences(String text, String first, String second) {
+    public static String[] findOccurrences(String text, String first, String second) {
         final String combined = String.join(" ", first, second);
         final List<String> res = new ArrayList<>();
         final StringBuilder builder = new StringBuilder();
@@ -49,7 +49,7 @@ public final class OccurrencesAfterBigram {
         return text.substring(i, i + combined.length()).equals(combined);
     }
 
-    public static String[] findOcurrences2(String text, String first, String second) {
+    public static String[] findOccurrences2(String text, String first, String second) {
         final String[] words = text.split(" ");
         final List<String> ans = new ArrayList<>();
         for (int i = 2; i < words.length; ++i) {

@@ -6,8 +6,6 @@ public class MaximumDepthN_aryTree {
         public int val;
         public List<Node> children;
 
-        Node() {}
-
         Node(int _val, List<Node> _children) {
             val = _val;
             children = _children;
