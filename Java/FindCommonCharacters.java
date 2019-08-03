@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class FindCommonCharacters {
@@ -19,22 +20,10 @@ public final class FindCommonCharacters {
     public static List<String> commonChars(String[] a) {
         final List<String> res = new ArrayList<>();
         final int[] map = new int[26];
+        Arrays.fill(map, Integer.MAX_VALUE);
 
-        for (char c : a[0].toCharArray()) {
-            map[c - 'a']++;
-        }
-
-        for (int i = 1; i < a.length; i++) {
-            for (int j = 0; j < 26; j++) {
-                if (map[j] == 0) {
-                    continue;
-                }
-                if (!a[i].contains(String.valueOf((char) (j + 'a')))) {
-                    map[j] = 0;
-                    continue;
-                }
-                updateMap(map, a[i], j);
-            }
+        for (String s : a) {
+            updateMap(map, s);
         }
 
         for (int i = 0; i < 26; i++) {
@@ -48,14 +37,14 @@ public final class FindCommonCharacters {
         return res;
     }
 
-    private static void updateMap(int[] map, String s, int i) {
-        int occurrences = 0;
+    private static void updateMap(int[] map, String s) {
+        final int[] sMap = new int[26];
         for (char c : s.toCharArray()) {
-            if (c == (char) (i + 'a')) {
-                occurrences++;
-            }
+            sMap[c - 'a']++;
         }
-        map[i] = Math.min(map[i], occurrences);
+        for (int i = 0; i < 26; i++) {
+            map[i] = Math.min(sMap[i], map[i]);
+        }
     }
 
     private FindCommonCharacters() {}
