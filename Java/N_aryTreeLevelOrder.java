@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class N_aryTreeLevelOrder {
-    static class Node {
+    private static class Node {
         public int val;
         public List<Node> children;
 

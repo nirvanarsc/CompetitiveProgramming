@@ -2,7 +2,7 @@ import java.util.List;
 
 public class MaximumDepthN_aryTree {
 
-    static class Node {
+    private static class Node {
         public int val;
         public List<Node> children;
 
