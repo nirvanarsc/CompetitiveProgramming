@@ -24,7 +24,6 @@ public final class RotatedDigits {
             i /= 10;
             idx *= 10;
         }
-        System.out.println(copy + " " + rotated);
         return rotated != copy;
     }
 }
