@@ -50,7 +50,7 @@ public class TopKFrequentElements {
     }
 
     public List<Integer> topKFrequent3(int[] nums, int k) {
-        final List<Integer>[] bucket = new List[nums.length + 1];
+        final List<List<Integer>> bucket = new ArrayList<>(Collections.nCopies(nums.length + 1, null));
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
 
         for (int n : nums) {
@@ -59,17 +59,17 @@ public class TopKFrequentElements {
 
         for (Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
             final int frequency = entry.getValue();
-            if (bucket[frequency] == null) {
-                bucket[frequency] = new ArrayList<>();
+            if (bucket.get(frequency) == null) {
+                bucket.set(frequency, new ArrayList<>());
             }
-            bucket[frequency].add(entry.getKey());
+            bucket.get(frequency).add(entry.getKey());
         }
 
         final List<Integer> res = new ArrayList<>();
 
-        for (int pos = bucket.length - 1; pos >= 0 && res.size() < k; pos--) {
-            if (bucket[pos] != null) {
-                res.addAll(bucket[pos]);
+        for (int pos = bucket.size() - 1; pos >= 0 && res.size() < k; pos--) {
+            if (bucket.get(pos) != null) {
+                res.addAll(bucket.get(pos));
             }
         }
         return res;
