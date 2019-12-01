@@ -24,7 +24,6 @@ public final class Hexspeak {
             if (!valid.contains(chars[i])) {
                 return "ERROR";
             }
-
         }
 
         return new String(chars);
