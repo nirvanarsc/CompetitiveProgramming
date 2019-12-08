@@ -1,6 +1,8 @@
+package medium;
+
 import utils.DataStructures.TreeNode;
 
-public class InsertIntoBST {
+public class P_701 {
 
     public TreeNode insertIntoBST(TreeNode root, int val) {
         TreeNode iter = root;

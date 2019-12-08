@@ -1,6 +1,8 @@
+package medium;
+
 import utils.DataStructures.TreeNode;
 
-public class BSTFromPreorder {
+public class P_1008 {
 
     public TreeNode bstFromPreorder(int[] preorder) {
         return recurse(preorder, 0, preorder.length - 1);

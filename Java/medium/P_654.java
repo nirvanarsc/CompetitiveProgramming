@@ -1,6 +1,8 @@
+package medium;
+
 import utils.DataStructures.TreeNode;
 
-public class MaximumBinaryTree {
+public class P_654 {
 
     public TreeNode constructMaximumBinaryTree(int[] nums) {
         return recurse(nums, 0, nums.length - 1);

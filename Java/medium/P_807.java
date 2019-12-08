@@ -1,4 +1,6 @@
-public final class MaxIncreaseKeepCitySkyline {
+package medium;
+
+public final class P_807 {
 
     public static int maxIncreaseKeepingSkyline(int[][] grid) {
         final int[] colMax = new int[grid[0].length];
@@ -26,5 +28,5 @@ public final class MaxIncreaseKeepCitySkyline {
         System.out.println(maxIncreaseKeepingSkyline(grid));
     }
 
-    private MaxIncreaseKeepCitySkyline() {}
+    private P_807() {}
 }

@@ -1,4 +1,6 @@
-public final class LetterTilePossibilities {
+package medium;
+
+public final class P_1079 {
 
     public static int numTilePossibilities(String tiles) {
         final int[] count = new int[26];
@@ -26,5 +28,5 @@ public final class LetterTilePossibilities {
         System.out.println(numTilePossibilities("ABC"));
     }
 
-    private LetterTilePossibilities() {}
+    private P_1079() {}
 }

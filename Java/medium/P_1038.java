@@ -1,9 +1,11 @@
+package medium;
+
 import java.util.Deque;
 import java.util.LinkedList;
 
 import utils.DataStructures.TreeNode;
 
-public class BSTtoGreaterSumTree {
+public class P_1038 {
 
     public TreeNode bstToGst(TreeNode root) {
         final Deque<TreeNode> list = inOrder(root, new LinkedList<>());
