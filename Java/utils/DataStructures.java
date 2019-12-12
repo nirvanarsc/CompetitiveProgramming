@@ -14,5 +14,23 @@ public class DataStructures {
         public ListNode next;
 
         public ListNode(int x) { val = x; }
+
+        public static void printList(ListNode head) {
+            while (head != null) {
+                System.out.print(head.val + (head.next == null ? "" : "->"));
+                head = head.next;
+            }
+            System.out.println();
+        }
+
+        public static ListNode testList(int num) {
+            ListNode a = new ListNode(1);
+            final ListNode head = a;
+            for (int i = 1; i <= num; i++) {
+                a.next = new ListNode(i);
+                a = a.next;
+            }
+            return head;
+        }
     }
 }
