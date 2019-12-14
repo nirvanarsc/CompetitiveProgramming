@@ -1,4 +1,6 @@
-public class RemoveDuplicatesSortedArray {
+package easy;
+
+public class P_26 {
 
     public int removeDuplicates(int[] nums) {
         int k = 0;
