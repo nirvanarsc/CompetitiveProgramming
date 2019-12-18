@@ -1,24 +1,19 @@
+package medium;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class PathSumII {
+import utils.DataStructures.TreeNode;
 
-    public static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-
-        TreeNode(int x) { val = x; }
-    }
-
-    List<List<Integer>> res = new ArrayList<>();
+public class P_113 {
 
     public List<List<Integer>> pathSum(TreeNode root, int sum) {
-        dfs(root, sum, new ArrayList<>());
+        final List<List<Integer>> res = new ArrayList<>();
+        dfs(root, sum, new ArrayList<>(), res);
         return res;
     }
 
-    public void dfs(TreeNode node, int remainingSum, List<Integer> path) {
+    public void dfs(TreeNode node, int remainingSum, List<Integer> path, List<List<Integer>> res) {
         if (node == null) {
             return;
         }
@@ -28,8 +23,8 @@ public class PathSumII {
         if (node.left == node.right && val == 0) {
             res.add(new ArrayList<>(path));
         } else {
-            dfs(node.right, val, path);
-            dfs(node.left, val, path);
+            dfs(node.right, val, path, res);
+            dfs(node.left, val, path, res);
         }
 
         path.remove(path.size() - 1);
