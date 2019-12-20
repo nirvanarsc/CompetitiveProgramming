@@ -1,4 +1,6 @@
-public class BuyAndSellStockIII {
+package hard;
+
+public class P_123 {
 
     public int maxProfit(int[] prices) {
         int buy1 = Integer.MAX_VALUE, buy2 = Integer.MAX_VALUE;
