@@ -1,3 +1,5 @@
+package medium;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -5,16 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class WordBreak {
+public final class P_139 {
 
     public static boolean wordBreak(String s, List<String> wordDict) {
-        final Set<String> dict = new HashSet<>(wordDict);
-        return recurse(s, dict, new HashMap<>());
+        return recurse(s, new HashSet<>(wordDict), new HashMap<>());
     }
 
     private static boolean recurse(String s, Set<String> dict, Map<String, Boolean> cache) {
         if (dict.contains(s)) {
-            cache.put(s, true);
             return true;
         }
 
@@ -39,5 +39,5 @@ public final class WordBreak {
         System.out.println(wordBreak("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat")));
     }
 
-    private WordBreak() {}
+    private P_139() {}
 }
