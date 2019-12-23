@@ -2,7 +2,7 @@ package hard;
 
 import java.util.Arrays;
 
-public class P_132 {
+public final class P_132 {
 
     public static int minCut(String s) {
         final int len = s.length();
@@ -12,7 +12,7 @@ public class P_132 {
 
         for (int i = 0; i < len; i++) {
             for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (j + 1 > i - 1 || isPalindrome[j + 1][i - 1])) {
+                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || isPalindrome[j + 1][i - 1])) {
                     isPalindrome[j][i] = true;
                 }
             }
@@ -31,7 +31,7 @@ public class P_132 {
 
         int res = Integer.MAX_VALUE;
         for (int i = start + 1; i <= s.length(); i++) {
-            if (isPalindrome[start][i-1]) {
+            if (isPalindrome[start][i - 1]) {
                 res = Math.min(res, 1 + recurse(i, s, dp, isPalindrome));
             }
         }
@@ -39,26 +39,28 @@ public class P_132 {
         return dp[start] = res;
     }
 
-    public int minCut2(String s) {
+    public static int minCut2(String s) {
         final int len = s.length();
         final int[] cut = new int[len];
         final boolean[][] isPalindrome = new boolean[len][len];
 
-        for (int i = 0; i < len; i++) {
-            int min = i;
-            for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (j + 1 > i - 1 || isPalindrome[j + 1][i - 1])) {
-                    isPalindrome[j][i] = true;
-                    min = j == 0 ? 0 : Math.min(min, cut[j - 1] + 1);
+        for (int col = 0; col < len; col++) {
+            int min = col;
+            for (int row = 0; row <= col; row++) {
+                if (s.charAt(row) == s.charAt(col) && (col - row <= 2 || isPalindrome[row + 1][col - 1])) {
+                    isPalindrome[row][col] = true;
+                    min = row == 0 ? 0 : Math.min(min, cut[row - 1] + 1);
                 }
             }
-            cut[i] = min;
+            cut[col] = min;
         }
 
         return cut[len - 1];
     }
 
     public static void main(String[] args) {
-        System.out.println(minCut("aab"));
+        System.out.println(minCut2("abcbad"));
     }
+
+    private P_132() {}
 }

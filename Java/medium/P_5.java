@@ -6,12 +6,12 @@ public final class P_5 {
         final boolean[][] dp = new boolean[s.length()][s.length()];
         String res = "";
 
-        for (int i = s.length() - 1; i >= 0; i--) {
-            for (int j = i; j < s.length(); j++) {
-                dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i < 3 || dp[i + 1][j - 1]);
+        for (int col = 0; col < s.length(); col++) {
+            for (int row = 0; row <= col; row++) {
+                dp[row][col] = s.charAt(row) == s.charAt(col) && (col - row <= 2 || dp[row + 1][col - 1]);
 
-                if (dp[i][j] && (res == "" || j - i + 1 > res.length())) {
-                    res = s.substring(i, j + 1);
+                if (dp[row][col] && (res == "" || col - row + 1 > res.length())) {
+                    res = s.substring(row, col + 1);
                 }
             }
         }
