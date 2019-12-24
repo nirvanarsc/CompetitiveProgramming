@@ -17,16 +17,16 @@ public class P_113 {
         if (node == null) {
             return;
         }
-        final int val = remainingSum - node.val;
-        path.add(node.val);
-
-        if (node.left == node.right && val == 0) {
+        if (node.left == node.right && remainingSum == node.val) {
+            path.add(node.val);
             res.add(new ArrayList<>(path));
-        } else {
-            dfs(node.right, val, path, res);
-            dfs(node.left, val, path, res);
+            path.remove(path.size() - 1);
+            return;
         }
 
+        path.add(node.val);
+        dfs(node.right, remainingSum - node.val, path, res);
+        dfs(node.left, remainingSum - node.val, path, res);
         path.remove(path.size() - 1);
     }
 }
