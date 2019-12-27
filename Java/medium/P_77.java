@@ -25,7 +25,7 @@ public final class P_77 {
     }
 
     public static void main(String[] args) {
-        System.out.println(combine(3, 3));
+        System.out.println(combine(5, 2));
     }
 
     private P_77() {}
