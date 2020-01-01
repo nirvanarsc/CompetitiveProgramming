@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class P_17 {
+public class P_17 {
 
     private static final String[] NUMBERS =
             { "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
 
-    public static List<String> letterCombinations(String digits) {
-        if(digits.isEmpty()) {
+    public List<String> letterCombinations(String digits) {
+        if (digits.isEmpty()) {
             return Collections.emptyList();
         }
         final List<String> res = new ArrayList<>();
@@ -28,6 +28,4 @@ public final class P_17 {
             dfs(curr + NUMBERS[digits.charAt(idx) - '0'].charAt(i), idx + 1, digits, list);
         }
     }
-
-    private P_17() {}
 }

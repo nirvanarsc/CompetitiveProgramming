@@ -9,6 +9,21 @@ import java.util.Set;
 
 public final class P_139 {
 
+    public boolean wordBreakBottomUp(String s, List<String> wordDict) {
+        final Set<String> dict = new HashSet<>(wordDict);
+        final boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        for (int i = 0; i <= s.length(); i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                if (dp[j] && dict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
     public static boolean wordBreak(String s, List<String> wordDict) {
         return recurse(s, new HashSet<>(wordDict), new HashMap<>());
     }

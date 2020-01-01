@@ -14,18 +14,16 @@ public final class P_56 {
         Arrays.sort(intervals, Comparator.comparingInt(i -> i[0]));
         final List<int[]> merged = new ArrayList<>();
         int[] curr = intervals[0];
-        for (int i = 1; i < intervals.length; i++) {
-            final int[] next = intervals[i];
-            if (next[0] <= curr[1]) {
-                curr[1] = Math.max(curr[1], next[1]);
+        merged.add(curr);
+        for (int[] interval : intervals) {
+            if (curr[1] >= interval[0]) {
+                curr[1] = Math.max(curr[1], interval[1]);
             } else {
+                curr = interval;
                 merged.add(curr);
-                curr = next;
             }
         }
-        merged.add(curr);
-        final int[][] res = new int[merged.size()][2];
-        return merged.toArray(res);
+        return merged.toArray(new int[merged.size()][2]);
     }
 
     public static void main(String[] args) {
