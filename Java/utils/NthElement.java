@@ -6,7 +6,7 @@ public final class NthElement {
         return select(nums, k - 1);
     }
 
-    // Quick select
+    // Quick Select
     private static int select(int[] nums, int k) {
         int left = 0, right = nums.length - 1;
         while (true) {

@@ -1,3 +1,5 @@
+package medium;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,8 +12,9 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TopKFrequentElements {
+public class P_347 {
 
+    // Priority Queue
     public List<Integer> topKFrequent(int[] nums, int k) {
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
         final PriorityQueue<Entry<Integer, Integer>> min =
@@ -37,6 +40,7 @@ public class TopKFrequentElements {
         return min.stream().map(Entry::getKey).collect(Collectors.toList());
     }
 
+    // Quick Select
     public List<Integer> topKFrequent2(int[] nums, int k) {
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
         for (Integer i : nums) {
@@ -46,9 +50,16 @@ public class TopKFrequentElements {
 
         final int newIdx = findKthLargestIndex(k, entries, Comparator.comparing(Entry::getValue));
 
-        return entries.subList(0, newIdx + 1).stream().map(Entry::getKey).collect(Collectors.toList());
+        final List<Integer> res = new ArrayList<>();
+
+        for (int i = 0; i <= newIdx; i++) {
+            res.add(entries.get(i).getKey());
+        }
+
+        return res;
     }
 
+    // Bucket Sort
     public List<Integer> topKFrequent3(int[] nums, int k) {
         final List<List<Integer>> bucket = new ArrayList<>(Collections.nCopies(nums.length + 1, null));
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
@@ -80,7 +91,7 @@ public class TopKFrequentElements {
         int low = 0, high = integers.size() - 1;
         while (low <= high) {
             final int pivotIdx = random.nextInt(high - low + 1) + low;
-            final int newIdx = dutchFlagPartitionIndex(pivotIdx, integers, low, high, comparator);
+            final int newIdx = partition(pivotIdx, integers, low, high, comparator);
             if (newIdx < k - 1) {
                 low = newIdx + 1;
             } else if (newIdx == k - 1) {
@@ -93,20 +104,17 @@ public class TopKFrequentElements {
         return low;
     }
 
-    public static <T> int dutchFlagPartitionIndex(int pivotIdx, List<T> a, int begin, int end,
-                                                  Comparator<T> comparator) {
+    public static <T> int partition(int pivotIdx, List<T> a, int begin, int end, Comparator<T> comparator) {
         final T pivot = a.get(pivotIdx);
-        int mid = begin;
-        while (mid <= end) {
-            if (comparator.compare(a.get(mid), pivot) > 0) {
-                Collections.swap(a, begin++, mid++);
-            } else if (a.get(mid) == pivot) {
-                mid++;
-            } else {
-                Collections.swap(a, mid, end--);
+        Collections.swap(a, pivotIdx, end);
+        int index = begin;
+        for (int i = begin; i < end; i++) {
+            if (comparator.compare(a.get(i), pivot) > 0) {
+                Collections.swap(a, index, i);
+                index++;
             }
         }
-
-        return mid - 1;
+        Collections.swap(a, end, index);
+        return index;
     }
 }
