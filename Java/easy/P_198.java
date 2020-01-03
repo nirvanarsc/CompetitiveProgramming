@@ -1,21 +1,17 @@
 package easy;
 
-import java.util.Arrays;
-
 public class P_198 {
 
     public int rob(int[] nums) {
-        final int[] dp = new int[nums.length];
-        Arrays.fill(dp, -1);
-        return recurse(0, nums, dp);
+        return recurse(0, nums, new Integer[nums.length]);
     }
 
-    private static int recurse(int start, int[] nums, int[] dp) {
+    private static int recurse(int start, int[] nums, Integer[] dp) {
         if (start >= nums.length) {
             return 0;
         }
 
-        if (dp[start] != 0) {
+        if (dp[start] != null) {
             return dp[start];
         }
 
