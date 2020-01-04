@@ -1,4 +1,6 @@
-public class PartitionEqualSubsetSum {
+package medium;
+
+public class P_416 {
 
     public boolean canPartition(int[] nums) {
         int sum = 0;
@@ -17,6 +19,29 @@ public class PartitionEqualSubsetSum {
         }
 
         return dp[sum / 2];
+    }
+
+    public boolean canPartitionTopDown(int[] nums) {
+        int sum = 0;
+        for (int i : nums) { sum += i; }
+        if (sum % 2 != 0) { return false; }
+        return process(nums, sum / 2, 0, 0);
+    }
+
+    private static boolean process(int[] nums, int target, int index, int sum) {
+        if (sum > target) {
+            return false;
+        }
+        if (sum == target) {
+            return true;
+        }
+        for (int i = index; i < nums.length; i++) {
+            if (i > index && nums[i] == nums[i - 1]) { continue; }
+            if (process(nums, target, i + 1, sum + nums[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean canPartition2(int[] nums) {
