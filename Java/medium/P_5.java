@@ -4,19 +4,23 @@ public final class P_5 {
 
     public static String longestPalindrome(String s) {
         final boolean[][] dp = new boolean[s.length()][s.length()];
-        String res = "";
+        int palindromeStart = 0;
+        int maxLen = 0;
 
         for (int col = 0; col < s.length(); col++) {
             for (int row = 0; row <= col; row++) {
-                dp[row][col] = s.charAt(row) == s.charAt(col) && (col - row <= 2 || dp[row + 1][col - 1]);
+                if (s.charAt(row) == s.charAt(col) && (col - row < 2 || dp[row + 1][col - 1])) {
+                    dp[row][col] = true;
+                }
 
-                if (dp[row][col] && (res == "" || col - row + 1 > res.length())) {
-                    res = s.substring(row, col + 1);
+                if (dp[row][col] && (col - row + 1 > maxLen)) {
+                    palindromeStart = row;
+                    maxLen = col - row + 1;
                 }
             }
         }
 
-        return res;
+        return s.substring(palindromeStart, palindromeStart + maxLen);
     }
 
     public static String longestPalindrome2(String s) {
