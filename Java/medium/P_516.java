@@ -1,4 +1,6 @@
-public final class LongestPalindromicSubsequence {
+package medium;
+
+public final class P_516 {
 
     public static int longestPalindromeSubseq(String s) {
         final int[][] dp = new int[s.length()][s.length()];
@@ -44,5 +46,5 @@ public final class LongestPalindromicSubsequence {
         System.out.println(longestPalindromeSpace("bbbab"));
     }
 
-    private LongestPalindromicSubsequence() {}
+    private P_516() {}
 }

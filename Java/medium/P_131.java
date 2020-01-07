@@ -18,18 +18,15 @@ public final class P_131 {
         }
 
         for (int i = start + 1; i <= s.length(); i++) {
-            final String word = s.substring(start, i);
-            if (isPalindrome(word)) {
-                curr.add(word);
+            if (isPalindrome(s, start, i - 1)) {
+                curr.add(s.substring(start, i));
                 recurse(i, s, res, curr);
                 curr.remove(curr.size() - 1);
             }
         }
     }
 
-    private static boolean isPalindrome(String s) {
-        int start = 0;
-        int end = s.length() - 1;
+    private static boolean isPalindrome(String s, int start, int end) {
         while (start < end) {
             if (s.charAt(start) != s.charAt(end)) {
                 return false;
