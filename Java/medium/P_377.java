@@ -6,17 +6,13 @@ public final class P_377 {
 
     public static int combinationSum4(int[] candidates, int target) {
         Arrays.sort(candidates);
-        final int[] dp = new int[target + 1];
-        Arrays.fill(dp, -1);
+        final Integer[] dp = new Integer[target + 1];
+        dp[0] = 1;
         return recurse(candidates, target, dp);
     }
 
-    private static int recurse(int[] candidates, int target, int[] dp) {
-        if (target == 0) {
-            return 1;
-        }
-
-        if (dp[target] != -1) {
+    private static int recurse(int[] candidates, int target, Integer[] dp) {
+        if (dp[target] != null) {
             return dp[target];
         }
 
@@ -24,9 +20,7 @@ public final class P_377 {
         for (int i = 0; i < candidates.length && target >= candidates[i]; i++) {
             res += recurse(candidates, target - candidates[i], dp);
         }
-
-        dp[target] = res;
-        return res;
+        return dp[target] = res;
     }
 
     public static void main(String[] args) {
