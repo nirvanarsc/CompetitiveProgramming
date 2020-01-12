@@ -1,6 +1,6 @@
-package medium;
+package weekly_171;
 
-public class P_547 {
+public class P_1319 {
 
     static class UnionFind {
         private final int[] parent;
@@ -46,16 +46,15 @@ public class P_547 {
         public int count() { return count; }
     }
 
-    public int findCircleNum(int[][] grid) {
-        final int n = grid.length;
-        final UnionFind uf = new UnionFind(n);
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (grid[i][j] == 1) {
-                    uf.union(i, j);
-                }
-            }
+    public int makeConnected(int n, int[][] connections) {
+        if (n - 1 > connections.length) {
+            return -1;
         }
-        return uf.count();
+        final UnionFind uf = new UnionFind(n);
+        for (int[] connection : connections) {
+            uf.union(connection[0], connection[1]);
+        }
+
+        return uf.count - 1;
     }
 }

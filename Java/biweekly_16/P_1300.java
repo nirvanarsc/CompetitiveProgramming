@@ -29,7 +29,7 @@ public class P_1300 {
     private static int getSum(int[] arr, int k) {
         int res = 0;
         for (int i : arr) {
-            res += i > k ? k : i;
+            res += Math.min(i, k);
         }
         return res;
     }
