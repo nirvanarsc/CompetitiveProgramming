@@ -12,4 +12,19 @@ public class P_53 {
 
         return res;
     }
+
+    public int maxSubArrayRecursive(int[] nums) {
+        return recurse(nums, 0, new int[] { Integer.MIN_VALUE, 0 })[0];
+    }
+
+    public int[] recurse(int[] nums, int pos, int[] pair) {
+        if (pos == nums.length - 1) {
+            pair[1] = nums[pos];
+            pair[0] = Math.max(pair[0], pair[1]);
+            return pair;
+        }
+        pair[1] = Math.max(nums[pos], nums[pos] + recurse(nums, pos + 1, pair)[1]);
+        pair[0] = Math.max(pair[0], pair[1]);
+        return pair;
+    }
 }
