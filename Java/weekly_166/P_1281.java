@@ -1,6 +1,6 @@
 package weekly_166;
 
-public final class SubtractProductAndSumOfDigits {
+public final class P_1281 {
 
     public static int subtractProductAndSum(int n) {
         int prod = 1, sum = 0;
@@ -20,5 +20,5 @@ public final class SubtractProductAndSumOfDigits {
         System.out.println(subtractProductAndSum(4421));
     }
 
-    private SubtractProductAndSumOfDigits() {}
+    private P_1281() {}
 }

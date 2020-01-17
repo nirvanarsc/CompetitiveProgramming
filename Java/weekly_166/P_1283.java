@@ -1,6 +1,6 @@
 package weekly_166;
 
-public final class SmallestDivisorThreshold {
+public final class P_1283 {
 
     public static int smallestDivisor(int[] nums, int threshold) {
         int low = 1, high = (int) 1e6;
@@ -39,5 +39,5 @@ public final class SmallestDivisorThreshold {
         }, 549));
     }
 
-    private SmallestDivisorThreshold() {}
+    private P_1283() {}
 }

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public final class LightsOutMinMoves {
+public final class P_1284 {
 
     public static int minFlips(int[][] mat) {
         final int n = mat.length;
@@ -74,5 +74,5 @@ public final class LightsOutMinMoves {
         System.out.println(minFlips(new int[][] { { 1, 0, 0 }, { 1, 0, 0 } }));
     }
 
-    private LightsOutMinMoves() {}
+    private P_1284() {}
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public final class GroupPeopleByGroupSize {
+public final class P_1282 {
 
     public static List<List<Integer>> groupThePeople(int[] groupSizes) {
         final Map<Integer, List<Integer>> map = new HashMap<>();
@@ -37,5 +37,5 @@ public final class GroupPeopleByGroupSize {
         System.out.println(groupThePeople(new int[] { 2, 1, 3, 3, 3, 2 }));
     }
 
-    private GroupPeopleByGroupSize() {}
+    private P_1282() {}
 }
