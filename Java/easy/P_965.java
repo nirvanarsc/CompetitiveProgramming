@@ -1,12 +1,8 @@
-public class UnivaluedBinaryTree {
+package easy;
 
-    private static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
+import utils.DataStructures.TreeNode;
 
-        TreeNode(int x) { val = x; }
-    }
+public class P_965 {
 
     public boolean isUnivalTree(TreeNode root) {
         return isNodeUnival(root, root.val);
