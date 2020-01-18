@@ -1,6 +1,8 @@
-public final class ValidAnagram {
+package easy;
 
-    public static boolean isAnagram(String s, String t) {
+public class P_242 {
+
+    public boolean isAnagram(String s, String t) {
         if (s.length() != t.length()) {
             return false;
         }
@@ -19,11 +21,4 @@ public final class ValidAnagram {
 
         return true;
     }
-
-    public static void main(String[] args) {
-        System.out.println(isAnagram("rat", "car"));
-        System.out.println(isAnagram("anagram", "nagaram"));
-    }
-
-    private ValidAnagram() {}
 }
