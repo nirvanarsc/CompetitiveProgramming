@@ -19,32 +19,25 @@ public class P_552 {
         return (int) a1l0;
     }
 
-    // Top Down TLE 85773
     public int checkRecord(int n) {
-        return recurse(0, n, false, false, false, new Integer[n][2][2][2]);
+        return recurse(0, n, false, false, false, new Integer[n][8]);
     }
 
-    private static int recurse(int s, int n, boolean wasAbsent, boolean latePrev, boolean latePrevPrev,
-                               Integer[][][][] dp) {
+    private static int recurse(int s, int n, boolean absent, boolean late1, boolean late2, Integer[][] dp) {
         if (s == n) {
             return 1;
         }
-        final int latePP = latePrevPrev ? 1 : 0;
-        final int lateP = latePrev ? 1 : 0;
-        final int absent = wasAbsent ? 1 : 0;
-        if (dp[s][absent][lateP][latePP] != null) {
-            return dp[s][absent][lateP][latePP];
+        int flag = 0;
+        if (absent) { flag |= 1; }
+        if (late1) { flag |= 2; }
+        if (late2) { flag |= 4; }
+        if (dp[s][flag] != null) {
+            return dp[s][flag];
         }
 
-        final int addPresent = recurse(s + 1, n, wasAbsent, false, latePrev, dp);
-        final int addAbsent = wasAbsent ? 0 : recurse(s + 1, n, true, false, latePrev, dp);
-        final int addLate = (latePrev && latePrevPrev) ? 0 : recurse(s + 1, n, wasAbsent, true, latePrev, dp);
-        dp[s][absent][lateP][latePP] = addAbsent;
-        dp[s][absent][lateP][latePP] %= mod;
-        dp[s][absent][lateP][latePP] += addLate;
-        dp[s][absent][lateP][latePP] %= mod;
-        dp[s][absent][lateP][latePP] += addPresent;
-        dp[s][absent][lateP][latePP] %= mod;
-        return dp[s][absent][lateP][latePP];
+        final int addPresent = recurse(s + 1, n, absent, false, late1, dp);
+        final int addAbsent = absent ? 0 : recurse(s + 1, n, true, false, late1, dp);
+        final int addLate = (late1 && late2) ? 0 : recurse(s + 1, n, absent, true, late1, dp);
+        return dp[s][flag] = ((addPresent + addAbsent) % mod + addLate) % mod;
     }
 }
