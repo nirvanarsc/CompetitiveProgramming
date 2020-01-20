@@ -1,6 +1,8 @@
-public final class ValidPalindrome {
+package easy;
 
-    public static boolean isPalindrome(String s) {
+public class P_125 {
+
+    public boolean isPalindrome(String s) {
         int start = 0;
         int end = s.length() - 1;
         while (start < end) {
@@ -18,12 +20,4 @@ public final class ValidPalindrome {
 
         return true;
     }
-
-    public static void main(String[] args) {
-        System.out.println(isPalindrome("0P"));
-        System.out.println(isPalindrome("race a car"));
-        System.out.println(isPalindrome("A man, a plan, a canal: Panama"));
-    }
-
-    private ValidPalindrome() {}
 }
