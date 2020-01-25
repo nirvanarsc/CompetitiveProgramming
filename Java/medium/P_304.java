@@ -2,7 +2,7 @@ package medium;
 
 public class P_304 {
 
-    class NumMatrix {
+    static class NumMatrix {
         int[][] dp;
 
         NumMatrix(int[][] matrix) {
