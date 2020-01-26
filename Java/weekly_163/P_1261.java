@@ -1,4 +1,4 @@
-package medium;
+package weekly_163;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,6 +6,7 @@ import java.util.Set;
 import utils.DataStructures.TreeNode;
 
 public class P_1261 {
+
     static class FindElements {
         Set<Integer> seen = new HashSet<>();
 

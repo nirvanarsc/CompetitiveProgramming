@@ -1,4 +1,4 @@
-package hard;
+package biweekly_14;
 
 public class P_1274 {
 

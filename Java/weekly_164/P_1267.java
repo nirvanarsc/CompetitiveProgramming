@@ -1,6 +1,8 @@
-public final class CountServers {
+package weekly_164;
 
-    public static int countServers(int[][] grid) {
+public class P_1267 {
+
+    public int countServers(int[][] grid) {
         if (grid == null || grid.length == 0 || grid[0].length == 0) { return 0; }
         final int numRows = grid.length;
         final int numCols = grid[0].length;
@@ -27,18 +29,4 @@ public final class CountServers {
         }
         return totalServers;
     }
-
-    public static void main(String[] args) {
-        System.out.println(countServers(new int[][] { { 1, 0 }, { 0, 1 } }));
-        System.out.println(countServers(new int[][] { { 1, 0 }, { 1, 1 } }));
-        System.out.println(countServers(new int[][] {
-                { 1, 1, 0, 0 },
-                { 0, 0, 1, 0 },
-                { 0, 0, 1, 0 },
-                { 0, 0, 0, 1 }
-        }));
-
-    }
-
-    private CountServers() {}
 }

@@ -1,4 +1,6 @@
-public final class TicTacToeWinner {
+package weekly_165;
+
+public final class P_1275 {
 
     public static String tictactoe(int[][] moves) {
         final int[][] matrix = new int[3][3];
@@ -57,5 +59,5 @@ public final class TicTacToeWinner {
         System.out.println(tictactoe(moves4));
     }
 
-    private TicTacToeWinner() {}
+    private P_1275() {}
 }

@@ -1,4 +1,4 @@
-package hard;
+package weekly_165;
 
 public class P_1278 {
 
@@ -13,7 +13,6 @@ public class P_1278 {
         if (memo[left][k] != null) {
             return memo[left][k];
         }
-
         int res = Integer.MAX_VALUE;
         final int right = (k == 1) ? s.length() - 1 : left;
         for (int i = right; i <= s.length() - k; i++) {
@@ -24,12 +23,10 @@ public class P_1278 {
                     count++;
                 }
             }
-            if (count > res) {
-                continue;
+            if (count <= res) {
+                res = Math.min(res, count + help(s, k - 1, i + 1, memo));
             }
-            res = Math.min(res, count + help(s, k - 1, i + 1, memo));
         }
-
         return memo[left][k] = res;
     }
 }

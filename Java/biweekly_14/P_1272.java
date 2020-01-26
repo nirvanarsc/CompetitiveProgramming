@@ -1,10 +1,12 @@
+package biweekly_14;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class RemoveInterval {
+public class P_1272 {
 
-    public static List<List<Integer>> removeInterval(int[][] intervals, int[] toBeRemoved) {
+    public List<List<Integer>> removeInterval(int[][] intervals, int[] toBeRemoved) {
         final List<List<Integer>> res = new ArrayList<>();
         final int rStart = toBeRemoved[0];
         final int rEnd = toBeRemoved[1];
@@ -27,14 +29,4 @@ public final class RemoveInterval {
 
         return res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(removeInterval(new int[][] { { 0, 2 }, { 3, 4 }, { 5, 7 } }, new int[] { 1, 6 }));
-        System.out.println(removeInterval(new int[][] { { -5, -4 }, { -3, -2 }, { 1, 2 }, { 3, 5 }, { 8, 9 } },
-                                          new int[] { -1, 4 }));
-        System.out.println(removeInterval(new int[][] { { 0, 5 }, }, new int[] { 2, 3 }));
-        System.out.println(removeInterval(new int[][] { { 0, 100 }, }, new int[] { 0, 50 }));
-    }
-
-    private RemoveInterval() {}
 }
