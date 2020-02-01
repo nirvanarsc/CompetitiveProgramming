@@ -7,6 +7,51 @@ import java.util.Set;
 
 public class P_720 {
 
+    static class Trie {
+        Trie[] children;
+        boolean isWord;
+
+        Trie() {
+            children = new Trie[26];
+        }
+    }
+
+    public String longestWord(String[] words) {
+        final Trie root = new Trie();
+        for (String word : words) {
+            Trie curr = root;
+            for (char c : word.toCharArray()) {
+                if (curr.children[c - 'a'] == null) {
+                    curr.children[c - 'a'] = new Trie();
+                }
+                curr = curr.children[c - 'a'];
+            }
+            curr.isWord = true;
+        }
+        int max = 0;
+        String ans = "";
+        for (String word : words) {
+            Trie curr = root;
+            boolean complete = true;
+            for (char c : word.toCharArray()) {
+                if (!curr.children[c - 'a'].isWord) {
+                    complete = false;
+                    break;
+                }
+                curr = curr.children[c - 'a'];
+            }
+            if (complete) {
+                if (word.length() > max) {
+                    max = word.length();
+                    ans = word;
+                } else if (word.length() == max) {
+                    ans = word.compareTo(ans) > 0 ? ans : word;
+                }
+            }
+        }
+        return ans;
+    }
+
     public String longestWordSort(String[] words) {
         Arrays.sort(words);
         final Set<String> built = new HashSet<>();
