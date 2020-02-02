@@ -42,9 +42,8 @@ public class P_1342 {
             list[count].add(entry.getKey());
         }
         for (int i = arr.length; i > 0; i--) {
-            final List<Integer> cur = list[i];
-            if (cur != null) {
-                for (int ignored : cur) {
+            if (list[i] != null) {
+                for (int ignored : list[i]) {
                     steps += i;
                     res++;
                     if (steps >= arr.length / 2) {
@@ -53,7 +52,7 @@ public class P_1342 {
                 }
             }
         }
-        return arr.length;
+        return res;
     }
 
     public int minSetSizeLHM(int[] arr) {
@@ -73,6 +72,27 @@ public class P_1342 {
                 return res;
             }
             target -= e.getValue();
+            res++;
+        }
+        return res;
+    }
+
+    public int minSetSizeSort(int[] arr) {
+        int res = 0, target = arr.length / 2;
+        final Map<Integer, Integer> freq = new HashMap<>();
+        for (int value : arr) {
+            freq.merge(value, 1, Integer::sum);
+        }
+        final List<Integer> values = freq
+                .values()
+                .stream()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        for (int num: values) {
+            if (target <= 0) {
+                return res;
+            }
+            target -= num;
             res++;
         }
         return res;

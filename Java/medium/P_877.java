@@ -12,16 +12,15 @@ public class P_877 {
             sum += num;
         }
 
-        final int[][] dp = new int[nums.length][nums.length];
-        return 2 * recurse(nums, 0, nums.length - 1, dp) >= sum;
+        return 2 * recurse(nums, 0, nums.length - 1, new Integer[nums.length][nums.length]) >= sum;
     }
 
-    private static int recurse(int[] nums, int start, int end, int[][] dp) {
+    private static int recurse(int[] nums, int start, int end, Integer[][] dp) {
         if (start > end) {
             return 0;
         }
 
-        if (dp[start][end] != 0) {
+        if (dp[start][end] != null) {
             return dp[start][end];
         }
 

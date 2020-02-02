@@ -22,7 +22,7 @@ public final class P_338 {
         final int[] res = new int[num + 1];
         int pow = 1;
         for (int i = 1; i <= num; i++) {
-            if (pow * 2 == i) {
+            if (pow << 1 == i) {
                 pow <<= 1;
             }
             res[i] = res[i - pow] + 1;
