@@ -34,19 +34,14 @@ public class P_983 {
             return dp[pos];
         }
 
+        int i1 = 0;
+        int i2 = 0;
+        while (pos + i1 < days.length - 1 && days[pos + i1 + 1] - days[pos] < 7) { i1++; }
+        while (pos + i2 < days.length - 1 && days[pos + i2 + 1] - days[pos] < 30) { i2++; }
+
         final int OneDay = costs[0] + minCost(days, costs, pos + 1, dp);
-        int increment = 0;
-        int initial = days[pos];
-        while (pos + increment < days.length - 1 && days[pos + increment + 1] - initial < 7) {
-            increment++;
-        }
-        final int SevenDay = costs[1] + minCost(days, costs, pos + increment + 1, dp);
-        increment = 0;
-        initial = days[pos];
-        while (pos + increment < days.length - 1 && days[pos + increment + 1] - initial < 30) {
-            increment++;
-        }
-        final int ThirtyDay = costs[2] + minCost(days, costs, pos + increment + 1, dp);
+        final int SevenDay = costs[1] + minCost(days, costs, pos + i1 + 1, dp);
+        final int ThirtyDay = costs[2] + minCost(days, costs, pos + i2 + 1, dp);
 
         return dp[pos] = Math.min(OneDay, Math.min(SevenDay, ThirtyDay));
     }
