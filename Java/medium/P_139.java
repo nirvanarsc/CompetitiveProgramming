@@ -37,15 +37,17 @@ public final class P_139 {
             return cache.get(s);
         }
 
-        boolean res = false;
         for (int i = 1; i < s.length(); i++) {
             if (dict.contains(s.substring(0, i))) {
-                res |= recurse(s.substring(i), dict, cache);
+                if(recurse(s.substring(i), dict, cache)) {
+                    cache.put(s, true);
+                    return true;
+                }
             }
         }
 
-        cache.put(s, res);
-        return res;
+        cache.put(s, false);
+        return false;
     }
 
     public static void main(String[] args) {
