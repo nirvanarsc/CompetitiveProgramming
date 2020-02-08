@@ -7,6 +7,14 @@ import java.util.List;
 
 public class P_1238 {
 
+    public List<Integer> circularPermutationOptimized(int n, int start) {
+        final List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < 1 << n; i++) {
+            res.add(start ^ i ^ i >> 1);
+        }
+        return res;
+    }
+
     public List<Integer> circularPermutation(int n, int start) {
         final List<Integer> grayCode = getGrayCode(n);
         final List<Integer> res = new ArrayList<>();
