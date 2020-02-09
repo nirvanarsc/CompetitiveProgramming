@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class P_89 {
+public class P_89 {
 
-    public static List<Integer> grayCode(int n) {
+    public List<Integer> grayCode(int n) {
         List<Integer> list = new ArrayList<>(Collections.singletonList(0));
         for (int i = 1; i <= n; i++) {
             final List<Integer> curr = new ArrayList<>(list);
@@ -21,9 +21,11 @@ public final class P_89 {
         return list;
     }
 
-    public static void main(String[] args) {
-        System.out.println(grayCode(3));
+    public List<Integer> grayCodeBitwise(int n) {
+        final List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < 1 << n; i++) {
+            res.add(i ^ i >> 1);
+        }
+        return res;
     }
-
-    private P_89() {}
 }
