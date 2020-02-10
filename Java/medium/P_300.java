@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class P_300 {
 
-    public int lengthOfLIS1(int[] nums) {
+    public int lengthOfLISBinarySearch(int[] nums) {
         final int[] dp = new int[nums.length];
         int len = 0;
         for (int num : nums) {
@@ -20,7 +20,7 @@ public class P_300 {
         return len;
     }
 
-    public static int lengthOfLIS2(int[] nums) {
+    public static int lengthOfLISBottomUp(int[] nums) {
         final int[] dp = new int[nums.length];
         int res = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -35,28 +35,25 @@ public class P_300 {
         return res;
     }
 
-    public static int lengthOfLIS3(int[] nums) {
-        final int[][] memo = new int[nums.length + 1][nums.length];
-        for (int[] l : memo) {
-            Arrays.fill(l, -1);
-        }
-        return recurse(nums, -1, 0, memo);
+    public static int lengthOfLISTopDown(int[] nums) {
+        return recurse(nums, -1, 0, new Integer[nums.length][nums.length]);
     }
 
-    public static int recurse(int[] nums, int previndex, int start, int[][] memo) {
+    public static int recurse(int[] nums, int prev, int start, Integer[][] dp) {
         if (start == nums.length) {
             return 0;
         }
-        if (memo[previndex + 1][start] >= 0) {
-            return memo[previndex + 1][start];
+        if (prev != -1 && dp[prev][start] != null) {
+            return dp[prev][start];
         }
-        int taken = 0;
-        if (previndex < 0 || nums[start] > nums[previndex]) {
-            taken = 1 + recurse(nums, start, start + 1, memo);
+        int take = 0;
+        if (prev < 0 || nums[start] > nums[prev]) {
+            take = 1 + recurse(nums, start, start + 1, dp);
         }
-
-        final int nottaken = recurse(nums, previndex, start + 1, memo);
-
-        return memo[previndex + 1][start] = Math.max(taken, nottaken);
+        final int skip = recurse(nums, prev, start + 1, dp);
+        if (prev != -1) {
+            dp[prev][start] = Math.max(take, skip);
+        }
+        return Math.max(take, skip);
     }
 }
