@@ -1,6 +1,6 @@
-package medium;
+package biweekly_10;
 
-public class P_516 {
+public class P_1216 {
 
     public int longestPalindromeSubseq(String s) {
         final int[][] dp = new int[s.length()][s.length()];
@@ -19,28 +19,8 @@ public class P_516 {
         return dp[s.length() - 1][0];
     }
 
-    public int longestPalindromeSpace(String s) {
-        final char[] c = s.toCharArray();
-        final int[] dp = new int[c.length];
-        for (int i = 0; i < c.length; i++) {
-            dp[i] = 1;
-            int maxSoFar = 0;
-            for (int j = i - 1; j >= 0; j--) {
-                final int prev = dp[j];
-                if (c[i] == c[j]) {
-                    dp[j] = maxSoFar + 2;
-                }
-                maxSoFar = Math.max(prev, maxSoFar);
-            }
-        }
-        int max = 0;
-        for (int i : dp) { max = Math.max(max, i); }
-        return max;
-    }
-
-    public int longestPalindromeSubseqLCS(String s) {
-        final String reverse = new StringBuilder(s).reverse().toString();
-        return longestCommonSubsequence(s, reverse);
+    public boolean isValidPalindrome(String s, int k) {
+        return s.length() - longestPalindromeSubseq(s) <= k;
     }
 
     public int longestCommonSubsequence(String text1, String text2) {
@@ -57,5 +37,10 @@ public class P_516 {
         }
 
         return dp[text1.length()][text2.length()];
+    }
+
+    public boolean isValidPalindromeLCS(String s, int k) {
+        final String reverse = new StringBuilder(s).reverse().toString();
+        return s.length() - longestCommonSubsequence(s, reverse) <= k;
     }
 }

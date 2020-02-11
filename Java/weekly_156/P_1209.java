@@ -1,6 +1,36 @@
-package medium;
+package weekly_156;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class P_1209 {
+
+    public String removeDuplicates(String s, int k) {
+        final Deque<Character> deque = new ArrayDeque<>();
+        final Deque<Integer> counts = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (!deque.isEmpty() && deque.getFirst() == c) {
+                final int t = counts.removeFirst();
+                if (t == k - 1) {
+                    deque.removeFirst();
+                } else {
+                    counts.addFirst(t + 1);
+                }
+            } else {
+                deque.addFirst(c);
+                counts.addFirst(1);
+            }
+        }
+        final StringBuilder sb = new StringBuilder();
+        while (!deque.isEmpty()) {
+            final char c = deque.removeLast();
+            final int cnt = counts.removeLast();
+            for (int i = 0; i < cnt; i++) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 
     public String removeDuplicatesImproved(String s, int k) {
         int i = 0;
@@ -18,7 +48,7 @@ public class P_1209 {
         return new String(array, 0, i);
     }
 
-    public String removeDuplicates(String s, int k) {
+    public String removeDuplicatesPrimitiveStack(String s, int k) {
         int i = 0;
         final char[] stack = new char[s.length()];
         for (int j = 0; j < s.length(); ++j) {

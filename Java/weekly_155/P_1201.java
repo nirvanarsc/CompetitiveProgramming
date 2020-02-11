@@ -1,4 +1,4 @@
-package medium;
+package weekly_155;
 
 public class P_1201 {
 
