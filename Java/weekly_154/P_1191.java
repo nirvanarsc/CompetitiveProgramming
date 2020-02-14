@@ -1,7 +1,9 @@
-public final class KConcatenationMaximumSum {
+package weekly_154;
 
-    public static int kConcatenationMaxSum(int[] arr, int k) {
-        final int mod = 1000000000 + 7;
+public class P_1191 {
+
+    public int kConcatenationMaxSum(int[] arr, int k) {
+        final int mod = (int) (1e9 + 7);
         if (k == 1) { return kadane(arr, 1); }
         long sum = 0;
         for (int n : arr) { sum += n; }
@@ -13,17 +15,9 @@ public final class KConcatenationMaximumSum {
         int curr = 0;
         int res = 0;
         for (int i = 0; i < k * arr.length; i++) {
-            final int n = arr[i % arr.length];
-            curr = Math.max(n, n + curr);
+            curr = Math.max(arr[i % arr.length], arr[i % arr.length] + curr);
             res = Math.max(res, curr);
         }
-
         return res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(kConcatenationMaxSum(new int[] { 1, -2, 1 }, 5));
-    }
-
-    private KConcatenationMaximumSum() {}
 }

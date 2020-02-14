@@ -1,4 +1,4 @@
-package hard;
+package weekly_154;
 
 import java.util.ArrayList;
 import java.util.Arrays;
