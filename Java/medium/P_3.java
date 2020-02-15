@@ -2,9 +2,22 @@ package medium;
 
 import java.util.Arrays;
 
-public final class P_3 {
+public class P_3 {
 
-    public static int lengthOfLongestSubstring(String s) {
+    public int lengthOfLongestSubstringSlidingWindow(String s) {
+        final int[] map = new int[256];
+        int res = 0, i = 0;
+        for (int j = 0; j < s.length(); j++) {
+            map[s.charAt(j)]++;
+            while (map[s.charAt(j)] > 1) {
+                map[s.charAt(i++)]--;
+            }
+            res = Math.max(res, j - i + 1);
+        }
+        return res;
+    }
+
+    public int lengthOfLongestSubstring(String s) {
         final int[] map = new int[256];
         Arrays.fill(map, -1);
         int res = 0, start = 0, i = 0;
@@ -18,16 +31,4 @@ public final class P_3 {
         res = Math.max(res, i - start);
         return res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(lengthOfLongestSubstring("abcabcbb"));
-        System.out.println(lengthOfLongestSubstring("bbbbb"));
-        System.out.println(lengthOfLongestSubstring("pwwkew"));
-        System.out.println(lengthOfLongestSubstring("au"));
-        System.out.println(lengthOfLongestSubstring(" "));
-        System.out.println(lengthOfLongestSubstring("dvdf"));
-        System.out.println(lengthOfLongestSubstring("abba"));
-    }
-
-    private P_3() {}
 }
