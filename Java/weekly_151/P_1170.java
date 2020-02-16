@@ -1,10 +1,57 @@
-package easy;
+package weekly_151;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class P_1170 {
 
     public int[] numSmallerByFrequency(String[] queries, String[] words) {
+        final Map<Integer, Integer> count = new HashMap<>();
+        for (String w : words) {
+            count.merge(f(w), 1, Integer::sum);
+        }
+        final List<Integer> integers = new ArrayList<>(count.keySet());
+        Collections.sort(integers);
+        final int[] prefixSum = new int[integers.size()];
+        for (int i = 0; i < integers.size(); i++) {
+            prefixSum[i] = (i > 0 ? prefixSum[i - 1] : 0) + count.get(integers.get(i));
+        }
+        final int[] res = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            final int f = f(queries[i]);
+            int lo = 0;
+            int hi = integers.size();
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (integers.get(mid) <= f) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+            res[i] = prefixSum[integers.size() - 1] - (lo > 0 ? prefixSum[lo - 1] : 0);
+        }
+        return res;
+    }
+
+    private static int f(String w) {
+        final int[] map = new int[26];
+        for (char c : w.toCharArray()) {
+            map[c - 'a']++;
+        }
+        for (int i = 0; i < 26; i++) {
+            if (map[i] != 0) {
+                return map[i];
+            }
+        }
+        return -1;
+    }
+
+    public int[] numSmallerByFrequencyBS(String[] queries, String[] words) {
         final int[] res = new int[queries.length];
         final int[] wordMap = new int[words.length];
         for (int i = 0; i < words.length; i++) {
@@ -33,18 +80,6 @@ public class P_1170 {
             }
         }
         return lo;
-    }
-
-    private static int f(String word) {
-        final int[] freq = new int[26];
-        char minChar = 'z';
-        for (char c : word.toCharArray()) {
-            if (c <= minChar) {
-                freq[c - 'a']++;
-                minChar = c;
-            }
-        }
-        return freq[minChar - 'a'];
     }
 
     public int[] numSmallerByFrequencyCountingSort(String[] queries, String[] words) {
