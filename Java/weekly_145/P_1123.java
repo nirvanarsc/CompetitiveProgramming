@@ -1,4 +1,4 @@
-package medium;
+package weekly_145;
 
 import utils.DataStructures.TreeNode;
 
@@ -29,5 +29,24 @@ public class P_1123 {
         } else {
             return l.depth > r.depth ? l : r;
         }
+    }
+
+    public TreeNode lcaDeepestLeavesD(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        final int left = getDepth(root.left, 0);
+        final int right = getDepth(root.right, 0);
+        if (left == right) {
+            return root;
+        }
+        return left > right ? lcaDeepestLeaves(root.left) : lcaDeepestLeaves(root.right);
+    }
+
+    private static int getDepth(TreeNode node, int d) {
+        if (node == null) {
+            return 0;
+        }
+        return Math.max(getDepth(node.left, d), getDepth(node.right, d)) + 1;
     }
 }
