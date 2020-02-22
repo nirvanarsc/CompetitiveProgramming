@@ -29,4 +29,25 @@ public class P_1122 {
                      .mapToInt(i -> i)
                      .toArray();
     }
+
+    public int[] relativeSortArrayBucketSort(int[] arr1, int[] arr2) {
+        final int max_number = 1001;
+        final int[] map = new int[max_number];
+        final int[] ans = new int[arr1.length];
+        int idx = 0;
+        for (int i : arr1) {
+            map[i]++;
+        }
+        for (int i : arr2) {
+            while (map[i]-- > 0) {
+                ans[idx++] = i;
+            }
+        }
+        for (int i = 0; i < max_number; i++) {
+            while (map[i]-- > 0) {
+                ans[idx++] = i;
+            }
+        }
+        return ans;
+    }
 }

@@ -23,36 +23,21 @@ public final class WordCountEngine {
         final String[] words = SPACES.split(PUNCTUATION.matcher(document).replaceAll(""));
         final Map<String, Integer> map = new LinkedHashMap<>();
         final Map<Integer, List<String>> map2 = new HashMap<>();
+        final List<String[]> res = new ArrayList<>();
 
         for (String word : words) {
-            word = word.toLowerCase();
-            map.merge(word, 1, Integer::sum);
+            map.merge(word.toLowerCase(), 1, Integer::sum);
         }
-
         for (Entry<String, Integer> e : map.entrySet()) {
-            final String key = e.getKey();
-            final Integer value = e.getValue();
-            if (map2.containsKey(value)) {
-                final List<String> list = map2.get(value);
-                list.add(key);
-            } else {
-                map2.put(value, new ArrayList<>(Collections.singletonList(key)));
-            }
+            map2.computeIfAbsent(e.getValue(), v -> new ArrayList<>()).add(e.getKey());
         }
-
-        final String[][] actual = new String[map.size()][];
-        int idx = 0;
-
         for (int max = map.size(); max >= 0; max--) {
-            if (map2.containsKey(max)) {
-                final List<String> curr = map2.get(max);
-                for (String word : curr) {
-                    actual[idx++] = new String[] { word, String.valueOf(max) };
-                }
+            for (String word : map2.getOrDefault(max, Collections.emptyList())) {
+                res.add(new String[] { word, String.valueOf(max) });
             }
         }
 
-        return actual;
+        return res.toArray(STRINGS);
     }
 
     public static void main(String[] args) {
