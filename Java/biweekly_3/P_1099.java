@@ -1,4 +1,4 @@
-package easy;
+package biweekly_3;
 
 import java.util.Arrays;
 
