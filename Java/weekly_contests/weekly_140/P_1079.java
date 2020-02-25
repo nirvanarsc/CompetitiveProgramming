@@ -1,8 +1,8 @@
-package medium;
+package weekly_contests.weekly_140;
 
-public final class P_1079 {
+public class P_1079 {
 
-    public static int numTilePossibilities(String tiles) {
+    public int numTilePossibilities(String tiles) {
         final int[] count = new int[26];
         for (char c : tiles.toCharArray()) {
             count[c - 'A']++;
@@ -22,11 +22,4 @@ public final class P_1079 {
         }
         return sum;
     }
-
-    public static void main(String[] args) {
-        System.out.println(numTilePossibilities("AAB"));
-        System.out.println(numTilePossibilities("ABC"));
-    }
-
-    private P_1079() {}
 }

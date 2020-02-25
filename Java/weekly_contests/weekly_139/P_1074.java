@@ -1,4 +1,4 @@
-package hard;
+package weekly_contests.weekly_139;
 
 import java.util.Collections;
 import java.util.HashMap;
