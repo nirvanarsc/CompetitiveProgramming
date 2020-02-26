@@ -1,4 +1,4 @@
-package easy;
+package biweekly_contests.biweekly_1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,16 +46,15 @@ public class P_1065 {
     }
 
     public int[][] indexPairsBF(String text, String[] words) {
-        final List<int[]> results = new ArrayList<>();
+        final List<int[]> res = new ArrayList<>();
         for (int i = 0; i < text.length(); i++) {
             for (String word : words) {
                 if (text.startsWith(word, i)) {
-                    results.add(new int[] { i, i + word.length() - 1 });
+                    res.add(new int[] { i, i + word.length() - 1 });
                 }
             }
         }
-
-        results.sort((a, b) -> a[0] == b[0] ? Integer.compare(a[1], b[1]) : Integer.compare(a[0], b[0]));
-        return results.toArray(EMPTY);
+        res.sort((a, b) -> a[0] == b[0] ? Integer.compare(a[1], b[1]) : Integer.compare(a[0], b[0]));
+        return res.toArray(EMPTY);
     }
 }
