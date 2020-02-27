@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_137;
 
 import java.util.Arrays;
 import java.util.Comparator;
