@@ -6,9 +6,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class P_47 {
+public class P_47 {
 
-    public static List<List<Integer>> permuteUnique(int[] nums) {
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        final List<List<Integer>> res = new ArrayList<>();
+        final List<Integer> curr = new ArrayList<>();
+        for (int i : nums) {
+            curr.add(i);
+        }
+        recurseSet(0, curr, res);
+        return res;
+    }
+
+    private static void recurseSet(int i, List<Integer> curr, List<List<Integer>> res) {
+        if (i == curr.size()) {
+            res.add(new ArrayList<>(curr));
+            return;
+        }
+        final Set<Integer> seen = new HashSet<>();
+        for (int k = i; k < curr.size(); k++) {
+            if (!seen.contains(curr.get(k))) {
+                seen.add(curr.get(k));
+                Collections.swap(curr, i, k);
+                recurseSet(i + 1, curr, res);
+                Collections.swap(curr, i, k);
+            }
+        }
+    }
+
+    public List<List<Integer>> permuteUniqueNoSet(int[] nums) {
         final List<List<Integer>> res = new ArrayList<>();
         final List<Integer> curr = new ArrayList<>();
         for (int i : nums) {
@@ -23,18 +49,26 @@ public final class P_47 {
             res.add(new ArrayList<>(curr));
             return;
         }
-        final Set<Integer> seen = new HashSet<>();
+
         for (int k = i; k < curr.size(); k++) {
-            if (!seen.contains(curr.get(k))) {
-                seen.add(curr.get(k));
-                Collections.swap(curr, i, k);
+            if (shouldSwap(curr, i, k)) {
+                Collections.swap(curr, k, i);
                 recurse(i + 1, curr, res);
-                Collections.swap(curr, i, k);
+                Collections.swap(curr, k, i);
             }
         }
     }
 
-    public static List<List<Integer>> permuteUnique2(int[] nums) {
+    private static boolean shouldSwap(List<Integer> nums, int i, int j) {
+        for (int k = i; k < j; k++) {
+            if (nums.get(k).equals(nums.get(j))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<List<Integer>> permuteUnique2(int[] nums) {
         final List<List<Integer>> result = new ArrayList<>();
         List<Integer> list = new ArrayList<>();
         for (int i : nums) {
@@ -67,11 +101,4 @@ public final class P_47 {
         Collections.reverse(perm.subList(idx + 1, perm.size()));
         return perm;
     }
-
-    public static void main(String[] args) {
-        System.out.println(permuteUnique(new int[] { 2, 2, 1, 1 }));
-        System.out.println(permuteUnique2(new int[] { 1, 1, 2 }));
-    }
-
-    private P_47() {}
 }

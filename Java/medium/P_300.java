@@ -36,15 +36,15 @@ public class P_300 {
     }
 
     public static int lengthOfLISTopDown(int[] nums) {
-        return recurse(nums, -1, 0, new Integer[nums.length][nums.length]);
+        return recurse(nums, -1, 0, new Integer[nums.length]);
     }
 
-    public static int recurse(int[] nums, int prev, int start, Integer[][] dp) {
+    public static int recurse(int[] nums, int prev, int start, Integer[] dp) {
         if (start == nums.length) {
             return 0;
         }
-        if (prev != -1 && dp[prev][start] != null) {
-            return dp[prev][start];
+        if (prev != -1 && dp[prev] != null) {
+            return dp[prev];
         }
         int take = 0;
         if (prev < 0 || nums[start] > nums[prev]) {
@@ -52,7 +52,7 @@ public class P_300 {
         }
         final int skip = recurse(nums, prev, start + 1, dp);
         if (prev != -1) {
-            dp[prev][start] = Math.max(take, skip);
+            dp[prev] = Math.max(take, skip);
         }
         return Math.max(take, skip);
     }
