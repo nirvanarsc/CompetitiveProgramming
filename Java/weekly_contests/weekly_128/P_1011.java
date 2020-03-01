@@ -1,20 +1,19 @@
-package medium;
+package weekly_contests.weekly_128;
 
 public class P_1011 {
 
     public int shipWithinDays(int[] weights, int D) {
-        int sum = 0;
         int max = Integer.MIN_VALUE;
-        for (int i : weights) {
-            max = Math.max(max, i);
-            sum += i;
+        int sum = 0;
+        for (int w : weights) {
+            max = Math.max(max, w);
+            sum += w;
         }
         int lo = max;
         int hi = sum;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            final int days = getDays(weights, mid);
-            if (days > D) {
+            if (helper(weights, mid) > D) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -23,16 +22,16 @@ public class P_1011 {
         return lo;
     }
 
-    private static int getDays(int[] weights, int cap) {
-        int d = 1;
+    private static int helper(int[] weights, int mid) {
         int curr = 0;
+        int res = 1;
         for (int w : weights) {
-            if (w + curr > cap) {
-                d++;
+            if (curr + w > mid) {
                 curr = 0;
+                res++;
             }
             curr += w;
         }
-        return d;
+        return res;
     }
 }
