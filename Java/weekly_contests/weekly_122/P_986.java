@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_122;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ public class P_986 {
 
     public static final int[][] INTS = new int[0][];
 
+    @SuppressWarnings("MethodParameterNamingConvention")
     public int[][] intervalIntersection(int[][] A, int[][] B) {
         final List<int[]> list = new ArrayList<>();
         int i = 0, j = 0;

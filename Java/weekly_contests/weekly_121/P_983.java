@@ -1,6 +1,28 @@
-package medium;
+package weekly_contests.weekly_121;
 
 public class P_983 {
+
+    public int mincostTickets(int[] days, int[] costs) {
+        return recurse(days, costs, 0, 0, new Integer[400]);
+    }
+
+    private static int recurse(int[] days, int[] costs, int i, int validUntil, Integer[] dp) {
+        if (i == days.length) { return 0; }
+        if (dp[validUntil] != null) { return dp[validUntil]; }
+        final int one;
+        final int seven;
+        final int thirty;
+        if (validUntil <= days[i]) {
+            one = costs[0] + recurse(days, costs, i + 1, days[i] + 1, dp);
+            seven = costs[1] + recurse(days, costs, i + 1, days[i] + 7, dp);
+            thirty = costs[2] + recurse(days, costs, i + 1, days[i] + 30, dp);
+        } else {
+            one = recurse(days, costs, i + 1, validUntil, dp);
+            seven = recurse(days, costs, i + 1, validUntil, dp);
+            thirty = recurse(days, costs, i + 1, validUntil, dp);
+        }
+        return dp[validUntil] = Math.min(one, Math.min(seven, thirty));
+    }
 
     public int mincostTicketsBottomUp(int[] days, int[] costs) {
         final int n = days[days.length - 1];
@@ -22,7 +44,7 @@ public class P_983 {
         return amount[n];
     }
 
-    public int mincostTickets(int[] days, int[] costs) {
+    public int mincostTicketsTopDown(int[] days, int[] costs) {
         return minCost(days, costs, 0, new Integer[days.length]);
     }
 
