@@ -1,10 +1,11 @@
-package hard;
+package weekly_contests.weekly_119;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 public class P_975 {
 
+    @SuppressWarnings("MethodParameterNamingConvention")
     public int oddEvenJumps(int[] A) {
         final int n = A.length;
         int res = 1;
