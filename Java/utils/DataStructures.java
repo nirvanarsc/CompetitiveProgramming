@@ -96,5 +96,7 @@ public class DataStructures {
         }
 
         public int count() { return count; }
+
+        public int[] size() { return size; }
     }
 }
