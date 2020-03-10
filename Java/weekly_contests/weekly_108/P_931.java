@@ -1,16 +1,16 @@
-package medium;
+package weekly_contests.weekly_108;
 
 public class P_931 {
 
     public int minFallingPathSum(int[][] grid) {
-        for (int i = 1; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                grid[i][j] += getMin(i, j, grid);
-            }
-        }
         int res = Integer.MAX_VALUE;
-        for (int j = 0; j < grid[0].length; j++) {
-            res = Math.min(res, grid[grid.length - 1][j]);
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                grid[i][j] += i > 0 ? getMin(i, j, grid) : 0;
+                if (i == grid.length - 1) {
+                    res = Math.min(res, grid[i][j]);
+                }
+            }
         }
         return res;
     }
