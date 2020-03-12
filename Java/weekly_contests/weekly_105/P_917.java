@@ -1,13 +1,10 @@
-public final class ReverseOnlyLetters {
+package weekly_contests.weekly_105;
 
-    public static void main(String[] args) {
-        System.out.println(reverseOnlyLetters("Test1ng-Leet=code-Q!"));
-    }
+public class P_917 {
 
-    public static String reverseOnlyLetters(String s) {
+    public String reverseOnlyLetters(String s) {
         final char[] chars = s.toCharArray();
-        int i = 0;
-        int j = chars.length - 1;
+        int i = 0, j = chars.length - 1;
         while (i < j) {
             final boolean start = Character.isLetter(chars[i]);
             final boolean end = Character.isLetter(chars[j]);
@@ -21,9 +18,6 @@ public final class ReverseOnlyLetters {
             if (!end) { j--; }
             if (!start) { i++; }
         }
-
         return new String(chars);
     }
-
-    private ReverseOnlyLetters() {}
 }
