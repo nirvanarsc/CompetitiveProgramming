@@ -1,9 +1,32 @@
-package hard;
+package weekly_contests.weekly_91;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.Map;
+import java.util.TreeMap;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_862 {
+
+    // Similar to LC 363
+    public int shortestSubarrayTreeMap(int[] A, int K) {
+        final TreeMap<Integer, Integer> preSum = new TreeMap<>(Collections.singletonMap(0, -1));
+        int minLen = Integer.MAX_VALUE;
+        int curSum = 0;
+        for (int i = 0; i < A.length; i++) {
+            curSum += A[i];
+            Map.Entry<Integer, Integer> entry = preSum.floorEntry(curSum - K);
+            while (entry != null) {
+                final int key = entry.getKey();
+                minLen = Math.min(minLen, i - entry.getValue());
+                preSum.remove(key);
+                entry = preSum.floorEntry(key);
+            }
+            preSum.put(curSum, i);
+        }
+        return (minLen == Integer.MAX_VALUE) ? -1 : minLen;
+    }
 
     public int shortestSubarray(int[] A, int K) {
         final int N = A.length;

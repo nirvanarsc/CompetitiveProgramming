@@ -1,8 +1,22 @@
-package medium;
+package weekly_contests.weekly_91;
 
-public final class P_861 {
+public class P_861 {
 
-    public static int matrixScore(int[][] mat) {
+    public int matrixScore(int[][] mat) {
+        final int n = mat.length;
+        final int m = mat[0].length;
+        int ans = 0;
+        for (int col = 0; col < m; ++col) {
+            int curr = 0;
+            for (int[] ints : mat) {
+                curr += ints[col] ^ ints[0];
+            }
+            ans += Math.max(curr, n - curr) * (1 << (m - 1 - col));
+        }
+        return ans;
+    }
+
+    public int matrixScoreBF(int[][] mat) {
         for (int[] row : mat) {
             if (row[0] == 0) {
                 flipRow(row);
@@ -36,20 +50,15 @@ public final class P_861 {
     }
 
     private static int hashState(int[][] mat) {
+        final StringBuilder sb = new StringBuilder();
         int res = 0;
         for (int[] row : mat) {
-            int num = 0;
-            for (int i = 0; i < row.length; i++) {
-                num |= row[i] << row.length - 1 - i;
+            for (int i : row) {
+                sb.append(i);
             }
-            res += num;
+            res += Integer.parseInt(sb.toString(), 2);
+            sb.setLength(0);
         }
         return res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(matrixScore(new int[][] { { 0, 0, 1, 1 }, { 1, 0, 1, 0 }, { 1, 1, 0, 0 } }));
-    }
-
-    private P_861() {}
 }
