@@ -38,12 +38,10 @@ public class P_1095 {
     }
 
     private static int findPeakIdx(MountainArray mountainArray) {
-        int lo = 0;
-        int hi = mountainArray.length();
-
+        int lo = 0, hi = mountainArray.length() - 1;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (mountainArray.get(mid) > mountainArray.get(lo)) {
+            if (mountainArray.get(mid) < mountainArray.get(mid + 1)) {
                 lo = mid + 1;
             } else {
                 hi = mid;
