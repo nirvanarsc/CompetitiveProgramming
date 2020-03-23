@@ -1,9 +1,25 @@
-package easy;
-
-import java.util.Deque;
-import java.util.LinkedList;
+package weekly_contests.weekly_87;
 
 public class P_844 {
+
+    @SuppressWarnings("MethodParameterNamingConvention")
+    public boolean backspaceCompare(String S, String T) {
+        int i = S.length() - 1, j = T.length() - 1;
+        while (true) {
+            for (int back = 0; i >= 0 && (back > 0 || S.charAt(i) == '#'); --i) {
+                back += S.charAt(i) == '#' ? 1 : -1;
+            }
+            for (int back = 0; j >= 0 && (back > 0 || T.charAt(j) == '#'); --j) {
+                back += T.charAt(j) == '#' ? 1 : -1;
+            }
+            if (i >= 0 && j >= 0 && S.charAt(i) == T.charAt(j)) {
+                i--;
+                j--;
+            } else {
+                return i == -1 && j == -1;
+            }
+        }
+    }
 
     public boolean backspaceCompareInPlace(String s, String t) {
         int i = s.length() - 1;
@@ -36,35 +52,5 @@ public class P_844 {
             j--;
         }
         return true;
-    }
-
-    public boolean backspaceCompare(String s, String t) {
-        final Deque<Character> s1 = new LinkedList<>();
-        final Deque<Character> s2 = new LinkedList<>();
-
-        for (char c : s.toCharArray()) {
-            if (c == '#') {
-                if (!s1.isEmpty()) {
-                    s1.removeFirst();
-                }
-            } else {
-                s1.addFirst(c);
-            }
-        }
-        for (char c : t.toCharArray()) {
-            if (c == '#') {
-                if (!s2.isEmpty()) {
-                    s2.removeFirst();
-                }
-            } else {
-                s2.addFirst(c);
-            }
-        }
-        while (!s1.isEmpty() && !s2.isEmpty()) {
-            if (s1.removeFirst() != s2.removeFirst()) {
-                return false;
-            }
-        }
-        return s1.isEmpty() && s2.isEmpty();
     }
 }
