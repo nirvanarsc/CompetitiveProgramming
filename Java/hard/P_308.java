@@ -24,8 +24,8 @@ public class P_308 {
         public void update(int row, int col, int val) {
             final int diff = val - original[row][col];
             original[row][col] = val;
-            for (int i = row + 1; i <= n; i += i & -i) {
-                for (int j = col + 1; j <= m; j += j & -j) {
+            for (int i = row + 1; i <= n; i += lsb(i)) {
+                for (int j = col + 1; j <= m; j += lsb(j)) {
                     bit[i][j] += diff;
                 }
             }
@@ -37,12 +37,16 @@ public class P_308 {
 
         public int sum(int row, int col) {
             int res = 0;
-            for (int i = row + 1; i > 0; i &= i - 1) {
-                for (int j = col + 1; j > 0; j &= j - 1) {
+            for (int i = row + 1; i > 0; i -= lsb(i)) {
+                for (int j = col + 1; j > 0; j -= lsb(j)) {
                     res += bit[i][j];
                 }
             }
             return res;
+        }
+
+        private static int lsb(int i) {
+            return i & -i;
         }
     }
 }

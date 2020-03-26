@@ -2,31 +2,9 @@ package hard;
 
 import java.util.Arrays;
 
+import utils.DataStructures.BIT;
+
 public class P_327 {
-
-    static class BIT {
-        int[] bit;
-
-        BIT(int n) {
-            bit = new int[n + 1];
-        }
-
-        void add(int i, int val) {
-            while (i < bit.length) {
-                bit[i] += val;
-                i += i & -i;
-            }
-        }
-
-        int query(int i) {
-            int ans = 0;
-            while (i > 0) {
-                ans += bit[i];
-                i &= i - 1;
-            }
-            return ans;
-        }
-    }
 
     public int countRangeSum(int[] nums, int lower, int upper) {
         int index = 0, count = 0;

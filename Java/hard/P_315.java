@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import utils.DataStructures.BIT;
+
 public class P_315 {
 
     // Segment Tree
@@ -76,30 +78,6 @@ public class P_315 {
         while (j < a2.length) { res[k++] = a2[j++]; }
 
         return res;
-    }
-
-    static class BIT {
-        int[] bit;
-
-        BIT(int n) {
-            bit = new int[n + 1];
-        }
-
-        void add(int i, int val) {
-            while (i < bit.length) {
-                bit[i] += val;
-                i += i & -i;
-            }
-        }
-
-        int query(int i) {
-            int ans = 0;
-            while (i > 0) {
-                ans += bit[i];
-                i &= i - 1;
-            }
-            return ans;
-        }
     }
 
     // Binary Indexed Tree

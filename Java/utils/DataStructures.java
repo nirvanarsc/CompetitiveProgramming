@@ -99,4 +99,32 @@ public class DataStructures {
 
         public int[] size() { return size; }
     }
+
+    public static class BIT {
+        private final int[] bit;
+
+        public BIT(int n) {
+            bit = new int[n + 1];
+        }
+
+        public void add(int i, int val) {
+            while (i < bit.length) {
+                bit[i] += val;
+                i += lsb(i);
+            }
+        }
+
+        public int query(int i) {
+            int ans = 0;
+            while (i > 0) {
+                ans += bit[i];
+                i -= lsb(i);
+            }
+            return ans;
+        }
+
+        private static int lsb(int i) {
+            return i & -i;  // zeroes all the bits except the least significant one
+        }
+    }
 }
