@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_75;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,19 +8,18 @@ public class P_797 {
 
     public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
         final List<List<Integer>> res = new ArrayList<>();
-        dfsSearch(graph, 0, res, new ArrayList<>(Collections.singletonList(0)));
+        dfs(graph, 0, new ArrayList<>(Collections.singleton(0)), res);
         return res;
     }
 
-    private static void dfsSearch(int[][] graph, int node, List<List<Integer>> res, List<Integer> path) {
-        if (node == graph.length - 1) {
+    private static void dfs(int[][] g, int curr, List<Integer> path, List<List<Integer>> res) {
+        if (curr == g.length - 1) {
             res.add(new ArrayList<>(path));
             return;
         }
-
-        for (int nextNode : graph[node]) {
-            path.add(nextNode);
-            dfsSearch(graph, nextNode, res, path);
+        for (int n : g[curr]) {
+            path.add(n);
+            dfs(g, n, path, res);
             path.remove(path.size() - 1);
         }
     }
