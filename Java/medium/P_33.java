@@ -1,5 +1,7 @@
 package medium;
 
+import java.util.Arrays;
+
 public final class P_33 {
 
     public static int search(int[] nums, int target) {
@@ -64,6 +66,21 @@ public final class P_33 {
         System.out.println(search(new int[] { 4, 5, 6, 7, 0, 1, 2 }, 0));
         System.out.println(search(new int[] { 4, 5, 6, 7, 0, 1, 2 }, 3));
         System.out.println(search(new int[] { 1 }, 1));
+    }
+
+    public static int searchNew(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (nums[mid] > nums[hi]) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        final int bs1 = Arrays.binarySearch(nums, 0, lo, target);
+        final int bs2 = Arrays.binarySearch(nums, lo, nums.length, target);
+        return bs1 >= 0 ? bs1 : bs2 >= 0 ? bs2 : -1;
     }
 
     private P_33() {}
