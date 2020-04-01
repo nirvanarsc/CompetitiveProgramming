@@ -1,7 +1,8 @@
-package medium;
+package weekly_contests.weekly_72;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -10,24 +11,22 @@ import java.util.PriorityQueue;
 
 public class P_787 {
 
-    public int findCheapestPriceDijkstra(int n, int[][] flights, int src, int dst, int k) {
+    @SuppressWarnings("MethodParameterNamingConvention")
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
+        final PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
         final Map<Integer, List<int[]>> g = new HashMap<>();
-        for (int[] flight : flights) {
-            g.putIfAbsent(flight[0], new ArrayList<>());
-            g.get(flight[0]).add(new int[] { flight[1], flight[2] });
+        for (int[] f : flights) {
+            g.computeIfAbsent(f[0], v -> new ArrayList<>()).add(new int[] { f[1], f[2] });
         }
-        final PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(o -> o[0]));
-        q.offer(new int[] { 0, src, k + 1 });
-        while (!q.isEmpty()) {
-            final int[] c = q.poll();
-            final int cost = c[0];
-            final int curr = c[1];
-            final int stop = c[2];
-            if (curr == dst) { return cost; }
-            if (stop > 0) {
-                if (!g.containsKey(curr)) { continue; }
-                for (int[] next : g.get(curr)) {
-                    q.add(new int[] { cost + next[1], next[0], stop - 1 });
+        pq.offer(new int[] { src, K + 1, 0 });
+        while (!pq.isEmpty()) {
+            final int[] curr = pq.poll();
+            if (curr[0] == dst) {
+                return curr[2];
+            }
+            for (int[] next : g.getOrDefault(curr[0], Collections.emptyList())) {
+                if (curr[1] > 0) {
+                    pq.add(new int[] { next[0], curr[1] - 1, curr[2] + next[1] });
                 }
             }
         }
