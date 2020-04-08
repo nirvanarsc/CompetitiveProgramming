@@ -20,7 +20,7 @@ public class P_1376 {
         }
     }
 
-    public int numOfMinutes(int n, int headID, int[] manager, int[] informTime) {
+    public int numOfMinutesBFS(int n, int headID, int[] manager, int[] informTime) {
         final Map<Integer, List<Integer>> g = new HashMap<>();
         for (int i = 0; i < manager.length; i++) {
             if (manager[i] != -1) {
@@ -37,5 +37,21 @@ public class P_1376 {
             }
         }
         return res;
+    }
+
+    public int numOfMinutes(int n, int headID, int[] manager, int[] informTime) {
+        int res = 0;
+        for (int i = 0; i < manager.length; i++) {
+            res = Math.max(res, dfs(i, manager, informTime));
+        }
+        return res;
+    }
+
+    public int dfs(int node, int[] manager, int[] informTime) {
+        if (manager[node] != -1) {
+            informTime[node] += dfs(manager[node], manager, informTime);
+            manager[node] = -1;
+        }
+        return informTime[node];
     }
 }
