@@ -127,4 +127,64 @@ public class DataStructures {
             return i & -i;  // zeroes all the bits except the least significant one
         }
     }
+
+    public static class SegmentTree {
+        int[] arr;
+        int[] tree;
+        int n;
+        int maxSize = (int) 1e5;
+
+        public SegmentTree(int[] arr) {
+            this.arr = arr;
+            n = arr.length;
+            tree = new int[maxSize << 1];
+            build(0, n - 1, 0);
+        }
+
+        public int query(int left, int right) {
+            return query(0, n - 1, left, right, 0);
+        }
+
+        public void update(int index, int value) {
+            update(0, n - 1, index, value, 0);
+        }
+
+        private int build(int left, int right, int node) {
+            if (left == right) {
+                tree[node] = arr[left];
+                return arr[left];
+            }
+            final int mid = left + right >>> 1;
+            tree[node] = Math.min(build(left, mid, node * 2 + 1),
+                                  build(mid + 1, right, node * 2 + 2));
+            return tree[node];
+        }
+
+        private void update(int left, int right, int index, int value, int node) {
+            if (left == right) {
+                arr[index] = value;
+                tree[node] = value;
+            } else {
+                final int mid = left + right >>> 1;
+                if (left <= index && index <= mid) {
+                    update(left, mid, index, value, 2 * node + 1);
+                } else {
+                    update(mid + 1, right, index, value, 2 * node + 2);
+                }
+                tree[node] = Math.min(tree[2 * node + 1], tree[2 * node + 2]);
+            }
+        }
+
+        private int query(int start, int end, int l, int r, int node) {
+            if (l <= start && r >= end) {
+                return tree[node];
+            }
+            if (end < l || start > r) {
+                return Integer.MAX_VALUE;
+            }
+            final int mid = start + end >>> 1;
+            return Math.min(query(start, mid, l, r, 2 * node + 1),
+                            query(mid + 1, end, l, r, 2 * node + 2));
+        }
+    }
 }
