@@ -1,16 +1,8 @@
-import org.jetbrains.annotations.Nullable;
+import utils.DataStructures.TreeNode;
 
 public class SearchBST {
 
-    private static class TreeNode {
-        int val;
-        TreeNode left;
-        TreeNode right;
-
-        TreeNode(int x) { val = x; }
-    }
-
-    public @Nullable TreeNode searchBST(TreeNode root, int val) {
+    public TreeNode searchBST(TreeNode root, int val) {
         if (root == null || root.val == val) {
             return root;
         }

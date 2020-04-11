@@ -1,12 +1,10 @@
-import org.jetbrains.annotations.Nullable;
-
 public final class ReversePrintImmutableLinkedList {
 
     public static class ListNode<T> {
         public T data;
-        public @Nullable ListNode<T> next;
+        public ListNode<T> next;
 
-        public ListNode(T data, @Nullable ListNode<T> next) {
+        public ListNode(T data, ListNode<T> next) {
             this.data = data;
             this.next = next;
         }

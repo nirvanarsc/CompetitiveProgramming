@@ -1,18 +1,9 @@
-import org.jetbrains.annotations.Nullable;
+import utils.DataStructures.TreeNode;
 
 public class TrimBST {
 
-    private static class TreeNode {
-        int val;
-        @Nullable TreeNode left;
-        @Nullable TreeNode right;
-
-        TreeNode(int x) {
-            val = x;
-        }
-    }
-
-    public @Nullable TreeNode trimBST(@Nullable TreeNode root, int l, int r) {
+    @SuppressWarnings({ "TailRecursion", "ReturnOfNull" })
+    public TreeNode trimBST(TreeNode root, int l, int r) {
         if (root == null) {
             return null;
         }
