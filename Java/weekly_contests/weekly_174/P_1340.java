@@ -1,6 +1,6 @@
 package weekly_contests.weekly_174;
 
-public class P_1344 {
+public class P_1340 {
 
     public int maxJumps(int[] arr, int d) {
         int res = 1;

@@ -1,6 +1,7 @@
 package weekly_contests.weekly_174;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -9,7 +10,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
-public class P_1342 {
+public class P_1338 {
 
     public int minSetSizePQ(int[] arr) {
         int count = 0, res = 0;
@@ -30,25 +31,19 @@ public class P_1342 {
     public int minSetSizeBucketSort(int[] arr) {
         int steps = 0, res = 0;
         final Map<Integer, Integer> freq = new HashMap<>();
-        final List<Integer>[] list = new ArrayList[arr.length + 1];
+        final Map<Integer, List<Integer>> buckets = new HashMap<>();
         for (int num : arr) {
             freq.merge(num, 1, Integer::sum);
         }
         for (Map.Entry<Integer, Integer> entry : freq.entrySet()) {
-            final int count = entry.getValue();
-            if (list[count] == null) {
-                list[count] = new ArrayList<>();
-            }
-            list[count].add(entry.getKey());
+            buckets.computeIfAbsent(entry.getValue(), v -> new ArrayList<>()).add(entry.getKey());
         }
         for (int i = arr.length; i > 0; i--) {
-            if (list[i] != null) {
-                for (int ignored : list[i]) {
-                    steps += i;
-                    res++;
-                    if (steps >= arr.length / 2) {
-                        return res;
-                    }
+            for (int ignored : buckets.getOrDefault(i, Collections.emptyList())) {
+                steps += i;
+                res++;
+                if (steps >= arr.length / 2) {
+                    return res;
                 }
             }
         }
@@ -88,7 +83,7 @@ public class P_1342 {
                 .stream()
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
-        for (int num: values) {
+        for (int num : values) {
             if (target <= 0) {
                 return res;
             }

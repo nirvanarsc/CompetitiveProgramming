@@ -1,5 +1,7 @@
 package easy;
 
+import java.util.Arrays;
+
 public class P_53 {
 
     public int maxSubArray(int[] nums) {
@@ -26,5 +28,28 @@ public class P_53 {
         pair[1] = Math.max(nums[pos], nums[pos] + recurse(nums, pos + 1, pair)[1]);
         pair[0] = Math.max(pair[0], pair[1]);
         return pair;
+    }
+
+    public int maxSubArrayDC(int[] nums) {
+        final int n = nums.length;
+        if (n == 1) {
+            return nums[0];
+        }
+        final int mid = n - 1 >>> 1;
+        int bestLeft = Integer.MIN_VALUE;
+        int bestRight = Integer.MIN_VALUE;
+        int sum = 0;
+        for (int i = mid; i >= 0; i--) {
+            sum += nums[i];
+            bestLeft = Math.max(bestLeft, sum);
+        }
+        sum = 0;
+        for (int i = mid + 1; i < n; i++) {
+            sum += nums[i];
+            bestRight = Math.max(bestRight, sum);
+        }
+        final int left = maxSubArrayDC(Arrays.copyOfRange(nums, 0, mid + 1));
+        final int right = maxSubArrayDC(Arrays.copyOfRange(nums, mid + 1, n));
+        return Math.max(Math.max(left, right), bestLeft + bestRight);
     }
 }

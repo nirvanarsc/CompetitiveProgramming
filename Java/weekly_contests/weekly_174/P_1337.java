@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-public class P_1341 {
+public class P_1337 {
 
     public int[] kWeakestRows(int[][] mat, int k) {
         final int[] res = new int[k];
