@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_57;
 
 public class P_723 {
 

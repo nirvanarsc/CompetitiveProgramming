@@ -1,55 +1,48 @@
-package easy;
+package weekly_contests.weekly_57;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class P_720 {
 
     static class Trie {
-        Trie[] children;
-        boolean isWord;
-
-        Trie() {
-            children = new Trie[26];
-        }
+        Trie[] children = new Trie[26];
+        String word;
     }
 
     public String longestWord(String[] words) {
         final Trie root = new Trie();
-        for (String word : words) {
+        for (String w : words) {
             Trie curr = root;
-            for (char c : word.toCharArray()) {
+            for (char c : w.toCharArray()) {
                 if (curr.children[c - 'a'] == null) {
                     curr.children[c - 'a'] = new Trie();
                 }
                 curr = curr.children[c - 'a'];
             }
-            curr.isWord = true;
+            curr.word = w;
         }
-        int max = 0;
-        String ans = "";
-        for (String word : words) {
+        String res = "";
+        for (String w : words) {
             Trie curr = root;
-            boolean complete = true;
-            for (char c : word.toCharArray()) {
-                if (!curr.children[c - 'a'].isWord) {
-                    complete = false;
+            boolean found = true;
+            for (char c : w.toCharArray()) {
+                if (curr.children[c - 'a'].word == null) {
+                    found = false;
                     break;
                 }
                 curr = curr.children[c - 'a'];
             }
-            if (complete) {
-                if (word.length() > max) {
-                    max = word.length();
-                    ans = word;
-                } else if (word.length() == max) {
-                    ans = word.compareTo(ans) > 0 ? ans : word;
+            if (found) {
+                if (res.length() < curr.word.length()) {
+                    res = curr.word;
+                } else if (res.length() == curr.word.length() && res.compareTo(curr.word) > 0) {
+                    res = curr.word;
                 }
             }
         }
-        return ans;
+        return res;
     }
 
     public String longestWordSort(String[] words) {
@@ -65,19 +58,15 @@ public class P_720 {
         return res;
     }
 
-    public String longestWordTrie(String[] words) {
-        final Set<String> hs = new HashSet<>();
-        Collections.addAll(hs, words);
-
-        int max = 0;
+    public String longestWordSet(String[] words) {
+        final Set<String> hs = new HashSet<>(Arrays.asList(words));
         String ans = "";
         for (String w : words) {
             if (helper(w, hs)) {
-                if (w.length() > max) {
-                    max = w.length();
+                if (w.length() > ans.length()) {
                     ans = w;
-                } else if (w.length() == max) {
-                    ans = w.compareTo(ans) > 0 ? ans : w;
+                } else if (w.length() == ans.length() && ans.compareTo(w) > 0) {
+                    ans = w;
                 }
             }
         }
