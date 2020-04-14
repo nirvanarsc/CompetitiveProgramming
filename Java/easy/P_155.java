@@ -5,12 +5,12 @@ import java.util.LinkedList;
 
 public class P_155 {
 
-    public static class MinStack {
+    static class MinStack {
 
         Deque<Integer> stack;
         Deque<Integer> min;
 
-        public MinStack() {
+        MinStack() {
             stack = new LinkedList<>();
             min = new LinkedList<>();
         }
@@ -23,17 +23,17 @@ public class P_155 {
         }
 
         public void pop() {
-            if (min.peekFirst().equals(stack.removeFirst())) {
+            if (min.element().equals(stack.removeFirst())) {
                 min.removeFirst();
             }
         }
 
         public int top() {
-            return stack.peekFirst();
+            return stack.element();
         }
 
         public int getMin() {
-            return min.peekFirst();
+            return min.element();
         }
     }
 }
