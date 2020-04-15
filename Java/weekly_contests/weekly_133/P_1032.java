@@ -1,6 +1,7 @@
 package weekly_contests.weekly_133;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 
 public class P_1032 {
@@ -91,6 +92,83 @@ public class P_1032 {
                 }
             }
             return false;
+        }
+    }
+
+    static class StreamCheckerAhoCorasick {
+
+        static class Trie {
+            Trie fail;
+            Trie[] children = new Trie[26];
+            char val;
+            boolean isWord;
+
+            Trie(char val) {
+                this.val = val;
+            }
+        }
+
+        Trie root = new Trie('0');
+        Trie streamNode = root;
+
+        StreamCheckerAhoCorasick(String[] words) {
+            buildTrie(words);
+            buildFail();
+        }
+
+        public boolean query(char letter) {
+            Trie firstNode = streamNode.children[letter - 'a'];
+            Trie parent = streamNode;
+            // 1. Find the matching node
+            while (parent.fail != null && firstNode == null) {
+                parent = parent.fail;
+                firstNode = parent.children[letter - 'a'];
+            }
+            // 2. Reset streamNode to matching node
+            streamNode = firstNode != null ? firstNode : root;
+            // 3. Check the matching node isWord attribute and find each fail node the true of isWord attribute
+            while (firstNode != null && !firstNode.isWord) {
+                firstNode = firstNode.fail;
+            }
+            return firstNode != null;
+        }
+
+        private void buildTrie(String[] words) {
+            for (String word : words) {
+                Trie current = root;
+                for (char c: word.toCharArray()) {
+                    if (current.children[c - 'a'] == null) {
+                        current.children[c - 'a'] = new Trie(c);
+                    }
+                    current = current.children[c - 'a'];
+                }
+                current.isWord = true;
+            }
+        }
+
+        public void buildFail() {
+            // Use BFS to traverse the Trie and build fail pointers.
+            final Deque<Trie> queue = new ArrayDeque<>(Collections.singleton(root));
+            while (!queue.isEmpty()) {
+                final Trie parent = queue.removeFirst();
+                for (Trie child : parent.children) {
+                    if (child != null) {
+                        Trie fail = parent.fail;
+                        while (fail != null) {
+                            final Trie failChild = fail.children[child.val - 'a'];
+                            if (failChild != null) {
+                                child.fail = failChild;
+                                break;
+                            }
+                            fail = fail.fail;
+                        }
+                        if (child.fail == null) {
+                            child.fail = root;
+                        }
+                        queue.offerLast(child);
+                    }
+                }
+            }
         }
     }
 }
