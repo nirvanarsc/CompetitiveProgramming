@@ -4,11 +4,13 @@ public class IntervalSegmentTree {
     int l, r;
     int k, lazy;
     IntervalSegmentTree left, right;
+    String strategy;
 
-    public IntervalSegmentTree(int l, int r, int k) {
+    public IntervalSegmentTree(int l, int r, int k, String strategy) {
         this.l = l;
         this.r = r;
         this.k = k;
+        this.strategy = strategy;
     }
 
     public int query(IntervalSegmentTree node, int i, int j) {
@@ -27,8 +29,7 @@ public class IntervalSegmentTree {
             return;
         }
         if (i <= node.l && node.r <= j) {
-            node.k += val;
-            node.lazy += val;
+            apply(node, val);
             return;
         }
         normalize(node);
@@ -41,15 +42,26 @@ public class IntervalSegmentTree {
         if (node.l < node.r) {
             if (node.left == null || node.right == null) {
                 final int m = node.l + node.r >>> 1;
-                node.left = new IntervalSegmentTree(node.l, m, node.k);
-                node.right = new IntervalSegmentTree(m + 1, node.r, node.k);
+                node.left = new IntervalSegmentTree(node.l, m, node.k, node.strategy);
+                node.right = new IntervalSegmentTree(m + 1, node.r, node.k, node.strategy);
             } else if (node.lazy > 0) {
-                node.left.k += node.lazy;
-                node.left.lazy += node.lazy;
-                node.right.k += node.lazy;
-                node.right.lazy += node.lazy;
+                apply(node.left, node.lazy);
+                apply(node.right, node.lazy);
             }
         }
         node.lazy = 0;
+    }
+
+    private static void apply(IntervalSegmentTree node, int lazy) {
+        switch (node.strategy) {
+            case "MAX":
+                node.k = Math.max(node.k, lazy);
+                node.lazy = Math.max(node.lazy, lazy);
+                break;
+            case "SUM":
+                node.k += lazy;
+                node.lazy += lazy;
+                break;
+        }
     }
 }

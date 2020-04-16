@@ -30,7 +30,7 @@ public class P_732 {
         IntervalSegmentTree st;
 
         MyCalendarThreeST() {
-            st = new IntervalSegmentTree(0, (int) 1e9, 0);
+            st = new IntervalSegmentTree(0, (int) 1e9, 0, "SUM");
         }
 
         public int book(int start, int end) {
