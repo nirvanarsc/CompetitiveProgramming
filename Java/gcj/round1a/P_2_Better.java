@@ -1,4 +1,4 @@
-package gcj.round1;
+package gcj.round1a;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
