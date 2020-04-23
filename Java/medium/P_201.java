@@ -11,4 +11,11 @@ public class P_201 {
         }
         return m << c;
     }
+
+    public int rangeBitwiseAndBC(int m, int n) {
+        while (m < n) {
+            n &= n - 1;
+        }
+        return m & n;
+    }
 }
