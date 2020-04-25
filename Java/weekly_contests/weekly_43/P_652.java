@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_43;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,11 +19,11 @@ public class P_652 {
         if (cur == null) {
             return "#";
         }
-        final String serial = cur.val + postorder(cur.left, map, res) + postorder(cur.right, map, res);
-        if (map.getOrDefault(serial, 0) == 1) {
+        final String key = cur.val + postorder(cur.left, map, res) + postorder(cur.right, map, res);
+        if (map.getOrDefault(key, 0) == 1) {
             res.add(cur);
         }
-        map.merge(serial, 1, Integer::sum);
-        return serial;
+        map.merge(key, 1, Integer::sum);
+        return key;
     }
 }
