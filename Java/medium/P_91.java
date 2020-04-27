@@ -7,7 +7,7 @@ public class P_91 {
     }
 
     private static int recurse(String s, int start, Integer[] dp) {
-        if (start >= s.length()) {
+        if (start == s.length()) {
             return 1;
         }
 
