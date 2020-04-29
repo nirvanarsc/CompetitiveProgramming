@@ -5,8 +5,24 @@ import utils.DataStructures.TreeNode;
 public class P_124 {
 
     public int maxPathSum(TreeNode root) {
-        final int[] max = new int[1];
-        max[0] = Integer.MIN_VALUE;
+        return recurse(root)[0];
+    }
+
+    private static int[] recurse(TreeNode root) {
+        if (root == null) {
+            return new int[] { 0, Integer.MIN_VALUE };
+        }
+        final int[] leftMax = recurse(root.left);
+        final int[] rightMax = recurse(root.right);
+        final int left = leftMax[0];
+        final int right = rightMax[0];
+        final int curr = root.val + Math.max(left, right);
+        final int best = Math.max(Math.max(leftMax[1], rightMax[1]), root.val + left + right);
+        return new int[] { curr, best };
+    }
+
+    public int maxPathSumSplit(TreeNode root) {
+        final int[] max = { Integer.MIN_VALUE };
         maxPathSum(max, root);
         return max[0];
     }
