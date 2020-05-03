@@ -1,6 +1,6 @@
-package medium;
+package easy;
 
-public class P_1412 {
+public class P_1427 {
 
     public String stringShift(String s, int[][] shift) {
         int k = 0;

@@ -2,7 +2,7 @@ package medium;
 
 import java.util.List;
 
-public class LeftmostColumn {
+public class P_1428 {
 
     interface BinaryMatrix {
         int get(int x, int y);

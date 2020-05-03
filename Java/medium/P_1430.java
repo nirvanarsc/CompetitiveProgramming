@@ -3,7 +3,7 @@ package medium;
 import utils.DataStructures.TreeNode;
 
 @SuppressWarnings("ConstantConditions")
-public class CheckStringRootLeaves {
+public class P_1430 {
 
     public boolean isValidSequence(TreeNode root, int[] arr) {
         return check(root, arr, 0);
