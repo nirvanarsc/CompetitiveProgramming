@@ -27,4 +27,17 @@ public class P_387 {
     private static boolean getBit(int n, int i) {
         return (n & 1 << i) != 0;
     }
+
+    public int firstUniqCharMap(String s) {
+        final int[] map = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            map[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (map[s.charAt(i) - 'a'] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

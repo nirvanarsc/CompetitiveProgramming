@@ -1,12 +1,14 @@
-package medium;
+package weekly_contests.weekly_24;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 public class P_542 {
 
+    private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
     public int[][] updateMatrix(int[][] matrix) {
-        final Deque<int[]> queue = new LinkedList<>();
+        final Deque<int[]> queue = new ArrayDeque<>();
         final int n = matrix.length;
         final int m = matrix[0].length;
         for (int i = 0; i < n; i++) {
@@ -20,16 +22,17 @@ public class P_542 {
         }
         while (!queue.isEmpty()) {
             final int[] curr = queue.removeFirst();
-            for (int[] dir : new int[][] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } }) {
-                final int newX = curr[0] + dir[0];
-                final int newY = curr[1] + dir[1];
+            final int x = curr[0];
+            final int y = curr[1];
+            for (int[] dir : DIRS) {
+                final int newX = x + dir[0];
+                final int newY = y + dir[1];
                 if (newX >= 0 && newX < n && newY >= 0 && newY < m
-                    && matrix[newX][newY] >= matrix[curr[0]][curr[1]] + 1) {
+                    && matrix[newX][newY] > matrix[x][y] + 1) {
                     queue.offerLast(new int[] { newX, newY });
-                    matrix[newX][newY] = matrix[curr[0]][curr[1]] + 1;
+                    matrix[newX][newY] = matrix[x][y] + 1;
                 }
             }
-
         }
         return matrix;
     }
