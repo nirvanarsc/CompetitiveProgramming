@@ -2,36 +2,29 @@ package hard;
 
 public final class P_76 {
 
-    public static String minWindow(String s, String t) {
+    public String minWindow(String s, String t) {
         final int[] count = new int[128];
         for (char c : t.toCharArray()) {
             count[c]++;
         }
-        int start = 0, end = 0, minStart = 0, minLen = Integer.MAX_VALUE, counter = t.length();
-        while (end < s.length()) {
-            final char c1 = s.charAt(end);
-            if (count[c1] > 0) {
-                counter--;
+        int min = Integer.MAX_VALUE;
+        int minStart = -1;
+        int matches = t.length();
+        int j = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (count[s.charAt(i)]-- > 0) {
+                matches--;
             }
-            count[c1]--;
-            end++;
-            while (counter == 0) {
-                if (minLen > end - start) {
-                    minLen = end - start;
-                    minStart = start;
+            while (matches == 0) {
+                if (min > i - j + 1) {
+                    min = i - j + 1;
+                    minStart = j;
                 }
-                final char c2 = s.charAt(start++);
-                if (++count[c2] > 0) {
-                    counter++;
+                if (++count[s.charAt(j++)] > 0) {
+                    matches++;
                 }
             }
         }
-        return minLen == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + minLen);
+        return min == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + min);
     }
-
-    public static void main(String[] args) {
-        System.out.println(minWindow("ADOBECODEBANC", "ABC"));
-    }
-
-    private P_76() {}
 }
