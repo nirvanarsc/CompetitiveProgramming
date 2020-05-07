@@ -15,6 +15,4 @@ public class P_507 {
         }
         return sum == num;
     }
-
-
 }
