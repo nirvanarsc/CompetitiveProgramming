@@ -1,4 +1,6 @@
-public class ValidPerfectSquare {
+package easy;
+
+public class P_367 {
 
     // O(log(num))
     public boolean newtonMethod(int num) {
@@ -11,18 +13,16 @@ public class ValidPerfectSquare {
 
     // O(log(num))
     public boolean binarySearch(int num) {
-        int low = 1, high = num;
-        while (low <= high) {
-            final long mid = (low + high) >>> 1;
-            if (mid * mid == num) {
-                return true;
-            } else if (mid * mid < num) {
-                low = (int) mid + 1;
+        long lo = 1, hi = num;
+        while (lo < hi) {
+            final long mid = (lo + hi) >>> 1;
+            if (mid * mid < num) {
+                lo = mid + 1;
             } else {
-                high = (int) mid - 1;
+                hi = mid;
             }
         }
-        return false;
+        return lo * lo == num;
     }
 
     // O(sqrt(num))

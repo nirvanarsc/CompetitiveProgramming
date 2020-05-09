@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_20;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,10 +8,10 @@ public class P_525 {
 
     public int findMaxLength(int[] nums) {
         final Map<Integer, Integer> map = new HashMap<>(Collections.singletonMap(0, -1));
-        int res = 0;
         int sum = 0;
+        int res = 0;
         for (int i = 0; i < nums.length; i++) {
-            sum += nums[i] == 0 ? 1 : -1;
+            sum += nums[i] == 1 ? 1 : -1;
             res = Math.max(res, i - map.getOrDefault(sum, i));
             map.putIfAbsent(sum, i);
         }
