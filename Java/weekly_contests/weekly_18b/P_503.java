@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_18b;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -6,6 +6,25 @@ import java.util.Deque;
 public class P_503 {
 
     public int[] nextGreaterElements(int[] nums) {
+        final Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && stack.peekFirst() <= nums[i]) {
+                stack.removeFirst();
+            }
+            stack.addFirst(nums[i]);
+        }
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && stack.peekFirst() <= nums[i]) {
+                stack.removeFirst();
+            }
+            final int t = nums[i];
+            nums[i] = stack.isEmpty() ? -1 : stack.getFirst();
+            stack.addFirst(t);
+        }
+        return nums;
+    }
+
+    public int[] nextGreaterElementsMax(int[] nums) {
         int max = Integer.MIN_VALUE;
         int maxIdx = Integer.MIN_VALUE;
         for (int i = 0; i < nums.length; i++) {
