@@ -1,4 +1,4 @@
-package easy;
+package weekly_contests.weekly_14;
 
 public class P_476 {
 

@@ -1,7 +1,7 @@
 package medium;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 public class P_402 {
 
@@ -11,7 +11,7 @@ public class P_402 {
         }
 
         final StringBuilder sb = new StringBuilder();
-        final Deque<Character> stack = new LinkedList<>();
+        final Deque<Character> stack = new ArrayDeque<>();
         for (int i = 0; i < num.length(); i++) {
             while (k > 0 && !stack.isEmpty() && stack.peekFirst() > num.charAt(i)) {
                 stack.removeFirst();
