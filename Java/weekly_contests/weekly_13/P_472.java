@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_13;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,54 +9,43 @@ import java.util.Set;
 public class P_472 {
 
     static class Trie {
-        Trie[] children;
+        Trie[] children = new Trie[26];
         boolean isWord;
-
-        Trie() {
-            children = new Trie[26];
-        }
     }
 
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        final List<String> res = new ArrayList<>();
         final Trie root = new Trie();
-        for (String word : words) {
-            if(!word.isEmpty()) {
-                Trie curr = root;
-                for (char c : word.toCharArray()) {
-                    if (curr.children[c - 'a'] == null) {
-                        curr.children[c - 'a'] = new Trie();
-                    }
-                    curr = curr.children[c - 'a'];
+        for (String w : words) {
+            Trie iter = root;
+            for (char c : w.toCharArray()) {
+                if (iter.children[c - 'a'] == null) {
+                    iter.children[c - 'a'] = new Trie();
                 }
-                curr.isWord = true;
+                iter = iter.children[c - 'a'];
             }
+            iter.isWord = true;
         }
-        for (String word : words) {
-            if (!word.isEmpty() && checkTrie(root, word.toCharArray(), 0, 0)) {
-                res.add(word);
+        final List<String> res = new ArrayList<>();
+        for (String w : words) {
+            if (dfs(root, w, 0, 0)) {
+                res.add(w);
             }
         }
         return res;
     }
 
-    private static boolean checkTrie(Trie root, char[] word, int index, int count) {
-        Trie curr = root;
-        for (int i = index; i < word.length; i++) {
-            if (curr.children[word[i] - 'a'] == null) {
+    private static boolean dfs(Trie root, String word, int idx, int matched) {
+        Trie iter = root;
+        for (int i = idx; i < word.length(); i++) {
+            iter = iter.children[word.charAt(i) - 'a'];
+            if (iter == null) {
                 return false;
             }
-            if (curr.children[word[i] - 'a'].isWord) {
-                if (i == word.length - 1) {
-                    return count > 0;
-                }
-                if (checkTrie(root, word, i + 1, count + 1)) {
-                    return true;
-                }
+            if (iter.isWord && dfs(root, word, i + 1, matched + 1)) {
+                return true;
             }
-            curr = curr.children[word[i] - 'a'];
         }
-        return false;
+        return matched > 1 && idx == word.length();
     }
 
     public List<String> findAllConcatenatedWordsInADictDP(String[] words) {
