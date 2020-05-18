@@ -4,6 +4,29 @@ import java.util.Arrays;
 
 public class P_567 {
 
+    public boolean checkInclusionBetter(String s1, String s2) {
+        final int[] count = new int[128];
+        for (char c : s1.toCharArray()) {
+            count[c]++;
+        }
+        int matches = s1.length();
+        int j = 0;
+        for (int i = 0; i < s2.length(); i++) {
+            if (count[s2.charAt(i)]-- > 0) {
+                matches--;
+            }
+            while (matches == 0) {
+                if (i - j + 1 == s1.length()) {
+                    return true;
+                }
+                if (++count[s2.charAt(j++)] > 0) {
+                    matches++;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean checkInclusion(String s1, String s2) {
         final int[] map = new int[26];
         for (char c : s1.toCharArray()) {
