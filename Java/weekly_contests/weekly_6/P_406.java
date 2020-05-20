@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_6;
 
 import java.util.ArrayList;
 import java.util.Arrays;
