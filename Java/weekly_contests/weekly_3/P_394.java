@@ -1,18 +1,18 @@
-package medium;
+package weekly_contests.weekly_3;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 public class P_394 {
 
     public String decodeString(String s) {
-        final Deque<Integer> intStack = new LinkedList<>();
-        final Deque<StringBuilder> strStack = new LinkedList<>();
+        final Deque<Integer> intStack = new ArrayDeque<>();
+        final Deque<StringBuilder> strStack = new ArrayDeque<>();
         StringBuilder res = new StringBuilder();
         int k = 0;
         for (char ch : s.toCharArray()) {
             if (Character.isDigit(ch)) {
-                k = k * 10 + ch - '0';
+                k = k * 10 + Character.getNumericValue(ch);
             } else if (ch == '[') {
                 intStack.addFirst(k);
                 strStack.addFirst(res);

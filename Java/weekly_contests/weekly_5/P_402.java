@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.weekly_5;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -6,10 +6,6 @@ import java.util.Deque;
 public class P_402 {
 
     public String removeKdigits(String num, int k) {
-        if (k == num.length()) {
-            return "0";
-        }
-
         final StringBuilder sb = new StringBuilder();
         final Deque<Character> stack = new ArrayDeque<>();
         for (int i = 0; i < num.length(); i++) {
@@ -19,19 +15,16 @@ public class P_402 {
             }
             stack.addFirst(num.charAt(i));
         }
-
         while (k > 0) {
             stack.removeFirst();
             k--;
         }
-
         while (!stack.isEmpty()) {
             sb.append(stack.removeLast());
         }
-
-        while (sb.length() > 1 && sb.charAt(0) == '0') {
+        while (sb.length() > 0 && sb.charAt(0) == '0') {
             sb.deleteCharAt(0);
         }
-        return sb.toString();
+        return sb.length() == 0 ? "0" : sb.toString();
     }
 }
