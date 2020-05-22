@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class P_676 {
 
     static class MagicDictionary {
@@ -74,6 +75,56 @@ public class P_676 {
                     }
                 }
                 if (count == 1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    static class MagicDictionaryTrie {
+
+        static class Trie {
+            Trie[] children = new Trie[26];
+            boolean isWord;
+        }
+
+        Trie root;
+
+        MagicDictionaryTrie() {
+            root = new Trie();
+        }
+
+        public void buildDict(String[] dict) {
+            for (String w : dict) {
+                Trie iter = root;
+                for (char c : w.toCharArray()) {
+                    if (iter.children[c - 'a'] == null) {
+                        iter.children[c - 'a'] = new Trie();
+                    }
+                    iter = iter.children[c - 'a'];
+                }
+                iter.isWord = true;
+            }
+        }
+
+        public boolean search(String word) {
+            return dfs(word, 0, 0, root);
+        }
+
+        private static boolean dfs(String w, int pos, int typos, Trie curr) {
+            if (w.length() == pos) {
+                return typos == 1 && curr.isWord;
+            }
+            if (typos > 1) {
+                return false;
+            }
+            for (char c = 0; c < 26; c++) {
+                if (curr.children[c] == null) {
+                    continue;
+                }
+                final int nextTypos = w.charAt(pos) == c + 'a' ? typos : typos + 1;
+                if (dfs(w, pos + 1, nextTypos, curr.children[c])) {
                     return true;
                 }
             }

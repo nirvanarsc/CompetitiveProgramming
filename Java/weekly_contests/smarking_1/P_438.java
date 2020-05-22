@@ -1,4 +1,4 @@
-package medium;
+package weekly_contests.smarking_1;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,23 +6,22 @@ import java.util.List;
 public class P_438 {
 
     public List<Integer> findAnagrams(String s, String p) {
-        final List<Integer> res = new ArrayList<>();
-        final int[] count = new int[128];
+        final int[] map = new int[128];
         for (char c : p.toCharArray()) {
-            count[c]++;
+            map[c]++;
         }
-        int matches = p.length();
-        int j = 0;
+        int j = 0, k = p.length();
+        final List<Integer> res = new ArrayList<>();
         for (int i = 0; i < s.length(); i++) {
-            if (count[s.charAt(i)]-- > 0) {
-                matches--;
+            if (map[s.charAt(i)]-- > 0) {
+                k--;
             }
-            while (matches == 0) {
+            while (k == 0) {
                 if (i - j + 1 == p.length()) {
                     res.add(j);
                 }
-                if (++count[s.charAt(j++)] > 0) {
-                    matches++;
+                if (++map[s.charAt(j++)] > 0) {
+                    k++;
                 }
             }
         }

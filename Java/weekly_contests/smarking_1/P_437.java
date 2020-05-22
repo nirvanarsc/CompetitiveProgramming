@@ -1,4 +1,4 @@
-package easy;
+package weekly_contests.smarking_1;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,14 +26,18 @@ public class P_437 {
     }
 
     public int pathSumBF(TreeNode root, int sum) {
-        if (root == null) { return 0; }
-        return dfs(root, sum) + pathSumBF(root.left, sum) + pathSumBF(root.right, sum);
+        if (root == null) {
+            return 0;
+        }
+        return dfs(root, sum, 0) + pathSum(root.left, sum) + pathSum(root.right, sum);
     }
 
-    private static int dfs(TreeNode node, int target) {
-        if (node == null) { return 0; }
-        return (node.val == target ? 1 : 0)
-               + dfs(node.left, target - node.val)
-               + dfs(node.right, target - node.val);
+    private static int dfs(TreeNode root, int sum, int curr) {
+        if (root == null) {
+            return 0;
+        }
+        return (curr + root.val == sum ? 1 : 0)
+               + dfs(root.left, sum, curr + root.val)
+               + dfs(root.right, sum, curr + root.val);
     }
 }
