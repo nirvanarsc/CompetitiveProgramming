@@ -5,8 +5,6 @@ import java.util.List;
 
 public class P_986 {
 
-    public static final int[][] INTS = new int[0][];
-
     @SuppressWarnings("MethodParameterNamingConvention")
     public int[][] intervalIntersection(int[][] A, int[][] B) {
         final List<int[]> list = new ArrayList<>();
@@ -19,6 +17,6 @@ public class P_986 {
             if (A[i][1] == endMin) { i++; }
             if (B[j][1] == endMin) { j++; }
         }
-        return list.toArray(INTS);
+        return list.toArray(int[][]::new);
     }
 }
