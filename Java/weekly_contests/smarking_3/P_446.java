@@ -1,6 +1,7 @@
 package weekly_contests.smarking_3;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,9 @@ public class P_446 {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < i; j++) {
                 final long target = 2 * (long) A[j] - A[i];
-                if (map.containsKey(target)) {
-                    for (int k : map.get(target)) {
-                        if (k < j) {
-                            dp[i][j] += dp[j][k] + 1;
-                        }
+                for (int k : map.getOrDefault(target, Collections.emptyList())) {
+                    if (k < j) {
+                        dp[i][j] += dp[j][k] + 1;
                     }
                 }
                 res += dp[i][j];
