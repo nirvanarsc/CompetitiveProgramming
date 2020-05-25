@@ -1,16 +1,19 @@
-public final class MedianTwoSortedArrays {
+package hard;
 
-    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+public class P_4 {
+
+    @SuppressWarnings("TailRecursion")
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         if (nums1.length > nums2.length) {
             return findMedianSortedArrays(nums2, nums1);
         }
 
-        final int globalMid = (nums1.length + nums2.length + 1) / 2;
+        final int globalMid = nums1.length + nums2.length + 1 >>> 1;
         int lowA = 0;
         int highA = nums1.length;
 
         while (lowA <= highA) {
-            final int midA = (lowA + highA) >>> 1;
+            final int midA = lowA + highA >>> 1;
             final int midB = globalMid - midA;
 
             final int maxLeftX = (midA == 0) ? Integer.MIN_VALUE : nums1[midA - 1];
@@ -34,11 +37,4 @@ public final class MedianTwoSortedArrays {
 
         return -1;
     }
-
-    public static void main(String[] args) {
-        System.out.println(findMedianSortedArrays(new int[] { 1, 3, 8, 9, 15 },
-                                                  new int[] { 7, 11, 18, 19, 21, 25 }));
-    }
-
-    private MedianTwoSortedArrays() {}
 }

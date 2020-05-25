@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_1035 {
 
     public int maxUncrossedLinesLCS(int[] A, int[] B) {
@@ -18,6 +19,26 @@ public class P_1035 {
             }
         }
         return dp[A.length][B.length];
+    }
+
+    public int maxUncrossedLinesTopDown(int[] A, int[] B) {
+        return dfs(A, B, 0, 0, new Integer[A.length][B.length]);
+    }
+
+    private static int dfs(int[] A, int[] B, int i, int j, Integer[][] dp) {
+        if (i == A.length || j == B.length) {
+            return 0;
+        }
+        if (dp[i][j] != null) {
+            return dp[i][j];
+        }
+        final int skipL = dfs(A, B, i + 1, j, dp);
+        final int skipR = dfs(A, B, i, j + 1, dp);
+        int take = 0;
+        if (A[i] == B[j]) {
+            take = 1 + dfs(A, B, i + 1, j + 1, dp);
+        }
+        return dp[i][j] = Math.max(take, Math.max(skipL, skipR));
     }
 
     public int maxUncrossedLines(int[] A, int[] B) {

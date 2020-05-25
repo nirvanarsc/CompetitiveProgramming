@@ -5,14 +5,14 @@ import java.util.Arrays;
 public class P_3 {
 
     public int lengthOfLongestSubstringSlidingWindow(String s) {
-        final int[] map = new int[256];
-        int res = 0, i = 0;
-        for (int j = 0; j < s.length(); j++) {
-            map[s.charAt(j)]++;
-            while (map[s.charAt(j)] > 1) {
-                map[s.charAt(i++)]--;
+        final int[] map = new int[128];
+        int j = 0, res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            map[s.charAt(i)]++;
+            while (map[s.charAt(i)] > 1) {
+                map[s.charAt(j++)]--;
             }
-            res = Math.max(res, j - i + 1);
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }
