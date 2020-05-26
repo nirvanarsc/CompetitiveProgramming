@@ -23,6 +23,6 @@ public class P_20 {
                 stack.addFirst(c);
             }
         }
-        return true;
+        return stack.isEmpty();
     }
 }

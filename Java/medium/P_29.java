@@ -7,7 +7,7 @@ public class P_29 {
         if (dividend == Integer.MIN_VALUE && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-        boolean sign = (dividend > 0) == (divisor > 0);
+        boolean sign = dividend > 0 == divisor > 0;
         int a = Math.abs(dividend);
         int b = Math.abs(divisor);
         int res = 0;

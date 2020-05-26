@@ -6,26 +6,25 @@ import java.util.List;
 
 public class P_17 {
 
-    private static final String[] NUMBERS =
-            { "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
-
     public List<String> letterCombinations(String digits) {
         if (digits.isEmpty()) {
             return Collections.emptyList();
         }
+        final String[] nums = { "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
         final List<String> res = new ArrayList<>();
-        dfs("", 0, digits, res);
+        dfs(digits, 0, nums, res, new StringBuilder());
         return res;
     }
 
-    private static void dfs(String curr, int idx, String digits, List<String> list) {
-        if (idx == digits.length()) {
-            list.add(curr);
+    private static void dfs(String digits, int i, String[] nums, List<String> res, StringBuilder curr) {
+        if (i == digits.length()) {
+            res.add(new String(curr));
             return;
         }
-
-        for (int i = 0; i < NUMBERS[digits.charAt(idx) - '0'].length(); i++) {
-            dfs(curr + NUMBERS[digits.charAt(idx) - '0'].charAt(i), idx + 1, digits, list);
+        for (char c : nums[digits.charAt(i) - '0'].toCharArray()) {
+            curr.append(c);
+            dfs(digits, i + 1, nums, res, curr);
+            curr.deleteCharAt(curr.length() - 1);
         }
     }
 }

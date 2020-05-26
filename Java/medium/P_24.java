@@ -4,6 +4,7 @@ import utils.DataStructures.ListNode;
 
 public class P_24 {
 
+    @SuppressWarnings("ConstantConditions")
     public ListNode swapPairs(ListNode head) {
         if (head == null || head.next == null) {
             return head;

@@ -5,30 +5,26 @@ import java.util.List;
 
 public final class P_22 {
 
-    public static List<String> generateParenthesis(int n) {
+    public List<String> generateParenthesis(int n) {
         final List<String> res = new ArrayList<>();
-        dfs(0, 0, n, "", res);
+        dfs(n, n, new StringBuilder(), res);
         return res;
     }
 
-    private static void dfs(int open, int close, int n, String curr, List<String> res) {
-        if (open + close == 2 * n) {
-            res.add(curr);
+    private static void dfs(int open, int close, StringBuilder sb, List<String> res) {
+        if (open == 0 && close == 0) {
+            res.add(new String(sb));
             return;
         }
-
-        if (open < n) {
-            dfs(open + 1, close, n, curr + '(', res);
+        if (open > 0) {
+            sb.append('(');
+            dfs(open - 1, close, sb, res);
+            sb.deleteCharAt(sb.length() - 1);
         }
-
-        if (close < open) {
-            dfs(open, close + 1, n, curr + ')', res);
+        if (open < close) {
+            sb.append(')');
+            dfs(open, close - 1, sb, res);
+            sb.deleteCharAt(sb.length() - 1);
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(generateParenthesis(3));
-    }
-
-    private P_22() {}
 }
