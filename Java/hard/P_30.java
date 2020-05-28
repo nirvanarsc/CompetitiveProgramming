@@ -8,39 +8,59 @@ import java.util.Map;
 
 public class P_30 {
 
+    public int search(int[] nums, int target) {
+        int lo = 0;
+        int hi = nums.length;
+        while (lo < hi) {
+            int mid = lo + hi >>> 1;
+            if (nums[mid] > nums[0]) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        hi = nums.length + lo;
+        System.out.println(lo);
+        while (lo < hi) {
+            int mid = lo + hi >>> 1;
+            if (nums[mid % nums.length] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return nums[lo % nums.length] == target ? lo % nums.length : -1;
+    }
+
     public List<Integer> findSubstring(String s, String[] words) {
         if (words.length == 0) {
             return Collections.emptyList();
         }
-        final List<Integer> list = new ArrayList<>();
-        final Map<String, Integer> map = new HashMap<>();
-        for (String word : words) {
-            map.merge(word, 1, Integer::sum);
+        final List<Integer> res = new ArrayList<>();
+        final Map<String, Integer> wordsFreq = new HashMap<>();
+        for (String str : words) {
+            wordsFreq.merge(str, 1, Integer::sum);
         }
-        final int size = words[0].length();
-        final int length = words.length;
-        final int window = size * length;
-        for (int i = 0; i < size; i++) {
-            for (int start = i; start + window <= s.length(); start += size) {
-                final String sub = s.substring(start, start + window);
-                final Map<String, Integer> temp = new HashMap<>();
-                int j = length;
-                while (j > 0) {
-                    final String word = sub.substring((j - 1) * size, j * size);
-                    final int count = temp.getOrDefault(word, 0) + 1;
-                    if (count > map.getOrDefault(word, 0)) {
-                        break;
-                    }
-                    temp.put(word, count);
-                    --j;
+        final int wordLength = words[0].length();
+        for (int start = 0; start < wordLength; start++) {
+            final Map<String, Integer> currOffset = new HashMap<>(wordsFreq);
+            int matched = words.length;
+            int j = start;
+            for (int i = start; i <= s.length() - wordLength; i += wordLength) {
+                if (currOffset.merge(s.substring(i, i + wordLength), -1, Integer::sum) >= 0) {
+                    matched--;
                 }
-                if (j == 0) {
-                    list.add(start);
-                } else {
-                    start += size * (j - 1);
+                while (matched == 0) {
+                    if (i - j + wordLength == words.length * wordLength) {
+                        res.add(j);
+                    }
+                    if (currOffset.merge(s.substring(j, j + wordLength), 1, Integer::sum) == 1) {
+                        matched++;
+                    }
+                    j += wordLength;
                 }
             }
         }
-        return list;
+        return res;
     }
 }

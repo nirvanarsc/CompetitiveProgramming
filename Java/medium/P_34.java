@@ -24,28 +24,30 @@ public class P_34 {
         return lo;
     }
 
-    public int[] searchRangeOld(int[] nums, int target) {
-        final int first = searchFirstOrLastOfK(nums, target, 0, true);
-        if (first == -1) {
-            return new int[] { -1, -1 };
-        }
-        final int last = searchFirstOrLastOfK(nums, target, first, false);
-        return new int[] { first, last };
-    }
-
-    public int searchFirstOrLastOfK(int[] nums, int k, int low, boolean first) {
-        int high = nums.length - 1, ans = -1;
-        while (low <= high) {
-            final int mid = (low + high) >>> 1;
-            if (nums[mid] < k) {
-                low = mid + 1;
-            } else if (nums[mid] == k) {
-                if (first) { high = mid - 1; } else { low = mid + 1; }
-                ans = mid;
+    public int[] searchRangeNew(int[] nums, int target) {
+        int lo = 0;
+        int hi = nums.length;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (nums[mid] < target) {
+                lo = mid + 1;
             } else {
-                high = mid - 1;
+                hi = mid;
             }
         }
-        return ans;
+        if (lo == nums.length || nums[lo] != target) {
+            return new int[] { -1, -1 };
+        }
+        final int first = lo;
+        hi = nums.length;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (nums[mid] <= target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return new int[] { first, lo - 1 };
     }
 }

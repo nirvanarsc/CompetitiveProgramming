@@ -4,6 +4,22 @@ import java.util.Arrays;
 
 public final class P_338 {
 
+    public int[] countBitsHSB(int num) {
+        final int[] res = new int[num + 1];
+        for (int i = 1; i <= num; i++) {
+            res[i] = res[i - Integer.highestOneBit(i)] + 1;
+        }
+        return res;
+    }
+
+    public int[] countBitsLSB(int num) {
+        final int[] res = new int[num + 1];
+        for (int i = 1; i <= num; i++) {
+            res[i] = res[i & (i - 1)] + 1;
+        }
+        return res;
+    }
+
     public static int[] countBits(int num) {
         final int[] res = new int[num + 1];
         int pow = 1;
