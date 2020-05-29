@@ -1,9 +1,10 @@
 package medium;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,6 @@ public class P_207 {
 
     static class Node {
         int inDegree;
-        List<Node> adjacent = new ArrayList<>();
     }
 
     // Topological sort - Kahn's algorithm
@@ -20,32 +20,27 @@ public class P_207 {
         for (int i = 0; i < numCourses; i++) {
             nodes.put(i, new Node());
         }
-
-        for (int[] pre : prerequisites) {
-            final Node node = nodes.get(pre[0]);
-            node.inDegree++;
-            node.adjacent.add(nodes.get(pre[1]));
-            nodes.get(pre[1]).adjacent.add(node);
+        final Map<Node, List<Node>> g = new HashMap<>();
+        for (int[] pq : prerequisites) {
+            g.computeIfAbsent(nodes.get(pq[1]), v -> new ArrayList<>()).add(nodes.get(pq[0]));
+            nodes.get(pq[0]).inDegree++;
         }
-
-        final Deque<Node> queue = new LinkedList<>();
-
-        for (Node node : nodes.values()) {
-            if (node.inDegree == 0) {
-                queue.offerLast(node);
+        final Deque<Node> q = new ArrayDeque<>();
+        for (Node n : nodes.values()) {
+            if (n.inDegree == 0) {
+                q.offerLast(n);
             }
         }
-
-        while (!queue.isEmpty()) {
-            final Node curr = queue.removeFirst();
-            numCourses--;
-            for (Node adjacent : curr.adjacent) {
-                if (--adjacent.inDegree == 0) {
-                    queue.offerLast(adjacent);
+        int visited = 0;
+        while (!q.isEmpty()) {
+            final Node node = q.removeFirst();
+            visited++;
+            for (Node n : g.getOrDefault(node, Collections.emptyList())) {
+                if (--n.inDegree == 0) {
+                    q.offerLast(n);
                 }
             }
         }
-
-        return numCourses == 0;
+        return visited == numCourses;
     }
 }
