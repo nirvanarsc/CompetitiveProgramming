@@ -1,3 +1,5 @@
+import hard.P_84;
+
 public final class MaximalRectangle {
 
     public static int maximalRectangle(char[][] matrix) {
@@ -15,7 +17,7 @@ public final class MaximalRectangle {
                     currRow[i] = 0;
                 }
             }
-            res = Math.max(res, LargestRectangleHistogram.largestRectangleArea(currRow));
+            res = Math.max(res, P_84.largestRectangleArea(currRow));
         }
 
         return res;
