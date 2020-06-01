@@ -1,20 +1,20 @@
+package hard;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public final class NQueensII {
+public class P_52 {
 
-    public static int totalNQueens(int n) {
-        final AtomicInteger res = new AtomicInteger();
+    public int totalNQueens(int n) {
+        final int[] res = { 0 };
         recurse(0, n, res, new ArrayList<>());
-        return res.get();
+        return res[0];
     }
 
-    private static void recurse(int row, int n, AtomicInteger res, List<Integer> currSolution) {
+    private static void recurse(int row, int n, int[] res, List<Integer> currSolution) {
         if (row == n) {
-            res.incrementAndGet();
+            res[0]++;
         }
-
         for (int i = 0; i < n; i++) {
             currSolution.add(i);
             if (isValid(row, currSolution)) {
@@ -33,11 +33,4 @@ public final class NQueensII {
         }
         return true;
     }
-
-    public static void main(String[] args) {
-        System.out.println(totalNQueens(4));
-        System.out.println(totalNQueens(5));
-    }
-
-    private NQueensII() {}
 }

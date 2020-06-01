@@ -1,10 +1,11 @@
 package easy;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
 public class P_226 {
 
     public TreeNode invertTree(TreeNode root) {
@@ -18,7 +19,7 @@ public class P_226 {
     }
 
     public TreeNode invertTreeIterative(TreeNode root) {
-        final Deque<TreeNode> queue = new LinkedList<>();
+        final Deque<TreeNode> queue = new ArrayDeque<>();
         if (root != null) {
             queue.offerLast(root);
         }
