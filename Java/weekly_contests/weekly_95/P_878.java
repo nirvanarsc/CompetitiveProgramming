@@ -21,6 +21,6 @@ public class P_878 {
     }
 
     public int gcd(int a, int b) {
-        return b > 0 ? gcd(b, a % b) : a;
+        return b == 0 ? a : gcd(b, a % b);
     }
 }

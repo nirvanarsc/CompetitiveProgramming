@@ -3,7 +3,7 @@ package weekly_contests.weekly_161;
 public class P_1250 {
 
     public int gcd(int a, int b) {
-        return b > 0 ? gcd(b, a % b) : a;
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     // https://en.wikipedia.org/wiki/B%C3%A9zout's_identity

@@ -24,24 +24,21 @@ public class P_934 {
             }
         }
         floodFill(A, x, y, visited, q);
-        int res = 0;
-        while (!q.isEmpty()) {
+        for (int level = -1; !q.isEmpty(); level++) {
             for (int k = q.size(); k > 0; k--) {
                 final int[] curr = q.removeFirst();
                 if (A[curr[0]][curr[1]] == 1) {
-                    return res - 1;
+                    return level;
                 }
                 for (int[] dir : DIRS) {
                     final int newX = curr[0] + dir[0];
                     final int newY = curr[1] + dir[1];
-                    if (newX >= 0 && newX < n && newY >= 0 && newY < m && !visited[newX][newY]
-                        && A[newX][newY] != 2) {
+                    if (newX >= 0 && newX < n && newY >= 0 && newY < m && !visited[newX][newY]) {
                         visited[newX][newY] = true;
                         q.offerLast(new int[] { newX, newY });
                     }
                 }
             }
-            res++;
         }
         return -1;
     }
@@ -51,8 +48,8 @@ public class P_934 {
             return;
         }
         visited[r][c] = true;
+        A[r][c] = 0;
         q.offerLast(new int[] { r, c });
-        A[r][c] = 2;
         for (int[] dir : DIRS) {
             floodFill(A, r + dir[0], c + dir[1], visited, q);
         }

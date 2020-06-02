@@ -3,7 +3,7 @@ package weekly_contests.weekly_139;
 public class P_1071 {
 
     public int gcd(int a, int b) {
-        return b > 0 ? gcd(b, a % b) : a;
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     public String gcdOfStrings(String str1, String str2) {

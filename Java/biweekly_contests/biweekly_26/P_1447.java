@@ -6,7 +6,7 @@ import java.util.List;
 public class P_1447 {
 
     public int gcd(int a, int b) {
-        return b > 0 ? gcd(b, a % b) : a;
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     public List<String> simplifiedFractions(int n) {
