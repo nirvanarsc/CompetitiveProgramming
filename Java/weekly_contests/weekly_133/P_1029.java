@@ -7,9 +7,10 @@ public class P_1029 {
 
     public int twoCitySchedCost(int[][] costs) {
         Arrays.sort(costs, Comparator.comparingInt(a -> a[0] - a[1]));
+        final int n = costs.length / 2;
         int res = 0;
-        for (int i = 0; i < costs.length; i++) {
-            res += i < costs.length / 2 ? costs[i][0] : costs[i][1];
+        for (int i = 0; i < n; i++) {
+            res += costs[i][0] + costs[i + n][1];
         }
         return res;
     }
@@ -31,25 +32,26 @@ public class P_1029 {
         return dp[n][n];
     }
 
-    public int twoCitySchedCostTopDown(int[][] costs) {
+    public int twoCitySchedCostDP(int[][] costs) {
         final int n = costs.length / 2;
-        return recurse(costs, 0, n, n, new Integer[n + 1][n + 1]);
+        return dfs(costs, 0, 0, 0, new Integer[n + 1][n + 1]);
     }
 
-    private static int recurse(int[][] c, int i, int a, int b, Integer[][] dp) {
-        if (i == c.length) {
+    private static int dfs(int[][] costs, int idx, int i, int j, Integer[][] dp) {
+        if (idx == costs.length) {
             return 0;
         }
-        if (dp[a][b] != null) {
-            return dp[a][b];
+        if (dp[i][j] != null) {
+            return dp[i][j];
         }
-        if (a == 0) {
-            return dp[0][b] = c[i][1] + recurse(c, i + 1, 0, b - 1, dp);
+        int takeA = (int) 1e9;
+        if (i < costs.length / 2) {
+            takeA = costs[idx][0] + dfs(costs, idx + 1, i + 1, j, dp);
         }
-        if (b == 0) {
-            return dp[a][0] = c[i][0] + recurse(c, i + 1, a - 1, 0, dp);
+        int takeB = (int) 1e9;
+        if (j < costs.length / 2) {
+            takeB = costs[idx][1] + dfs(costs, idx + 1, i, j + 1, dp);
         }
-        return dp[a][b] = Math.min(c[i][0] + recurse(c, i + 1, a - 1, b, dp),
-                                   c[i][1] + recurse(c, i + 1, a, b - 1, dp));
+        return dp[i][j] = Math.min(takeA, takeB);
     }
 }
