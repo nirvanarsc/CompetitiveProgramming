@@ -8,7 +8,7 @@ public final class P_33 {
         int lo = 0;
         int hi = nums.length;
         while (lo < hi) {
-            int mid = lo + hi >>> 1;
+            final int mid = lo + hi >>> 1;
             if (nums[mid] > target) {
                 lo = mid + 1;
             } else {
@@ -18,10 +18,10 @@ public final class P_33 {
         if (nums[lo] != target) {
             return new int[] { -1, -1 };
         }
-        int first = lo;
+        final int first = lo;
         hi = nums.length;
         while (lo < hi) {
-            int mid = lo + hi >>> 1;
+            final int mid = lo + hi >>> 1;
             if (nums[mid] >= target) {
                 lo = mid + 1;
             } else {

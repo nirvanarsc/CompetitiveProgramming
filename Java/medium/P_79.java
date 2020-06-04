@@ -2,37 +2,34 @@ package medium;
 
 public class P_79 {
 
+    private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+
     public boolean exist(char[][] board, String word) {
-        final char[] w = word.toCharArray();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] == w[0]) {
-                    if (dfs(i, j, 0, w, board)) {
-                        return true;
-                    }
+                if (dfs(board, i, j, word, 0)) {
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    private static boolean dfs(int row, int col, int idx, char[] w, char[][] board) {
-        if (idx == w.length) {
+    private static boolean dfs(char[][] board, int i, int j, String word, int index) {
+        if (index == word.length()) {
             return true;
         }
-        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length
-            || board[row][col] == ' ' || board[row][col] != w[idx]) {
+        if (i < 0 || i == board.length || j < 0 || j == board[0].length || board[i][j] != word.charAt(index)) {
             return false;
         }
-
-        final char t = board[row][col];
-        board[row][col] = ' ';
-        for (int[] dir : new int[][] { { 0, 1 }, { 1, 0 }, { -1, 0 }, { 0, -1 } }) {
-            if (dfs(row + dir[0], col + dir[1], idx + 1, w, board)) {
+        final char t = board[i][j];
+        board[i][j] = '#';
+        for (int[] dir : DIRS) {
+            if (dfs(board, i + dir[0], j + dir[1], word, index + 1)) {
                 return true;
             }
         }
-        board[row][col] = t;
+        board[i][j] = t;
         return false;
     }
 }
