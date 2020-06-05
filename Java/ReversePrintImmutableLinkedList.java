@@ -1,6 +1,6 @@
 public final class ReversePrintImmutableLinkedList {
 
-    public static class ListNode<T> {
+    private static class ListNode<T> {
         public T data;
         public ListNode<T> next;
 
