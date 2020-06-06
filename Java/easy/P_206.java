@@ -2,10 +2,11 @@ package easy;
 
 import utils.DataStructures.ListNode;
 
+@SuppressWarnings({ "ConstantConditions", "TailRecursion" })
 public class P_206 {
 
     // Iterative
-    public ListNode reverseList(ListNode head) {
+    public ListNode reverseListIterative(ListNode head) {
         ListNode newHead = null;
 
         while (head != null) {
@@ -19,14 +20,16 @@ public class P_206 {
     }
 
     // Recursive
-    public ListNode reverseListR(ListNode head) {
-        return reverseListR(head, null);
+    public ListNode reverseList(ListNode list) {
+        return reverse(list, null);
     }
 
-    private static ListNode reverseListR(ListNode head, ListNode newHead) {
-        if (head == null) { return newHead; }
-        final ListNode next = head.next;
-        head.next = newHead;
-        return reverseListR(next, head);
+    private static ListNode reverse(ListNode list, ListNode newHead) {
+        if (list == null) {
+            return newHead;
+        }
+        final ListNode next = list.next;
+        list.next = newHead;
+        return reverse(next, list);
     }
 }
