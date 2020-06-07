@@ -1,9 +1,12 @@
-package easy;
+package hard;
 
-public class P_256 {
+public class P_265 {
 
-    public int minCost(int[][] costs) {
-        return dfs(costs, 0, -1, new Integer[costs.length][3]);
+    public int minCostII(int[][] costs) {
+        if (costs.length == 0 || costs[0].length == 0) {
+            return 0;
+        }
+        return dfs(costs, 0, -1, new Integer[costs.length][costs[0].length]);
     }
 
     private static int dfs(int[][] costs, int idx, int prev, Integer[][] dp) {
