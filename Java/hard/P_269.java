@@ -41,13 +41,13 @@ public class P_269 {
                 }
             }
         }
+        final StringBuilder sb = new StringBuilder();
         final Deque<Node> q = new ArrayDeque<>();
         for (Node n : nodes.values()) {
             if (n.inDegree == 0) {
                 q.offerLast(n);
             }
         }
-        final StringBuilder sb = new StringBuilder();
         while (!q.isEmpty()) {
             final Node node = q.removeFirst();
             sb.append(node.c);
