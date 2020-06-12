@@ -1,6 +1,7 @@
 package medium;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,12 @@ import java.util.Random;
 public class P_380 {
 
     public static class RandomizedSet {
-        List<Integer> nums;
+        List<Integer> list;
         Map<Integer, Integer> map;
         Random r;
 
         public RandomizedSet() {
-            nums = new ArrayList<>();
+            list = new ArrayList<>();
             map = new HashMap<>();
             r = new Random();
         }
@@ -23,8 +24,9 @@ public class P_380 {
             if (map.containsKey(val)) {
                 return false;
             }
-            map.put(val, nums.size());
-            nums.add(val);
+            final int idx = list.size();
+            list.add(val);
+            map.put(val, idx);
             return true;
         }
 
@@ -32,19 +34,16 @@ public class P_380 {
             if (!map.containsKey(val)) {
                 return false;
             }
-            final int currIdx = map.get(val);
-            if (currIdx < nums.size() - 1) {
-                final int last = nums.get(nums.size() - 1);
-                nums.set(currIdx, last);
-                map.put(last, currIdx);
-            }
+            final int idx = map.get(val);
+            Collections.swap(list, idx, list.size() - 1);
+            map.put(list.get(idx), idx);
+            list.remove(list.size() - 1);
             map.remove(val);
-            nums.remove(nums.size() - 1);
             return true;
         }
 
         public int getRandom() {
-            return nums.get(r.nextInt(nums.size()));
+            return list.get(r.nextInt(list.size()));
         }
     }
 }
