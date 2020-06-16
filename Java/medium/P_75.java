@@ -11,8 +11,8 @@ public final class P_75 {
         while (equal <= higher) {
             if (nums[equal] < pivot) {
                 swap(nums, smaller, equal);
-                equal++;
                 smaller++;
+                equal++;
             } else if (nums[equal] == pivot) {
                 equal++;
             } else {
