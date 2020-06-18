@@ -1,13 +1,14 @@
 package medium;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class P_341 {
 
-    public interface NestedInteger {
+    private interface NestedInteger {
         boolean isInteger();
 
         Integer getInteger();
@@ -19,7 +20,7 @@ public class P_341 {
         Deque<NestedInteger> stack;
 
         public NestedIterator(List<NestedInteger> nestedList) {
-            stack = new LinkedList<>();
+            stack = new ArrayDeque<>();
             for (int i = nestedList.size() - 1; i >= 0; i--) {
                 stack.addFirst(nestedList.get(i));
             }
@@ -28,6 +29,9 @@ public class P_341 {
 
         @Override
         public Integer next() {
+            if (stack.isEmpty()) {
+                throw new NoSuchElementException();
+            }
             final Integer res = stack.removeFirst().getInteger();
             preProcess();
             return res;
