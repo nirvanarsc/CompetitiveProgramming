@@ -2,6 +2,7 @@ package weekly_contests.weekly_136;
 
 import java.util.Arrays;
 
+@SuppressWarnings({ "MethodParameterNamingConvention", "TailRecursion" })
 public class P_1044 {
 
     /**
@@ -118,7 +119,7 @@ public class P_1044 {
                     return depth;
                 }
                 if (isLeaf()) {
-                    children = new Trie[28];
+                    children = new Trie[26];
                     children[childIndex(startPos)] = new Trie(startPos, depth + 1);
                 }
                 final int newIndex = childIndex(start);
@@ -136,8 +137,8 @@ public class P_1044 {
         for (int i = 1; i + maxLength < length; i++) {
             final int len = root.addNew(i);
             if (len > maxLength) {
-                maxLength = len;
                 maxStart = i;
+                maxLength = len;
             }
         }
         return S.substring(maxStart, maxStart + maxLength);
