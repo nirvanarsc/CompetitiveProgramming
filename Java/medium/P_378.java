@@ -18,13 +18,13 @@ public class P_378 {
     public static int kthSmallest(int[][] matrix, int k) {
         int lo = matrix[0][0];
         int hi = matrix[matrix.length - 1][matrix[0].length - 1];
-        while (lo <= hi) {
-            final int mid = lo + (hi - lo) / 2;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
             final int count = getLessThan(matrix, mid);
             if (count < k) {
                 lo = mid + 1;
             } else {
-                hi = mid - 1;
+                hi = mid;
             }
         }
         return lo;
@@ -70,13 +70,24 @@ public class P_378 {
         return pq.remove();
     }
 
-    public static void main(String[] args) {
-        final int[][] matrix = {
-                { 1, 2, 3, 4 },
-                { 2, 3, 4, 5 },
-                { 3, 4, 5, 6 },
-                { 4, 5, 6, 7 }
-        };
-        System.out.println(kthSmallest(matrix, 3));
+    public static int kthSmallestPairs(int[][] matrix, int k) {
+        final PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        pq.offer(new int[] { matrix[0][0], 0, 0 });
+        for (int i = 0; i < k - 1 && !pq.isEmpty(); i++) {
+            final int[] curr = pq.remove();
+            final int x = curr[1];
+            final int y = curr[2];
+            add(matrix, x, y + 1, pq);
+            if (y == 0) {
+                add(matrix, x + 1, 0, pq);
+            }
+        }
+        return pq.remove()[0];
+    }
+
+    private static void add(int[][] matrix, int i, int j, PriorityQueue<int[]> pq) {
+        if (i < matrix.length && j < matrix[0].length) {
+            pq.offer(new int[] { matrix[i][j], i, j });
+        }
     }
 }
