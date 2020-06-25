@@ -5,22 +5,20 @@ public final class P_287 {
     // Floyd's Cycle Detection Algorithm
     // https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_Tortoise_and_Hare
     public int findDuplicateFloyd(int[] nums) {
-        if (nums.length > 1) {
-            int slow = nums[0];
-            int fast = nums[nums[0]];
-            while (slow != fast) {
-                slow = nums[slow];
-                fast = nums[nums[fast]];
-            }
+        int slow = 0;
+        int fast = 0;
 
-            fast = 0;
-            while (fast != slow) {
-                fast = nums[fast];
-                slow = nums[slow];
-            }
-            return slow;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+        slow = 0;
+
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
         }
-        return -1;
+        return slow;
     }
 
     // https://en.wikipedia.org/wiki/Pigeonhole_principle

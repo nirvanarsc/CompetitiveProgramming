@@ -14,16 +14,13 @@ public class P_374 {
 
     public static class Solution extends GuessGame {
         public int guessNumber(int n) {
-            int lo = 1;
-            int hi = n;
-            while (lo <= hi) {
+            int lo = 1, hi = n;
+            while (lo < hi) {
                 final int mid = lo + hi >>> 1;
-                if (guess(mid) == 0) {
-                    return mid;
-                } else if (guess(mid) < 0) {
-                    hi = mid - 1;
-                } else {
+                if (guess(mid) == 1) {
                     lo = mid + 1;
+                } else {
+                    hi = mid;
                 }
             }
             return lo;
