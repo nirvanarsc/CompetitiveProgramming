@@ -5,18 +5,22 @@ import utils.DataStructures.TreeNode;
 public class P_129 {
 
     public int sumNumbers(TreeNode root) {
-        return dfs(root, 0);
+        final int[] res = { 0, 0 };
+        dfs(root, res);
+        return res[1];
     }
 
-    int dfs(TreeNode node, int sum) {
-        if (node == null) {
-            return 0;
+    @SuppressWarnings("ConstantConditions")
+    private static void dfs(TreeNode root, int[] num) {
+        if (root == null) {
+            return;
         }
-        sum = sum * 10 + node.val;
-        if (node.left == null && node.right == null) {
-            return sum;
+        num[0] = (num[0] * 10) + root.val;
+        dfs(root.left, num);
+        if (root.left == null && root.right == null) {
+            num[1] += num[0];
         }
-
-        return dfs(node.left, sum) + dfs(node.right, sum);
+        dfs(root.right, num);
+        num[0] /= 10;
     }
 }

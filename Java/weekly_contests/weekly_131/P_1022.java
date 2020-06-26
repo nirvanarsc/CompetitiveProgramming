@@ -5,23 +5,23 @@ import utils.DataStructures.TreeNode;
 public class P_1022 {
 
     public int sumRootToLeaf(TreeNode root) {
-        final int[] res = { 0 };
-        recurse(root, res, 0);
-        return res[0];
+        final int[] res = { 0, 0 };
+        dfs(root, res);
+        return res[1];
     }
 
-    private static void recurse(TreeNode root, int[] sum, int curr) {
+    @SuppressWarnings("ConstantConditions")
+    private static void dfs(TreeNode root, int[] res) {
         if (root == null) {
             return;
         }
-        curr = (curr << 1) | root.val;
-        recurse(root.left, sum, curr);
-        curr >>= 1;
-        if (root.left == root.right) {
-            sum[0] += (curr << 1) | root.val;
+        res[0] = (res[0] << 1) | root.val;
+        dfs(root.left, res);
+        if (root.left == null && root.right == null) {
+            res[1] += res[0];
         }
-        curr = (curr << 1) | root.val;
-        recurse(root.right, sum, curr);
+        dfs(root.right, res);
+        res[0] >>= 1;
     }
 
     public int sumRootToLeafDFS(TreeNode root) {
