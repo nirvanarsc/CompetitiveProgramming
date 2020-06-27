@@ -1,8 +1,13 @@
 package medium;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class P_279 {
 
@@ -30,8 +35,11 @@ public class P_279 {
     }
 
     private static boolean isSquare(int n) {
-        final int sq = (int) Math.sqrt(n);
-        return n == sq * sq;
+        long r = n;
+        while (r * r > n) {
+            r = (r + n / r) / 2;
+        }
+        return r * r == n;
     }
 
     public static int numSquaresBottomUp(int n) {
@@ -47,21 +55,43 @@ public class P_279 {
     }
 
     public static int numSquares(int n) {
-        return recurse(n, new HashMap<>());
+        return dfs(n, new Integer[n + 1]);
     }
 
-    private static int recurse(int n, Map<Integer, Integer> dp) {
+    private static int dfs(int n, Integer[] dp) {
         if (n == 0) {
             return 0;
         }
-        if (dp.containsKey(n)) {
-            return dp.get(n);
+        if (dp[n] != null) {
+            return dp[n];
         }
         int res = Integer.MAX_VALUE;
         for (int i = 1; i * i <= n; i++) {
-            res = Math.min(res, 1 + recurse(n - (i * i), dp));
+            res = Math.min(res, 1 + dfs(n - (i * i), dp));
         }
-        dp.put(n, res);
-        return dp.get(n);
+        return dp[n] = res;
+    }
+
+    public int numSquaresBFS(int n) {
+        final Deque<Integer> queue = new ArrayDeque<>(Collections.singleton(n));
+        final List<Integer> sqruares = new ArrayList<>();
+        for (int i = 1; i * i <= n; ++i) {
+            sqruares.add(i * i);
+        }
+        for (int level = 1; !queue.isEmpty(); level++) {
+            for (int size = queue.size(); size > 0; size--) {
+                final Integer curr = queue.removeFirst();
+                for (Integer square : sqruares) {
+                    if (curr.equals(square)) {
+                        return level;
+                    } else if (curr < square) {
+                        break;
+                    } else {
+                        queue.offerLast(curr - square);
+                    }
+                }
+            }
+        }
+        return -1;
     }
 }
