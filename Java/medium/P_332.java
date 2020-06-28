@@ -9,31 +9,23 @@ import java.util.PriorityQueue;
 
 public class P_332 {
 
-    public List<String> findItinerary(List<List<String>> tickets) {
-        final Map<String, PriorityQueue<String>> graph = new HashMap<>();
-        for (List<String> ticket : tickets) {
-            graph.putIfAbsent(ticket.get(0), new PriorityQueue<>());
-            graph.get(ticket.get(0)).add(ticket.get(1));
-        }
+    Map<String, PriorityQueue<String>> targets = new HashMap<>();
+    List<String> route = new ArrayList<>();
 
-        final List<String> res = new ArrayList<>();
-        recurse("JFK", res, graph);
-        Collections.reverse(res);
-        return res;
+    // https://en.wikipedia.org/wiki/Eulerian_path
+    public List<String> findItinerary(List<List<String>> tickets) {
+        for (List<String> ticket : tickets) {
+            targets.computeIfAbsent(ticket.get(0), v -> new PriorityQueue<>()).add(ticket.get(1));
+        }
+        visit("JFK");
+        Collections.reverse(route);
+        return route;
     }
 
-    private static void recurse(String currCity, List<String> itinerary, Map<String, PriorityQueue<String>> g) {
-        if (g.get(currCity) == null || g.get(currCity).isEmpty()) {
-            itinerary.add(currCity);
-            return;
+    private void visit(String airport) {
+        while (targets.containsKey(airport) && !targets.get(airport).isEmpty()) {
+            visit(targets.get(airport).remove());
         }
-
-        final PriorityQueue<String> queue = g.get(currCity);
-        while (queue != null && !queue.isEmpty()) {
-            final String next = queue.poll();
-            recurse(next, itinerary, g);
-        }
-
-        itinerary.add(currCity);
+        route.add(airport);
     }
 }
