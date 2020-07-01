@@ -5,9 +5,10 @@ import java.util.Map;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
 public class P_106 {
 
-    public TreeNode buildTree(int[] inorder, int[] postorder) {
+    public TreeNode buildTreeOld(int[] inorder, int[] postorder) {
         final Map<Integer, Integer> inMap = new HashMap<>();
         for (int i = 0; i < postorder.length; i++) {
             inMap.put(inorder[i], i);
@@ -24,6 +25,28 @@ public class P_106 {
         final int i = inMap.get(root.val);
         root.left = helper(postorder, inStart, i - 1, postStart, postStart + i - inStart - 1, inMap);
         root.right = helper(postorder, i + 1, inEnd, postStart + i - inStart, postEnd - 1, inMap);
+        return root;
+    }
+
+    int i;
+
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        final Map<Integer, Integer> inMap = new HashMap<>();
+        for (int i = 0; i < postorder.length; i++) {
+            inMap.put(inorder[i], i);
+        }
+        i = postorder.length - 1;
+        return dfs(postorder, inMap, 0, postorder.length);
+    }
+
+    private TreeNode dfs(int[] postorder, Map<Integer, Integer> inMap, int start, int end) {
+        if (start == end) {
+            return null;
+        }
+        final TreeNode root = new TreeNode(postorder[i--]);
+        final int newEnd = inMap.get(root.val);
+        root.right = dfs(postorder, inMap, newEnd + 1, end);
+        root.left = dfs(postorder, inMap, start, newEnd);
         return root;
     }
 }
