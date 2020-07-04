@@ -1,5 +1,8 @@
 package medium;
 
+import java.util.Collections;
+import java.util.TreeSet;
+
 public class P_264 {
 
     public int nthUglyNumber(int n) {
@@ -13,5 +16,17 @@ public class P_264 {
             if (dp[i] == dp[prev5] * 5) { prev5++; }
         }
         return dp[n - 1];
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public int nthUglyNumberPQ(int n) {
+        final TreeSet<Long> pq = new TreeSet<>(Collections.singleton(1L));
+        for (int i = 1; i < n; i++) {
+            final long curr = pq.pollFirst();
+            pq.add(curr * 2);
+            pq.add(curr * 3);
+            pq.add(curr * 5);
+        }
+        return Math.toIntExact(pq.first());
     }
 }

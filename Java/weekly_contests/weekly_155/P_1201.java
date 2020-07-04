@@ -2,16 +2,8 @@ package weekly_contests.weekly_155;
 
 public class P_1201 {
 
-    private static long gcd(long a, long b) {
-        while (true) {
-            if (a == 0) {
-                return b;
-            }
-
-            final long t = a;
-            a = b % t;
-            b = t;
-        }
+    public static long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     private static long lcm(long a, long b) {
@@ -27,18 +19,15 @@ public class P_1201 {
     }
 
     public int nthUglyNumber(int n, int a, int b, int c) {
-        int low = 1, high = Integer.MAX_VALUE;
-
-        while (low < high) {
-            final int mid = low + high >>> 1;
-
+        int lo = 1, hi = Integer.MAX_VALUE;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
             if (count(a, b, c, mid) < n) {
-                low = mid + 1;
+                lo = mid + 1;
             } else {
-                high = mid;
+                hi = mid;
             }
         }
-
-        return low;
+        return lo;
     }
 }
