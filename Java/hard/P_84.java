@@ -4,9 +4,9 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 
-public final class P_84 {
+public class P_84 {
 
-    public static int largestRectangleArea(int[] heights) {
+    public int largestRectangleArea(int[] heights) {
         final Deque<Integer> stack = new ArrayDeque<>(Collections.singleton(-1));
         int res = 0;
         for (int i = 0; i <= heights.length; i++) {
@@ -19,6 +19,4 @@ public final class P_84 {
         }
         return res;
     }
-
-    private P_84() {}
 }
