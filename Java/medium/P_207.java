@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class P_207 {
 
-    static class Node {
+    private static class Node {
         int inDegree;
     }
 

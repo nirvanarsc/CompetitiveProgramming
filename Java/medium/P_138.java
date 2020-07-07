@@ -2,7 +2,7 @@ package medium;
 
 public class P_138 {
 
-    static class Node {
+    private static class Node {
         int val;
         Node next;
         Node random;

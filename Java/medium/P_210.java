@@ -11,7 +11,7 @@ public class P_210 {
 
     public static final int[] EMPTY_ARRAY = {};
 
-    static class Node {
+    private static class Node {
         int courseVal;
         int inDegree;
         List<Node> adjacent = new ArrayList<>();

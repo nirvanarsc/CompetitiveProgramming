@@ -9,11 +9,9 @@ import java.util.Map;
 
 public class P_133 {
 
-    static class Node {
+    private static class Node {
         public int val;
         public List<Node> neighbors;
-
-        Node() {}
 
         Node(int _val, List<Node> _neighbors) {
             val = _val;

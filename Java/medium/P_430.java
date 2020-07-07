@@ -2,7 +2,7 @@ package medium;
 
 public class P_430 {
 
-    static class Node {
+    private static class Node {
         public int val;
         public Node prev;
         public Node next;

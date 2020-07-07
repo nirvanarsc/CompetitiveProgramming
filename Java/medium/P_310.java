@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class P_310 {
 
-    static class Node {
+    private static class Node {
         int inDegree;
         List<Node> adjacent = new ArrayList<>();
     }

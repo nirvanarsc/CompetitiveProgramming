@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public final class ShortestWayToFormSubstring {
 
     public static void main(String[] args) {
@@ -8,33 +6,29 @@ public final class ShortestWayToFormSubstring {
         System.out.println(shortestWayToFormSubstring("abcd", "fabcda"));
         System.out.println(shortestWayToFormSubstring("zaza", "baz"));
         System.out.println();
+        System.out.println(shortestWayToFormSuffix("zaza", "baz")); // -1
+        System.out.println(shortestWayToFormSuffix("zazaz", "baz")); // 3
+        System.out.println(shortestWayToFormSuffix("vvav", "vav")); // 2
         System.out.println(shortestWayToFormSuffix("abcabdabcabc", "abdabcabc")); // 2
-        System.out.println(shortestWayToFormSuffix("vavvavav", "vavav")); // 2
+        System.out.println(shortestWayToFormSuffix("vavavvav", "vavav")); // 2
         System.out.println(shortestWayToFormSuffix("abcabcabcabcabc", "abcabc")); // 3
         System.out.println(shortestWayToFormSuffix("cdcdcdcd", "dcd")); // 4
         System.out.println(shortestWayToFormSuffix("cbaaa", "dcbaa")); // 2
         System.out.println(shortestWayToFormSuffix("aaaaaaaaa", "aa")); // 5
-        System.out.println(shortestWayToFormSuffix("zaza", "baz")); // -1
-        System.out.println(shortestWayToFormSuffix("zazaz", "baz")); // 3
         System.out.println(shortestWayToFormSuffix("baabaaba", "baaba")); // 2
         System.out.println(shortestWayToFormSuffix("aacaabaabaacaabaab", "aacaab")); // 4
+        System.out.println(shortestWayToFormSuffix("acadacacacadacac ", "adacac")); // 4
     }
 
+    // O(T*(T+S))
+    // https://leetcode.com/discuss/interview-question/365191/Google-or-Form-String-A-from-suffix-of-String-B
     private static int shortestWayToFormSuffix(String target, String source) {
-        String combined = target + source;
+        String combined = target + '#' + source;
         int res = 0;
-        int[] kmp = kmp(combined);
 
-        if (kmp[0] == target.length()) {
-            return 0;
-        }
-        if (kmp[1] == 0) {
-            return -1;
-        }
-        combined = combined.substring(kmp[1]);
-        while (combined.length() > source.length()) {
+        while (combined.length() > source.length() + 1) {
             res++;
-            kmp = kmp(combined);
+            final int[] kmp = kmp(combined);
             if (kmp[1] == 0) {
                 return -1;
             }
@@ -44,6 +38,8 @@ public final class ShortestWayToFormSubstring {
     }
 
     // O(T*(T+S))
+    // https://leetcode.com/discuss/interview-question/217510/google-phone-screen-shortest-way-to-form-string
+    // https://leetcode.com/discuss/interview-question/363692/Google-or-Onsite-or-Shortest-Way-to-Form-Substring
     private static int shortestWayToFormSubstring(String target, String source) {
         String combined = target + source;
         int res = 0;
@@ -77,7 +73,8 @@ public final class ShortestWayToFormSubstring {
             prefixSuffix[i] = j;
             max = Math.max(max, prefixSuffix[i]);
         }
-        System.out.println(Arrays.toString(prefixSuffix));
         return new int[] { max, prefixSuffix[s.length() - 1] };
     }
+
+    // TODO O(t + s^2) with prefix // suffix tree
 }
