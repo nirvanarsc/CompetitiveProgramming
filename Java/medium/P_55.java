@@ -3,14 +3,14 @@ package medium;
 public class P_55 {
 
     public boolean canJump(int[] nums) {
-        int i = 0;
-        for (int reach = 0; i < nums.length && i <= reach; ++i) {
-            reach = Math.max(i + nums[i], reach);
+        int currMax = 0;
+        for (int j = 0; j < nums.length && j <= currMax; j++) {
+            currMax = Math.max(currMax, j + nums[j]);
         }
-        return i == nums.length;
+        return currMax >= nums.length - 1;
     }
 
-    public boolean canJump2(int[] nums) {
+    public boolean canJumpTopDown(int[] nums) {
         final Boolean[] dp = new Boolean[nums.length];
         dp[nums.length - 1] = true;
 

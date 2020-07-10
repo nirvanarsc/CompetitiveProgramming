@@ -12,23 +12,24 @@ public class P_430 {
     Node prev;
 
     public Node flatten(Node head) {
-        traverse(head);
+        dfs(head);
         return head;
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void traverse(Node head) {
-        if (head == null) {
+    private void dfs(Node curr) {
+        if (curr == null) {
             return;
         }
         if (prev != null) {
-            head.prev = prev;
-            prev.next = head;
+            curr.prev = prev;
+            prev.next = curr;
         }
-        prev = head;
-        final Node next = head.next;
-        traverse(head.child);
-        head.child = null;
-        traverse(next);
+        prev = curr;
+        final Node next = curr.next;
+        final Node child = curr.child;
+        curr.child = null;
+        dfs(child);
+        dfs(next);
     }
 }
