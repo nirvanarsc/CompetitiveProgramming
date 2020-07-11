@@ -23,8 +23,7 @@ public class P_47 {
             return;
         }
         for (int i = 0; i < nums.length; i++) {
-            if (used[i]) { continue; }
-            if (i > 0 && nums[i - 1] == nums[i] && !used[i - 1]) { continue; }
+            if (used[i] || i > 0 && nums[i - 1] == nums[i] && !used[i - 1]) { continue; }
             list.add(nums[i]);
             used[i] = true;
             dfs(nums, used, list, res);
@@ -56,12 +55,8 @@ public class P_47 {
     }
 
     public List<List<Integer>> permuteUniqueNP(int[] nums) {
+        List<Integer> list = Arrays.stream(nums).boxed().sorted().collect(Collectors.toList());
         final List<List<Integer>> result = new ArrayList<>();
-        List<Integer> list = new ArrayList<>();
-        for (int i : nums) {
-            list.add(i);
-        }
-        Collections.sort(list);
         while (!list.isEmpty()) {
             result.add(new ArrayList<>(list));
             list = nextPermutation(list);
@@ -70,22 +65,24 @@ public class P_47 {
     }
 
     public static List<Integer> nextPermutation(List<Integer> perm) {
-        int idx = perm.size() - 2;
-        while (idx >= 0 && perm.get(idx) >= perm.get(idx + 1)) {
-            idx--;
+        int swapIdx = -1;
+        final int n = perm.size();
+        for (int i = n - 1; i >= 1; i--) {
+            if (perm.get(i - 1) < perm.get(i)) {
+                swapIdx = i - 1;
+                break;
+            }
         }
-
-        if (idx == -1) {
+        if (swapIdx == -1) {
             return Collections.emptyList();
         }
-
-        int newIdx = perm.size() - 1;
-        while (perm.get(newIdx) <= perm.get(idx)) {
-            newIdx--;
+        for (int i = n - 1; i >= 1; i--) {
+            if (perm.get(i) > perm.get(swapIdx)) {
+                Collections.swap(perm, swapIdx, i);
+                break;
+            }
         }
-
-        Collections.swap(perm, idx, newIdx);
-        Collections.reverse(perm.subList(idx + 1, perm.size()));
+        Collections.reverse(perm.subList(swapIdx + 1, perm.size()));
         return perm;
     }
 }

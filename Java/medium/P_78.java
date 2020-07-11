@@ -1,52 +1,36 @@
 package medium;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public final class P_78 {
 
-    public static List<List<Integer>> subsets(int[] nums) {
+    public static List<List<Integer>> subsetsBitwise(int[] nums) {
         final List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < Math.pow(2, nums.length); i++) {
+        for (int i = 0; i < 1 << nums.length; i++) {
             final List<Integer> curr = new ArrayList<>();
-            int num = i, idx = 0;
-            while (num != 0) {
-                if ((num & 1) == 1) {
+            for (int idx = 0; (1 << idx) <= i; idx++) {
+                if ((i & (1 << idx)) != 0) {
                     curr.add(nums[idx]);
                 }
-                num >>= 1;
-                idx++;
             }
             res.add(curr);
         }
-
         return res;
     }
 
-    public static List<List<Integer>> subsetsBacktrack(int[] nums) {
+    public List<List<Integer>> subsets(int[] nums) {
         final List<List<Integer>> res = new ArrayList<>();
-        Arrays.sort(nums);
-        recurse(res, new ArrayList<>(), nums, 0);
+        dfs(nums, 0, res, new ArrayList<>());
         return res;
     }
 
-    private static void recurse(List<List<Integer>> res, List<Integer> curr, int[] nums, int start) {
+    private static void dfs(int[] nums, int i, List<List<Integer>> res, List<Integer> curr) {
         res.add(new ArrayList<>(curr));
-        for (int i = start; i < nums.length; i++) {
-            curr.add(nums[i]);
-            recurse(res, curr, nums, i + 1);
+        for (int j = i; j < nums.length; j++) {
+            curr.add(nums[j]);
+            dfs(nums, j + 1, res, curr);
             curr.remove(curr.size() - 1);
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(subsets(new int[] { 1, 2, 3 }));
-        System.out.println(subsets(new int[] { 0 }));
-
-        System.out.println(subsetsBacktrack(new int[] { 1, 2, 3 }));
-        System.out.println(subsetsBacktrack(new int[] { 0 }));
-    }
-
-    private P_78() {}
 }
