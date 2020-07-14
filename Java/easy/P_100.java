@@ -11,7 +11,6 @@ public class P_100 {
         if (p == null || q == null) {
             return false;
         }
-
         return p.val == q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 }
