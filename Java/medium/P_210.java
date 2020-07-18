@@ -1,9 +1,10 @@
 package medium;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,51 +12,31 @@ public class P_210 {
 
     public static final int[] EMPTY_ARRAY = {};
 
-    private static class Node {
-        int courseVal;
-        int inDegree;
-        List<Node> adjacent = new ArrayList<>();
-
-        Node(int courseVal) {
-            this.courseVal = courseVal;
-        }
-    }
-
     // Topological sort - Kahn's algorithm
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        final Map<Integer, Node> nodes = new HashMap<>();
+        final int[] inDegree = new int[numCourses];
+        final Map<Integer, List<Integer>> g = new HashMap<>();
+        for (int[] p : prerequisites) {
+            g.computeIfAbsent(p[1], v -> new ArrayList<>()).add(p[0]);
+            inDegree[p[0]]++;
+        }
+        final Deque<Integer> q = new ArrayDeque<>();
         for (int i = 0; i < numCourses; i++) {
-            nodes.put(i, new Node(i));
-        }
-
-        for (int[] pre : prerequisites) {
-            final Node node = nodes.get(pre[0]);
-            node.inDegree++;
-            node.adjacent.add(nodes.get(pre[1]));
-            nodes.get(pre[1]).adjacent.add(node);
-        }
-
-        final Deque<Node> queue = new LinkedList<>();
-
-        for (Node node : nodes.values()) {
-            if (node.inDegree == 0) {
-                queue.offerLast(node);
+            if (inDegree[i] == 0) {
+                q.offerLast(i);
             }
         }
-
         final int[] res = new int[numCourses];
-        int idx = 0;
-        while (!queue.isEmpty()) {
-            final Node curr = queue.removeFirst();
-            res[idx++] = curr.courseVal;
-            numCourses--;
-            for (Node adjacent : curr.adjacent) {
-                if (--adjacent.inDegree == 0) {
-                    queue.offerLast(adjacent);
+        int i;
+        for (i = 0; !q.isEmpty(); i++) {
+            final int curr = q.removeFirst();
+            res[i] = curr;
+            for (int next : g.getOrDefault(curr, Collections.emptyList())) {
+                if (--inDegree[next] == 0) {
+                    q.offerLast(next);
                 }
             }
         }
-
-        return numCourses == 0 ? res : EMPTY_ARRAY;
+        return i == numCourses ? res : EMPTY_ARRAY;
     }
 }

@@ -4,83 +4,70 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class P_347 {
 
     // Priority Queue
-    public List<Integer> topKFrequent(int[] nums, int k) {
+    public int[] topKFrequent(int[] nums, int k) {
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
-        final PriorityQueue<Entry<Integer, Integer>> min =
-                new PriorityQueue<>(k, Comparator.comparing(Entry::getValue));
+        final PriorityQueue<Map.Entry<Integer, Integer>> min =
+                new PriorityQueue<>(k, Map.Entry.comparingByValue());
 
-        for (int i : nums) {
-            frequencyMap.merge(i, 1, Integer::sum);
+        for (int num : nums) {
+            frequencyMap.merge(num, 1, Integer::sum);
         }
 
-        final Iterator<Entry<Integer, Integer>> iterator = frequencyMap.entrySet().iterator();
-        for (int i = 0; i < k; i++) {
-            min.add(iterator.next());
-        }
-
-        while (iterator.hasNext()) {
-            final Entry<Integer, Integer> curr = iterator.next();
-            if (!min.isEmpty() && min.peek().getValue() < curr.getValue()) {
-                min.poll();
-                min.add(curr);
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            min.add(entry);
+            if (min.size() > k) {
+                min.remove();
             }
         }
 
-        return min.stream().map(Entry::getKey).collect(Collectors.toList());
+        return min.stream().mapToInt(Map.Entry::getKey).toArray();
     }
 
     // Quick Select
-    public List<Integer> topKFrequent2(int[] nums, int k) {
+    public int[] topKFrequentQuickSelect(int[] nums, int k) {
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
-        for (Integer i : nums) {
-            frequencyMap.merge(i, 1, Integer::sum);
+        for (int num : nums) {
+            frequencyMap.merge(num, 1, Integer::sum);
         }
-        final List<Entry<Integer, Integer>> entries = new ArrayList<>(frequencyMap.entrySet());
+        final List<Map.Entry<Integer, Integer>> entries = new ArrayList<>(frequencyMap.entrySet());
 
-        final int newIdx = findKthLargestIndex(k, entries, Comparator.comparing(Entry::getValue));
+        findKthLargestIndex(k, entries, Map.Entry.comparingByValue());
 
-        final List<Integer> res = new ArrayList<>();
+        final int[] res = new int[k];
 
-        for (int i = 0; i <= newIdx; i++) {
-            res.add(entries.get(i).getKey());
+        for (int i = 0; i < k; i++) {
+            res[i] = entries.get(i).getKey();
         }
 
         return res;
     }
 
     // Bucket Sort
-    public List<Integer> topKFrequent3(int[] nums, int k) {
-        final List<List<Integer>> bucket = new ArrayList<>(Collections.nCopies(nums.length + 1, null));
+    public int[] topKFrequentBS(int[] nums, int k) {
+        final Map<Integer, List<Integer>> buckets = new HashMap<>();
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
 
-        for (int n : nums) {
-            frequencyMap.merge(n, 1, Integer::sum);
+        for (int num : nums) {
+            frequencyMap.merge(num, 1, Integer::sum);
         }
 
-        for (Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
-            final int frequency = entry.getValue();
-            if (bucket.get(frequency) == null) {
-                bucket.set(frequency, new ArrayList<>());
-            }
-            bucket.get(frequency).add(entry.getKey());
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            buckets.computeIfAbsent(entry.getValue(), v -> new ArrayList<>()).add(entry.getKey());
         }
 
-        final List<Integer> res = new ArrayList<>();
+        final int[] res = new int[k];
 
-        for (int pos = bucket.size() - 1; pos >= 0 && res.size() < k; pos--) {
-            if (bucket.get(pos) != null) {
-                res.addAll(bucket.get(pos));
+        for (int pos = nums.length, i = 0; pos >= 0 && i < k; pos--) {
+            for (int num : buckets.getOrDefault(pos, Collections.emptyList())) {
+                res[i++] = num;
             }
         }
         return res;
