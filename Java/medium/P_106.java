@@ -3,6 +3,7 @@ package medium;
 import java.util.HashMap;
 import java.util.Map;
 
+import medium.P_284.PeekingIterator;
 import utils.DataStructures.TreeNode;
 
 @SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
@@ -28,25 +29,25 @@ public class P_106 {
         return root;
     }
 
-    int i;
+    int idx;
 
     public TreeNode buildTree(int[] inorder, int[] postorder) {
         final Map<Integer, Integer> inMap = new HashMap<>();
         for (int i = 0; i < postorder.length; i++) {
             inMap.put(inorder[i], i);
         }
-        i = postorder.length - 1;
-        return dfs(postorder, inMap, 0, postorder.length);
+        idx = postorder.length - 1;
+        return dfs(postorder, inMap, 0, postorder.length - 1);
     }
 
     private TreeNode dfs(int[] postorder, Map<Integer, Integer> inMap, int start, int end) {
-        if (start == end) {
+        if (start > end) {
             return null;
         }
-        final TreeNode root = new TreeNode(postorder[i--]);
+        final TreeNode root = new TreeNode(postorder[idx--]);
         final int newEnd = inMap.get(root.val);
         root.right = dfs(postorder, inMap, newEnd + 1, end);
-        root.left = dfs(postorder, inMap, start, newEnd);
+        root.left = dfs(postorder, inMap, start, newEnd - 1);
         return root;
     }
 }

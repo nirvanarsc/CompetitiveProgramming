@@ -38,22 +38,22 @@ public class P_212 {
 
     @SuppressWarnings("ConstantConditions")
     private void dfs(int row, int col, Trie curr) {
-        final char letter = board[row][col];
-        if (letter == '#' || curr.children[letter - 'a'] == null) {
-            return;
-        }
-        curr = curr.children[letter - 'a'];
-        if (curr.word != null) {
+        if (curr != null && curr.word != null) {
             res.add(curr.word);
             curr.word = null;
         }
+        if (curr == null
+            || row < 0
+            || row == board.length
+            || col < 0
+            || col == board[0].length
+            || board[row][col] == '#') {
+            return;
+        }
+        final char letter = board[row][col];
         board[row][col] = '#';
         for (int[] dir : DIRS) {
-            final int newRow = row + dir[0];
-            final int newCol = col + dir[1];
-            if (newRow >= 0 && newRow < board.length && newCol >= 0 && newCol < board[0].length) {
-                dfs(newRow, newCol, curr);
-            }
+            dfs(row + dir[0], col + dir[1], curr.children[letter - 'a']);
         }
         board[row][col] = letter;
     }
