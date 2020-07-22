@@ -1,5 +1,6 @@
 package medium;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -11,30 +12,28 @@ public class P_103 {
 
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         final List<List<Integer>> res = new ArrayList<>();
-        final Deque<TreeNode> queue = new LinkedList<>();
+        final Deque<TreeNode> q = new ArrayDeque<>();
         if (root != null) {
-            queue.offerFirst(root);
+            q.offerLast(root);
         }
-        while (!queue.isEmpty()) {
-            int levelSize = queue.size();
+        for (int i = 0; !q.isEmpty(); i++) {
             final LinkedList<Integer> level = new LinkedList<>();
-            while (levelSize-- > 0) {
-                final TreeNode curr = queue.removeLast();
-                if (res.size() % 2 == 0) {
-                    level.addLast(curr.val);
-                } else {
+            for (int size = q.size(); size > 0; size--) {
+                final TreeNode curr = q.removeFirst();
+                if (i % 2 != 0) {
                     level.addFirst(curr.val);
+                } else {
+                    level.addLast(curr.val);
                 }
                 if (curr.left != null) {
-                    queue.offerFirst(curr.left);
+                    q.offerLast(curr.left);
                 }
                 if (curr.right != null) {
-                    queue.offerFirst(curr.right);
+                    q.offerLast(curr.right);
                 }
             }
             res.add(level);
         }
-
         return res;
     }
 }
