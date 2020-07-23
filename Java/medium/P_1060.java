@@ -3,23 +3,19 @@ package medium;
 public class P_1060 {
 
     public int missingElement(int[] nums, int k) {
-        int lo = 0, hi = nums.length - 1;
-        final int missingNum = nums[hi] - nums[0] - hi;
-
-        if (missingNum < k) {
-            return nums[hi] + k - missingNum;
-        }
-
-        while (lo < hi - 1) {
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            final int missing = nums[mid] - nums[lo] - (mid - lo);
-            if (missing >= k) {
-                hi = mid;
+            if (countMissing(nums, mid) < k) {
+                lo = mid + 1;
             } else {
-                lo = mid;
-                k -= missing;
+                hi = mid;
             }
         }
-        return nums[lo] + k;
+        return nums[0] + k + lo - 1;
+    }
+
+    private static int countMissing(int[] nums, int mid) {
+        return nums[mid] - nums[0] - mid;
     }
 }
