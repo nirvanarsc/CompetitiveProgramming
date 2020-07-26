@@ -12,7 +12,8 @@ public class P_1060 {
                 hi = mid;
             }
         }
-        return nums[0] + k + lo - 1;
+        lo--;
+        return nums[lo] + k - countMissing(nums, lo);
     }
 
     private static int countMissing(int[] nums, int mid) {
