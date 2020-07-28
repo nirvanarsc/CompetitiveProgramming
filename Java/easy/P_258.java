@@ -1,4 +1,6 @@
-public class AddDigits {
+package easy;
+
+public class P_258 {
 
     @SuppressWarnings("TailRecursion")
     public int addDigits(int num) {
