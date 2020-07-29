@@ -20,17 +20,16 @@ public class P_309 {
     }
 
     private static int dfs(int[] prices, int start, Integer[] dp) {
-        if (start >= prices.length - 1) {
+        if (start >= prices.length) {
             return 0;
         }
         if (dp[start] != null) {
             return dp[start];
         }
-        final int skip = dfs(prices, start + 1, dp);
-        int trade = Integer.MIN_VALUE;
+        int res = dfs(prices, start + 1, dp);
         for (int i = start + 1; i < prices.length; i++) {
-            trade = Math.max(trade, prices[i] - prices[start] + dfs(prices, i + 2, dp));
+            res = Math.max(res, prices[i] - prices[start] + dfs(prices, i + 2, dp));
         }
-        return dp[start] = Math.max(skip, trade);
+        return dp[start] = res;
     }
 }
