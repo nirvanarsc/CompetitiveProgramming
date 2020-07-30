@@ -1,10 +1,7 @@
 package medium;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public final class P_139 {
@@ -13,8 +10,8 @@ public final class P_139 {
         final Set<String> dict = new HashSet<>(wordDict);
         final boolean[] dp = new boolean[s.length() + 1];
         dp[0] = true;
-        for (int i = 0; i <= s.length(); i++) {
-            for (int j = i - 1; j >= 0; j--) {
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
                 if (dp[j] && dict.contains(s.substring(j, i))) {
                     dp[i] = true;
                     break;
@@ -24,37 +21,24 @@ public final class P_139 {
         return dp[s.length()];
     }
 
-    public static boolean wordBreak(String s, List<String> wordDict) {
-        return recurse(s, new HashSet<>(wordDict), new HashMap<>());
+    public boolean wordBreak(String s, List<String> wordDict) {
+        return dfs(s, new HashSet<>(wordDict), 0, new Boolean[s.length()]);
     }
 
-    private static boolean recurse(String s, Set<String> dict, Map<String, Boolean> cache) {
-        if (dict.contains(s)) {
+    private static boolean dfs(String s, Set<String> dict, int start, Boolean[] dp) {
+        if (start == s.length()) {
             return true;
         }
-
-        if (cache.containsKey(s)) {
-            return cache.get(s);
+        if (dp[start] != null) {
+            return dp[start];
         }
-
-        for (int i = 1; i < s.length(); i++) {
-            if (dict.contains(s.substring(0, i))) {
-                if(recurse(s.substring(i), dict, cache)) {
-                    cache.put(s, true);
-                    return true;
-                }
+        boolean res = false;
+        for (int end = start + 1; end <= s.length(); end++) {
+            if (dict.contains(s.substring(start, end)) && dfs(s, dict, end, dp)) {
+                res = true;
+                break;
             }
         }
-
-        cache.put(s, false);
-        return false;
+        return dp[start] = res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(wordBreak("leetcode", Arrays.asList("leet", "code")));
-        System.out.println(wordBreak("applepenapple", Arrays.asList("apple", "pen")));
-        System.out.println(wordBreak("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat")));
-    }
-
-    private P_139() {}
 }
