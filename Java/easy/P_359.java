@@ -7,9 +7,28 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("unused")
 public class P_359 {
-    class Logger {
+
+    static class LoggerCHM {
+
+        ConcurrentHashMap<String, Integer> lastPrintTime;
+
+        LoggerCHM() {
+            lastPrintTime = new ConcurrentHashMap<>();
+        }
+
+        public boolean shouldPrintMessage(int timestamp, String message) {
+            final Integer last = lastPrintTime.get(message);
+
+            return last == null && lastPrintTime.put(message, timestamp) == null
+                   || last != null && timestamp - last >= 10 && lastPrintTime.replace(message, last, timestamp);
+        }
+    }
+
+    static class Logger {
         Map<String, Integer> map;
 
         Logger() {
@@ -29,8 +48,8 @@ public class P_359 {
         }
     }
 
-    class LoggerQueueSet {
-        class Entry {
+    static class LoggerQueueSet {
+        static class Entry {
             int timestamp;
             String msg;
 
@@ -61,12 +80,12 @@ public class P_359 {
         }
     }
 
-    class LoggerLHM {
+    static class LoggerLHM {
         public Map<String, Integer> map;
         int lastSecond;
 
         LoggerLHM() {
-            map = new LinkedHashMap<String, Integer>() {
+            map = new LinkedHashMap<>() {
                 private static final long serialVersionUID = -3418750008137711818L;
 
                 @Override
