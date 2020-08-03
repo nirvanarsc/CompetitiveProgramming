@@ -1,6 +1,6 @@
 package easy;
 
-@SuppressWarnings({ "unused", "ConstantConditions" })
+@SuppressWarnings("unused")
 public class P_706 {
 
     private static class ListNode {
@@ -14,49 +14,47 @@ public class P_706 {
     }
 
     static class MyHashMap {
-        final ListNode[] nodes = new ListNode[10000];
+        private final ListNode[] nodes;
+
+        MyHashMap() {
+            nodes = new ListNode[10000];
+            for (int i = 0; i < nodes.length; i++) {
+                nodes[i] = new ListNode(-1, -1);
+            }
+        }
 
         public void put(int key, int value) {
             final int index = getIndex(key);
-            if (nodes[index] == null) {
-                nodes[index] = new ListNode(-1, -1);
-            }
-            final ListNode prev = find(key, nodes[index]);
-            if (prev.next == null) {
-                prev.next = new ListNode(key, value);
+            final ListNode curr = find(key, nodes[index]);
+            if (curr.next == null) {
+                curr.next = new ListNode(key, value);
             } else {
-                prev.next.val = value;
+                final ListNode temp = curr.next.next;
+                curr.next = new ListNode(key, value);
+                curr.next.next = temp;
             }
         }
 
         public int get(int key) {
             final int index = getIndex(key);
-            if (nodes[index] == null) {
-                return -1;
-            }
-            final ListNode node = find(key, nodes[index]);
-            return node.next == null ? -1 : node.next.val;
+            final ListNode res = find(key, nodes[index]);
+            return res.next == null ? -1 : res.next.val;
         }
 
         public void remove(int key) {
             final int index = getIndex(key);
-            if (nodes[index] == null) {
-                return;
+            ListNode curr = nodes[index];
+            curr = find(key, curr);
+            if (curr.next != null) {
+                curr.next = curr.next.next;
             }
-            final ListNode prev = find(key, nodes[index]);
-            if (prev.next == null) {
-                return;
-            }
-            prev.next = prev.next.next;
         }
 
-        private static ListNode find(int key, ListNode bucket) {
-            ListNode node = bucket, prev = null;
-            while (node != null && node.key != key) {
-                prev = node;
-                node = node.next;
+        private static ListNode find(int key, ListNode curr) {
+            while (curr.next != null && curr.next.key != key) {
+                curr = curr.next;
             }
-            return prev;
+            return curr;
         }
 
         private int getIndex(int key) {

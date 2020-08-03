@@ -4,11 +4,11 @@ package easy;
 public class P_705 {
 
     private static class ListNode {
-        int val;
+        int key;
         ListNode next;
 
-        ListNode(int val) {
-            this.val = val;
+        ListNode(int key) {
+            this.key = key;
         }
     }
 
@@ -24,16 +24,16 @@ public class P_705 {
 
         public void add(int key) {
             final int index = getIndex(key);
-            ListNode curr = nodes[index];
-            if (curr == null) {
-                nodes[index] = new ListNode(key);
-            } else {
-                curr = find(key, curr);
-                if (curr.next != null) {
-                    return;
-                }
-                curr.next = new ListNode(key);
+            final ListNode curr = find(key, nodes[index]);
+            if (curr.next != null) {
+                return;
             }
+            curr.next = new ListNode(key);
+        }
+
+        public boolean contains(int key) {
+            final int index = getIndex(key);
+            return find(key, nodes[index]).next != null;
         }
 
         public void remove(int key) {
@@ -45,21 +45,15 @@ public class P_705 {
             }
         }
 
-        public boolean contains(int key) {
-            final int index = getIndex(key);
-            ListNode curr = nodes[index];
-            curr = find(key, curr);
-            return curr.next != null;
-        }
-
         private static ListNode find(int key, ListNode curr) {
-            while (curr.next != null && curr.next.val != key) {
+            while (curr.next != null && curr.next.key != key) {
                 curr = curr.next;
             }
             return curr;
         }
 
         private int getIndex(int key) {
-            return Integer.hashCode(key) % nodes.length;}
+            return Integer.hashCode(key) % nodes.length;
+        }
     }
 }
