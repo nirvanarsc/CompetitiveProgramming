@@ -18,7 +18,7 @@ public class P_912 {
         final int[] res = new int[left.length + right.length];
         int i = left.length - 1;
         int j = right.length - 1;
-        for (int idx = res.length - 1; i >= 0 || j >= 0; idx--) {
+        for (int idx = res.length - 1; idx >= 0; idx--) {
             if (i < 0) {
                 res[idx] = right[j--];
             } else if (j < 0) {
