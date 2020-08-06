@@ -1,47 +1,41 @@
 package weekly_contests.weekly_39;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.TreeSet;
 
 public class P_632 {
 
-    static class Item {
-        int rowIdx;
-        int colIdx;
-        int value;
+    private static class Pair {
+        int val;
+        int idx;
+        int listIdx;
 
-        Item(int rowIdx, int colIdx, int value) {
-            this.rowIdx = rowIdx;
-            this.colIdx = colIdx;
-            this.value = value;
+        Pair(int val, int idx, int listIdx) {
+            this.val = val;
+            this.idx = idx;
+            this.listIdx = listIdx;
         }
     }
 
     public int[] smallestRange(List<List<Integer>> nums) {
-        int currLo = Integer.MAX_VALUE;
-        int currMax = Integer.MIN_VALUE;
-        final PriorityQueue<Item> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a.value));
-        for (int i = 0; i < nums.size(); i++) {
-            pq.add(new Item(i, 0, nums.get(i).get(0)));
-            currLo = Math.min(currLo, nums.get(i).get(0));
-            currMax = Math.max(currMax, nums.get(i).get(0));
+        final TreeSet<Pair> ts = new TreeSet<>((a, b) -> a.val == b.val ? Integer.compare(a.listIdx, b.listIdx)
+                                                                        : Integer.compare(a.val, b.val));
+        final int k = nums.size();
+        for (int i = 0; i < k; i++) {
+            ts.add(new Pair(nums.get(i).get(0), 0, i));
         }
-        final int[] res = { currLo, currMax };
-        while (true) {
-            final Item curr = pq.remove();
-            if (curr.colIdx + 1 == nums.get(curr.rowIdx).size()) {
-                return res;
+        final int[] res = { (int) -1e6, (int) 1e6 };
+        while (ts.size() == k) {
+            if (ts.last().val - ts.first().val < res[1] - res[0]) {
+                res[0] = ts.first().val;
+                res[1] = ts.last().val;
             }
-            final Integer next = nums.get(curr.rowIdx).get(curr.colIdx + 1);
-            pq.offer(new Item(curr.rowIdx, curr.colIdx + 1, next));
-            currLo = pq.element().value;
-            currMax = Math.max(currMax, next);
-            if (currMax - currLo < res[1] - res[0]) {
-                res[0] = currLo;
-                res[1] = currMax;
+            final Pair pair = ts.pollFirst();
+            if (pair != null && pair.idx + 1 < nums.get(pair.listIdx).size()) {
+                ts.add(new Pair(nums.get(pair.listIdx).get(pair.idx + 1), pair.idx + 1, pair.listIdx));
             }
         }
+        return res;
     }
 }
 

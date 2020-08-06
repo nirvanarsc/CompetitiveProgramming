@@ -1,28 +1,30 @@
 package medium;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_98 {
 
     public boolean isValidBST(TreeNode root) {
-        return helper(root, null, null);
+        return dfs(root, null, null);
     }
 
-    private static boolean helper(TreeNode node, Integer low, Integer high) {
+    private static boolean dfs(TreeNode node, Integer low, Integer high) {
         if (node == null) {
             return true;
         }
 
-        return (low == null || node.val > low) && (high == null || node.val < high)
-               && helper(node.left, low, node.val)
-               && helper(node.right, node.val, high);
+        return (low == null || low < node.val)
+               && (high == null || node.val < high)
+               && dfs(node.left, low, node.val)
+               && dfs(node.right, node.val, high);
     }
 
     public boolean isValidBSTIterative(TreeNode root) {
-        final Deque<TreeNode> stack = new LinkedList<>();
+        final Deque<TreeNode> stack = new ArrayDeque<>();
         TreeNode prev = null, curr = root;
 
         while (!stack.isEmpty() || curr != null) {

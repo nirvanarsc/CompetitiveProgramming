@@ -11,9 +11,8 @@ public class P_442 {
             final int abs = Math.abs(num);
             if (nums[abs - 1] < 0) {
                 res.add(abs);
-            } else {
-                nums[abs - 1] = -nums[abs - 1];
             }
+            nums[abs - 1] *= -1;
         }
         return res;
     }
