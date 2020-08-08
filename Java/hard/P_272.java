@@ -53,4 +53,65 @@ public class P_272 {
         dq.add(root.val);
         inorder(root.right, dq);
     }
+
+    // O(k + log n)
+    public List<Integer> closestKValuesOptimized(TreeNode root, double target, int k) {
+        final List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+
+        // step 1: find the closet value and save the path
+        final Deque<TreeNode> lowerStack = new ArrayDeque<>();
+        final Deque<TreeNode> upperStack = new ArrayDeque<>();
+
+        TreeNode p = root;
+        while (p != null) {
+            if (p.val < target) {
+                lowerStack.addFirst(p);
+                p = p.right;
+            } else {
+                upperStack.addFirst(p);
+                p = p.left;
+            }
+        }
+
+        for (int i = 0; i < k; i++) {
+            if (lowerStack.isEmpty()) {
+                final TreeNode top = upperStack.pop();
+                res.add(top.val);
+                goUpperNext(top.right, upperStack);
+            } else if (upperStack.isEmpty()) {
+                final TreeNode top = lowerStack.pop();
+                res.add(top.val);
+                goLowerNext(top.left, lowerStack);
+            } else if (upperStack.getFirst().val - target <= target - lowerStack.getFirst().val) {
+                final TreeNode top = upperStack.pop();
+                res.add(top.val);
+                goUpperNext(top.right, upperStack);
+            } else {
+                final TreeNode top = lowerStack.pop();
+                res.add(top.val);
+                goLowerNext(top.left, lowerStack);
+            }
+        }
+
+        return res;
+    }
+
+    private static void goUpperNext(TreeNode node, Deque<TreeNode> stack) {
+        TreeNode p = node;
+        while (p != null) {
+            stack.addFirst(p);
+            p = p.left;
+        }
+    }
+
+    private static void goLowerNext(TreeNode node, Deque<TreeNode> stack) {
+        TreeNode p = node;
+        while (p != null) {
+            stack.addFirst(p);
+            p = p.right;
+        }
+    }
 }
