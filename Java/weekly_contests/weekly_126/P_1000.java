@@ -1,5 +1,6 @@
 package weekly_contests.weekly_126;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_1000 {
 
     public int mergeStones(int[] stones, int K) {
@@ -13,33 +14,24 @@ public class P_1000 {
             prefixSum[i] = prefixSum[i - 1] + stones[i - 1];
         }
 
-        return getResult(prefixSum, 1, len, 1, K, new Integer[len + 1][len + 1][K + 1]);
+        return dfs(prefixSum, 1, len, 1, K, new Integer[len + 1][len + 1][K + 1]);
     }
 
-    private static int getResult(int[] prefixSum, int left, int right, int piles, int K, Integer[][][] dp) {
+    private static int dfs(int[] prefixSum, int left, int right, int piles, int K, Integer[][][] dp) {
         if (left == right) {
-            return (piles == 1) ? 0 : Integer.MAX_VALUE;
+            return (piles == 1) ? 0 : (int) 1e9;
+        }
+        if (piles == 1) {
+            return dfs(prefixSum, left, right, K, K, dp) + prefixSum[right] - prefixSum[left - 1];
         }
         if (dp[left][right][piles] != null) {
             return dp[left][right][piles];
         }
-
-        int res = Integer.MAX_VALUE;
-        if (piles == 1) {
-            final int mergeK = getResult(prefixSum, left, right, K, K, dp);
-            if (mergeK != Integer.MAX_VALUE) {
-                res = mergeK + prefixSum[right] - prefixSum[left - 1];
-            }
-        } else {
-            for (int t = left; t < right; t++) {
-                final int l = getResult(prefixSum, left, t, piles - 1, K, dp);
-                final int r = getResult(prefixSum, t + 1, right, 1, K, dp);
-                if (l != Integer.MAX_VALUE && r != Integer.MAX_VALUE) {
-                    res = Math.min(res, l + r);
-                }
-            }
+        int res = (int) 1e9;
+        for (int t = left; t < right; t++) {
+            res = Math.min(res, dfs(prefixSum, left, t, piles - 1, K, dp) +
+                                dfs(prefixSum, t + 1, right, 1, K, dp));
         }
-
         return dp[left][right][piles] = res;
     }
 }
