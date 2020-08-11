@@ -34,4 +34,23 @@ public class P_274 {
         }
         return 0;
     }
+
+    // upperBound
+    public int hIndexBS(int[] citations) {
+        int lo = 0;
+        int hi = citations.length;
+        while(lo < hi) {
+            final int mid = (1 + lo + hi) >>> 1;
+            int count = 0;
+            for(int c: citations) {
+                count += c >= mid ? 1:0;
+            }
+            if(count >= mid) {
+                lo = mid;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return lo;
+    }
 }
