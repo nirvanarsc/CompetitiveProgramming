@@ -1,29 +1,19 @@
 package easy;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public final class P_119 {
+public class P_119 {
 
-    public static List<Integer> getRow(int rowIndex) {
-        List<Integer> row = new ArrayList<>(Collections.singletonList(1));
+    public List<Integer> getRow(int rowIndex) {
+        final int[] res = new int[rowIndex + 1];
+        res[0] = 1;
         for (int i = 1; i <= rowIndex; i++) {
-            final List<Integer> next = new ArrayList<>();
-            for (int k = 0; k < i + 1; k++) {
-                final int upLeft = k == 0 ? 0 : row.get(k - 1);
-                final int up = k == i ? 0 : row.get(k);
-                next.add(upLeft + up);
+            for (int k = i; k >= 1; k--) {
+                res[k] += res[k - 1];
             }
-            row = next;
-
         }
-        return row;
+        return Arrays.stream(res).boxed().collect(Collectors.toList());
     }
-
-    public static void main(String[] args) {
-        System.out.println(getRow(3));
-    }
-
-    private P_119() {}
 }
