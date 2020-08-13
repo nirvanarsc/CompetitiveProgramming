@@ -1,42 +1,50 @@
 package biweekly_contests.biweekly_15;
 
-import java.util.List;
+import java.util.stream.IntStream;
 
-import medium.P_77;
-
-public final class P_1286 {
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull", "unused" })
+public class P_1286 {
 
     static class CombinationIterator {
         String word;
-        List<List<Integer>> combinations;
-        int idx;
+        int[] combination;
 
         CombinationIterator(String characters, int combinationLength) {
             word = characters;
-            combinations = P_77.combine(characters.length(), combinationLength);
-            idx = 0;
+            combination = IntStream.range(0, combinationLength).toArray();
         }
 
         public String next() {
-            final List<Integer> integers = combinations.get(idx);
             final StringBuilder sb = new StringBuilder();
-            for (int i : integers) {
-                sb.append(word.charAt(i - 1));
+            for (int idx : combination) {
+                sb.append(word.charAt(idx));
             }
-            idx++;
+            combination = nextCombination(combination, word.length(), combination.length);
             return sb.toString();
         }
 
         public boolean hasNext() {
-            return idx != combinations.size();
+            return combination != null;
         }
-    }
 
-    public static void main(String[] args) {
-        final CombinationIterator cbi = new CombinationIterator("abc", 2);
-
-        while (cbi.hasNext()) {
-            System.out.println(cbi.next());
+        private static int[] nextCombination(int[] curr, int n, int k) {
+            if (curr[k - 1] < n - 1) {
+                curr[k - 1]++;
+                return curr;
+            }
+            int idx = k - 1;
+            while (idx > 0 && curr[idx] == curr[idx - 1] + 1) {
+                idx--;
+            }
+            if (idx == 0) {
+                return null;
+            }
+            idx--;
+            curr[idx]++;
+            for (int i = idx + 1; i < k; i++) {
+                curr[i] = curr[i - 1] + 1;
+            }
+            return curr;
         }
     }
 }
