@@ -45,8 +45,7 @@ public class P_47 {
         }
         final Set<Integer> seen = new HashSet<>();
         for (int k = i; k < curr.size(); k++) {
-            if (!seen.contains(curr.get(k))) {
-                seen.add(curr.get(k));
+            if (seen.add(curr.get(k))) {
                 Collections.swap(curr, i, k);
                 dfs(i + 1, curr, res);
                 Collections.swap(curr, i, k);
