@@ -1,20 +1,15 @@
 package weekly_contests.weekly_128;
 
+import java.util.Arrays;
+
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_1011 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public int shipWithinDays(int[] weights, int D) {
-        int max = Integer.MIN_VALUE;
-        int sum = 0;
-        for (int w : weights) {
-            max = Math.max(max, w);
-            sum += w;
-        }
-        int lo = max;
-        int hi = sum;
+        int lo = Arrays.stream(weights).summaryStatistics().getMax(), hi = (int) 1e9;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (helper(weights, mid) >= D) {
+            if (f(weights, mid, D)) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -23,16 +18,16 @@ public class P_1011 {
         return lo;
     }
 
-    private static int helper(int[] weights, int mid) {
+    private static boolean f(int[] weights, int mid, int D) {
         int curr = 0;
-        int res = 0;
+        int days = 0;
         for (int w : weights) {
             if (curr + w > mid) {
                 curr = 0;
-                res++;
+                days++;
             }
             curr += w;
         }
-        return res;
+        return days > D;
     }
 }
