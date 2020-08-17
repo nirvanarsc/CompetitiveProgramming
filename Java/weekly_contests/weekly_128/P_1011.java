@@ -28,6 +28,6 @@ public class P_1011 {
             }
             curr += w;
         }
-        return days > D;
+        return D <= days;
     }
 }
