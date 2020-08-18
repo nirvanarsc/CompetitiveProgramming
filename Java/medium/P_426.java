@@ -11,7 +11,7 @@ public class P_426 {
     Node prev;
     Node first;
 
-    @SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
+    @SuppressWarnings("ReturnOfNull")
     public Node treeToDoublyList(Node root) {
         if (root == null) {
             return null;
