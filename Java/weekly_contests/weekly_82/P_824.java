@@ -1,23 +1,24 @@
 package weekly_contests.weekly_82;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_824 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public String toGoatLatin(String S) {
         final String[] words = S.split(" ");
-        final StringBuilder sb = new StringBuilder();
+        final String vowels = "aeiouAEIOU";
+        final StringBuilder res = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
             final String word = words[i];
-            if ("aeiouAEIOU".indexOf(word.charAt(0)) == -1) {
-                sb.append(word, 1, word.length());
-                sb.append(word.charAt(0));
+            if (vowels.indexOf(word.charAt(0)) == -1) {
+                res.append(word, 1, word.length());
+                res.append(word.charAt(0));
             } else {
-                sb.append(word);
+                res.append(word);
             }
-            sb.append('m');
-            sb.append("a".repeat(i + 2));
-            sb.append(' ');
+            res.append("ma");
+            res.append("a".repeat(i + 1));
+            res.append(' ');
         }
-        return sb.deleteCharAt(sb.length() - 1).toString();
+        return res.deleteCharAt(res.length() - 1).toString();
     }
 }

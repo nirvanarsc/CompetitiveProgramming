@@ -3,16 +3,17 @@ package medium;
 public class P_34 {
 
     public int[] searchRange(int[] nums, int target) {
-        final int first = bs(nums, target);
-        if (first == nums.length || nums[first] != target) {
+        final int lower = lowerBound(nums, target);
+        final int upper = upperBound(nums, target);
+        if (lower == nums.length || nums[lower] != target) {
             return new int[] { -1, -1 };
         }
-        final int last = bs(nums, target + 1) - 1;
-        return new int[] { first, last };
+        return new int[] { lower, upper };
     }
 
-    public int bs(int[] nums, int target) {
-        int lo = 0, hi = nums.length;
+    private static int lowerBound(int[] nums, int target) {
+        int lo = 0;
+        int hi = nums.length - 1;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
             if (nums[mid] < target) {
@@ -24,30 +25,17 @@ public class P_34 {
         return lo;
     }
 
-    public int[] searchRangeNew(int[] nums, int target) {
+    private static int upperBound(int[] nums, int target) {
         int lo = 0;
-        int hi = nums.length;
+        int hi = nums.length - 1;
         while (lo < hi) {
-            final int mid = lo + hi >>> 1;
-            if (nums[mid] < target) {
-                lo = mid + 1;
+            final int mid = (lo + hi + 1) >>> 1;
+            if (nums[mid] > target) {
+                hi = mid - 1;
             } else {
-                hi = mid;
+                lo = mid;
             }
         }
-        if (lo == nums.length || nums[lo] != target) {
-            return new int[] { -1, -1 };
-        }
-        final int first = lo;
-        hi = nums.length;
-        while (lo < hi) {
-            final int mid = lo + hi >>> 1;
-            if (nums[mid] <= target) {
-                lo = mid + 1;
-            } else {
-                hi = mid;
-            }
-        }
-        return new int[] { first, lo - 1 };
+        return lo;
     }
 }
