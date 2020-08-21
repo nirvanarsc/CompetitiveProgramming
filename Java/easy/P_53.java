@@ -4,6 +4,17 @@ import java.util.Arrays;
 
 public class P_53 {
 
+    public int maxSubArrayEPI(int[] nums) {
+        int minSum = 0, sum = 0, maxSum = 0, max = Integer.MIN_VALUE;
+        for (int num : nums) {
+            sum += num;
+            max = Math.max(max, num);
+            minSum = Math.min(minSum, sum);
+            maxSum = Math.max(maxSum, sum - minSum);
+        }
+        return max < 0 ? max : maxSum;
+    }
+
     public int maxSubArray(int[] nums) {
         int curr = nums[0];
         int res = nums[0];
@@ -11,7 +22,6 @@ public class P_53 {
             curr = Math.max(nums[i], curr + nums[i]);
             res = Math.max(res, curr);
         }
-
         return res;
     }
 

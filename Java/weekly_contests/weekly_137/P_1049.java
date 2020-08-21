@@ -1,5 +1,7 @@
 package weekly_contests.weekly_137;
 
+import java.util.Arrays;
+
 public class P_1049 {
 
     public int lastStoneWeightII(int[] stones) {
@@ -41,5 +43,23 @@ public class P_1049 {
             }
         }
         return sum - 2 * dp[n][sum / 2];
+    }
+
+    public int lastStoneWeightIIKnapsack(int[] votes) {
+        final int total = Arrays.stream(votes).sum();
+        final boolean[] dp = new boolean[total + 1];
+        dp[0] = true;
+
+        for (int vote : votes) {
+            for (int i = total; i >= vote; --i) {
+                dp[i] |= dp[i - vote];
+            }
+        }
+        for (int i = total / 2; i >= 0; --i) {
+            if (dp[i]) {
+                return total - 2 * i;
+            }
+        }
+        return 0;
     }
 }
