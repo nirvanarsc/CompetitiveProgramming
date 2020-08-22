@@ -1,10 +1,11 @@
+@SuppressWarnings("ConstantConditions")
 public final class ReversePrintImmutableLinkedList {
 
-    private static class ListNode<T> {
+    private static final class ListNode<T> {
         public T data;
         public ListNode<T> next;
 
-        public ListNode(T data, ListNode<T> next) {
+        private ListNode(T data, ListNode<T> next) {
             this.data = data;
             this.next = next;
         }
@@ -38,7 +39,6 @@ public final class ReversePrintImmutableLinkedList {
             t.next = new ListNode<>(i, null);
             t = t.next;
         }
-
         reversePrint(head, null);
     }
 

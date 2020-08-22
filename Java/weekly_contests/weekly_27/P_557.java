@@ -11,7 +11,6 @@ public class P_557 {
             }
             sb.append(' ');
         }
-        sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
+        return sb.deleteCharAt(sb.length() - 1).toString();
     }
 }
