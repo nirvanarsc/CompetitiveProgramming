@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 
+@SuppressWarnings("unused")
 public class P_1032 {
 
     static class Trie {
@@ -136,7 +137,7 @@ public class P_1032 {
         private void buildTrie(String[] words) {
             for (String word : words) {
                 Trie current = root;
-                for (char c: word.toCharArray()) {
+                for (char c : word.toCharArray()) {
                     if (current.children[c - 'a'] == null) {
                         current.children[c - 'a'] = new Trie(c);
                     }

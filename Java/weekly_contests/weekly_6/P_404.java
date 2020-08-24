@@ -4,22 +4,23 @@ import utils.DataStructures.TreeNode;
 
 public class P_404 {
 
-    int res;
-
     public int sumOfLeftLeaves(TreeNode root) {
-        dfs(root);
-        return res;
+        return dfs(root);
     }
 
-    private void dfs(TreeNode root) {
-        if (root == null) {
-            return;
+    private static int dfs(TreeNode node) {
+        if (node == null) {
+            return 0;
         }
-        dfs(root.left);
-        if (root.left != null && root.left.left == null && root.left.right == null) {
-            res += root.left.val;
+        int sum = dfs(node.left) + dfs(node.right);
+        if (isLeftLeaf(node)) {
+            sum += node.left.val;
         }
-        dfs(root.right);
+        return sum;
+    }
+
+    private static boolean isLeftLeaf(TreeNode node) {
+        return node.left != null && node.left.left == null && node.left.right == null;
     }
 }
 
