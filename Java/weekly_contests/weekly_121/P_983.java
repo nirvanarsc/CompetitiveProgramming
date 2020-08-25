@@ -3,25 +3,26 @@ package weekly_contests.weekly_121;
 public class P_983 {
 
     public int mincostTickets(int[] days, int[] costs) {
-        return recurse(days, costs, 0, 0, new Integer[400]);
+        final int[][] dayCost = { { costs[0], 0 }, { costs[1], 6 }, { costs[2], 29 } };
+        return dfs(days, dayCost, 0, 0, new Integer[400]);
     }
 
-    private static int recurse(int[] days, int[] costs, int i, int validUntil, Integer[] dp) {
-        if (i == days.length) { return 0; }
-        if (dp[validUntil] != null) { return dp[validUntil]; }
-        final int one;
-        final int seven;
-        final int thirty;
-        if (validUntil <= days[i]) {
-            one = costs[0] + recurse(days, costs, i + 1, days[i] + 1, dp);
-            seven = costs[1] + recurse(days, costs, i + 1, days[i] + 7, dp);
-            thirty = costs[2] + recurse(days, costs, i + 1, days[i] + 30, dp);
-        } else {
-            one = recurse(days, costs, i + 1, validUntil, dp);
-            seven = recurse(days, costs, i + 1, validUntil, dp);
-            thirty = recurse(days, costs, i + 1, validUntil, dp);
+    private static int dfs(int[] days, int[][] costs, int ticket, int idx, Integer[] dp) {
+        if (idx == days.length) {
+            return 0;
         }
-        return dp[validUntil] = Math.min(one, Math.min(seven, thirty));
+        if (dp[ticket] != null) {
+            return dp[ticket];
+        }
+        int res = (int) 1e9;
+        if (days[idx] > ticket) {
+            for (int[] c : costs) {
+                res = Math.min(res, c[0] + dfs(days, costs, days[idx] + c[1], idx + 1, dp));
+            }
+        } else {
+            res = dfs(days, costs, ticket, idx + 1, dp);
+        }
+        return dp[ticket] = res;
     }
 
     public int mincostTicketsBottomUp(int[] days, int[] costs) {

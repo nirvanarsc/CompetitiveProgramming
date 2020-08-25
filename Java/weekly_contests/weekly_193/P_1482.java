@@ -1,13 +1,14 @@
 package weekly_contests.weekly_193;
 
+@SuppressWarnings("unused")
 public class P_1482 {
 
-    public static class TreeAncestor {
+    private static final class TreeAncestor {
 
         int h;
         int[][] parents;
 
-        public TreeAncestor(int n, int[] parent) {
+        private TreeAncestor(int n, int[] parent) {
             h = (int) (Math.log(n) / Math.log(2));
             parents = new int[h + 1][n];
             parents[0] = parent;
