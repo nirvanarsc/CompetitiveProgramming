@@ -27,6 +27,12 @@ public class P_470 {
         return res % 2;
     }
 
+    // https://www.youtube.com/watch?v=7br_-emGNec
+    // proof of E(X) for geometric random variable = 1/p
+    // so the expected value for the number of calls to rand7() of the function below is
+    // E(X) = 2 * (1/ (40/49)) -> p = 40/49 and (1-p) = 9/49
+    // E(X) = 2 * 49/40
+    // E(X) = 49/20 = 2.45
     public int rand10Mult() {
         int res;
         do {
