@@ -7,35 +7,33 @@ import java.util.List;
 public class P_969 {
 
     public List<Integer> pancakeSort(int[] A) {
-        final List<Integer> list = new ArrayList<>();
-        for (int end = A.length - 1; end >= 0; end--) {
-            final int largest = findLargest(A, end);
-            if (largest != end) {
-                flip(A, 0, largest);
-                flip(A, 0, end);
-                list.add(largest + 1);
-                list.add(end + 1);
+        final List<Integer> res = new ArrayList<>();
+        for (int curr = A.length; curr > 0; curr--) {
+            final int maxIdx = indexOf(A, curr);
+            if (maxIdx == A[maxIdx - 1]) {
+                continue;
             }
+            res.add(maxIdx);
+            res.add(curr);
+            reverse(A, 0, maxIdx - 1);
+            reverse(A, 0, curr - 1);
         }
-        return list;
+        return res;
     }
 
-    private static int findLargest(int[] A, int lastIdx) {
-        int max = Integer.MIN_VALUE, index = 0;
-        for (int i = 0; i <= lastIdx; i++) {
-            if (A[i] > max) {
-                max = A[i];
-                index = i;
+    private static int indexOf(int[] arr, int target) {
+        for (int i = 0; true; i++) {
+            if (arr[i] == target) {
+                return i + 1;
             }
         }
-        return index;
     }
 
-    private static void flip(int[] A, int start, int end) {
-        for (int i = start, j = end; i < j; i++, j--) {
-            final int tmp = A[i];
-            A[i] = A[j];
-            A[j] = tmp;
+    private static void reverse(int[] arr, int from, int to) {
+        for (int i = from; 2 * i < to + from; i++) {
+            final int temp = arr[i];
+            arr[i] = arr[to + from - i];
+            arr[to + from - i] = temp;
         }
     }
 }
