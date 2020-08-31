@@ -2,6 +2,7 @@ package medium;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
 public class P_450 {
 
     public TreeNode deleteNode(TreeNode root, int key) {

@@ -4,21 +4,27 @@ import utils.DataStructures.TreeNode;
 
 public class P_110 {
 
-    public boolean isBalanced(TreeNode root) {
-        return getHeight(root) != -1;
+    private static class Pair {
+        int d;
+        boolean isBalanced;
+
+        Pair(int d, boolean isBalanced) {
+            this.d = d;
+            this.isBalanced = isBalanced;
+        }
     }
 
-    public int getHeight(TreeNode root) {
+    public boolean isBalanced(TreeNode root) {
+        return dfs(root).isBalanced;
+    }
+
+    public Pair dfs(TreeNode root) {
         if (root == null) {
-            return 0;
+            return new Pair(0, true);
         }
-
-        final int left = getHeight(root.left);
-        final int right = getHeight(root.right);
-        if (left == -1 || right == -1 || Math.abs(left - right) > 1) {
-            return -1;
-        }
-
-        return Math.max(left, right) + 1;
+        final Pair left = dfs(root.left);
+        final Pair right = dfs(root.right);
+        final boolean balanced = left.isBalanced && right.isBalanced && Math.abs(left.d - right.d) <= 1;
+        return new Pair(Math.max(left.d, right.d) + 1, balanced);
     }
 }
