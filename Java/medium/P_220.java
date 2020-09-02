@@ -8,20 +8,23 @@ import java.util.TreeSet;
 
 public class P_220 {
 
-    public boolean containsNearbyAlmostDuplicateBST(int[] nums, int k, int t) {
-        final TreeSet<Integer> set = new TreeSet<>();
-        for (int i = 0; i < nums.length; ++i) {
-            final Integer s = set.ceiling(nums[i]);
-            if (s != null && s <= nums[i] + t) {
+    public boolean containsNearbyAlmostDuplicateTS(int[] nums, int k, int t) {
+        if (t < 0) { return false; }
+        final TreeSet<Integer> ts = new TreeSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (!ts.add(nums[i])) {
                 return true;
             }
-            final Integer g = set.floor(nums[i]);
-            if (g != null && nums[i] <= g + t) {
+            final Integer higher = ts.higher(nums[i]);
+            final Integer lower = ts.lower(nums[i]);
+            if (higher != null && higher <= t + nums[i]) {
                 return true;
             }
-            set.add(nums[i]);
-            if (set.size() > k) {
-                set.remove(nums[i - k]);
+            if (lower != null && nums[i] <= t + lower) {
+                return true;
+            }
+            if (ts.size() > k) {
+                ts.remove(nums[i - k]);
             }
         }
         return false;

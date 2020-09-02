@@ -19,8 +19,8 @@ public class P_1481 {
     }
 
     private static int query(int l, int r) {
-        final int j = (int) (Math.log(r - l + 1) / Math.log(2));
-        return Math.max(lookup[l][j], lookup[r - (1 << j) + 1][j]);
+        final int height = (int) (Math.log(r - l + 1) / Math.log(2));
+        return Math.max(lookup[l][height], lookup[r - (1 << height) + 1][height]);
     }
 
     // TLE
