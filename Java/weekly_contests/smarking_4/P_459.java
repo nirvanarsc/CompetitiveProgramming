@@ -2,10 +2,15 @@ package weekly_contests.smarking_4;
 
 public class P_459 {
 
-    public boolean repeatedSubstringPatternKMP(String s) {
+    public boolean repeatedSubstringPattern(String s) {
+        final int longestPrefix = kmp(s)[s.length() - 1];
+        return longestPrefix > 0 && s.length() % (s.length() - longestPrefix) == 0;
+    }
+
+    private static int[] kmp(String s) {
         final int n = s.length();
         final int[] prefixSuffix = new int[n];
-        for (int i = 1, j = 0; i < n; i++) {
+        for (int i = 1, j = 0; i < s.length(); i++) {
             while (j > 0 && s.charAt(i) != s.charAt(j)) {
                 j = prefixSuffix[j - 1];
             }
@@ -14,28 +19,7 @@ public class P_459 {
             }
             prefixSuffix[i] = j;
         }
-        final int length = prefixSuffix[n - 1];
-        return length != 0 && n % (2 * length - n) == 0;
-
-    }
-
-    public boolean repeatedSubstringPattern(String s) {
-        for (int i = s.length() / 2; i >= 1; i--) {
-            int k = 0;
-            boolean isRepeated = true;
-            if (s.length() % i == 0) {
-                for (int j = 0; j < s.length(); j++, k++) {
-                    if (s.charAt(j) != s.charAt(k % i)) {
-                        isRepeated = false;
-                        break;
-                    }
-                }
-                if (isRepeated) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return prefixSuffix;
     }
 
     public boolean repeatedSubstringPatternConcatenate(String s) {
