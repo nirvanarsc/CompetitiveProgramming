@@ -1,6 +1,9 @@
 package weekly_contests.weekly_19;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class P_493 {
 
@@ -75,5 +78,78 @@ public class P_493 {
         }
         Arrays.sort(nums, lo, hi + 1);
         return cnt;
+    }
+
+    private static class SegTree {
+        long leftMost, rightMost;
+        SegTree left, right;
+        int sum;
+
+        SegTree(long leftMost, long rightMost) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost != rightMost) {
+                final long mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid);
+                right = new SegTree(mid + 1, rightMost);
+            }
+            recalc();
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = left.sum + right.sum;
+        }
+
+        private void update(int idx, int val) {
+            if (leftMost == rightMost) {
+                sum = val;
+            } else {
+                final long mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+
+        private int query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return sum;
+            }
+            return left.query(l, r) + right.query(l, r);
+        }
+    }
+
+    public int reversePairsST(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        final int n = nums.length;
+        final int[] copy = nums.clone();
+        Arrays.sort(copy);
+        final TreeMap<Long, Integer> tm = new TreeMap<>();
+        for (int i = 0; i < n; i++) {
+            tm.put((long) copy[i], i);
+        }
+        final SegTree st = new SegTree(0, n - 1);
+        final Map<Integer, Integer> freq = new HashMap<>();
+        int res = 0;
+        for (int val : nums) {
+            final Long k = tm.higherKey(2L * val);
+            if (k != null) {
+                res += st.query(tm.get(k), n);
+            }
+            final int id = tm.get((long) val);
+            st.update(id, freq.merge(id, 1, Integer::sum));
+        }
+        return res;
     }
 }
