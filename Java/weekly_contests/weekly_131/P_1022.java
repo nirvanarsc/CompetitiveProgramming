@@ -2,26 +2,27 @@ package weekly_contests.weekly_131;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_1022 {
 
     public int sumRootToLeaf(TreeNode root) {
-        final int[] res = { 0, 0 };
-        dfs(root, res);
-        return res[1];
+        final int[] path = { 0 };
+        final int[] res = { 0 };
+        dfs(root, path, res);
+        return res[0];
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private static void dfs(TreeNode root, int[] res) {
-        if (root == null) {
+    private static void dfs(TreeNode node, int[] path, int[] res) {
+        if (node == null) {
             return;
         }
-        res[0] = (res[0] << 1) | root.val;
-        dfs(root.left, res);
-        if (root.left == null && root.right == null) {
-            res[1] += res[0];
+        path[0] = path[0] << 1 | node.val;
+        dfs(node.left, path, res);
+        if (node.left == null && node.right == null) {
+            res[0] += path[0];
         }
-        dfs(root.right, res);
-        res[0] >>= 1;
+        dfs(node.right, path, res);
+        path[0] >>= 1;
     }
 
     public int sumRootToLeafDFS(TreeNode root) {
