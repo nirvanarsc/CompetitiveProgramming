@@ -1,17 +1,20 @@
 package medium;
 
+import java.util.Arrays;
+
 public class P_165 {
 
     public int compareVersion(String version1, String version2) {
-        final String[] split1 = version1.split("\\.");
-        final String[] split2 = version2.split("\\.");
-        for (int i = 0; i < Math.max(split1.length, split2.length); i++) {
-            final int left = i < split1.length ? Integer.parseInt(split1[i]) : 0;
-            final int right = i < split2.length ? Integer.parseInt(split2[i]) : 0;
-            if (left < right) {
-                return -1;
-            } else if (left > right) {
+        final int[] left = Arrays.stream(version1.split("\\.")).mapToInt(Integer::valueOf).toArray();
+        final int[] right = Arrays.stream(version2.split("\\.")).mapToInt(Integer::valueOf).toArray();
+        for (int i = 0; i < Math.max(left.length, right.length); i++) {
+            final int l = i >= left.length ? 0 : left[i];
+            final int r = i >= right.length ? 0 : right[i];
+            if (l > r) {
                 return 1;
+            }
+            if (l < r) {
+                return -1;
             }
         }
         return 0;
