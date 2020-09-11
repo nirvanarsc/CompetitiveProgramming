@@ -3,27 +3,16 @@ package medium;
 public class P_152 {
 
     public int maxProduct(int[] nums) {
+        int prevMin = nums[0];
+        int prevMax = nums[0];
         int res = nums[0];
-        for (int i = 1, currMax = res, currMin = res; i < nums.length; i++) {
-            if (nums[i] < 0) {
-                final int temp = currMax;
-                currMax = currMin;
-                currMin = temp;
-            }
 
-            currMax = Math.max(nums[i], currMax * nums[i]);
-            currMin = Math.min(nums[i], currMin * nums[i]);
+        for (int i = 1; i < nums.length; i++) {
+            final int currMin = Math.min(nums[i], Math.min(nums[i] * prevMin, nums[i] * prevMax));
+            final int currMax = Math.max(nums[i], Math.max(nums[i] * prevMax, nums[i] * prevMin));
             res = Math.max(res, currMax);
-        }
-        return res;
-    }
-
-    public int maxProduct2(int[] nums) {
-        int res = Integer.MIN_VALUE, l = 0, r = 0;
-        for (int i = 0; i < nums.length; i++) {
-            l = (l == 0 ? 1 : l) * nums[i];
-            r = (r == 0 ? 1 : r) * nums[nums.length - 1 - i];
-            res = Math.max(res, Math.max(l, r));
+            prevMin = currMin;
+            prevMax = currMax;
         }
         return res;
     }
