@@ -3,18 +3,16 @@ package easy;
 public class P_198 {
 
     public int rob(int[] nums) {
-        return recurse(0, nums, new Integer[nums.length]);
+        return dfs(nums, 0, new Integer[nums.length]);
     }
 
-    private static int recurse(int start, int[] nums, Integer[] dp) {
-        if (start >= nums.length) {
+    private static int dfs(int[] nums, int idx, Integer[] dp) {
+        if (idx >= nums.length) {
             return 0;
         }
-
-        if (dp[start] != null) {
-            return dp[start];
+        if (dp[idx] != null) {
+            return dp[idx];
         }
-
-        return dp[start] = Math.max(nums[start] + recurse(start + 2, nums, dp), recurse(start + 1, nums, dp));
+        return dp[idx] = Math.max(dfs(nums, idx + 1, dp), nums[idx] + dfs(nums, idx + 2, dp));
     }
 }
