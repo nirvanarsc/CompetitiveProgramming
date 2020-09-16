@@ -2,12 +2,8 @@ package medium;
 
 public class P_421 {
 
-    static class Trie {
-        Trie[] children;
-
-        Trie() {
-            children = new Trie[2];
-        }
+    private static class Trie {
+        Trie[] children = new Trie[2];
     }
 
     public int findMaximumXOR(int[] nums) {
@@ -27,13 +23,12 @@ public class P_421 {
             Trie curr = root;
             int currSum = 0;
             for (int i = Integer.SIZE - 1; i >= 0; i--) {
-                final int curBit = (num >> i) & 1;
+                int curBit = (num >> i) & 1;
                 if (curr.children[curBit ^ 1] != null) {
-                    currSum += 1 << i;
-                    curr = curr.children[curBit ^ 1];
-                } else {
-                    curr = curr.children[curBit];
+                    currSum |= 1 << i;
+                    curBit ^= 1;
                 }
+                curr = curr.children[curBit];
             }
             res = Math.max(currSum, res);
         }
