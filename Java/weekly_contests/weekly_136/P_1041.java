@@ -1,29 +1,24 @@
 package weekly_contests.weekly_136;
 
-import java.util.Arrays;
-
 public class P_1041 {
 
     public boolean isRobotBounded(String instructions) {
-        final int[] cycle = { 0, 0 };
-        final int[] pos = { 0, 0 };
-        int dir = 0;
-        for (int k = 0; k < 4; k++) {
-            for (char c : instructions.toCharArray()) {
-                if (c == 'G') {
-                    switch (dir) {
-                        case 0: pos[1]++; break;
-                        case 1: pos[0]++; break;
-                        case 2: pos[1]--; break;
-                        case 3: pos[0]--; break;
-                    }
-                } else if (c == 'L') {
-                    dir = ((dir - 1) + 4) % 4;
-                } else {
-                    dir = (dir + 1) % 4;
+        int x = 0, y = 0, dir = 0;
+        for (int i = 0; i < instructions.length() * 4; i++) {
+            final char c = instructions.charAt(i % instructions.length());
+            if (c == 'G') {
+                switch (dir) {
+                    case 0: y += 1;break;
+                    case 1: x += 1;break;
+                    case 2: y -= 1;break;
+                    case 3: x -= 1;break;
                 }
+            } else if (c == 'L') {
+                dir = (4 + dir - 1) % 4;
+            } else {
+                dir = (dir + 1) % 4;
             }
         }
-        return Arrays.equals(pos, cycle);
+        return x == 0 && y == 0;
     }
 }
