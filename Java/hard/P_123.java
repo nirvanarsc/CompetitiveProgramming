@@ -2,17 +2,6 @@ package hard;
 
 public class P_123 {
 
-    public int maxProfit(int[] prices, int fee) {
-        int buy = Integer.MAX_VALUE;
-        int profit = 0;
-        for (int price : prices) {
-            buy = Math.min(buy, price);
-            profit = Math.max(profit, price - buy - fee);
-        }
-        return profit;
-
-    }
-
     public int maxProfit(int[] prices) {
         int buy1 = Integer.MAX_VALUE;
         int buy2 = Integer.MAX_VALUE;
