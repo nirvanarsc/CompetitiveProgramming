@@ -5,7 +5,7 @@ import java.util.List;
 
 public class P_1291 {
 
-    public List<Integer> sequentialDigits(int low, int high) {
+    public List<Integer> sequentialDigitsBF(int low, int high) {
         final int[] allNums = {
                 12, 23, 34, 45, 56, 67, 78, 89,
                 123, 234, 345, 456, 567, 678, 789,
@@ -25,33 +25,17 @@ public class P_1291 {
         return res;
     }
 
-    public static List<Integer> sequentialDigits2(int low, int high) {
+    public List<Integer> sequentialDigits(int low, int high) {
+        final String digits = "123456789";
         final List<Integer> res = new ArrayList<>();
-        int idx = 11;
-        int threshold = 100;
-        int t = 3;
-        int seed = 12;
-        for (int i = 12; i <= high; i += idx) {
-            if (i + idx > threshold || i % 10 == 0 || i == 272933937) {
-                seed *= 10;
-                seed += t;
-                t++;
-                i = seed;
-                threshold *= 10;
-                idx *= 10;
-                idx += 1;
-            }
-            if (low <= i && i <= high) {
-                res.add(i);
+        for (int l = 2; l <= 9; l++) {
+            for (int i = l; i <= 9; i++) {
+                final int curr = Integer.parseInt(digits.substring(i - l, i));
+                if (low <= curr && curr <= high) {
+                    res.add(curr);
+                }
             }
         }
-
         return res;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(sequentialDigits2(10, 1000000000));
-        System.out.println(sequentialDigits2(1111, 123456));
-        System.out.println(sequentialDigits2(1111, 12346));
     }
 }
