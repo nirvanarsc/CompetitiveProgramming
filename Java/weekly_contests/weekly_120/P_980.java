@@ -37,8 +37,8 @@ public class P_980 {
             }
             return;
         }
-        grid[x][y] = -2;
         empty[0]--;
+        grid[x][y] = -1;
         for (int[] dir : DIRS) {
             dfs(grid, x + dir[0], y + dir[1], ex, ey, empty, res);
         }
