@@ -7,7 +7,7 @@ import java.util.List;
 
 public class P_913 {
 
-    public int catMouseGame(int[][] graph) {
+    public int catMouseGameG(int[][] graph) {
         final int N = graph.length;
         final int DRAW = 0, MOUSE = 1, CAT = 2;
 
@@ -91,5 +91,53 @@ public class P_913 {
             }
         }
         return ans;
+    }
+
+    public int catMouseGame(int[][] graph) {
+        final int n = graph.length;
+        return dfs(graph, 0, 1, 2, new Integer[2 * n][n][n]);
+    }
+
+    public int dfs(int[][] graph, int turn, int mouse, int cat, Integer[][][] dp) {
+        if (turn == 2 * graph.length) {
+            return 0; // endless game, draw
+        }
+        if (mouse == cat) {
+            return dp[turn][mouse][cat] = 2; // cat win
+        }
+        if (mouse == 0) {
+            return dp[turn][0][cat] = 1; // mouse win
+        }
+        if (dp[turn][mouse][cat] != null) {
+            return dp[turn][mouse][cat];
+        }
+        final int chance = turn % 2;
+        // if chance is 0, it's mouse turn to play
+        if (chance == 0) {
+            boolean catWin = true;
+            for (int nextMove : graph[mouse]) {
+                final int res = dfs(graph, turn + 1, nextMove, cat, dp);
+                if (res == 1) {
+                    return dp[turn][mouse][cat] = 1;
+                } else if (res == 0) {
+                    catWin = false; // it's a draw;
+                }
+            }
+            return dp[turn][mouse][cat] = catWin ? 2 : 0;
+        }
+        boolean mouseWin = true;
+        for (int nextMove : graph[cat]) {
+            // Cat can't move to 0
+            if (nextMove == 0) {
+                continue;
+            }
+            final int res = dfs(graph, turn + 1, mouse, nextMove, dp);
+            if (res == 2) {
+                return dp[turn][mouse][cat] = 2;
+            } else if (res == 0) {
+                mouseWin = false; // it's a draw;
+            }
+        }
+        return dp[turn][mouse][cat] = mouseWin ? 1 : 0;
     }
 }
