@@ -1,48 +1,90 @@
 package weekly_contests.weekly_175;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class P_1349 {
 
-    public int maxStudents(char[][] seats) {
-        return getMax(seats, 0, 0, new Integer[seats.length][1 << seats[0].length]);
+    public int maxStudentsSmart(char[][] seats) {
+        final int n = seats.length;
+        final int m = seats[0].length;
+        final int[] rows = new int[n];
+        for (int i = 0; i < n; i++) {
+            int curr = 0;
+            for (int j = 0; j < m; j++) {
+                curr = curr * 2 + ((seats[i][j] == '.') ? 1 : 0);
+            }
+            rows[i] = curr;
+        }
+        return dfs(rows, 0, -1, 1 << m, new Integer[n][1 << m]);
     }
 
-    private static int getMax(char[][] seats, int curRow, int mask, Integer[][] dp) {
-        if (curRow == seats.length) {
+    private static int dfs(int[] rows, int row, int mask, int max, Integer[][] dp) {
+        if (row == rows.length) {
+            return Integer.bitCount(mask);
+        }
+        if (mask != -1 && dp[row][mask] != null) {
+            return dp[row][mask];
+        }
+        int res = 0;
+        for (int nextMask = 0; nextMask < max; nextMask++) {
+            if ((nextMask & rows[row]) == nextMask && ((nextMask & (nextMask >> 1)) == 0)) {
+                if (mask == -1) {
+                    res = Math.max(res, dfs(rows, row + 1, nextMask, max, dp));
+                } else if ((mask & (nextMask >> 1)) == 0 && (mask & (nextMask << 1)) == 0) {
+                    res = Math.max(res, Integer.bitCount(mask) + dfs(rows, row + 1, nextMask, max, dp));
+                }
+            }
+        }
+        if (mask != -1) {
+            dp[row][mask] = res;
+        }
+        return res;
+    }
+
+    public int maxStudents(char[][] seats) {
+        final int n = seats.length;
+        final int m = seats[0].length;
+        return dfs(seats, 0, 0, 0, -1, new Integer[n][m][1 << m][1 << m]);
+    }
+
+    private static int dfs(char[][] seats, int row, int col, int currMask, int prevMask, Integer[][][][] dp) {
+        if (row == seats.length) {
             return 0;
         }
-        if (dp[curRow][mask] != null) {
-            return dp[curRow][mask];
+        if (prevMask != -1 && dp[row][col][currMask][prevMask] != null) {
+            return dp[row][col][currMask][prevMask];
         }
-        final List<Integer> masks = new LinkedList<>();
-        backtrack(seats[curRow], 0, mask, 0, masks, seats.length);
         int res = 0;
-        for (int m : masks) {
-            res = Math.max(res, Integer.bitCount(m) + getMax(seats, curRow + 1, m, dp));
+        if (col == seats[row].length - 1) {
+            res = Math.max(res, dfs(seats, row + 1, 0, 0, currMask, dp));
+            if (seats[row][col] == '.' && checkMasks(seats[row].length, col, currMask, prevMask)) {
+                res = Math.max(res, 1 + dfs(seats, row + 1, 0, 0, currMask | (1 << col), dp));
+            }
+        } else {
+            res = Math.max(res, dfs(seats, row, col + 1, currMask, prevMask, dp));
+            if (seats[row][col] == '.' && checkMasks(seats[row].length, col, currMask, prevMask)) {
+                res = Math.max(res, 1 + dfs(seats, row, col + 1, currMask | (1 << col), prevMask, dp));
+            }
         }
-        return dp[curRow][mask] = res;
+        if (prevMask != -1) {
+            dp[row][col][currMask][prevMask] = res;
+        }
+        return res;
     }
 
-    private static void backtrack(char[] seats, int cur, int prev, int mask, List<Integer> masks, int r) {
-        if (cur == seats.length) {
-            masks.add(mask);
-            return;
+    private static boolean checkMasks(int colLength, int col, int currMask, int prevMask) {
+        if (col != 0) {
+            if ((currMask & (1 << (col - 1))) != 0) {
+                return false;
+            }
+            if (prevMask != -1 && (prevMask & (1 << (col - 1))) != 0) {
+                return false;
+            }
         }
-        if (seats[cur] == '#') {
-            backtrack(seats, cur + 1, prev, mask, masks, r);
-            return;
+        if (col != colLength - 1) {
+            if ((currMask & (1 << (col + 1))) != 0) {
+                return false;
+            }
+            return prevMask == -1 || (prevMask & (1 << (col + 1))) == 0;
         }
-        if (cur > 0 && (((mask & (1 << (cur - 1))) > 0) || (prev & (1 << (cur - 1))) > 0)) {
-            backtrack(seats, cur + 1, prev, mask, masks, r);
-        } else if (cur < r - 1 && ((prev & (1 << (cur + 1))) > 0)) {
-            backtrack(seats, cur + 1, prev, mask, masks, r);
-        } else {
-            mask |= 1 << cur;
-            backtrack(seats, cur + 1, prev, mask, masks, r);
-            mask ^= 1 << cur;
-            backtrack(seats, cur + 1, prev, mask, masks, r);
-        }
+        return true;
     }
 }
