@@ -1,8 +1,6 @@
 package weekly_contests.weekly_19;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
 
 public class P_493 {
@@ -81,19 +79,21 @@ public class P_493 {
     }
 
     private static class SegTree {
-        long leftMost, rightMost;
+        int leftMost, rightMost;
         SegTree left, right;
         int sum;
 
-        SegTree(long leftMost, long rightMost) {
+        SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
             this.rightMost = rightMost;
-            if (leftMost != rightMost) {
-                final long mid = leftMost + rightMost >>> 1;
-                left = new SegTree(leftMost, mid);
-                right = new SegTree(mid + 1, rightMost);
+            if (leftMost == rightMost) {
+                sum = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
             }
-            recalc();
         }
 
         private void recalc() {
@@ -101,20 +101,6 @@ public class P_493 {
                 return;
             }
             sum = left.sum + right.sum;
-        }
-
-        private void update(int idx, int val) {
-            if (leftMost == rightMost) {
-                sum = val;
-            } else {
-                final long mid = leftMost + rightMost >>> 1;
-                if (idx <= mid) {
-                    left.update(idx, val);
-                } else {
-                    right.update(idx, val);
-                }
-                recalc();
-            }
         }
 
         private int query(int l, int r) {
@@ -125,6 +111,20 @@ public class P_493 {
                 return sum;
             }
             return left.query(l, r) + right.query(l, r);
+        }
+
+        private void update(int idx, int val) {
+            if (leftMost == rightMost) {
+                sum += val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
         }
     }
 
@@ -139,16 +139,14 @@ public class P_493 {
         for (int i = 0; i < n; i++) {
             tm.put((long) copy[i], i);
         }
-        final SegTree st = new SegTree(0, n - 1);
-        final Map<Integer, Integer> freq = new HashMap<>();
+        final SegTree st = new SegTree(0, n - 1, new int[n]);
         int res = 0;
         for (int val : nums) {
             final Long k = tm.higherKey(2L * val);
             if (k != null) {
                 res += st.query(tm.get(k), n);
             }
-            final int id = tm.get((long) val);
-            st.update(id, freq.merge(id, 1, Integer::sum));
+            st.update(tm.get((long) val), 1);
         }
         return res;
     }
