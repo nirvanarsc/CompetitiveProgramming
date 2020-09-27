@@ -1,5 +1,7 @@
 package weekly_contests.weekly_4;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,37 +10,47 @@ import java.util.Set;
 
 public class P_399 {
 
-    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        final Map<String, Map<String, Double>> graph = new HashMap<>();
-        for (int i = 0; i < equations.size(); i++) {
-            final String dividend = equations.get(i).get(0);
-            final String divisor = equations.get(i).get(1);
-            graph.computeIfAbsent(dividend, v -> new HashMap<>()).put(divisor, values[i]);
-            graph.computeIfAbsent(divisor, v -> new HashMap<>()).put(dividend, 1 / values[i]);
+    private static class Pair {
+        String other;
+        double ratio;
+
+        Pair(String other, double ratio) {
+            this.other = other;
+            this.ratio = ratio;
         }
-        final double[] result = new double[queries.size()];
-        for (int i = 0; i < queries.size(); i++) {
-            result[i] = getPathWeight(queries.get(i).get(0), queries.get(i).get(1), new HashSet<>(), graph);
-        }
-        return result;
     }
 
-    private static double getPathWeight(String start,
-                                        String end,
-                                        Set<String> visited,
-                                        Map<String, Map<String, Double>> graph) {
-        if (!graph.containsKey(start)) {
-            return -1.0;
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        final Map<String, List<Pair>> g = new HashMap<>();
+        for (int i = 0; i < values.length; i++) {
+            final String u = equations.get(i).get(0);
+            final String v = equations.get(i).get(1);
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(new Pair(v, values[i]));
+            g.computeIfAbsent(v, val -> new ArrayList<>()).add(new Pair(u, 1.0 / values[i]));
         }
-        if (graph.get(start).containsKey(end)) {
-            return graph.get(start).get(end);
+        final double[] res = new double[queries.size()];
+        for (int i = 0; i < queries.size(); i++) {
+            final String u = queries.get(i).get(0);
+            final String v = queries.get(i).get(1);
+            if (!g.containsKey(u) || !g.containsKey(v)) {
+                res[i] = -1.0;
+            } else {
+                res[i] = dfs(g, u, v, new HashSet<>());
+            }
         }
-        visited.add(start);
-        for (Map.Entry<String, Double> neighbour : graph.get(start).entrySet()) {
-            if (!visited.contains(neighbour.getKey())) {
-                final double productWeight = getPathWeight(neighbour.getKey(), end, visited, graph);
-                if (Double.compare(productWeight, -1.0) != 0) {
-                    return neighbour.getValue() * productWeight;
+        return res;
+    }
+
+    private static double dfs(Map<String, List<Pair>> g, String curr, String target, Set<String> seen) {
+        if (curr.equals(target)) {
+            return 1.0;
+        }
+        seen.add(curr);
+        for (Pair next : g.getOrDefault(curr, Collections.emptyList())) {
+            if (seen.add(next.other)) {
+                final double dfs = dfs(g, next.other, target, seen);
+                if (Double.compare(dfs, -1.0) != 0) {
+                    return next.ratio * dfs;
                 }
             }
         }
