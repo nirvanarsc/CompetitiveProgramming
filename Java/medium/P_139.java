@@ -41,4 +41,47 @@ public final class P_139 {
         }
         return dp[start] = res;
     }
+
+    private static class Trie {
+        boolean isWord;
+        Trie[] children = new Trie[26];
+    }
+
+    public boolean wordBreakTrie(String s, List<String> wordDict) {
+        final Trie root = new Trie();
+        for (String word : wordDict) {
+            Trie iter = root;
+            for (char c : word.toCharArray()) {
+                if (iter.children[c - 'a'] == null) {
+                    iter.children[c - 'a'] = new Trie();
+                }
+                iter = iter.children[c - 'a'];
+            }
+            iter.isWord = true;
+        }
+        return dfs(s.toCharArray(), 0, root, root, new Boolean[s.length()]);
+    }
+
+    private static boolean dfs(char[] word, int idx, Trie root, Trie curr, Boolean[] dp) {
+        if (idx == word.length) {
+            return true;
+        }
+        if (dp[idx] != null) {
+            return dp[idx];
+        }
+        boolean res = false;
+        for (int i = idx; i < word.length; i++) {
+            if (curr.children[word[i] - 'a'] == null) {
+                break;
+            }
+            curr = curr.children[word[i] - 'a'];
+            if (curr.isWord) {
+                if (dfs(word, i + 1, root, root, dp)) {
+                    res = true;
+                    break;
+                }
+            }
+        }
+        return dp[idx] = res;
+    }
 }

@@ -9,7 +9,7 @@ public class P_1125 {
 
     List<Integer> sol = new ArrayList<>();
 
-    public int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
+    public int[] smallestSufficientTeamBT(String[] req_skills, List<List<String>> people) {
         final Map<String, Integer> idx = new HashMap<>();
         int n = 0;
         for (String s : req_skills) {
@@ -52,5 +52,48 @@ public class P_1125 {
                 curr.remove(curr.size() - 1);
             }
         }
+    }
+
+    public int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
+        final Map<String, Integer> idx = new HashMap<>();
+        final int n = req_skills.length;
+        for (int i = 0; i < n; i++) {
+            idx.put(req_skills[i], i);
+        }
+        final int[] arr = new int[people.size()];
+        for (int i = 0; i < people.size(); i++) {
+            int mask = 0;
+            for (String skill : people.get(i)) {
+                mask |= 1 << idx.get(skill);
+            }
+            arr[i] = mask;
+        }
+        final long bestMask = dfs(0, (1 << n) - 1, 0, arr, new Long[arr.length][1 << n]);
+        final int[] res = new int[Long.bitCount(bestMask)];
+        int i = 0;
+        for (int j = 0; j < arr.length; j++) {
+            if ((bestMask & (1L << j)) != 0) {
+                res[i++] = j;
+            }
+        }
+        return res;
+    }
+
+    private static long dfs(int skills, int target, int idx, int[] arr, Long[][] dp) {
+        if (idx == arr.length) {
+            return skills == target ? 0 : Long.MAX_VALUE;
+        }
+        if (dp[idx][skills] != null) {
+            return dp[idx][skills];
+        }
+        long res = dfs(skills, target, idx + 1, arr, dp);
+        long take = dfs(skills | arr[idx], target, idx + 1, arr, dp);
+        if (take != Long.MAX_VALUE) {
+            take |= 1L << idx;
+            if (Long.bitCount(res) > Long.bitCount(take)) {
+                res = take;
+            }
+        }
+        return dp[idx][skills] = res;
     }
 }
