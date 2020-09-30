@@ -6,13 +6,13 @@ public class P_41 {
         final int n = nums.length;
         final int outOfRange = n + 1;
         for (int i = 0; i < n; i++) {
-            if (nums[i] <= 0 || nums[i] > n) {
+            if (nums[i] <= 0) {
                 nums[i] = outOfRange;
             }
         }
         for (int i = 0; i < n; i++) {
             int num = Math.abs(nums[i]);
-            if (num == outOfRange) {
+            if (num >= outOfRange) {
                 continue;
             }
             num--;
@@ -21,7 +21,7 @@ public class P_41 {
             }
         }
         for (int i = 0; i < n; i++) {
-            if (nums[i] >= 0) {
+            if (nums[i] > 0) {
                 return i + 1;
             }
         }
