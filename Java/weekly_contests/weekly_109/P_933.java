@@ -3,21 +3,22 @@ package weekly_contests.weekly_109;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic" })
 public class P_933 {
 
-    static class RecentCounter {
-        Deque<Integer> pq;
+    class RecentCounter {
+        Deque<Integer> deque;
 
         RecentCounter() {
-            pq = new ArrayDeque<>();
+            deque = new ArrayDeque<>();
         }
 
         public int ping(int t) {
-            pq.offerLast(t);
-            while (pq.element() > t - 3000) {
-                pq.removeFirst();
+            while (!deque.isEmpty() && deque.getLast() < t - 3000) {
+                deque.removeLast();
             }
-            return pq.size();
+            deque.addFirst(t);
+            return deque.size();
         }
     }
 }
