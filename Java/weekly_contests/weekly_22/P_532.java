@@ -9,26 +9,23 @@ import java.util.Set;
 public class P_532 {
 
     public int findPairs(int[] nums, int k) {
-        if (k < 0) {
-            return 0;
-        }
         final Map<Integer, Integer> map = new HashMap<>();
-        int count = 0;
         for (int num : nums) {
             map.merge(num, 1, Integer::sum);
         }
+        int res = 0;
         for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
             if (k == 0) {
                 if (entry.getValue() > 1) {
-                    count++;
+                    res++;
                 }
             } else {
                 if (map.containsKey(entry.getKey() + k)) {
-                    count++;
+                    res++;
                 }
             }
         }
-        return count;
+        return res;
     }
 
     public int findPairsBF(int[] nums, int k) {
