@@ -5,27 +5,20 @@ import java.util.Comparator;
 
 public final class P_1288 {
 
-    public static int removeCoveredIntervals(int[][] intervals) {
-        Arrays.sort(intervals, Comparator.comparingInt(i -> i[0]));
-        int res = intervals.length;
-
+    public int removeCoveredIntervals(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> a[0] == b[0] ? Integer.compare(b[1], a[1])
+                                                      : Integer.compare(a[0], b[0]));
+        int res = 1;
         int[] prev = intervals[0];
-
         for (int i = 1; i < intervals.length; i++) {
-            if (prev[1] >= intervals[i][1]) {
-                res--;
+            final int[] curr = intervals[i];
+            if (prev[0] <= curr[0] && curr[1] <= prev[1]) {
+                continue;
             } else {
-                prev = intervals[i];
+                res++;
+                prev = curr;
             }
         }
-
         return res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(removeCoveredIntervals(new int[][] { { 1, 4 }, { 3, 6 }, { 2, 8 } }));
-        System.out.println(removeCoveredIntervals(new int[][] { { 1, 4 }, { 3, 6 }, { 2, 8 }, { 5, 7 } }));
-    }
-
-    private P_1288() {}
 }
