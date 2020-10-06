@@ -5,6 +5,9 @@ import utils.DataStructures.TreeNode;
 public class P_701 {
 
     public TreeNode insertIntoBST(TreeNode root, int val) {
+        if (root == null) {
+            return new TreeNode(val);
+        }
         TreeNode iter = root;
         while (true) {
             if (iter.val > val) {

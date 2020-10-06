@@ -14,15 +14,18 @@ public class P_1443 {
         final Map<Integer, List<Integer>> g = new HashMap<>();
         for (int[] e : edges) {
             g.computeIfAbsent(e[0], v -> new ArrayList<>()).add(e[1]);
+            g.computeIfAbsent(e[1], v -> new ArrayList<>()).add(e[0]);
         }
-        dfs(g, hasApple, 0);
+        dfs(g, hasApple, 0, -1);
         return res;
     }
 
-    private boolean dfs(Map<Integer, List<Integer>> g, List<Boolean> hasApple, int curr) {
+    private boolean dfs(Map<Integer, List<Integer>> g, List<Boolean> hasApple, int curr, int par) {
         boolean take = hasApple.get(curr);
         for (int n : g.getOrDefault(curr, Collections.emptyList())) {
-            take |= dfs(g, hasApple, n);
+            if (n != par) {
+                take |= dfs(g, hasApple, n, curr);
+            }
         }
         if (take && curr != 0) {
             res += 2;
