@@ -2,32 +2,27 @@ package medium;
 
 import utils.DataStructures.ListNode;
 
-public final class P_61 {
+@SuppressWarnings("ConstantConditions")
+public class P_61 {
 
-    public static ListNode rotateRight(ListNode head, int k) {
+    public ListNode rotateRight(ListNode head, int k) {
         if (k == 0 || head == null) {
             return head;
         }
-        final ListNode newHead;
-        ListNode tail = head;
-        int length = 1;
-        while (tail.next != null) {
+        ListNode iter = new ListNode(-1);
+        iter.next = head;
+        int length = 0;
+        while (iter.next != null) {
+            iter = iter.next;
             length++;
-            tail = tail.next;
         }
-        tail.next = head;
-        k %= length;
-        for (int i = 0; i < length - k; i++) {
-            tail = tail.next;
+        iter.next = head;
+        k = length - k % length;
+        for (int i = 0; i < k; i++) {
+            iter = iter.next;
         }
-        newHead = tail.next;
-        tail.next = null;
+        final ListNode newHead = iter.next;
+        iter.next = null;
         return newHead;
     }
-
-    public static void main(String[] args) {
-        ListNode.printList(rotateRight(ListNode.testList(9), 3));
-    }
-
-    private P_61() {}
 }
