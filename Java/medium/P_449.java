@@ -1,28 +1,25 @@
 package medium;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
-
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull", "InnerClassMayBeStatic" })
 public class P_449 {
 
-    public static class Codec {
+    public class Codec {
         // Encodes a tree to a single string.
         public String serialize(TreeNode root) {
             final StringBuilder sb = new StringBuilder();
-            serialize(root, sb);
+            dfs(root, sb);
             return sb.toString();
         }
 
-        public void serialize(TreeNode root, StringBuilder sb) {
-            if (root == null) {
+        private void dfs(TreeNode node, StringBuilder sb) {
+            if (node == null) {
                 return;
             }
-            sb.append(root.val + ",");
-            serialize(root.left, sb);
-            serialize(root.right, sb);
+            sb.append(node.val + ",");
+            dfs(node.left, sb);
+            dfs(node.right, sb);
         }
 
         // Decodes your encoded data to tree.
@@ -30,22 +27,21 @@ public class P_449 {
             if (data.isEmpty()) {
                 return null;
             }
-            final Deque<String> q = new LinkedList<>(Arrays.asList(data.split(",")));
-            return deserialize(q, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            return build(data.split(","), new int[] { 0 }, 0, 10000);
         }
 
-        public TreeNode deserialize(Deque<String> q, int lower, int upper) {
-            if (q.isEmpty()) {
+        private TreeNode build(String[] arr, int[] idx, int lower, int upper) {
+            if (idx[0] == arr.length) {
                 return null;
             }
-            final int val = Integer.parseInt(q.peekFirst());
-            if (val < lower || val > upper) {
+            final int curr = Integer.parseInt(arr[idx[0]]);
+            if (curr < lower || curr > upper) {
                 return null;
             }
-            q.poll();
-            final TreeNode root = new TreeNode(val);
-            root.left = deserialize(q, lower, val);
-            root.right = deserialize(q, val, upper);
+            idx[0]++;
+            final TreeNode root = new TreeNode(curr);
+            root.left = build(arr, idx, lower, curr);
+            root.right = build(arr, idx, curr, upper);
             return root;
         }
     }

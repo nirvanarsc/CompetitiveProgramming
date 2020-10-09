@@ -1,44 +1,44 @@
 package hard;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedList;
-
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull", "InnerClassMayBeStatic" })
 public class P_297 {
 
-    public static class Codec {
+    public class Codec {
         // Encodes a tree to a single string.
         public String serialize(TreeNode root) {
             final StringBuilder sb = new StringBuilder();
-            serialize(root, sb);
+            dfs(root, sb);
             return sb.toString();
         }
 
-        public void serialize(TreeNode root, StringBuilder sb) {
-            if (root == null) {
+        private void dfs(TreeNode node, StringBuilder sb) {
+            if (node == null) {
                 sb.append("#,");
                 return;
             }
-            sb.append(root.val + ",");
-            serialize(root.left, sb);
-            serialize(root.right, sb);
+            sb.append(node.val + ",");
+            dfs(node.left, sb);
+            dfs(node.right, sb);
         }
 
         // Decodes your encoded data to tree.
         public TreeNode deserialize(String data) {
-            return deserialize(new LinkedList<>(Arrays.asList(data.split(","))));
+            return build(data.split(","), new int[] { 0 });
         }
 
-        public TreeNode deserialize(Deque<String> q) {
-            final String curr = q.removeFirst();
+        private TreeNode build(String[] arr, int[] idx) {
+            if (idx[0] == arr.length) {
+                return null;
+            }
+            final String curr = arr[idx[0]++];
             if ("#".equals(curr)) {
                 return null;
             }
             final TreeNode root = new TreeNode(Integer.parseInt(curr));
-            root.left = deserialize(q);
-            root.right = deserialize(q);
+            root.left = build(arr, idx);
+            root.right = build(arr, idx);
             return root;
         }
     }
