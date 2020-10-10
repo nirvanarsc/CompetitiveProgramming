@@ -6,18 +6,19 @@ import java.util.Comparator;
 public class P_452 {
 
     public int findMinArrowShots(int[][] points) {
-        if (points.length == 0) {
-            return 0;
-        }
         Arrays.sort(points, Comparator.comparingInt(a -> a[1]));
-        int res = 1;
-        int[] prev = points[0];
-        for (int i = 1; i < points.length; i++) {
-            if (points[i][0] > prev[1]) {
+        int res = 0;
+        int[] prev = null;
+        for (int[] p : points) {
+            if (prev == null || !overlaps(p, prev)) {
                 res++;
-                prev = points[i];
+                prev = p;
             }
         }
         return res;
+    }
+
+    private static boolean overlaps(int[] left, int[] right) {
+        return !(left[1] < right[0] || right[1] < left[0]);
     }
 }
