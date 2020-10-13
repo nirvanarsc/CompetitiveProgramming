@@ -7,18 +7,17 @@ public class P_898 {
 
     @SuppressWarnings("MethodParameterNamingConvention")
     public int subarrayBitwiseORs(int[] A) {
-        final Set<Integer> set = new HashSet<>();
-        Set<Integer> pre = new HashSet<>();
-        for (int i : A) {
-            final Set<Integer> cur = new HashSet<>();
-            cur.add(i);
-            set.add(i);
-            for (int p : pre) {
-                cur.add(p | i);
-                set.add(p | i);
+        final Set<Integer> res = new HashSet<>();
+        Set<Integer> prev = new HashSet<>();
+        for (int num : A) {
+            final Set<Integer> curr = new HashSet<>();
+            curr.add(num);
+            for (int p : prev) {
+                curr.add(p | num);
             }
-            pre = cur;
+            prev = curr;
+            res.addAll(prev);
         }
-        return set.size();
+        return res.size();
     }
 }

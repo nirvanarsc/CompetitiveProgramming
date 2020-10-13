@@ -2,31 +2,30 @@ package leetcode.weekly_contests.weekly_101;
 
 public class P_902 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int atMostNGivenDigitSet(String[] D, int N) {
-        int ans = 0;
-        int pow = D.length;
-        final String num = String.valueOf(N);
-
-        for (int i = 1; i < num.length(); i++) {
-            ans += pow;
-            pow *= D.length;
+    public int atMostNGivenDigitSet(String[] digits, int n) {
+        final String str = String.valueOf(n);
+        final int[] pow = new int[10];
+        pow[0] = 1;
+        for (int i = 1; i < 10; i++) {
+            pow[i] = pow[i - 1] * digits.length;
         }
-
-        for (int i = 0; i < num.length(); i++) {
+        int res = 0;
+        for (int i = 1; i < str.length(); i++) {
+            res += pow[i];
+        }
+        for (int i = 0; i < str.length(); i++) {
             boolean hasSameNum = false;
-            for (String digit : D) {
-                if (digit.charAt(0) < num.charAt(i)) {
-                    ans += Math.pow(D.length, num.length() - 1 - i);
-                } else if (digit.charAt(0) == num.charAt(i)) {
+            for (String d : digits) {
+                if (d.charAt(0) < str.charAt(i)) {
+                    res += pow[str.length() - i - 1];
+                } else if (d.charAt(0) == str.charAt(i)) {
                     hasSameNum = true;
                 }
             }
             if (!hasSameNum) {
-                return ans;
+                return res;
             }
         }
-
-        return ans + 1;
+        return res + 1;
     }
 }

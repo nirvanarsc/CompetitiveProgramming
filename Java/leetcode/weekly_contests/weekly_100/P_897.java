@@ -2,6 +2,7 @@ package leetcode.weekly_contests.weekly_100;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_897 {
 
     public TreeNode increasingBST(TreeNode root) {

@@ -1,32 +1,33 @@
 package leetcode.weekly_contests.weekly_101;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused", "MethodParameterNamingConvention" })
 public class P_900 {
 
-    static class RLEIterator {
-        Deque<int[]> stack;
+    class RLEIterator {
+        int[][] store;
+        int idx;
 
-        @SuppressWarnings("MethodParameterNamingConvention")
         RLEIterator(int[] A) {
-            stack = new ArrayDeque<>();
+            store = new int[A.length][2];
             for (int i = 0; i < A.length; i += 2) {
-                if (A[i] != 0) {
-                    stack.addLast(new int[] { A[i], A[i + 1] });
-                }
+                store[i] = new int[] { A[i + 1], A[i] };
             }
         }
 
         public int next(int n) {
-            while (!stack.isEmpty() && n > stack.peekFirst()[0]) {
-                n -= stack.removeFirst()[0];
+            int res = -1;
+            while (n > 0 && idx < store.length) {
+                final int take = Math.min(n, store[idx][1]);
+                n -= take;
+                store[idx][1] -= take;
+                if (n == 0) {
+                    res = store[idx][0];
+                }
+                if (store[idx][1] == 0) {
+                    idx++;
+                }
             }
-            if (stack.isEmpty()) {
-                return -1;
-            }
-            stack.peekFirst()[0] -= n;
-            return stack.peekFirst()[1];
+            return res;
         }
     }
 }

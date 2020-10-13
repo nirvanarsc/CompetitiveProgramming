@@ -3,9 +3,10 @@ package leetcode.weekly_contests.weekly_101;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused" })
 public class P_901 {
 
-    static class StockSpanner {
+    class StockSpanner {
         Deque<int[]> stack;
 
         StockSpanner() {

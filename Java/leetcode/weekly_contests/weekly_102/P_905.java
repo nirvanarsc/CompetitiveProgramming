@@ -1,6 +1,7 @@
 package leetcode.weekly_contests.weekly_102;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 @SuppressWarnings("MethodParameterNamingConvention")
 public class P_905 {
@@ -8,18 +9,7 @@ public class P_905 {
     public int[] sortArrayByParitySort(int[] A) {
         return Arrays.stream(A)
                      .boxed()
-                     .sorted((a, b) -> {
-                         if (a % 2 != 0 && b % 2 != 0) {
-                             return Integer.compare(a, b);
-                         }
-                         if (a % 2 != 0) {
-                             return -1;
-                         }
-                         if (b % 2 != 0) {
-                             return 1;
-                         }
-                         return Integer.compare(a, b);
-                     })
+                     .sorted(Comparator.comparingInt(a -> a % 2))
                      .mapToInt(Integer::intValue)
                      .toArray();
     }
