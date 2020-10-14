@@ -2,16 +2,17 @@ package leetcode.weekly_contests.weekly_103;
 
 import java.util.Arrays;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_910 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public int smallestRangeII(int[] A, int K) {
+        final int n = A.length;
         Arrays.sort(A);
-        int res = A[A.length - 1] - A[0];
-        final int defaultMax = A[A.length - 1] - K;
-        final int defaultMin = A[0] + K;
-        for (int i = 0; i < A.length - 1; i++) {
-            res = Math.min(res, Math.max(A[i] + K, defaultMax) - Math.min(A[i + 1] - K, defaultMin));
+        int res = A[n - 1] - A[0];
+        for (int i = 1; i < n; i++) {
+            final int currMin = Math.min(A[0] + K, A[i] - K);
+            final int currMax = Math.max(A[i - 1] + K, A[n - 1] - K);
+            res = Math.min(res, Math.abs(currMax - currMin));
         }
         return res;
     }

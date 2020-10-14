@@ -3,26 +3,21 @@ package leetcode.medium;
 public class P_213 {
 
     public int rob(int[] nums) {
-        if (nums.length == 1) {
-            return nums[0];
-        }
-        return Math.max(rob(nums, 0, nums.length - 1), rob(nums, 1, nums.length));
+        final int n = nums.length;
+        final Integer[][] dp = new Integer[n][2];
+        return Math.max(nums[0] + dfs(nums, 2, 0, dp), dfs(nums, 1, 1, dp));
     }
 
-    public int rob(int[] nums, int from, int to) {
-        return recurse(from, to, nums, new Integer[nums.length]);
-    }
-
-    private static int recurse(int start, int to, int[] nums, Integer[] dp) {
-        if (start >= to) {
+    private static int dfs(int[] nums, int idx, int end, Integer[][] dp) {
+        if (idx >= nums.length) {
             return 0;
         }
-
-        if (dp[start] != null) {
-            return dp[start];
+        if (idx == nums.length - 1) {
+            return end == 1 ? nums[idx] : 0;
         }
-
-        return dp[start] = Math.max(nums[start] + recurse(start + 2, to, nums, dp),
-                                    recurse(start + 1, to, nums, dp));
+        if (dp[idx][end] != null) {
+            return dp[idx][end];
+        }
+        return dp[idx][end] = Math.max(nums[idx] + dfs(nums, idx + 2, end, dp), dfs(nums, idx + 1, end, dp));
     }
 }

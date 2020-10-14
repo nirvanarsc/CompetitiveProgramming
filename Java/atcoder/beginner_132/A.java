@@ -1,48 +1,35 @@
-package atcoder.hhkb2020;
+package atcoder.beginner_132;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
-
-    private static final int MOD = (int) (1e9 + 7);
-
-    static long mul(long a, long b) {
-        return (a * b) % MOD;
-    }
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
-        final int t = fs.nextInt();
-        for (int i = 0; i < t; i++) {
-            final long n = fs.nextLong();
-            final long a = fs.nextLong();
-            final long b = fs.nextLong();
-            final long p = n - (a + b);
-            if (p < 0) {
-                pw.println(0);
-                continue;
+        final String s = fs.next();
+        final int[] count = new int[26];
+        int uniq = 0;
+        for (char c : s.toCharArray()) {
+            if (count[c - 'A']++ == 0) {
+                uniq++;
             }
-            // https://math.stackexchange.com/questions/166609/number-of-solutions-abc-n-a-gt-b-gt-c-ge0
-            final long c2 = (((p + 2) * (p + 1)) / 2) % MOD;
-            final long x = n - a + 1;
-            final long y = n - b + 1;
-            long res1 = 4L;
-            long res2 = 4L;
-            res1 = mul(res1, x);
-            res1 = mul(res1, y);
-            res1 = mul(res1, c2);
-            res2 = mul(res2, c2);
-            res2 = mul(res2, c2);
-            pw.println((res1 - res2 + MOD) % MOD);
         }
-        pw.close();
+        if (uniq != 2) {
+            System.out.println("No");
+        } else {
+            for (int c : count) {
+                if (c != 0 && c != 2) {
+                    System.out.println("No");
+                    return;
+                }
+            }
+            System.out.println("Yes");
+        }
     }
 
     static final class Utils {

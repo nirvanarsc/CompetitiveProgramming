@@ -1,4 +1,4 @@
-package atcoder.hhkb2020;
+package atcoder.beginner_132;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,35 +12,55 @@ public final class D {
 
     private static final int MOD = (int) (1e9 + 7);
 
-    static long mul(long a, long b) {
-        return (a * b) % MOD;
+    private static class Combinations {
+        long[] factorial;
+        long[] facInverse;
+        long[] inverse;
+
+        Combinations(int n) {
+            final int MAX = n + 2;
+            factorial = new long[MAX];
+            facInverse = new long[MAX];
+            inverse = new long[MAX];
+            factorial[0] = factorial[1] = 1;
+            facInverse[0] = facInverse[1] = 1;
+            inverse[1] = 1;
+            for (int i = 2; i < MAX; i++) {
+                factorial[i] = factorial[i - 1] * i % MOD;
+                final long inv = inverse[i] = MOD - inverse[MOD % i] * (MOD / i) % MOD;
+                facInverse[i] = facInverse[i - 1] * inv % MOD;
+            }
+        }
+
+        long ncr(int n, int r) {
+            if (n < r) { return 0; }
+            if (n < 0 || r < 0) { return 0; }
+            return factorial[n] * (facInverse[r] * facInverse[n - r] % MOD) % MOD;
+        }
+
+        long modpow(long a, long n) {
+            long res = 1;
+            while (n > 0) {
+                if (n % 2 == 1) {
+                    res = res * a % MOD;
+                }
+                a = a * a % MOD;
+                n /= 2;
+            }
+            return res;
+        }
     }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final PrintWriter pw = new PrintWriter(System.out);
-        final int t = fs.nextInt();
-        for (int i = 0; i < t; i++) {
-            final long n = fs.nextLong();
-            final long a = fs.nextLong();
-            final long b = fs.nextLong();
-            final long p = n - (a + b);
-            if (p < 0) {
-                pw.println(0);
-                continue;
-            }
-            // https://math.stackexchange.com/questions/166609/number-of-solutions-abc-n-a-gt-b-gt-c-ge0
-            final long c2 = (((p + 2) * (p + 1)) / 2) % MOD;
-            final long x = n - a + 1;
-            final long y = n - b + 1;
-            long res1 = 4L;
-            long res2 = 4L;
-            res1 = mul(res1, x);
-            res1 = mul(res1, y);
-            res1 = mul(res1, c2);
-            res2 = mul(res2, c2);
-            res2 = mul(res2, c2);
-            pw.println((res1 - res2 + MOD) % MOD);
+        final Combinations combinations = new Combinations((int) 1e4);
+        final int n = fs.nextInt();
+        final int k = fs.nextInt();
+        for (int i = 1; i <= k; i++) {
+            final long left = combinations.ncr(n - k + 1, i);
+            final long right = combinations.ncr(k - 1, i - 1);
+            pw.println((left * right) % MOD);
         }
         pw.close();
     }

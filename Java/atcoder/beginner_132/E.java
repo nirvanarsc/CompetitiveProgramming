@@ -1,48 +1,53 @@
-package atcoder.hhkb2020;
+package atcoder.beginner_132;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
-
-    private static final int MOD = (int) (1e9 + 7);
-
-    static long mul(long a, long b) {
-        return (a * b) % MOD;
-    }
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
-        final int t = fs.nextInt();
-        for (int i = 0; i < t; i++) {
-            final long n = fs.nextLong();
-            final long a = fs.nextLong();
-            final long b = fs.nextLong();
-            final long p = n - (a + b);
-            if (p < 0) {
-                pw.println(0);
-                continue;
-            }
-            // https://math.stackexchange.com/questions/166609/number-of-solutions-abc-n-a-gt-b-gt-c-ge0
-            final long c2 = (((p + 2) * (p + 1)) / 2) % MOD;
-            final long x = n - a + 1;
-            final long y = n - b + 1;
-            long res1 = 4L;
-            long res2 = 4L;
-            res1 = mul(res1, x);
-            res1 = mul(res1, y);
-            res1 = mul(res1, c2);
-            res2 = mul(res2, c2);
-            res2 = mul(res2, c2);
-            pw.println((res1 - res2 + MOD) % MOD);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final Map<Integer, List<Integer>> g = new HashMap<>();
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(v);
         }
-        pw.close();
+        final int s = fs.nextInt() - 1;
+        final int e = fs.nextInt() - 1;
+        final Deque<int[]> q = new ArrayDeque<>();
+        q.offerLast(new int[] { s, 0 });
+        final Integer[][] distances = new Integer[n][3];
+        distances[s][0] = 0;
+        while (!q.isEmpty()) {
+            final int[] curr = q.remove();
+            if (curr[0] == e && curr[1] == 0) {
+                System.out.println(distances[e][0]);
+                return;
+            }
+            final int nextSeq = (curr[1] + 1) % 3;
+            final int nextDistance = distances[curr[0]][curr[1]] + ((nextSeq == 0) ? 1 : 0);
+            for (int adj : g.getOrDefault(curr[0], Collections.emptyList())) {
+                if (distances[adj][nextSeq] == null) {
+                    distances[adj][nextSeq] = nextDistance;
+                    q.offerLast(new int[] { adj, nextSeq });
+                }
+            }
+        }
+        System.out.println(-1);
     }
 
     static final class Utils {

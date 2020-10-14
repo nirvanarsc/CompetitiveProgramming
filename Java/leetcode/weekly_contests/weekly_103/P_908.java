@@ -1,15 +1,15 @@
 package leetcode.weekly_contests.weekly_103;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_908 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public int smallestRangeI(int[] A, int K) {
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
+        int max = 0;
+        int min = (int) 1e9;
         for (int num : A) {
-            min = Math.min(min, num);
             max = Math.max(max, num);
+            min = Math.min(min, num);
         }
-        return Math.max(0, max - min - 2*K);
+        return Math.max(0, max - min - 2 * K);
     }
 }

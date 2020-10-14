@@ -9,43 +9,39 @@ import java.util.StringTokenizer;
 
 public final class E {
 
+    private static final int MOD = (int) (1e9 + 7);
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
         final char[][] grid = new char[n][m];
+        int lamps = 0;
         for (int i = 0; i < n; i++) {
             grid[i] = fs.next().toCharArray();
+            for (char c : grid[i]) {
+                lamps += c == '.' ? 1 : 0;
+            }
         }
         final int[][] row = getRow(n, m, grid);
         final int[][] col = getCol(n, m, grid);
-        final int[][] count = new int[n][m];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (grid[i][j] == '#') {
-                    count[i][j] = -1;
-                } else {
-                    count[i][j] = row[i][j] + col[i][j] - 1;
-                }
-            }
+        long res = 0;
+        final long[] pow = new long[(int) (4e6 + 5)];
+        pow[0] = 1;
+        for (int i = 1; i < pow.length; i++) {
+            pow[i] = (pow[i - 1] * 2) % MOD;
         }
-        int[][] dp = new int[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (grid[i][j] != '#') {
-                    if (i > 0) {
-                        dp[i][j] += dp[i - 1][j];
-                    }
-                    if (j > 0) {
-                        dp[i][j] += dp[i][j - 1];
-                    }
+                    final int x = row[i][j] + col[i][j] - 1;
+                    final int y = lamps - x;
+                    final long curr = ((pow[x] - 1) * pow[y]) % MOD;
+                    res = (res + curr) % MOD;
                 }
             }
         }
-
-        System.out.println(Arrays.deepToString(row));
-        System.out.println(Arrays.deepToString(col));
-        System.out.println(Arrays.deepToString(count));
+        System.out.println(res);
     }
 
     private static int[][] getRow(int n, int m, char[][] grid) {

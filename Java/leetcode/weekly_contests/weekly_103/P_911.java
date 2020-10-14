@@ -1,28 +1,32 @@
 package leetcode.weekly_contests.weekly_103;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 import java.util.TreeMap;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused" })
 public class P_911 {
 
-    static class TopVotedCandidate {
-        TreeMap<Integer, Integer> results = new TreeMap<>();
-        int lead = -1;
+    class TopVotedCandidate {
+        TreeMap<Integer, Integer> tm;
 
         TopVotedCandidate(int[] persons, int[] times) {
-            final Map<Integer, Integer> count = new HashMap<>();
+            final int[] votes = new int[5001];
+            int currMax = 0;
+            int currWinner = 0;
+            tm = new TreeMap<>(Collections.singletonMap(currMax, currWinner));
             for (int i = 0; i < times.length; i++) {
-                count.merge(persons[i], 1, Integer::sum);
-                if (i == 0 || count.get(persons[i]) >= count.get(lead)) {
-                    lead = persons[i];
+                if (currMax < ++votes[persons[i]]) {
+                    currMax = votes[persons[i]];
+                    currWinner = persons[i];
+                } else if (currMax == votes[persons[i]]) {
+                    currWinner = persons[i];
                 }
-                results.put(times[i], lead);
+                tm.put(times[i], currWinner);
             }
         }
 
         public int q(int t) {
-            return results.floorEntry(t).getValue();
+            return tm.floorEntry(t).getValue();
         }
     }
 }
