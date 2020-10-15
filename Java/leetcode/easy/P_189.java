@@ -1,28 +1,22 @@
 package leetcode.easy;
 
 public class P_189 {
+
     public void rotate(int[] nums, int k) {
-        k %= nums.length;
-        reverse(0, nums.length - 1, nums);
-        reverse(0, k - 1, nums);
-        reverse(k, nums.length - 1, nums);
+        final int n = nums.length;
+        k %= n;
+        reverse(nums, 0, n - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, n - 1);
     }
 
-    private static void reverse(int from, int to, int[] arr) {
-        for (int i = from; 2 * i < to + from; i++) {
-            final int temp = arr[i];
-            arr[i] = arr[to + from - i];
-            arr[to + from - i] = temp;
+    private static void reverse(int[] nums, int from, int to) {
+        while (from < to) {
+            final int t = nums[from];
+            nums[from] = nums[to];
+            nums[to] = t;
+            from++;
+            to--;
         }
     }
-
-//    public void reverse(int[] nums, int start, int end) {
-//        while (start < end) {
-//            int temp = nums[start];
-//            nums[start] = nums[end];
-//            nums[end] = temp;
-//            start++;
-//            end--;
-//        }
-//    }
 }

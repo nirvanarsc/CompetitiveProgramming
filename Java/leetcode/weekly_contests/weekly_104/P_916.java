@@ -3,34 +3,37 @@ package leetcode.weekly_contests.weekly_104;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_916 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public List<String> wordSubsets(String[] A, String[] B) {
-        final List<String> res = new ArrayList<>();
-        final int[] max = new int[26];
+        final int[] bMap = new int[26];
         for (String b : B) {
-            final int[] map = count(b);
+            final int[] currMap = new int[26];
+            for (char c : b.toCharArray()) {
+                currMap[c - 'a']++;
+            }
             for (int i = 0; i < 26; i++) {
-                max[i] = Math.max(max[i], map[i]);
+                bMap[i] = Math.max(bMap[i], currMap[i]);
             }
         }
-        for (String w : A) {
-            final int[] map = count(w);
-            int i;
-            for (i = 0; i < 26; i++) {
-                if (map[i] < max[i]) { break; }
+        final List<String> res = new ArrayList<>();
+        for (String a : A) {
+            final int[] currMap = new int[26];
+            for (char c : a.toCharArray()) {
+                currMap[c - 'a']++;
             }
-            if (i == 26) { res.add(w); }
+            boolean allMatch = true;
+            for (int i = 0; i < 26; i++) {
+                if (bMap[i] > 0 && bMap[i] > currMap[i]) {
+                    allMatch = false;
+                    break;
+                }
+            }
+            if (allMatch) {
+                res.add(a);
+            }
         }
         return res;
-    }
-
-    private static int[] count(String w) {
-        final int[] map = new int[26];
-        for (char c : w.toCharArray()) {
-            map[c - 'a']++;
-        }
-        return map;
     }
 }

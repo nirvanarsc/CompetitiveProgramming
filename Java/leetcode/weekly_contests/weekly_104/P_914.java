@@ -1,8 +1,5 @@
 package leetcode.weekly_contests.weekly_104;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class P_914 {
 
     public int gcd(int a, int b) {
@@ -10,14 +7,20 @@ public class P_914 {
     }
 
     public boolean hasGroupsSizeX(int[] deck) {
-        final Map<Integer, Integer> map = new HashMap<>();
-        int res = 0;
+        final int[] count = new int[(int) (1e4 + 5)];
         for (int num : deck) {
-            map.merge(num, 1, Integer::sum);
+            count[num]++;
         }
-        for (int count : map.values()) {
-            res = gcd(res, count);
+        int groupSize = -1;
+        for (int value : count) {
+            if (value > 0) {
+                if (groupSize == -1) {
+                    groupSize = value;
+                } else {
+                    groupSize = gcd(groupSize, value);
+                }
+            }
         }
-        return res > 1;
+        return groupSize > 1;
     }
 }
