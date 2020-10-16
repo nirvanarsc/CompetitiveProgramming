@@ -1,23 +1,29 @@
 package leetcode.weekly_contests.weekly_105;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_917 {
 
-    public String reverseOnlyLetters(String s) {
-        final char[] chars = s.toCharArray();
-        int i = 0, j = chars.length - 1;
+    public String reverseOnlyLetters(String S) {
+        int i = 0;
+        int j = S.length() - 1;
+        final char[] res = S.toCharArray();
         while (i < j) {
-            final boolean start = Character.isLetter(chars[i]);
-            final boolean end = Character.isLetter(chars[j]);
-            if (end && start) {
-                final char temp = chars[j];
-                chars[j] = chars[i];
-                chars[i] = temp;
+            if (!isLetter(res[i])) {
+                i++;
+            } else if (!isLetter(res[j])) {
+                j--;
+            } else {
+                final char t = res[i];
+                res[i] = res[j];
+                res[j] = t;
                 i++;
                 j--;
             }
-            if (!end) { j--; }
-            if (!start) { i++; }
         }
-        return new String(chars);
+        return new String(res);
+    }
+
+    private static boolean isLetter(char c) {
+        return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
     }
 }

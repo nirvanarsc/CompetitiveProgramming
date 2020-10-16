@@ -8,40 +8,45 @@ import java.util.List;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused" })
 public class P_919 {
 
-    static class CBTInserter {
-        List<TreeNode> aL;
+    class CBTInserter {
+        int currP;
+        int idx;
+        List<TreeNode> arr = new ArrayList<>();
 
         CBTInserter(TreeNode root) {
-            aL = new ArrayList<>();
-            populateList(root, aL);
+            final Deque<TreeNode> q = new ArrayDeque<>(Collections.singleton(root));
+            while (!q.isEmpty()) {
+                for (int size = q.size(); size > 0; size--) {
+                    final TreeNode curr = q.removeFirst();
+                    arr.add(curr);
+                    idx++;
+                    if (curr.left != null) { q.offerLast(curr.left); }
+                    if (curr.right != null) { q.offerLast(curr.right); }
+                }
+            }
+            currP = idx / 2 - (idx % 2 == 0 ? 1 : 0);
         }
 
         public int insert(int v) {
+            final boolean left = idx % 2 != 0;
             final TreeNode newNode = new TreeNode(v);
-            final int size = aL.size();
-            if (size % 2 == 0) {
-                aL.get((size - 1) / 2).right = newNode;
+            final int res = arr.get(currP).val;
+            if (left) {
+                arr.get(currP).left = newNode;
             } else {
-                aL.get((size - 1) / 2).left = newNode;
+                arr.get(currP).right = newNode;
+                currP++;
             }
-            aL.add(newNode);
-            return aL.get((size - 1) / 2).val;
+            arr.add(newNode);
+            idx++;
+            return res;
         }
 
         public TreeNode get_root() {
-            return aL.get(0);
-        }
-
-        private static void populateList(TreeNode root, List<TreeNode> aL) {
-            final Deque<TreeNode> q = new ArrayDeque<>(Collections.singleton(root));
-            while (!q.isEmpty()) {
-                final TreeNode treeNode = q.removeFirst();
-                aL.add(treeNode);
-                if (treeNode.left != null) { q.offerLast(treeNode.left); }
-                if (treeNode.right != null) { q.offerLast(treeNode.right); }
-            }
+            return arr.get(0);
         }
     }
 }

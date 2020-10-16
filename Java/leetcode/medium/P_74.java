@@ -2,7 +2,8 @@ package leetcode.medium;
 
 public class P_74 {
 
-    public boolean searchMatrix(int[][] matrix, int target) {
+    // O(log n * log m)
+    public boolean searchMatrixBS(int[][] matrix, int target) {
         if (matrix.length == 0 || matrix[0].length == 0) {
             return false;
         }
@@ -31,6 +32,28 @@ public class P_74 {
             }
         }
 
+        return false;
+    }
+
+    // O(n + m)
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return false;
+        }
+        final int n = matrix.length;
+        final int m = matrix[0].length;
+        int i = 0;
+        int j = 0;
+        while (i < n && j < m) {
+            if (matrix[i][j] == target) {
+                return true;
+            }
+            if (i < n - 1 && matrix[i + 1][j] <= target) {
+                i++;
+            } else {
+                j++;
+            }
+        }
         return false;
     }
 }

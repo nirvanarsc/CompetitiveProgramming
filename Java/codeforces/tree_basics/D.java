@@ -10,30 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 public final class D {
-
-    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
-        final TreeSet<Integer> ts = new TreeSet<>();
-        for (int i = 0; i < nums.length; i++) {
-            if (!ts.add(nums[i])) {
-                return true;
-            }
-            final Integer higher = ts.higher(nums[i]);
-            final Integer lower = ts.lower(nums[i]);
-            if (higher != null && Math.abs(higher - nums[i]) <= t) {
-                return true;
-            }
-            if (lower != null && Math.abs(lower - nums[i]) <= t) {
-                return true;
-            }
-            if (ts.size() > k) {
-                ts.remove(nums[i - k]);
-            }
-        }
-        return false;
-    }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
