@@ -1,39 +1,85 @@
 package leetcode.weekly_contests.weekly_107;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import utils.DataStructures.UnionFind;
-
 public class P_928 {
 
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
+
     public int minMalwareSpread(int[][] graph, int[] initial) {
-        int min = Integer.MAX_VALUE;
-        int res = 0;
-        for (int value : initial) {
-            final UnionFind uf = new UnionFind(graph.length);
-            for (int i = 0; i < graph.length; i++) {
-                for (int j = 0; j < graph[0].length; j++) {
-                    if (i != value && j != value && graph[i][j] == 1) {
+        Arrays.sort(initial);
+        int min = (int) 1e9;
+        int res = -1;
+        for (int banned : initial) {
+            final int n = graph.length;
+            final UnionFind uf = new UnionFind(n);
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (i != banned && j != banned && graph[i][j] == 1) {
                         uf.union(i, j);
                     }
                 }
             }
-            int totalInfected = 0;
-            final Set<Integer> seen = new HashSet<>();
-            for (int init : initial) {
-                if (init != value) {
-                    final int root = uf.find(init);
-                    final int size = uf.size()[root];
-                    if (!seen.contains(root)) {
-                        seen.add(root);
-                        totalInfected += size;
+            int curr = 0;
+            final boolean[] counted = new boolean[n];
+            for (int infected : initial) {
+                if (infected != banned) {
+                    final int par = uf.find(infected);
+                    if (!counted[par]) {
+                        curr += uf.size()[par];
+                        counted[par] = true;
                     }
                 }
             }
-            if (totalInfected < min | (totalInfected == min && value < res)) {
-                min = totalInfected;
-                res = value;
+            if (min > curr) {
+                min = curr;
+                res = banned;
             }
         }
         return res;

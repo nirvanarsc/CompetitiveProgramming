@@ -1,47 +1,38 @@
 package leetcode.weekly_contests.weekly_107;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_927 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public int[] threeEqualParts(int[] A) {
-        final int[] res = { -1, -1 };
-        int numOf1 = 0;
-        for (int a : A) {
-            if (a == 1) { numOf1++; }
-        }
-        if (numOf1 == 0) {
-            return new int[] { 0, 2 };
-        }
-        if (numOf1 % 3 != 0) {
-            return res;
-        }
-
-        final int partLength = numOf1 / 3;
-        int index0 = -1, index1 = -1, index2 = -1;
-        numOf1 = 0;
-        for (int i = 0; i < A.length; i++) {
+        final int n = A.length;
+        final Map<Integer, Integer> map = new HashMap<>();
+        int ones = 0;
+        for (int i = 0; i < n; i++) {
             if (A[i] == 1) {
-                numOf1++;
-                if (numOf1 == partLength + 1) {
-                    index1 = i;
-                } else if (numOf1 == 2 * partLength + 1) {
-                    index2 = i;
-                } else if (numOf1 == 1) {
-                    index0 = i;
-                }
+                ones += 1;
+                map.put(ones, i);
             }
         }
-
-        while (index2 < A.length) {
-            if (A[index2] == A[index0] && A[index2] == A[index1]) {
-                index2++;
-                index1++;
-                index0++;
-            } else {
-                return res;
+        if (ones % 3 != 0) {
+            return new int[] { -1, -1 };
+        }
+        if (ones == 0) {
+            return new int[] { 0, n - 1 };
+        }
+        final int target = ones / 3;
+        int ll = map.get(target + 1);
+        int rr = map.get(2 * target + 1);
+        for (int i = map.get(1); rr < n; i++, ll++, rr++) {
+            if (A[i] != A[ll] || A[ll] != A[rr]) {
+                return new int[] { -1, -1 };
             }
         }
-
-        return new int[] { index0 - 1, index1 };
+        final int necessaryL = n - map.get(2 * target + 1);
+        final int resL = map.get(1) + necessaryL - 1;
+        final int resR = map.get(target + 1) + necessaryL;
+        return new int[] { resL, resR };
     }
 }
