@@ -5,16 +5,16 @@ import java.util.Arrays;
 public class P_188 {
 
     public int maxProfit(int k, int[] prices) {
-        final int m = prices.length;
+        final int n = prices.length;
         if (k == 0) {
             return 0;
         }
-        if (k > m / 2) {
-            int ans = 0;
-            for (int i = 1; i < m; i++) {
-                ans += Math.max(0, prices[i] - prices[i - 1]);
+        if (k >= n / 2) {
+            int res = 0;
+            for (int i = 1; i < n; i++) {
+                res += Math.max(0, prices[i] - prices[i - 1]);
             }
-            return ans;
+            return res;
         }
         final int[] buy = new int[k];
         final int[] profit = new int[k];
