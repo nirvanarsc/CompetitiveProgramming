@@ -46,7 +46,7 @@ public final class B {
             } else if (startR == 0 && startD == 1) {
                 if (endU == 1 && endL == 1) {
                     pw.println(1);
-                    pw.println(1 + " " + 0);
+                    pw.println(2 + " " + 1);
                     continue;
                 }
                 if (endU == 0 && endL == 1) {
