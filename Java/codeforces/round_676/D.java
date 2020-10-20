@@ -7,64 +7,67 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+@SuppressWarnings("SuspiciousNameCombination")
 public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final int x = fs.nextInt();
-            final int y = fs.nextInt();
+            int x = fs.nextInt();
+            int y = fs.nextInt();
             final long c1 = fs.nextLong();
-            final long c2 = fs.nextLong();
-            final long c3 = fs.nextLong();
+            long c2 = fs.nextLong();
+            long c3 = fs.nextLong();
             final long c4 = fs.nextLong();
-            final long c5 = fs.nextLong();
-            final long c6 = fs.nextLong();
-            final int skip = Math.min(Math.abs(x), Math.abs(y));
-            final int diagType;
-            if (skip == Math.abs(x) && x < 0 || skip == Math.abs(y) && y < 0) {
-                diagType = 4;
+            long c5 = fs.nextLong();
+            long c6 = fs.nextLong();
+            long res = Long.MAX_VALUE;
+            if (x >= 0 && y >= 0) {
+                if (x > y) {
+                    final int temp = x;
+                    x = y;
+                    y = temp;
+                    long tt = c6;
+                    c6 = c2;
+                    c2 = tt;
+                    tt = c3;
+                    c3 = c5;
+                    c5 = tt;
+                }
+                res = Math.min(res, f(x, y - x, c1, c2));
+                res = Math.min(res, f(y, y - x, c1, c3));
+                res = Math.min(res, f(x, y, c6, c2));
+            } else if (x <= 0 && y <= 0) {
+                if (x > y) {
+                    final int temp = x;
+                    x = y;
+                    y = temp;
+                    long tt = c6;
+                    c6 = c2;
+                    c2 = tt;
+                    tt = c3;
+                    c3 = c5;
+                    c5 = tt;
+                }
+                res = Math.min(res, f(Math.abs(x), Math.abs(y - x), c4, c2));
+                res = Math.min(res, f(Math.abs(y), Math.abs(y - x), c4, c3));
+                res = Math.min(res, f(Math.abs(x), Math.abs(y), c3, c5));
+            } else if (x < 0) {
+                res = Math.min(res, f(Math.abs(x), Math.abs(x) + y, c4, c2));
+                res = Math.min(res, f(y, Math.abs(x) + y, c1, c3));
+                res = Math.min(res, f(Math.abs(x), y, c3, c2));
             } else {
-                diagType = 1;
+                res = Math.min(res, f(x, x + Math.abs(y), c1, c5));
+                res = Math.min(res, f(Math.abs(y), x + Math.abs(y), c4, c6));
+                res = Math.min(res, f(x, Math.abs(y), c6, c5));
             }
-            long skipCost = (long) skip * (diagType == 1 ? c1 : c4);
-            final long afterSkipX = diagType == 4 ? x + skip : x - skip;
-            final long afterSkipY = diagType == 4 ? y + skip : y - skip;
-            if (afterSkipX != 0) {
-                if (afterSkipX < 0) {
-                    skipCost += Math.abs(afterSkipX) * c3;
-                } else {
-                    skipCost += afterSkipX * c6;
-                }
-            }
-            if (afterSkipY != 0) {
-                if (afterSkipY < 0) {
-                    skipCost += Math.abs(afterSkipY) * c5;
-                } else {
-                    skipCost += afterSkipY * c2;
-                }
-            }
-
-            long noSkipCost = 0;
-            if (x != 0) {
-                if (x < 0) {
-                    noSkipCost += (long) Math.abs(x) * c3;
-                } else {
-                    noSkipCost += (long) x * c6;
-                }
-            }
-            if (y != 0) {
-                if (y < 0) {
-                    noSkipCost += (long) Math.abs(y) * c5;
-                } else {
-                    noSkipCost += (long) y * c2;
-                }
-            }
-
-            System.out.println(Math.min(skipCost, noSkipCost));
-
+            System.out.println(res);
         }
+    }
+
+    private static long f(int ll, int rr, long cost1, long cost2) {
+        return cost1 * ll + cost2 * rr;
     }
 
     static final class Utils {

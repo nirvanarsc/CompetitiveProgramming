@@ -1,45 +1,45 @@
 package leetcode.medium;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("ConstantConditions")
 public class P_133 {
 
     private static class Node {
         public int val;
-        public List<Node> neighbors;
+        public List<Node> neighbors = new ArrayList<>();
 
-        Node(int _val, List<Node> _neighbors) {
-            val = _val;
-            neighbors = _neighbors;
+        Node(int val) {
+            this.val = val;
         }
     }
 
     public Node cloneGraph(Node node) {
-        final Map<Node, Node> map = new HashMap<>();
-        final Deque<Node> queue = new LinkedList<>();
-
-        if (node != null) {
-            queue.offerLast(node);
-            map.put(node, new Node(node.val, new ArrayList<>()));
+        if (node == null) {
+            return node;
         }
-        while (!queue.isEmpty()) {
-            final Node curr = queue.removeFirst();
-
-            for (Node neighbor : curr.neighbors) {
-                if (!map.containsKey(neighbor)) {
-                    map.put(neighbor, new Node(neighbor.val, new ArrayList<>()));
-                    queue.offerLast(neighbor);
+        final Map<Node, Node> clone = new HashMap<>();
+        final boolean[] seen = new boolean[101];
+        final Deque<Node> q = new ArrayDeque<>();
+        q.offerLast(node);
+        seen[node.val] = true;
+        clone.put(node, new Node(node.val));
+        while (!q.isEmpty()) {
+            final Node curr = q.removeFirst();
+            for (Node next : curr.neighbors) {
+                if (!seen[next.val]) {
+                    seen[next.val] = true;
+                    clone.put(next, new Node(next.val));
+                    q.offerLast(next);
                 }
-
-                map.get(curr).neighbors.add(map.get(neighbor));
+                clone.get(curr).neighbors.add(clone.get(next));
             }
         }
-
-        return map.get(node);
+        return clone.get(node);
     }
 }
