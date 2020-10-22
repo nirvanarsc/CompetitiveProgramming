@@ -5,22 +5,24 @@ import java.util.Deque;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_111 {
 
     public int minDepth(TreeNode root) {
-        return dfs(root);
+        final int[] res = { (int) 1e9 };
+        dfs(root, 1, res);
+        return res[0] == (int) 1e9 ? 0 : res[0];
     }
 
-    public int dfs(TreeNode root) {
-        if (root == null) {
-            return 0;
+    private static void dfs(TreeNode node, int d, int[] res) {
+        if (node == null) {
+            return;
         }
-        final int left = dfs(root.left);
-        final int right = dfs(root.right);
-        if (left == 0 || right == 0) {
-            return left + right + 1;
+        dfs(node.left, d + 1, res);
+        if (node.left == null && node.right == null) {
+            res[0] = Math.min(res[0], d);
         }
-        return 1 + Math.min(left, right);
+        dfs(node.right, d + 1, res);
     }
 
     public int minDepthBFS(TreeNode root) {
