@@ -7,7 +7,7 @@ public class P_456 {
 
     public boolean find132patternStack(int[] nums) {
         final Deque<Integer> stack = new ArrayDeque<>();
-        int max = Integer.MIN_VALUE;
+        int max = (int) -1e9;
         for (int i = nums.length - 1; i >= 0; i--) {
             while (!stack.isEmpty() && stack.peekFirst() < nums[i]) {
                 max = stack.removeFirst();
