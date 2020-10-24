@@ -22,13 +22,13 @@ public class P_456 {
         final int n = nums.length;
         for (int i = 0; i < n; i++) {
             final int target = nums[i];
-            int peek = target;
+            int peak = target;
             for (int j = i + 1; j < n; j++) {
                 if (nums[j] > target) {
-                    if (peek > nums[j]) {
+                    if (peak > nums[j]) {
                         return true;
                     } else {
-                        peek = nums[j];
+                        peak = nums[j];
                     }
                 }
             }

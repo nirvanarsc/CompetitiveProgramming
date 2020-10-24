@@ -7,17 +7,21 @@ public class P_948 {
     @SuppressWarnings("MethodParameterNamingConvention")
     public int bagOfTokensScore(int[] tokens, int P) {
         Arrays.sort(tokens);
-        int res = 0, points = 0, i = 0, j = tokens.length - 1;
+        int curr = 0, res = 0;
+        int i = 0, j = tokens.length - 1;
         while (i <= j) {
-            if (P >= tokens[i]) {
+            int diff = 0;
+            while (i <= j && P >= tokens[i]) {
+                diff++;
                 P -= tokens[i++];
-                res = Math.max(res, ++points);
-            } else if (points > 0) {
-                points--;
-                P += tokens[j--];
-            } else {
+            }
+            if (diff == 0) {
                 break;
             }
+            curr += diff;
+            res = Math.max(res, curr);
+            P += tokens[j--];
+            curr--;
         }
         return res;
     }
