@@ -14,8 +14,8 @@ public class P_1510 {
             return dp[n];
         }
         boolean res = false;
-        for (int i = 1; i * i <= n; i++) {
-            if (!dfs(n - i * i, dp)) {
+        for (int p = 1; p * p <= n; p++) {
+            if (!dfs(n - p * p, dp)) {
                 res = true;
                 break;
             }
