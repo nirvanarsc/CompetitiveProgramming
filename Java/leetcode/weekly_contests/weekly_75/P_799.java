@@ -7,13 +7,11 @@ public class P_799 {
         dp[0] = poured;
         for (int row = 1; row <= query_row; row++) {
             for (int col = row; col >= 0; col--) {
-                double res = Math.max(0, dp[col] - 1) / 2;
-                if (col > 0) {
-                    res += Math.max(0, dp[col - 1] - 1) / 2;
-                }
-                dp[col] = res;
+                final double up = Math.max(0, dp[col] - 1) * 0.5;
+                final double upL = col > 0 ? Math.max(0, dp[col - 1] - 1) * 0.5 : 0;
+                dp[col] = up + upL;
             }
         }
-        return Math.min(dp[query_glass], 1.0);
+        return Math.min(1.0, dp[query_glass]);
     }
 }

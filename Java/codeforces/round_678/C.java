@@ -61,14 +61,14 @@ public final class C {
         long res = 1L;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (pos > mid) {
+            if (mid < pos) {
                 lower++;
                 lo = mid + 1;
-            } else if (pos < mid) {
+            } else if (mid == pos) {
+                lo = mid + 1;
+            } else if (mid > pos) {
                 higher++;
                 hi = mid;
-            } else if (pos == mid) {
-                break;
             }
         }
         final int ll = x - 1;
