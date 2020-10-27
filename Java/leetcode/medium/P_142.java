@@ -2,25 +2,28 @@ package leetcode.medium;
 
 import utils.DataStructures.ListNode;
 
+@SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
 public class P_142 {
 
     public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
         ListNode slow = head;
         ListNode fast = head;
-
-        while (fast != null && fast.next != null) {
+        do {
             slow = slow.next;
-            fast = fast.next.next;
-            if (slow == fast) {
-                slow = head;
-                while (slow != fast) {
-                    slow = slow.next;
-                    fast = fast.next;
-                }
-                return slow;
-            }
+            fast = fast.next;
+            fast = fast.next;
+        } while (slow != fast && fast != null && fast.next != null);
+        if (fast != slow) {
+            return null;
         }
-
-        return null;
+        fast = head;
+        while (fast != slow) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
     }
 }

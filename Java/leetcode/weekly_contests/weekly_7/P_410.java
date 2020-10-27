@@ -3,33 +3,35 @@ package leetcode.weekly_contests.weekly_7;
 public class P_410 {
 
     public int splitArray(int[] nums, int m) {
-        int max = Integer.MIN_VALUE;
-        for (int num : nums) {
-            max = Math.max(max, num);
-        }
-        long lo = max;
-        long hi = (long) 1e18;
+        int lo = 0, hi = (int) 1e9;
         while (lo < hi) {
-            final long mid = lo + hi >>> 1;
-            if (helper(nums, mid) <= m) {
+            final int mid = lo + hi >>> 1;
+            if (!f(nums, mid, m)) {
                 lo = mid + 1;
             } else {
                 hi = mid;
             }
         }
-        return (int) lo;
+        return lo;
     }
 
-    private static int helper(int[] nums, long mid) {
-        int curr = 0;
-        int res = 0;
-        for (int w : nums) {
-            if (curr + w > mid) {
-                curr = 0;
-                res++;
+    private static boolean f(int[] nums, int mid, int m) {
+        int count = 0;
+        int sum = 0;
+        for (int num : nums) {
+            if (num > mid) {
+                return false;
             }
-            curr += w;
+            if (sum + num > mid) {
+                sum = num;
+                count++;
+            } else {
+                sum += num;
+            }
         }
-        return res;
+        if (sum > 0) {
+            count++;
+        }
+        return count <= m;
     }
 }

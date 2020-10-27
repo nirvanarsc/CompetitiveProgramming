@@ -1,15 +1,13 @@
 package leetcode.weekly_contests.weekly_128;
 
-import java.util.Arrays;
-
 @SuppressWarnings("MethodParameterNamingConvention")
 public class P_1011 {
 
     public int shipWithinDays(int[] weights, int D) {
-        int lo = Arrays.stream(weights).summaryStatistics().getMax(), hi = (int) 1e9;
+        int lo = 0, hi = (int) 1e9;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (f(weights, mid, D)) {
+            if (!f(weights, mid, D)) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -22,12 +20,19 @@ public class P_1011 {
         int curr = 0;
         int days = 0;
         for (int w : weights) {
-            if (curr + w > mid) {
-                curr = 0;
-                days++;
+            if (w > mid) {
+                return false;
             }
-            curr += w;
+            if (curr + w > mid) {
+                curr = w;
+                days++;
+            } else {
+                curr += w;
+            }
         }
-        return D <= days;
+        if (curr > 0) {
+            days++;
+        }
+        return days <= D;
     }
 }
