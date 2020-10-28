@@ -1,32 +1,25 @@
 package leetcode.medium;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class P_228 {
 
     public List<String> summaryRanges(int[] nums) {
-        if (nums.length == 0) {
-            return Collections.emptyList();
-        }
         final List<String> res = new ArrayList<>();
-        int start = nums[0], prev = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] != prev + 1) {
-                res.add(toString(start, prev));
-                start = nums[i];
+        final int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            int j = i;
+            while (j < n - 1 && nums[j + 1] == nums[j] + 1) {
+                j++;
             }
-            prev = nums[i];
+            if (i == j) {
+                res.add(String.valueOf(nums[i]));
+            } else {
+                res.add(nums[i] + "->" + nums[j]);
+            }
+            i = j;
         }
-        res.add(toString(start, prev));
         return res;
-    }
-
-    private static String toString(int start, int end) {
-        if (start == end) {
-            return String.valueOf(start);
-        }
-        return start + "->" + end;
     }
 }
