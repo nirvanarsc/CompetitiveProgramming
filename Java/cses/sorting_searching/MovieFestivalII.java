@@ -3,48 +3,47 @@ package cses.sorting_searching;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
-public final class SlidingMedian {
+public final class MovieFestivalII {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final StringBuilder sb = new StringBuilder();
         final int n = fs.nextInt();
         final int k = fs.nextInt();
-        final int[] arr = new int[n];
+        final List<int[]> arr = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
-            arr[i] = fs.nextInt();
+            arr.add(new int[] { fs.nextInt(), fs.nextInt() });
         }
-        final TreeSet<int[]> min = new TreeSet<>((a, b) -> a[1] == b[1]
-                                                           ? Integer.compare(a[0], b[0])
-                                                           : Integer.compare(a[1], b[1]));
-        final TreeSet<int[]> max = new TreeSet<>((a, b) -> a[1] == b[1]
-                                                           ? Integer.compare(a[0], b[0])
-                                                           : Integer.compare(b[1], a[1]));
-        final boolean even = k % 2 == 0;
-        int median;
-        for (int i = 0; i < n; i++) {
-            if (i >= k) {
-                final int[] rem = { i - k, arr[i - k] };
-                max.remove(rem);
-                min.remove(rem);
-            }
-            final int[] add = { i, arr[i] };
-            min.add(add);
-            max.add(min.pollFirst());
-            if (max.size() > min.size()) {
-                min.add(max.pollFirst());
-            }
-            if (i >= k - 1) {
-                median = even ? max.first()[1] : min.first()[1];
-                sb.append(median);
-                sb.append(' ');
+        arr.sort(Comparator.comparingInt(v -> v[1]));
+        final TreeMap<Integer, Integer> tm = new TreeMap<>();
+        int res = 0;
+        int size = 0;
+        for (int[] curr : arr) {
+            final Map.Entry<Integer, Integer> entry = tm.floorEntry(curr[0]);
+            if (entry != null) {
+                if (entry.getValue() == 1) {
+                    tm.remove(entry.getKey());
+                } else {
+                    tm.merge(entry.getKey(), -1, Integer::sum);
+                }
+                tm.merge(curr[1], 1, Integer::sum);
+                res++;
+            } else {
+                if (size < k) {
+                    tm.put(curr[1], 1);
+                    size++;
+                    res++;
+                }
             }
         }
-        System.out.println(sb);
+        System.out.println(res);
     }
 
     static final class Utils {

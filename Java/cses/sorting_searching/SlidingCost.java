@@ -7,7 +7,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.TreeSet;
 
-public final class SlidingMedian {
+@SuppressWarnings("ConstantConditions")
+public final class SlidingCost {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
@@ -25,22 +26,36 @@ public final class SlidingMedian {
                                                            ? Integer.compare(a[0], b[0])
                                                            : Integer.compare(b[1], a[1]));
         final boolean even = k % 2 == 0;
+        final long lSize = k / 2 + k % 2;
+        final long rSize = k / 2;
         int median;
+        long sumLow = 0, sumHigh = 0;
         for (int i = 0; i < n; i++) {
             if (i >= k) {
                 final int[] rem = { i - k, arr[i - k] };
-                max.remove(rem);
-                min.remove(rem);
+                if (max.remove(rem)) {
+                    sumHigh -= arr[i - k];
+                } else {
+                    min.remove(rem);
+                    sumLow -= arr[i - k];
+                }
             }
             final int[] add = { i, arr[i] };
             min.add(add);
-            max.add(min.pollFirst());
+            sumLow += add[1];
+            final int[] pop1 = min.pollFirst();
+            max.add(pop1);
+            sumLow -= pop1[1];
+            sumHigh += pop1[1];
             if (max.size() > min.size()) {
-                min.add(max.pollFirst());
+                final int[] pop2 = max.pollFirst();
+                min.add(pop2);
+                sumLow += pop2[1];
+                sumHigh -= pop2[1];
             }
             if (i >= k - 1) {
                 median = even ? max.first()[1] : min.first()[1];
-                sb.append(median);
+                sb.append(sumLow - lSize * median + rSize * median - sumHigh);
                 sb.append(' ');
             }
         }
