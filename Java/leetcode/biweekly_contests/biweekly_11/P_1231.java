@@ -1,7 +1,5 @@
 package leetcode.biweekly_contests.biweekly_11;
 
-import java.util.Arrays;
-
 @SuppressWarnings("MethodParameterNamingConvention")
 public class P_1231 {
 
@@ -31,30 +29,4 @@ public class P_1231 {
         }
         return cuts <= k;
     }
-
-    public int findNumberOfLIS(int[] nums) {
-        int n = nums.length;
-        int[][] dp = new int[n][2];
-        dp[0][0] = 1;
-        dp[0][1] = 1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                int count = 0;
-                int max = 0;
-                if (nums[j] < nums[i]) {
-                    if (max < 1 + dp[j][0]) {
-                        max = 1 + dp[j][0];
-                        count = 1;
-                    } else if (max == 1 + dp[j][0]) {
-                        count++;
-                    }
-                }
-                dp[j][0] = max;
-                dp[j][1] = count;
-            }
-        }
-        System.out.println(Arrays.deepToString(dp));
-        return 5;
-    }
-
 }

@@ -5,7 +5,7 @@ public class P_673 {
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
-        int[] value;
+        int[] value = { 0, 1 };
 
         SegTree(int leftMost, int rightMost) {
             this.leftMost = leftMost;
@@ -65,7 +65,10 @@ public class P_673 {
         }
     }
 
-    public int findNumberOfLISST(int[] nums) {
+    public int findNumberOfLIS(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
         for (int i = 0; i < nums.length; i++) {
             nums[i] += (int) 1e6;
         }
@@ -77,7 +80,7 @@ public class P_673 {
         return st.value[1];
     }
 
-    public int findNumberOfLIS(int[] nums) {
+    public int findNumberOfLISDP(int[] nums) {
         final int n = nums.length;
         final int[][] dp = new int[n][2];
         int lis = 0;
