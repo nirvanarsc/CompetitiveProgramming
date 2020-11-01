@@ -9,24 +9,24 @@ public class P_99 {
     TreeNode prev;
 
     public void recoverTree(TreeNode root) {
-        traverse(root);
-        final int t = first.val;
+        dfs(root);
+        final int temp = first.val;
         first.val = second.val;
-        second.val = t;
+        second.val = temp;
     }
 
-    private void traverse(TreeNode node) {
+    private void dfs(TreeNode node) {
         if (node == null) {
             return;
         }
-        traverse(node.left);
-        if (prev != null && node.val < prev.val) {
+        dfs(node.left);
+        if (prev != null && prev.val > node.val) {
             if (first == null) {
                 first = prev;
             }
             second = node;
         }
         prev = node;
-        traverse(node.right);
+        dfs(node.right);
     }
 }

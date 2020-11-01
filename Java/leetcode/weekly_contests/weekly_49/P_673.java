@@ -5,6 +5,7 @@ public class P_673 {
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
+        // length + count
         int[] value = { 0, 1 };
 
         SegTree(int leftMost, int rightMost) {
