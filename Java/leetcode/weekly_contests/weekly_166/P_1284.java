@@ -1,78 +1,53 @@
 package leetcode.weekly_contests.weekly_166;
 
-import java.util.HashMap;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public final class P_1284 {
 
-    public static int minFlips(int[][] mat) {
+    private static final int[][] DIRS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+
+    public int minFlips(int[][] mat) {
+        final Deque<int[][]> q = new ArrayDeque<>();
+        final Set<String> seen = new HashSet<>();
         final int n = mat.length;
         final int m = mat[0].length;
-        final int ans = func(mat, n, m, new HashSet<>(), new HashMap<>());
-        return ans == Integer.MAX_VALUE ? -1 : ans;
-    }
-
-    private static int func(int[][] mat, int n, int m, Set<String> set, Map<String, Integer> dp) {
-        if (isSolved(mat, n, m)) {
-            return 0;
-        }
-
-        final StringBuilder t = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                t.append(mat[i][j]);
-            }
-        }
-        final String hash = t.toString();
-
-        if (dp.containsKey(hash)) {
-            return dp.get(hash);
-        }
-        if (set.contains(hash)) {
-            return Integer.MAX_VALUE;
-        }
-
-        set.add(hash);
-        int min = Integer.MAX_VALUE;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                flip(mat, n, m, i, j);
-                final int small = func(mat, n, m, set, dp);
-                if (small != Integer.MAX_VALUE) { min = Math.min(min, 1 + small); }
-                flip(mat, n, m, i, j);
-            }
-        }
-        dp.put(hash, min);
-        return min;
-    }
-
-    private static boolean isSolved(int[][] mat, int n, int m) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (mat[i][j] == 1) {
-                    return false;
+        q.offerLast(mat);
+        for (int level = 0; !q.isEmpty(); level++) {
+            for (int size = q.size(); size > 0; size--) {
+                final int[][] curr = q.removeFirst();
+                if (Arrays.deepEquals(curr, new int[n][m])) {
+                    return level;
+                }
+                for (int x = 0; x < n; x++) {
+                    for (int y = 0; y < m; y++) {
+                        final int[][] clone = copy(curr, n, m);
+                        clone[x][y] ^= 1;
+                        for (int[] dir : DIRS) {
+                            final int nx = x + dir[0];
+                            final int ny = y + dir[1];
+                            if (nx >= 0 && nx < n && ny >= 0 && ny < m) {
+                                clone[nx][ny] ^= 1;
+                            }
+                        }
+                        if (seen.add(Arrays.deepToString(clone))) {
+                            q.offerLast(clone);
+                        }
+                    }
                 }
             }
         }
-        return true;
+        return -1;
     }
 
-    private static void flip(int[][] mat, int n, int m, int i, int j) {
-        mat[i][j] ^= 1;
-        if (i - 1 >= 0) { mat[i - 1][j] ^= 1; }
-        if (i + 1 < n) { mat[i + 1][j] ^= 1; }
-        if (j - 1 >= 0) { mat[i][j - 1] ^= 1; }
-        if (j + 1 < m) { mat[i][j + 1] ^= 1; }
+    private static int[][] copy(int[][] mat, int n, int m) {
+        final int[][] res = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            res[i] = mat[i].clone();
+        }
+        return res;
     }
-
-    public static void main(String[] args) {
-        System.out.println(minFlips(new int[][] { { 0, 0 }, { 0, 1 } }));
-        System.out.println(minFlips(new int[][] { { 0 } }));
-        System.out.println(minFlips(new int[][] { { 1, 1, 1 }, { 1, 0, 1 }, { 0, 0, 0 } }));
-        System.out.println(minFlips(new int[][] { { 1, 0, 0 }, { 1, 0, 0 } }));
-    }
-
-    private P_1284() {}
 }
