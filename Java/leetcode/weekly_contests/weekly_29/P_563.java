@@ -5,17 +5,16 @@ import utils.DataStructures.TreeNode;
 public class P_563 {
 
     public int findTilt(TreeNode root) {
-        return recurse(root)[0];
+        return dfs(root)[1];
     }
 
-    private static int[] recurse(TreeNode node) {
+    private static int[] dfs(TreeNode node) {
         if (node == null) {
             return new int[] { 0, 0 };
         }
-        final int[] left = recurse(node.left);
-        final int[] right = recurse(node.right);
-        final int diff = left[0] + right[0] + Math.abs(left[1] - right[1]);
-        final int sum = left[1] + right[1] + node.val;
-        return new int[] { diff, sum };
+        final int[] ll = dfs(node.left);
+        final int[] rr = dfs(node.right);
+        final int sum = ll[0] + rr[0] + node.val;
+        return new int[] { sum, ll[1] + rr[1] + Math.abs(ll[0] - rr[0]) };
     }
 }
