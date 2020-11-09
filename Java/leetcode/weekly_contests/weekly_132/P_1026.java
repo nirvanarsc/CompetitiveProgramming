@@ -5,15 +5,24 @@ import utils.DataStructures.TreeNode;
 public class P_1026 {
 
     public int maxAncestorDiff(TreeNode root) {
-        return dfs(root, root.val, root.val);
+        return dfs(root)[2];
     }
 
-    public int dfs(TreeNode root, int min, int max) {
-        if (root == null) {
-            return max - min;
+    private static int[] dfs(TreeNode node) {
+        if (node == null) {
+            return new int[] { (int) 1e9, (int) -1e9, 0 };
         }
-        max = Math.max(max, root.val);
-        min = Math.min(min, root.val);
-        return Math.max(dfs(root.left, min, max), dfs(root.right, min, max));
+        final int[] left = dfs(node.left);
+        final int[] right = dfs(node.right);
+        final int min = Math.min(left[0], right[0]);
+        final int max = Math.max(left[1], right[1]);
+        int res = Math.max(left[2], right[2]);
+        if (min != (int) 1e9) {
+            res = Math.max(res, Math.abs(node.val - min));
+        }
+        if (max != (int) -1e9) {
+            res = Math.max(res, Math.abs(node.val - max));
+        }
+        return new int[] { Math.min(min, node.val), Math.max(max, node.val), res };
     }
 }
