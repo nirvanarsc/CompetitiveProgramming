@@ -14,6 +14,8 @@ public class P_593 {
     }
 
     private static int distance(int[] a, int[] b) {
-        return (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]);
+        final int dy = b[1] - a[1];
+        final int dx = b[0] - a[0];
+        return dy * dy + dx * dx;
     }
 }
