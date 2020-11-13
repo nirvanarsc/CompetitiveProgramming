@@ -25,7 +25,7 @@ public class P_117 {
         return res;
     }
 
-    public Node connectIterative(Node root) {
-        return P_116.connectIterative(root);
+    public Node connectBFS(Node root) {
+        return P_116.connectBFS(root);
     }
 }

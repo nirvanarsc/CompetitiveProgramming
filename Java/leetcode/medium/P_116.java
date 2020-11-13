@@ -1,7 +1,7 @@
 package leetcode.medium;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 import utils.DataStructures.Node;
 
@@ -20,26 +20,25 @@ public class P_116 {
         return root;
     }
 
-    public static Node connectIterative(Node root) {
-        final Deque<Node> queue = new LinkedList<>();
+    public static Node connectBFS(Node root) {
+        final Deque<Node> q = new ArrayDeque<>();
         if (root != null) {
-            queue.offerLast(root);
+            q.offerLast(root);
         }
-        while (!queue.isEmpty()) {
-            int levelSize = queue.size();
+        while (!q.isEmpty()) {
             Node prev = null;
-            while (levelSize-- > 0) {
-                final Node node = queue.removeFirst();
+            for (int level = q.size(); level > 0; level--) {
+                final Node curr = q.removeFirst();
+                if (curr.left != null) {
+                    q.offerLast(curr.left);
+                }
+                if (curr.right != null) {
+                    q.offerLast(curr.right);
+                }
                 if (prev != null) {
-                    prev.next = node;
+                    prev.next = curr;
                 }
-                prev = node;
-                if (node.left != null) {
-                    queue.offerLast(node.left);
-                }
-                if (node.right != null) {
-                    queue.offerLast(node.right);
-                }
+                prev = curr;
             }
         }
         return root;
