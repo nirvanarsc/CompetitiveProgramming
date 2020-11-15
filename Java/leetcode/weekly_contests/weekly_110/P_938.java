@@ -2,19 +2,19 @@ package leetcode.weekly_contests.weekly_110;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("TailRecursion")
 public class P_938 {
 
-    @SuppressWarnings({ "TailRecursion", "MethodParameterNamingConvention" })
-    public int rangeSumBST(TreeNode root, int L, int R) {
+    public int rangeSumBST(TreeNode root, int low, int high) {
         if (root == null) {
             return 0;
         }
-        if (L <= root.val && root.val <= R) {
-            return root.val + rangeSumBST(root.left, L, R) + rangeSumBST(root.right, L, R);
-        } else if (root.val > R) {
-            return rangeSumBST(root.left, L, R);
+        if (root.val > high) {
+            return rangeSumBST(root.left, low, high);
+        } else if (root.val < low) {
+            return rangeSumBST(root.right, low, high);
         } else {
-            return rangeSumBST(root.right, L, R);
+            return root.val + rangeSumBST(root.left, low, high) + rangeSumBST(root.right, low, high);
         }
     }
 }
