@@ -11,6 +11,10 @@ public final class E {
 
     private static final int MOD = (int) (1e9 + 7);
 
+    private static int add(int l, int r) {
+        return (l + r) % MOD;
+    }
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
@@ -20,25 +24,33 @@ public final class E {
             grid[i] = fs.next().toCharArray();
         }
         final int[][] dp = new int[n][m];
-        for (int i = 1; i < m; i++) {
-            if (grid[0][i] != '#') {
-                dp[0][i] = 1 + dp[0][i - 1];
-            } else {
-                break;
-            }
-        }
-        for (int i = 1; i < n; i++) {
-            if (grid[i][0] != '#') {
-                dp[i][0] = 1 + dp[i - 1][0];
-            } else {
-                break;
-            }
-        }
-        for (int i = 1; i < n; i++) {
-            for (int j = 1; j < m; j++) {
-                if (grid[i][j] != '#') {
-                    dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % MOD;
+        final int[][] preSumX = new int[n][m];
+        final int[][] preSumY = new int[n][m];
+        final int[][] preSumXY = new int[n][m];
+        dp[0][0] = 1;
+        preSumX[0][0] = 1;
+        preSumY[0][0] = 1;
+        preSumXY[0][0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i == 0 && j == 0) { continue; }
+                if (grid[i][j] == '#') { continue; }
+                // update prefix sums
+                if (j > 0) {
+                    preSumX[i][j] = add(preSumX[i][j], preSumX[i][j - 1]);
                 }
+                if (i > 0) {
+                    preSumY[i][j] = add(preSumY[i][j], preSumY[i - 1][j]);
+                }
+                if (i > 0 && j > 0) {
+                    preSumXY[i][j] = add(preSumXY[i][j], preSumXY[i - 1][j - 1]);
+                }
+                // compute dp
+                dp[i][j] = add(add(preSumX[i][j], preSumY[i][j]), preSumXY[i][j]);
+                // distribute dp into prefix sums
+                preSumX[i][j] = add(preSumX[i][j], dp[i][j]);
+                preSumY[i][j] = add(preSumY[i][j], dp[i][j]);
+                preSumXY[i][j] = add(preSumXY[i][j], dp[i][j]);
             }
         }
         System.out.println(dp[n - 1][m - 1]);

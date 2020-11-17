@@ -24,4 +24,35 @@ public class P_931 {
         }
         return res;
     }
+
+    public int minFallingPathSumDP(int[][] grid) {
+        return dfs(grid, 0, -1, grid[0].length, new Integer[grid.length][grid[0].length]);
+    }
+
+    private static int dfs(int[][] grid, int row, int col, int m, Integer[][] dp) {
+        if (row == grid.length) {
+            return 0;
+        }
+        if (col >= 0 && dp[row][col] != null) {
+            return dp[row][col];
+        }
+        int res = (int) 1e9;
+        if (col == -1) {
+            for (int i = 0; i < m; i++) {
+                res = Math.min(res, grid[row][i] + dfs(grid, row + 1, i, m, dp));
+            }
+        } else {
+            if (col > 0) {
+                res = Math.min(res, grid[row][col - 1] + dfs(grid, row + 1, col - 1, m, dp));
+            }
+            res = Math.min(res, grid[row][col] + dfs(grid, row + 1, col, m, dp));
+            if (col < m - 1) {
+                res = Math.min(res, grid[row][col + 1] + dfs(grid, row + 1, col + 1, m, dp));
+            }
+        }
+        if (col >= 0) {
+            dp[row][col] = res;
+        }
+        return res;
+    }
 }

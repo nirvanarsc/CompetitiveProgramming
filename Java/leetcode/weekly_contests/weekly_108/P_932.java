@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_932 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public int[] beautifulArray(int N) {
         List<Integer> res = new ArrayList<>(Collections.singleton(1));
         while (res.size() < N) {
