@@ -7,34 +7,26 @@ import java.util.List;
 
 public final class P_56 {
 
-    public static int[][] merge(int[][] intervals) {
-        if (intervals.length == 0) {
-            return intervals;
-        }
-        Arrays.sort(intervals, Comparator.comparingInt(i -> i[0]));
-        final List<int[]> merged = new ArrayList<>();
-        int[] curr = intervals[0];
-        merged.add(curr);
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, Comparator.comparingInt(val -> val[0]));
+        final List<int[]> res = new ArrayList<>();
+        int[] prev = intervals[0];
         for (int[] interval : intervals) {
-            if (curr[1] >= interval[0]) {
-                curr[1] = Math.max(curr[1], interval[1]);
+            if (overlaps(prev, interval)) {
+                prev[1] = Math.max(prev[1], interval[1]);
             } else {
-                curr = interval;
-                merged.add(curr);
+                res.add(prev);
+                prev = interval;
             }
         }
-        return merged.toArray(new int[merged.size()][2]);
+        if (res.isEmpty() || res.get(res.size() - 1) != prev) {
+            res.add(prev);
+        }
+        return res.toArray(int[][]::new);
     }
 
-    public static void main(String[] args) {
-        for (int[] i : merge(new int[][] { { 1, 3 }, { 2, 6 }, { 8, 10 }, { 15, 18 } })) {
-            System.out.println(Arrays.toString(i));
-        }
-        for (int[] i : merge(new int[][] { { 1, 4 }, { 4, 5 } })) {
-            System.out.println(Arrays.toString(i));
-        }
+    private static boolean overlaps(int[] left, int[] right) {
+        return !(left[1] < right[0] || right[1] < left[0]);
     }
-
-    private P_56() {}
 }
 
