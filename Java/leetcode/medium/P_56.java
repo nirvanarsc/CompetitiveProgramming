@@ -19,9 +19,7 @@ public final class P_56 {
                 prev = interval;
             }
         }
-        if (res.isEmpty() || res.get(res.size() - 1) != prev) {
-            res.add(prev);
-        }
+        res.add(prev);
         return res.toArray(int[][]::new);
     }
 

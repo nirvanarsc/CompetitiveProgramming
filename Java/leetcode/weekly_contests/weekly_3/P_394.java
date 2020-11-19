@@ -1,34 +1,41 @@
 package leetcode.weekly_contests.weekly_3;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 
+@SuppressWarnings("StringRepeatCanBeUsed")
 public class P_394 {
 
     public String decodeString(String s) {
-        final Deque<Integer> intStack = new ArrayDeque<>();
-        final Deque<StringBuilder> strStack = new ArrayDeque<>();
-        StringBuilder res = new StringBuilder();
-        int k = 0;
-        for (char ch : s.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                k = k * 10 + Character.getNumericValue(ch);
-            } else if (ch == '[') {
-                intStack.addFirst(k);
-                strStack.addFirst(res);
-                res = new StringBuilder();
-                k = 0;
-            } else if (ch == ']') {
-                final StringBuilder tmp = res;
-                res = strStack.removeFirst();
-                int count = intStack.removeFirst();
-                while (count-- > 0) {
-                    res.append(tmp);
+        final Deque<StringBuilder> strings = new ArrayDeque<>(Collections.singleton(new StringBuilder()));
+        final Deque<Integer> count = new ArrayDeque<>();
+        final char[] chars = s.toCharArray();
+        final int n = chars.length;
+        for (int i = 0; i < n; i++) {
+            if (Character.isDigit(chars[i])) {
+                int num = 0;
+                int j = i;
+                while (j < n && Character.isDigit(chars[j])) {
+                    num *= 10;
+                    num += chars[j] - '0';
+                    j++;
+                }
+                i = j - 1;
+                count.addFirst(num);
+            } else if(chars[i] == '['){
+                strings.addFirst(new StringBuilder());
+            } else if(chars[i] == ']') {
+                final StringBuilder first = strings.removeFirst();
+                final StringBuilder second = strings.getFirst();
+                final int k = count.removeFirst();
+                for (int j = 0; j < k; j++) {
+                    second.append(first);
                 }
             } else {
-                res.append(ch);
+                strings.getFirst().append(chars[i]);
             }
         }
-        return res.toString();
+        return strings.getFirst().toString();
     }
 }

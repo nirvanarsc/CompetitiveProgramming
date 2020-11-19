@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class C2 {
 
     private static void f(int[][] grid, int row, int col, int[] count, StringBuilder pw) {
         final int upL = grid[row][col];
