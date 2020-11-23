@@ -34,15 +34,17 @@ public class P_337 {
     }
 
     public int robOptimized(TreeNode root) {
-        final int[] res = robSub(root);
+        final int[] res = dfs(root);
         return Math.max(res[0], res[1]);
     }
 
-    private static int[] robSub(TreeNode root) {
-        if (root == null) { return new int[2]; }
+    private static int[] dfs(TreeNode root) {
+        if (root == null) {
+            return new int[2];
+        }
 
-        final int[] left = robSub(root.left);
-        final int[] right = robSub(root.right);
+        final int[] left = dfs(root.left);
+        final int[] right = dfs(root.right);
         final int[] res = new int[2];
 
         res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
