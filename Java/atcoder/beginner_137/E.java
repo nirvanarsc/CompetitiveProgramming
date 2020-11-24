@@ -1,11 +1,11 @@
-package atcoder.beginner_136;
+package atcoder.beginner_137;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -14,49 +14,54 @@ public final class E {
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int k = fs.nextInt();
-        final int[] arr = new int[n];
-        int sum = 0;
-        for (int i = 0; i < n; i++) {
-            arr[i] = fs.nextInt();
-            sum += arr[i];
+        final int m = fs.nextInt();
+        final int p = fs.nextInt();
+        final List<int[]> edges = new ArrayList<>(m);
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            // Mark negative to find negative cycles
+            final int w = (fs.nextInt() - p) * -1;
+            edges.add(new int[] { u, v, w });
         }
-        final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
-        for (int p = 1; p * p <= sum; p++) {
-            if (sum % p == 0) {
-                pq.add(p);
-                if (p * p != sum) {
-                    pq.add(sum / p);
+        final long[] dist = bellmanFord(edges, 0, n);
+        if (dist[n - 1] == (long) -1e18) {
+            System.out.println(-1);
+        } else {
+            System.out.println(Math.max(0, -dist[n - 1]));
+        }
+    }
+
+    // Bellman-Ford O (V*E) == O(V^3)
+    private static long[] bellmanFord(List<int[]> e, int start, int n) {
+        final long[] dist = new long[n];
+        Arrays.fill(dist, (long) 1e18);
+        dist[start] = 0;
+        for (int i = 0; i < n - 1; i++) {
+            for (int[] edge : e) {
+                final int from = edge[0];
+                final int to = edge[1];
+                final int cost = edge[2];
+                if (dist[from] == (long) 1e18) {
+                    continue;
+                }
+                dist[to] = Math.min(dist[to], dist[from] + cost);
+            }
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int[] edge : e) {
+                final int from = edge[0];
+                final int to = edge[1];
+                final int cost = edge[2];
+                if (dist[from] == (long) 1e18) {
+                    continue;
+                }
+                if (dist[from] + cost < dist[to]) {
+                    dist[to] = (long) -1e18;
                 }
             }
         }
-        while (!pq.isEmpty()) {
-            final int curr = pq.poll();
-            final int[] remainders = new int[n];
-            for (int i = 0; i < n; i++) {
-                remainders[i] = arr[i] % curr;
-            }
-            Arrays.sort(remainders);
-            if (remainders[n - 1] == 0) {
-                System.out.println(curr);
-                return;
-            }
-            final long[] sums = new long[n + 1];
-            for (int i = 1; i <= n; i++) {
-                sums[i] = sums[i - 1] + remainders[i - 1];
-            }
-            int tmp = 0;
-            for (int i = n; i > 0; i--) {
-                tmp += curr - remainders[i - 1];
-                if (tmp > k) {
-                    break;
-                }
-                if (tmp == sums[i - 1]) {
-                    System.out.println(curr);
-                    return;
-                }
-            }
-        }
+        return dist;
     }
 
     static final class Utils {

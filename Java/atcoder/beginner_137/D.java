@@ -1,62 +1,44 @@
-package atcoder.beginner_136;
+package atcoder.beginner_137;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int k = fs.nextInt();
-        final int[] arr = new int[n];
-        int sum = 0;
+        final int m = fs.nextInt();
+        final List<int[]> points = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            arr[i] = fs.nextInt();
-            sum += arr[i];
+            final int time = fs.nextInt();
+            final int val = fs.nextInt();
+            if (time <= m) {
+                points.add(new int[] { time, val });
+            }
         }
+        points.sort(Comparator.comparingInt(v -> v[0]));
         final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
-        for (int p = 1; p * p <= sum; p++) {
-            if (sum % p == 0) {
-                pq.add(p);
-                if (p * p != sum) {
-                    pq.add(sum / p);
-                }
+        long res = 0;
+        int idx = 0;
+        for (int i = 1; i <= m; i++) {
+            while (idx < points.size() && points.get(idx)[0] == i) {
+                pq.offer(points.get(idx)[1]);
+                idx++;
+            }
+            if (!pq.isEmpty()) {
+                res += pq.remove();
             }
         }
-        while (!pq.isEmpty()) {
-            final int curr = pq.poll();
-            final int[] remainders = new int[n];
-            for (int i = 0; i < n; i++) {
-                remainders[i] = arr[i] % curr;
-            }
-            Arrays.sort(remainders);
-            if (remainders[n - 1] == 0) {
-                System.out.println(curr);
-                return;
-            }
-            final long[] sums = new long[n + 1];
-            for (int i = 1; i <= n; i++) {
-                sums[i] = sums[i - 1] + remainders[i - 1];
-            }
-            int tmp = 0;
-            for (int i = n; i > 0; i--) {
-                tmp += curr - remainders[i - 1];
-                if (tmp > k) {
-                    break;
-                }
-                if (tmp == sums[i - 1]) {
-                    System.out.println(curr);
-                    return;
-                }
-            }
-        }
+        System.out.println(res);
     }
 
     static final class Utils {

@@ -1,7 +1,9 @@
 package leetcode.weekly_contests.weekly_152;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,29 +14,30 @@ public class P_1178 {
         final List<Integer> res = new ArrayList<>();
         final Map<Integer, Integer> counts = new HashMap<>();
         for (String w : words) {
-            int m = 0;
-            for (char c : w.toCharArray()) { m |= 1 << (c - 'a'); }
-            counts.merge(m, 1, Integer::sum);
+            final int mask = getMask(w);
+            counts.merge(mask, 1, Integer::sum);
         }
         for (String p : puzzles) {
-            res.add(check(p, counts));
+            final int mask = getMask(p);
+            final int first = 1 << (p.charAt(0) - 'a');
+            int curr = 0;
+            // https://cp-algorithms.com/algebra/all-submasks.html
+            for (int subMask = mask; subMask > 0; subMask = (subMask - 1) & mask) {
+                if ((subMask & first) != 0) {
+                    curr += counts.getOrDefault(subMask, 0);
+                }
+            }
+            res.add(curr);
         }
         return res;
     }
 
-    private static int check(String p, Map<Integer, Integer> counts) {
-        int res = 0, pMask = 0;
-        for (char c : p.toCharArray()) {
-            pMask |= 1 << (c - 'a');
+    private static int getMask(String w) {
+        int mask = 0;
+        for (char c : w.toCharArray()) {
+            mask |= 1 << (c - 'a');
         }
-        int sub = pMask;
-        while (sub != 0) {
-            if ((sub & 1 << (p.charAt(0) - 'a')) != 0 && counts.containsKey(sub)) {
-                res += counts.get(sub);
-            }
-            sub = (sub - 1) & pMask;
-        }
-        return res;
+        return mask;
     }
 
     static class TrieNode {
