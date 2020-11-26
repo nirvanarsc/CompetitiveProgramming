@@ -4,29 +4,25 @@ public class P_395 {
 
     public int longestSubstring(String s, int k) {
         int res = 0;
-        for (int i = 1; i <= 26; i++) {
-            res = Math.max(res, longest(s, i, k));
+        final char[] chars = s.toCharArray();
+        for (int window = 1; window <= 26 && window * k <= s.length(); window++) {
+            res = Math.max(res, check(chars, k, window, window));
         }
         return res;
     }
 
-    private static int longest(String s, int uniques, int k) {
-        final int[] map = new int[128];
+    private static int check(char[] s, int k, int uniq, int uniqK) {
+        final int[] count = new int[26];
         int j = 0;
-        int currUniques = 0;
-        int currAtLeastK = 0;
         int res = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (map[s.charAt(i)]++ == 0) { currUniques++; }
-            if (map[s.charAt(i)] == k) { currAtLeastK++; }
-
-            while (currUniques > uniques) {
-                if (map[s.charAt(j)]-- == k) { currAtLeastK--; }
-                if (map[s.charAt(j)] == 0) { currUniques--; }
-                j++;
+        for (int i = 0; i < s.length; i++) {
+            if (count[s[i] - 'a']++ == 0) { uniq--; }
+            if (count[s[i] - 'a'] == k) { uniqK--; }
+            while (uniq < 0) {
+                if (count[s[j] - 'a'] == k) { uniqK++; }
+                if (--count[s[j++] - 'a'] == 0) { uniq++; }
             }
-
-            if (currUniques == uniques && currAtLeastK == uniques) {
+            if (uniq == 0 && uniqK == 0) {
                 res = Math.max(res, i - j + 1);
             }
         }
