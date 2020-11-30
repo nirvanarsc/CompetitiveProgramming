@@ -6,55 +6,53 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class P_218 {
 
-    static class Point {
-        int start;
-        int height;
-        boolean isStart;
-
-        Point(int start, int height, boolean isStart) {
-            this.start = start;
-            this.height = height;
-            this.isStart = isStart;
-        }
-    }
-
     public List<List<Integer>> getSkyline(int[][] buildings) {
-        final TreeMap<Integer, Integer> activeHeights = new TreeMap<>(Collections.singletonMap(0, 1));
-        final List<List<Integer>> res = new ArrayList<>();
-        final List<Point> lineSweep = new ArrayList<>();
-        for (int[] b : buildings) {
-            lineSweep.add(new Point(b[0], b[2], true));
-            lineSweep.add(new Point(b[1], b[2], false));
+        final List<int[]> pairs = new ArrayList<>();
+        for (int i = 0; i < buildings.length; i++) {
+            final int[] b = buildings[i];
+            pairs.add(new int[] { b[0], b[2], 1, i });
+            pairs.add(new int[] { b[1], b[2], -1, i });
         }
-        lineSweep.sort((a, b) -> {
-            if (a.start == b.start) {
-                if (a.isStart && b.isStart) {
-                    return Integer.compare(b.height, a.height);
-                } else if (!a.isStart && !b.isStart) {
-                    return Integer.compare(a.height, b.height);
+        pairs.sort((a, b) -> {
+            if (a[0] == b[0]) {
+                // both start ? by decreasing height
+                if (a[2] == 1 && b[2] == 1) {
+                    return Integer.compare(b[1], a[1]);
+                // both end ? by increasing height
+                } else if (a[2] == -1 && b[2] == -1) {
+                    return Integer.compare(a[1], b[1]);
+                // else start before end
                 } else {
-                    return Boolean.compare(b.isStart, a.isStart);
+                    return Integer.compare(b[2], a[2]);
                 }
-            }
-            return Integer.compare(a.start, b.start);
-        });
-        int currHeight = 0;
-        for (Point p : lineSweep) {
-            if (p.isStart) {
-                activeHeights.merge(p.height, 1, Integer::sum);
             } else {
-                activeHeights.merge(p.height, -1, Integer::sum);
-                if (activeHeights.get(p.height) == 0) {
-                    activeHeights.remove(p.height);
-                }
+                return Integer.compare(a[0], b[0]);
             }
-            if (currHeight != activeHeights.lastKey()) {
-                currHeight = activeHeights.lastKey();
-                res.add(Arrays.asList(p.start, currHeight));
+        });
+        final TreeSet<Integer> height = new TreeSet<>((a, b) -> buildings[a][2] == buildings[b][2]
+                                                                ? Integer.compare(a, b)
+                                                                : Integer.compare(buildings[a][2],
+                                                                                  buildings[b][2]));
+        int max = 0;
+        final List<List<Integer>> res = new ArrayList<>();
+        for (int[] p : pairs) {
+            if (p[2] == 1) {
+                if (max < p[1]) {
+                    max = p[1];
+                    res.add(Arrays.asList(p[0], max));
+                }
+                height.add(p[3]);
+            } else {
+                height.remove(p[3]);
+                final int currMax = height.isEmpty() ? 0 : buildings[height.last()][2];
+                if (currMax < max) {
+                    max = currMax;
+                    res.add(Arrays.asList(p[0], max));
+                }
             }
         }
         return res;

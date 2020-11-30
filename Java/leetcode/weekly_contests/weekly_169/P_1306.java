@@ -1,32 +1,30 @@
 package leetcode.weekly_contests.weekly_169;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public final class P_1306 {
 
-    public static boolean canReach(int[] arr, int start) {
-        return recurse(arr, start, new Boolean[arr.length], new boolean[arr.length]);
-    }
-
-    private static boolean recurse(int[] arr, int start, Boolean[] dp, boolean[] visited) {
-        if (start < 0 || start >= arr.length || visited[start]) {
-            return false;
+    public boolean canReach(int[] arr, int start) {
+        final Deque<Integer> dq = new ArrayDeque<>();
+        dq.offerLast(start);
+        final int n = arr.length;
+        final boolean[] seen = new boolean[n];
+        while (!dq.isEmpty()) {
+            final int curr = dq.removeFirst();
+            if (arr[curr] == 0) {
+                return true;
+            }
+            final int move = arr[curr];
+            if (curr - move >= 0 && !seen[curr - move]) {
+                seen[curr - move] = true;
+                dq.offerLast(curr - move);
+            }
+            if (curr + move < n && !seen[curr + move]) {
+                seen[curr + move] = true;
+                dq.offerLast(curr + move);
+            }
         }
-        if (dp[start] != null && !visited[start]) {
-            visited[start] = true;
-            return dp[start];
-        }
-        if (arr[start] == 0) {
-            return true;
-        }
-        visited[start] = true;
-        return dp[start] = recurse(arr, start - arr[start], dp, visited) ||
-                           recurse(arr, start + arr[start], dp, visited);
+        return false;
     }
-
-    public static void main(String[] args) {
-        System.out.println(canReach(new int[] { 4, 2, 3, 0, 3, 1, 2 }, 5));
-        System.out.println(canReach(new int[] { 4, 2, 3, 0, 3, 1, 2 }, 0));
-        System.out.println(canReach(new int[] { 3, 0, 2, 1, 2 }, 2));
-    }
-
-    private P_1306() {}
 }
