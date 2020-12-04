@@ -7,16 +7,25 @@ import java.util.List;
 public class P_1492 {
 
     public int kthFactor(int n, int k) {
-        final List<Integer> factors = new ArrayList<>();
-        for (int i = 1; i * i <= n; i++) {
-            if (n % i == 0) {
-                factors.add(i);
-                if (i * i != n) {
-                    factors.add(n / i);
+        final List<Integer> lower = new ArrayList<>();
+        final List<Integer> higher = new ArrayList<>();
+        for (int p = 1; p * p <= n; p++) {
+            if (n % p == 0) {
+                if (n != p * p) {
+                    higher.add(n / p);
                 }
+                lower.add(p);
             }
         }
-        Collections.sort(factors);
-        return k > factors.size() ? -1 : factors.get(k - 1);
+        Collections.reverse(higher);
+        k -= 1;
+        if (k < lower.size()) {
+            return lower.get(k);
+        }
+        k -= lower.size();
+        if (k < higher.size()) {
+            return higher.get(k);
+        }
+        return -1;
     }
 }

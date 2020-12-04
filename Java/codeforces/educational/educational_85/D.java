@@ -3,37 +3,58 @@ package codeforces.educational.educational_85;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            final long[][] pairs = new long[n][2];
-            for (int i = 0; i < n; i++) {
-                pairs[i] = new long[] { fs.nextLong(), fs.nextLong() };
+            final long l = fs.nextLong();
+            final long r = fs.nextLong();
+            final long total = (long) n * (n - 1) + 1;
+            int p = lowerBound(l, n);
+            final long startingIdx = total - (long) (n - p) * (n - p + 1);
+            final long diff = l - startingIdx;
+            long q = p + (diff + 2) / 2;
+            long idx = l;
+            for (int i = 0; i < (r - l + 1); i++, idx++) {
+                if (q == n + 1) {
+                    p += 1;
+                    if (p >= n) {
+                        p = 1;
+                    }
+                    q = p + 1;
+                }
+                if (idx % 2 != 0) {
+                    System.out.print(p + " ");
+                } else {
+                    System.out.print(q + " ");
+                    q += 1;
+                }
             }
-            long total = 0;
-            final long[] extraWork = new long[n];
-            for (int i = 0; i < n; i++) {
-                final int prev = i == 0 ? (n - 1) : (i - 1);
-                extraWork[i] = Math.max(0, pairs[i][0] - pairs[prev][1]);
-                total += extraWork[i];
-            }
-            long res = (long) 9e18;
-            for (int i = 0; i < n; i++) {
-                res = Math.min(res, total - extraWork[i] + pairs[i][0]);
-            }
-            pw.println(res);
+            System.out.println();
         }
-        pw.close();
+    }
+
+    private static int lowerBound(long t, int n) {
+        int lo = 1;
+        int hi = n;
+        final long total = (long) n * (n - 1) + 1;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            final long curr = (long) (n - mid - 1) * (n - mid) + 1;
+            if (total - curr < t) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
     }
 
     static final class Utils {

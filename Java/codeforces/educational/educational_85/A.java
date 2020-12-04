@@ -3,37 +3,36 @@ package codeforces.educational.educational_85;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
         final int t = fs.nextInt();
+        outer:
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            final long[][] pairs = new long[n][2];
+            final int[][] pairs = new int[n][2];
             for (int i = 0; i < n; i++) {
-                pairs[i] = new long[] { fs.nextLong(), fs.nextLong() };
+                pairs[i] = new int[] { fs.nextInt(), fs.nextInt() };
             }
-            long total = 0;
-            final long[] extraWork = new long[n];
+            int p = 0;
+            int c = 0;
             for (int i = 0; i < n; i++) {
-                final int prev = i == 0 ? (n - 1) : (i - 1);
-                extraWork[i] = Math.max(0, pairs[i][0] - pairs[prev][1]);
-                total += extraWork[i];
+                final int nP = pairs[i][0];
+                final int nC = pairs[i][1];
+                if (nC < c || nP < p || (nC - c > 0 && nP - p < nC - c)) {
+                    System.out.println("NO");
+                    continue outer;
+                }
+                p += nP - p;
+                c += nC - c;
             }
-            long res = (long) 9e18;
-            for (int i = 0; i < n; i++) {
-                res = Math.min(res, total - extraWork[i] + pairs[i][0]);
-            }
-            pw.println(res);
+            System.out.println("YES");
         }
-        pw.close();
     }
 
     static final class Utils {

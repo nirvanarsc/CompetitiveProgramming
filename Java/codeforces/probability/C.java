@@ -1,39 +1,46 @@
-package codeforces.educational.educational_85;
+package codeforces.probability;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+// https://codeforces.com/gym/306143
 public final class C {
+
+    private static final int MOD = 998244353;
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            final long[][] pairs = new long[n][2];
-            for (int i = 0; i < n; i++) {
-                pairs[i] = new long[] { fs.nextLong(), fs.nextLong() };
-            }
-            long total = 0;
-            final long[] extraWork = new long[n];
-            for (int i = 0; i < n; i++) {
-                final int prev = i == 0 ? (n - 1) : (i - 1);
-                extraWork[i] = Math.max(0, pairs[i][0] - pairs[prev][1]);
-                total += extraWork[i];
-            }
-            long res = (long) 9e18;
-            for (int i = 0; i < n; i++) {
-                res = Math.min(res, total - extraWork[i] + pairs[i][0]);
-            }
-            pw.println(res);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final Map<Integer, Integer> lastIdx = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            lastIdx.put(arr[i], i);
         }
-        pw.close();
+        int groups = 0;
+        int curr = 0;
+        for (int i = 0; i < n; i++) {
+            curr = Math.max(curr, lastIdx.get(arr[i]));
+            if (curr == i) {
+                groups++;
+            }
+        }
+        groups -= 1;
+        long res = 1;
+        long pow = 2;
+        while (groups > 0) {
+            if (groups % 2 == 1) {
+                res = res * pow % MOD;
+            }
+            pow = pow * pow % MOD;
+            groups /= 2;
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

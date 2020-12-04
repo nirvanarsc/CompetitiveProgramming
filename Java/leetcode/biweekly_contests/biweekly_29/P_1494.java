@@ -1,52 +1,42 @@
 package leetcode.biweekly_contests.biweekly_29;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-
 public class P_1494 {
 
-    static class Node {
-        int inDegree;
+    public int minNumberOfSemesters(int n, int[][] dependencies, int k) {
+        return dfs(n, k, dependencies, 0, (1 << n) - 1, new Integer[1 << n]);
     }
 
-    // Greedy is wrong -> requires bitmask dp
-    public int minNumberOfSemesters(int n, int[][] dependencies, int k) {
-        final Map<Integer, Node> nodes = new HashMap<>();
-        final Map<Node, List<Node>> g = new HashMap<>();
-        final Comparator<Node> comp = (a, b) ->
-                Integer.compare(g.getOrDefault(b, Collections.emptyList()).size(),
-                                g.getOrDefault(a, Collections.emptyList()).size());
-        final PriorityQueue<Node> q = new PriorityQueue<>(comp);
-        for (int i = 1; i <= n; i++) {
-            nodes.put(i, new Node());
+    private static int dfs(int n, int k, int[][] dependencies, int mask, int target, Integer[] dp) {
+        if (mask == target) {
+            return 0;
         }
-        for (int[] pq : dependencies) {
-            g.computeIfAbsent(nodes.get(pq[0]), v -> new ArrayList<>()).add(nodes.get(pq[1]));
-            nodes.get(pq[1]).inDegree++;
+        if (dp[mask] != null) {
+            return dp[mask];
         }
-        for (Node node : nodes.values()) {
-            if (node.inDegree == 0) {
-                q.offer(node);
+        int res = (int) 1e9;
+        final int[] inDegree = new int[n];
+        for (int[] dep : dependencies) {
+            final int u = dep[0] - 1;
+            final int v = dep[1] - 1;
+            if ((mask & (1 << u)) == 0) {
+                inDegree[v]++;
             }
         }
-        int level;
-        for (level = 0; !q.isEmpty(); level++) {
-            final PriorityQueue<Node> nextPq = new PriorityQueue<>(comp);
-            for (int size = Math.min(k, q.size()); size > 0; size--) {
-                final Node node = q.remove();
-                for (Node next : g.getOrDefault(node, Collections.emptyList())) {
-                    if (--next.inDegree == 0) {
-                        nextPq.offer(next);
-                    }
+        int currMask = 0;
+        for (int take = 0; take < n; take++) {
+            if ((mask & (1 << take)) == 0 && inDegree[take] == 0) {
+                currMask |= 1 << take;
+            }
+        }
+        if (Integer.bitCount(currMask) <= k) {
+            res = Math.min(res, 1 + dfs(n, k, dependencies, mask | currMask, target, dp));
+        } else {
+            for (int subMask = 0; subMask <= currMask; subMask++) {
+                if (Integer.bitCount(subMask) == k && (currMask | subMask) == currMask) {
+                    res = Math.min(res, 1 + dfs(n, k, dependencies, mask | subMask, target, dp));
                 }
             }
-            q.addAll(nextPq);
         }
-        return level;
+        return dp[mask] = res;
     }
 }
