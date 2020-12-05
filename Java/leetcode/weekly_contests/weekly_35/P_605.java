@@ -3,19 +3,28 @@ package leetcode.weekly_contests.weekly_35;
 public class P_605 {
 
     public boolean canPlaceFlowers(int[] flowerbed, int n) {
-        int zeroes = 1;
-        int res = 0;
-        for (int value : flowerbed) {
-            if (value == 1) {
-                zeroes = 0;
-            } else {
-                if (++zeroes == 3) {
-                    res++;
-                    zeroes = 1;
+        int add = 0;
+        for (int i = 0; i < flowerbed.length; i++) {
+            if (i == 0 && flowerbed[0] == 0) {
+                if (flowerbed.length > 1 && flowerbed[1] == 0) {
+                    add++;
+                    flowerbed[0] = 1;
+                } else if (flowerbed.length == 1) {
+                    add++;
+                    flowerbed[0] = 1;
+                }
+            } else if (i == flowerbed.length - 1 && flowerbed[i] == 0) {
+                if (flowerbed[i - 1] == 0) {
+                    add++;
+                    flowerbed[i] = 1;
+                }
+            } else if (flowerbed[i] == 0) {
+                if (flowerbed[i - 1] == 0 && flowerbed[i + 1] == 0) {
+                    add++;
+                    flowerbed[i] = 1;
                 }
             }
         }
-        if (zeroes == 2) { res++; }
-        return n <= res;
+        return add >= n;
     }
 }
