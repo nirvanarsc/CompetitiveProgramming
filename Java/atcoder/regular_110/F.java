@@ -3,40 +3,63 @@ package atcoder.regular_110;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class F {
 
     public static void main(String[] args) {
+        final PrintWriter pw = new PrintWriter(System.out);
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        final List<Integer> op = new ArrayList<>();
-        while (arr[0] != 0) {
-            op.add(0);
-            final int p = arr[0];
-            final int q = arr[arr[0]];
-            arr[0] = q;
-            arr[p] = p;
-        }
-        boolean sorted = true;
+        final List<Integer> arr = new ArrayList<>(n);
+        final List<Integer> inv = new ArrayList<>(n);
+        final List<Integer> res = new ArrayList<>(n);
+        final Random r = new Random();
         for (int i = 0; i < n; i++) {
-            if (arr[i] != i) {
-                sorted = false;
-                break;
+            arr.add(fs.nextInt());
+            inv.add(-1);
+        }
+        for (int i = 0; i < n; i++) {
+            inv.set(arr.get(i), i);
+        }
+        for (int i = 0; i < 1000; i++) {
+            f(r.nextInt(n), n, arr, inv, res);
+        }
+        while (!isSorted(n, arr)) {
+            final int id = inv.get(1);
+            for (int i = 1; arr.get(id) == i && i < n; i++) {
+                f(id, n, arr, inv, res);
             }
         }
-        if (sorted) {
-            for (int operation : op) {
-                System.out.println(operation);
-            }
-        } else {
-            System.out.println(-1);
+        System.out.println(res.size());
+        for (int op : res) {
+            pw.println(op);
         }
+        pw.flush();
+    }
+
+    private static boolean isSorted(int n, List<Integer> arr) {
+        boolean ok = true;
+        for (int i = 0; i < n; i++) {
+            ok &= arr.get(i) == i;
+        }
+        return ok;
+    }
+
+    private static void f(int i, int n, List<Integer> a, List<Integer> inv, List<Integer> ans) {
+        if (a.get(i) == 0) {
+            return;
+        }
+        ans.add(i);
+        final int j = (i + a.get(i)) % n;
+        Collections.swap(inv, a.get(i), a.get(j));
+        Collections.swap(a, i, j);
     }
 
     static final class Utils {

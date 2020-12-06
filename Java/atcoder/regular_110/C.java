@@ -3,7 +3,10 @@ package atcoder.regular_110;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -46,7 +49,7 @@ public final class C {
 
         private void update(int idx, int val) {
             if (leftMost == rightMost) {
-                sum = val;
+                sum += val;
             } else {
                 final int mid = leftMost + rightMost >>> 1;
                 if (idx <= mid) {
@@ -61,6 +64,7 @@ public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
         final int[] arr = fs.nextIntArray(n);
         final int[] swaps = new int[n];
@@ -72,15 +76,31 @@ public final class C {
             need += swaps[i];
         }
         if (need != n - 1) {
-            System.out.println(-1);
+            pw.println(-1);
         } else {
+            final boolean[] used = new boolean[n + 1];
+            final List<Integer> res = new ArrayList<>();
+            boolean canDo = true;
             for (int i = n - 1; i >= 0; i--) {
                 int curr = i + 1;
                 for (int j = 0; j < swaps[i]; j++) {
-                    System.out.println(curr++);
+                    if (used[curr]) {
+                        canDo = false;
+                        break;
+                    }
+                    used[curr] = true;
+                    res.add(curr++);
                 }
             }
+            if (canDo) {
+                for (int num : res) {
+                    pw.println(num);
+                }
+            } else {
+                pw.println(-1);
+            }
         }
+        pw.close();
     }
 
     static final class Utils {
