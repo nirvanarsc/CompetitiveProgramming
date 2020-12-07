@@ -9,10 +9,39 @@ import java.util.StringTokenizer;
 
 public final class D {
 
+    private static final int MOD = (int) (1e9 + 7);
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final int m = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        int sum = n;
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
+        }
+        long up = m + n;
+        long res = 1;
+        long den = 1;
+        long bot = 1;
+        for (int i = 0; i < sum; i++, up--, bot++) {
+            res = (res * up) % MOD;
+            den = (den * bot) % MOD;
+        }
+        res = (res * modpow(den, MOD - 2)) % MOD;
+        System.out.println(res);
+    }
+
+    private static long modpow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {

@@ -1,31 +1,26 @@
 package leetcode.medium;
 
-import java.util.Arrays;
-
 public final class P_59 {
 
-    public static int[][] generateMatrix(int n) {
-        final int[][] matrix = new int[n][n];
+    public int[][] generateMatrix(int n) {
+        final int[][] res = new int[n][n];
         final int[][] dirs = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
-        final int[] range = { n, n - 1 };
-        int row = 0, col = -1, t = 1, dir = 0;
-        while (range[dir % 2] > 0) {
-            for (int i = 0; i < range[dir % 2]; i++) {
-                row += dirs[dir][0];
-                col += dirs[dir][1];
-                matrix[row][col] = t++;
+        int side = n - 1, i = 0, j = 0, num = 1;
+        while (side > 0) {
+            for (int[] dir : dirs) {
+                for (int k = 0; k < side; k++) {
+                    res[i][j] = num++;
+                    i += dir[0];
+                    j += dir[1];
+                }
             }
-            range[dir % 2] -= 1;
-            dir = (dir + 1) % 4;
+            i++;
+            j++;
+            side -= 2;
         }
-        return matrix;
-    }
-
-    public static void main(String[] args) {
-        for (int[] d : generateMatrix(5)) {
-            System.out.println(Arrays.toString(d));
+        if (n % 2 != 0) {
+            res[i][j] = num;
         }
+        return res;
     }
-
-    private P_59() {}
 }
