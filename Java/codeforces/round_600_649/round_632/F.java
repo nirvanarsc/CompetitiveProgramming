@@ -3,32 +3,40 @@ package codeforces.round_600_649.round_632;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        final Map<Long, Integer> map = new HashMap<>(Collections.singletonMap(0L, -1));
-        long sum = 0;
-        long res = 0;
-        int j = -1;
-        for (int i = 0; i < n; i++) {
-            sum += arr[i];
-            if (map.containsKey(sum)) {
-                j = Math.max(j, map.get(sum) + 1);
-            }
-            res += i - j;
-            map.put(sum, i);
+        final int[] sieve = sieveOfEratosthenes(n);
+        Utils.shuffleSort(sieve);
+        for (int i = 2; i <= n; i++) {
+            pw.print(sieve[i] + " ");
         }
-        System.out.println(res);
+        pw.close();
+    }
+
+    private static int[] sieveOfEratosthenes(int n) {
+        final int[] maxDiv = new int[n + 1];
+        maxDiv[0] = maxDiv[1] = 1;
+        for (int p = 2; p <= n; p++) {
+            if (maxDiv[p] > 0) {
+                continue;
+            }
+            for (int q = p; q <= n; q += p) {
+                if (maxDiv[q] > 0) {
+                    continue;
+                }
+                maxDiv[q] = q / p;
+            }
+        }
+        return maxDiv;
     }
 
     static final class Utils {

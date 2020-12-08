@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -66,10 +68,10 @@ public final class D {
         final FastScanner fs = new FastScanner();
         final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
-        final int k = fs.nextInt();
+        int k = fs.nextInt();
         final String s = fs.next();
         final int[] arr = new int[n];
-        final int[] swaps = new int[n];
+        int[] swaps = new int[n];
         for (int i = 0; i < n; i++) {
             arr[i] = s.charAt(i) == 'R' ? 1 : 0;
         }
@@ -83,29 +85,63 @@ public final class D {
         if (need < k) {
             pw.println(-1);
         } else {
-            final List<Integer> res = new ArrayList<>();
-            for (int i = n - 1; i >= 0; i--) {
-                int curr = i + 1;
-                for (int j = 0; j < swaps[i]; j++) {
-                    res.add(curr++);
+            final List<String> lines = new ArrayList<>();
+            final Deque<Integer> dq = new ArrayDeque<>();
+            while (k > 0) {
+                final int[] nextS = swaps.clone();
+                for (int i = n - 1; i >= 1; i--) {
+                    if (swaps[i - 1] > 0 && swaps[i] == 0) {
+                        dq.addLast(i);
+                        nextS[i] = nextS[i - 1] - 1;
+                        nextS[i - 1] = 0;
+                    }
+                }
+                boolean done = false;
+                if (need - dq.size() + 1 > k) {
+                    final int curr = dq.size();
+                    final StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < curr; i++) {
+                        sb.append(dq.removeFirst());
+                        sb.append(' ');
+                    }
+                    lines.add(curr + " " + sb);
+                    need -= curr;
+                } else {
+                    final int curr = need - k + 1;
+                    final StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < curr; i++) {
+                        sb.append(dq.removeFirst());
+                        sb.append(' ');
+                    }
+                    lines.add(curr + " " + sb);
+                    need -= curr;
+                    done = true;
+                }
+                k -= 1;
+                swaps = nextS;
+                if (done) {
+                    break;
                 }
             }
-            final int turn = need / k;
-            final int first = turn + need % k;
-            final StringBuilder sb = new StringBuilder();
-            int idx = 0;
-            for (int i = 0; i < first; i++) {
-                sb.append(res.get(idx++));
-                sb.append(' ');
-            }
-            pw.println(first + " " + sb);
-            sb.setLength(0);
-            for (int i = idx, j = 0; i < need; i++, j++) {
-                sb.append(res.get(idx++));
-                sb.append(' ');
-                if (j == turn - 1) {
-                    pw.println(turn + " " + sb);
-                    sb.setLength(0);
+            if (k == 0 && need > 0) {
+                pw.println(-1);
+            } else {
+                for (String line : lines) {
+                    pw.println(line);
+                }
+                final List<Integer> res = new ArrayList<>();
+                while (!dq.isEmpty()) {
+                    res.add(dq.removeFirst());
+                }
+                for (int i = n - 1; i >= 0; i--) {
+                    int curr = i + 1;
+                    for (int j = 0; j < swaps[i]; j++) {
+                        res.add(curr++);
+                    }
+                }
+                int idx = 0;
+                for (int i = 0; i < k; i++) {
+                    pw.println(1 + " " + res.get(idx++));
                 }
             }
         }
