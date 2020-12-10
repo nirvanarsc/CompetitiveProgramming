@@ -24,16 +24,21 @@ public class Common {
             }
         }
 
-        long ncr(int n, int r) {
-            if (n < r) { return 0; }
-            if (n < 0 || r < 0) { return 0; }
-            return factorial[n] * (facInverse[r] * facInverse[n - r] % MOD) % MOD;
+        long nck(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
         }
 
-        long modpow(long a, long n) {
+        // combinations with repetition
+        long ncr(int n, int k) {
+            return nck(n + k - 1, k);
+        }
+
+        long modPow(long a, long n) {
             long res = 1;
             while (n > 0) {
-                if (n % 2 == 1) {
+                if (n % 2 != 0) {
                     res = res * a % MOD;
                 }
                 a = a * a % MOD;
