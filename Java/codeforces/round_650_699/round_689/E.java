@@ -4,58 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import utils.DataStructures.TreeNode;
-
 public final class E {
-
-    public TreeNode subtreeWithAllDeepest(TreeNode root) {
-        final Deque<TreeNode[]> dq = new ArrayDeque<>();
-        final int[] depths = new int[505];
-        final int[] parents = new int[505];
-        final TreeNode[] map = new TreeNode[505];
-        Arrays.fill(depths, -1);
-        Arrays.fill(parents, -1);
-        dq.offerLast(new TreeNode[] { root, new TreeNode(-1) });
-        int maxL = -1;
-        for (int level = 0; !dq.isEmpty(); level++) {
-            maxL = level;
-            for (int size = dq.size(); size > 0; size--) {
-                final TreeNode[] curr = dq.removeFirst();
-                final TreeNode node = curr[0];
-                final TreeNode parent = curr[1];
-                map[node.val] = node;
-                depths[node.val] = level;
-                parents[node.val] = parent.val;
-                if (node.left != null) {
-                    dq.offerLast(new TreeNode[] { node.left, node });
-                }
-                if (node.right != null) {
-                    dq.offerLast(new TreeNode[] { node.right, node });
-                }
-            }
-        }
-        final List<Integer> leaves = new ArrayList<>();
-        for (int i = 0; i < depths.length; i++) {
-            if (depths[i] == maxL) {
-                leaves.add(i);
-            }
-        }
-        int res = 0;
-        for (int i = 0; i < leaves.size(); i++) {
-            for (int j = i + 1; j < leaves.size(); j++) {
-                // FIND LCA
-            }
-        }
-        return null;
-    }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();

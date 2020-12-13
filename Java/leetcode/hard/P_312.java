@@ -3,23 +3,24 @@ package leetcode.hard;
 public class P_312 {
 
     public int maxCoins(int[] nums) {
-        final int[] arr = new int[nums.length + 2];
-        arr[0] = arr[arr.length - 1] = 1;
+        final int n = nums.length + 2;
+        final int[] arr = new int[n];
+        arr[0] = arr[n - 1] = 1;
         System.arraycopy(nums, 0, arr, 1, nums.length);
-        return recurse(arr, 0, arr.length - 1, new Integer[arr.length][arr.length]);
+        return dfs(arr, 0, n - 1, new Integer[n][n]);
     }
 
-    private static int recurse(int[] arr, int l, int r, Integer[][] dp) {
-        if (l + 1 == r) {
-            return 0;
+    private static int dfs(int[] arr, int i, int j, Integer[][] dp) {
+        if (i == j) {
+            return 1;
         }
-        if (dp[l][r] != null) {
-            return dp[l][r];
+        if (dp[i][j] != null) {
+            return dp[i][j];
         }
-        int res = Integer.MIN_VALUE;
-        for (int i = l + 1; i < r; i++) {
-            res = Math.max(res, arr[l] * arr[i] * arr[r] + recurse(arr, l, i, dp) + recurse(arr, i, r, dp));
+        int res = 0;
+        for (int k = i + 1; k < j; k++) {
+            res = Math.max(res, arr[i] * arr[k] * arr[j] + dfs(arr, i, k, dp) + dfs(arr, k, j, dp));
         }
-        return dp[l][r] = res;
+        return dp[i][j] = res;
     }
 }
