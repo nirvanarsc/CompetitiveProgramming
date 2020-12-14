@@ -3,24 +3,22 @@ package leetcode.medium;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class P_131 {
+public class P_131 {
 
-    public static List<List<String>> partition(String s) {
+    public List<List<String>> partition(String s) {
         final List<List<String>> res = new ArrayList<>();
-        recurse(0, s, res, new ArrayList<>());
+        dfs(0, s, new ArrayList<>(), res);
         return res;
     }
 
-    private static void recurse(int start, String s, List<List<String>> res, List<String> curr) {
+    private static void dfs(int start, String s, List<String> curr, List<List<String>> res) {
         if (start == s.length()) {
             res.add(new ArrayList<>(curr));
-            return;
         }
-
         for (int i = start + 1; i <= s.length(); i++) {
             if (isPalindrome(s, start, i - 1)) {
                 curr.add(s.substring(start, i));
-                recurse(i, s, res, curr);
+                dfs(i, s, curr, res);
                 curr.remove(curr.size() - 1);
             }
         }
@@ -36,10 +34,4 @@ public final class P_131 {
         }
         return true;
     }
-
-    public static void main(String[] args) {
-        System.out.println(partition("aab"));
-    }
-
-    private P_131() {}
 }

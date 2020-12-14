@@ -1,6 +1,6 @@
 package leetcode.weekly_contests.weekly_219;
 
-public class P_2 {
+public class P_1689 {
 
     public int minPartitions(String n) {
         int res = 0;
@@ -9,5 +9,4 @@ public class P_2 {
         }
         return res;
     }
-
 }
