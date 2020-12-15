@@ -2,17 +2,22 @@ package leetcode.weekly_contests.weekly_120;
 
 public class P_977 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int[] sortedSquares(int[] A) {
-        final int[] res = new int[A.length];
-        for (int i = 0, j = A.length - 1, w = A.length - 1; i <= j; w--) {
-            if (A[i] * A[i] > A[j] * A[j]) {
-                res[w] = A[i] * A[i];
-                i++;
-            } else {
-                res[w] = A[j] * A[j];
+    public int[] sortedSquares(int[] nums) {
+        final int[] res = new int[nums.length];
+        int i = 0;
+        int j = nums.length - 1;
+        int idx = res.length - 1;
+        while (i <= j) {
+            final int l = nums[i] * nums[i];
+            final int r = nums[j] * nums[j];
+            if (l < r) {
+                res[idx] = r;
                 j--;
+            } else {
+                res[idx] = l;
+                i++;
             }
+            idx--;
         }
         return res;
     }

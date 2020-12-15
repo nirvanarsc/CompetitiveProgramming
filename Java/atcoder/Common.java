@@ -35,6 +35,13 @@ public class Common {
             return nck(n + k - 1, k);
         }
 
+        // permutations with repetition
+        long npk(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * facInverse[n - k] % MOD;
+        }
+
         long modPow(long a, long n) {
             long res = 1;
             while (n > 0) {
