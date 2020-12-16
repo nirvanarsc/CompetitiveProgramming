@@ -5,22 +5,20 @@ import java.util.Deque;
 
 import utils.DataStructures.TreeNode;
 
-@SuppressWarnings("ConstantConditions")
 public class P_98 {
 
     public boolean isValidBST(TreeNode root) {
-        return dfs(root, null, null);
+        return dfs(root, (long) -1e18, (long) 1e18);
     }
 
-    private static boolean dfs(TreeNode node, Integer low, Integer high) {
+    private static boolean dfs(TreeNode node, long lo, long hi) {
         if (node == null) {
             return true;
         }
-
-        return (low == null || low < node.val)
-               && (high == null || node.val < high)
-               && dfs(node.left, low, node.val)
-               && dfs(node.right, node.val, high);
+        if (node.val <= lo || node.val >= hi) {
+            return false;
+        }
+        return dfs(node.left, lo, node.val) && dfs(node.right, node.val, hi);
     }
 
     public boolean isValidBSTIterative(TreeNode root) {
