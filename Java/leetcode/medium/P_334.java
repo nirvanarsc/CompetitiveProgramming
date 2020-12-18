@@ -38,4 +38,26 @@ public class P_334 {
         }
         return false;
     }
+
+    public boolean increasingTripletMemory(int[] nums) {
+        final int n = nums.length;
+        final int[] min = new int[n];
+        final int[] max = new int[n];
+        Arrays.fill(min, Integer.MAX_VALUE);
+        Arrays.fill(max, Integer.MIN_VALUE);
+        for (int i = 0; i < n; i++) {
+            final int prev = i == 0 ? Integer.MAX_VALUE : min[i - 1];
+            min[i] = Math.min(min[i], Math.min(nums[i], prev));
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            final int prev = i == n - 1 ? Integer.MIN_VALUE : max[i + 1];
+            max[i] = Math.max(max[i], Math.max(nums[i], prev));
+        }
+        for (int i = 0; i < n; i++) {
+            if (min[i] < nums[i] && nums[i] < max[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
