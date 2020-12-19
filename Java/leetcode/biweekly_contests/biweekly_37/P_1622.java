@@ -100,40 +100,47 @@ public class P_1622 {
     }
 
     class Fancy {
-
         private static final int MOD = (int) (1e9 + 7);
-        List<Long> list = new ArrayList<>();
-        long[] linear = { 1, 0 };
+        long mul;
+        long add;
+        List<Integer> list;
+
+        Fancy() {
+            mul = 1L;
+            add = 0L;
+            list = new ArrayList<>();
+        }
 
         public void append(int val) {
-            long v = val;
-            v = (v + MOD - linear[1]) % MOD;
-            // Fermat's little theorem = mod inverse for primes
-            v = (v * modPow(linear[0], MOD - 2)) % MOD;
-            list.add(v);
+            long res = val;
+            res = (res + MOD - add) % MOD;
+            res = res * modPow(mul, MOD - 2) % MOD;
+            list.add((int) res);
         }
 
         public void addAll(int inc) {
-            linear[1] = (linear[1] + inc) % MOD;
+            add = (add + inc) % MOD;
         }
 
         public void multAll(int m) {
-            linear[0] = linear[0] * m % MOD;
-            linear[1] = linear[1] * m % MOD;
+            add = (add * m) % MOD;
+            mul = (mul * m) % MOD;
         }
 
         public int getIndex(int idx) {
-            if (idx >= list.size()) { return -1; }
-            long v = list.get(idx);
-            v = v * linear[0] % MOD;
-            v = (v + linear[1]) % MOD;
-            return (int) v;
+            if (idx >= list.size()) {
+                return -1;
+            }
+            long res = list.get(idx);
+            res = (res * mul) % MOD;
+            res = (res + add) % MOD;
+            return (int) res;
         }
 
-        public long modPow(long a, long n) {
+        private long modPow(long a, long n) {
             long res = 1;
             while (n > 0) {
-                if (n % 2 == 1) {
+                if (n % 2 != 0) {
                     res = res * a % MOD;
                 }
                 a = a * a % MOD;
