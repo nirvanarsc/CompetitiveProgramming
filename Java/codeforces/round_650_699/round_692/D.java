@@ -11,11 +11,67 @@ public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final char[] s = fs.next().toCharArray();
+        final int n = s.length;
+        final int x = fs.nextInt();
+        final int y = fs.nextInt();
+        final int[] pre1 = new int[n + 1];
+        final int[] pre0 = new int[n + 1];
+        final int[] preQ = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            pre1[i] = pre1[i - 1] + (s[i - 1] == '1' ? 1 : 0);
+            pre0[i] = pre0[i - 1] + (s[i - 1] == '0' ? 1 : 0);
+            preQ[i] = preQ[i - 1] + (s[i - 1] == '?' ? 1 : 0);
         }
+        long xx = 0;
+        long yy = 0;
+        long curr;
+        if (x < y) {
+            for (int i = 0; i < n; i++) {
+                if (s[i] == '?' || s[i] == '0') {
+                    xx += pre1[n] - pre1[i];
+                } else {
+                    yy += pre0[n] - pre0[i];
+                    yy += preQ[n] - preQ[i];
+                }
+            }
+            curr = xx * x + yy * y;
+            for (int i = n - 1; i >= 0; i--) {
+                if (s[i] == '?') {
+                    xx -= preQ[n] - preQ[i + 1];
+                    xx -= pre1[n] - pre1[i];
+                    xx += pre0[i];
+                    xx += preQ[i];
+
+                    yy -= pre1[i];
+                    yy += pre0[n] - pre0[i];
+                    curr = Math.min(curr, xx * x + yy * y);
+                }
+            }
+        } else {
+            for (int i = 0; i < n; i++) {
+                if (s[i] == '?' || s[i] == '1') {
+                    yy += pre0[n] - pre0[i];
+                } else {
+                    xx += pre1[n] - pre1[i];
+                    xx += preQ[n] - preQ[i];
+                }
+            }
+            curr = xx * x + yy * y;
+            for (int i = n - 1; i >= 0; i--) {
+                if (s[i] == '?') {
+                    yy -= preQ[n] - preQ[i + 1];
+                    yy -= pre0[n] - pre0[i];
+                    yy += pre1[i];
+                    yy += preQ[i];
+
+                    xx -= pre0[i];
+                    xx += pre1[n] - pre1[i];
+                    curr = Math.min(curr, xx * x + yy * y);
+                }
+            }
+        }
+        System.out.println(curr);
     }
 
     static final class Utils {
