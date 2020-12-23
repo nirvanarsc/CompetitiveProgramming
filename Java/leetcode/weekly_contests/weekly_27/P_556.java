@@ -1,41 +1,44 @@
 package leetcode.weekly_contests.weekly_27;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+@SuppressWarnings("ReturnOfNull")
 public class P_556 {
 
     public int nextGreaterElement(int n) {
-        final List<Integer> list = new ArrayList<>();
-        for (char c : String.valueOf(n).toCharArray()) {
-            list.add(Character.getNumericValue(c));
-        }
-        final List<Integer> next = nextPermutation(list);
-        if (next.isEmpty()) {
+        final char[] str = String.valueOf(n).toCharArray();
+        final char[] res = nextP(str);
+        if (res == null) {
             return -1;
         }
-        final long reduce = next.stream().mapToLong(Integer::intValue).reduce(0L, (a, b) -> a * 10 + b);
-        return reduce <= Integer.MAX_VALUE ? (int) reduce : -1;
+        final long val = Long.parseLong(new String(res));
+        return val > Integer.MAX_VALUE ? -1 : (int) val;
     }
 
-    public static List<Integer> nextPermutation(List<Integer> perm) {
-        int idx = perm.size() - 2;
-        while (idx >= 0 && perm.get(idx) >= perm.get(idx + 1)) {
-            idx--;
+    private static void reverse(char[] str, int start, int end) {
+        while (start < end) {
+            final char t = str[start];
+            str[start] = str[end];
+            str[end] = t;
+            start++;
+            end--;
         }
+    }
 
-        if (idx == -1) {
-            return Collections.emptyList();
+    private static char[] nextP(char[] str) {
+        int j = str.length - 2;
+        while (j >= 0 && str[j] >= str[j + 1]) {
+            j--;
         }
-
-        int newIdx = perm.size() - 1;
-        while (perm.get(newIdx) <= perm.get(idx)) {
-            newIdx--;
+        if (j == -1) {
+            return null;
         }
-
-        Collections.swap(perm, idx, newIdx);
-        Collections.reverse(perm.subList(idx + 1, perm.size()));
-        return perm;
+        int swap = str.length - 1;
+        while (swap > j && str[j] >= str[swap]) {
+            swap--;
+        }
+        final char t = str[j];
+        str[j] = str[swap];
+        str[swap] = t;
+        reverse(str, j + 1, str.length - 1);
+        return str;
     }
 }
