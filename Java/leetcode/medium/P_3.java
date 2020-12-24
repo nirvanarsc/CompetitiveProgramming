@@ -4,20 +4,22 @@ import java.util.Arrays;
 
 public class P_3 {
 
-    public int lengthOfLongestSubstringSlidingWindow(String s) {
-        final int[] map = new int[128];
-        int j = 0, res = 0;
-        for (int i = 0; i < s.length(); i++) {
-            map[s.charAt(i)]++;
-            while (map[s.charAt(i)] > 1) {
-                map[s.charAt(j++)]--;
+    public int lengthOfLongestSubstring(String s) {
+        final char[] str = s.toCharArray();
+        final int[] map = new int[256];
+        int res = 0;
+        int j = 0;
+        for (int i = 0; i < str.length; i++) {
+            map[str[i]]++;
+            while (map[str[i]] > 1) {
+                --map[str[j++]];
             }
             res = Math.max(res, i - j + 1);
         }
         return res;
     }
 
-    public int lengthOfLongestSubstring(String s) {
+    public int lengthOfLongestSubstringOld(String s) {
         final int[] map = new int[256];
         Arrays.fill(map, -1);
         int res = 0, start = 0, i = 0;

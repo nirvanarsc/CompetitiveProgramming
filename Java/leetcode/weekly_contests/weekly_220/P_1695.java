@@ -7,16 +7,11 @@ public class P_1695 {
         int curr = 0;
         int res = 0;
         final int[] map = new int[(int) (1e4 + 5)];
-        boolean ok = true;
         for (int num : nums) {
-            if (map[num]++ > 0) {
-                ok = false;
-            }
+            map[num]++;
             curr += num;
-            while (!ok) {
-                if (--map[nums[j]] == 1) {
-                    ok = true;
-                }
+            while (map[num] > 1) {
+                map[nums[j]]--;
                 curr -= nums[j++];
             }
             res = Math.max(res, curr);
