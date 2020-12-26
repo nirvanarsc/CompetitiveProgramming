@@ -3,30 +3,28 @@ package leetcode.medium;
 public class P_91 {
 
     public int numDecodings(String s) {
-        return recurse(s, 0, new Integer[s.length()]);
+        return dfs(s.toCharArray(), 0, new Integer[s.length()]);
     }
 
-    private static int recurse(String s, int start, Integer[] dp) {
-        if (start == s.length()) {
+    private static int dfs(char[] s, int idx, Integer[] dp) {
+        if (idx == s.length) {
             return 1;
         }
-
-        if (dp[start] != null) {
-            return dp[start];
+        if (dp[idx] != null) {
+            return dp[idx];
         }
-
-        int one = 0;
-        if (Integer.parseInt(s.substring(start, start + 1)) > 0) {
-            one = recurse(s, start + 1, dp);
+        int res = 0;
+        if (s[idx] > '0') {
+            res += dfs(s, idx + 1, dp);
         }
-        int two = 0;
-        if (start + 2 <= s.length()) {
-            final int num = Integer.parseInt(s.substring(start, start + 2));
-            if (10 <= num && num <= 26) {
-                two = recurse(s, start + 2, dp);
+        if (idx < s.length - 1) {
+            if (s[idx] == '2' && s[idx + 1] <= '6') {
+                res += dfs(s, idx + 2, dp);
+            }
+            if (s[idx] == '1') {
+                res += dfs(s, idx + 2, dp);
             }
         }
-
-        return dp[start] = one + two;
+        return dp[idx] = res;
     }
 }
