@@ -10,27 +10,35 @@ public class P_421 {
         final Trie root = new Trie();
         int res = 0;
         for (int num : nums) {
-            Trie curr = root;
-            for (int i = Integer.SIZE - 1; i >= 0; i--) {
-                final int curBit = (num >> i) & 1;
-                if (curr.children[curBit] == null) {
-                    curr.children[curBit] = new Trie();
-                }
-                curr = curr.children[curBit];
-            }
+            add(root, num);
         }
         for (int num : nums) {
-            Trie curr = root;
-            int currSum = 0;
-            for (int i = Integer.SIZE - 1; i >= 0; i--) {
-                int curBit = (num >> i) & 1;
-                if (curr.children[curBit ^ 1] != null) {
-                    currSum |= 1 << i;
-                    curBit ^= 1;
-                }
-                curr = curr.children[curBit];
+            res = Math.max(res, maxXor(root, num));
+        }
+        return res;
+    }
+
+    private static void add(Trie root, int num) {
+        Trie curr = root;
+        for (int i = 31; i >= 0; i--) {
+            final int currBit = (num >> i) & 1;
+            if (curr.children[currBit] == null) {
+                curr.children[currBit] = new Trie();
             }
-            res = Math.max(currSum, res);
+            curr = curr.children[currBit];
+        }
+    }
+
+    private static int maxXor(Trie root, int num) {
+        Trie curr = root;
+        int res = 0;
+        for (int i = 31; i >= 0; i--) {
+            int currBit = (num >> i) & 1;
+            if (curr.children[currBit ^ 1] != null) {
+                res |= 1 << i;
+                currBit ^= 1;
+            }
+            curr = curr.children[currBit];
         }
         return res;
     }

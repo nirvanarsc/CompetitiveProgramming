@@ -2,37 +2,48 @@ package leetcode.biweekly_contests.biweekly_19;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class P_1345 {
 
     public int minJumps(int[] arr) {
-        final int n = arr.length;
-        final Integer[] dp = new Integer[n];
-        dp[n - 1] = 0;
-        final Deque<Integer> q = new ArrayDeque<>(Collections.singletonList(n - 1));
-        final Map<Integer, List<Integer>> indices = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            indices.putIfAbsent(arr[i], new ArrayList<>());
-            indices.get(arr[i]).add(i);
+        final Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < arr.length; i++) {
+            map.computeIfAbsent(arr[i], val -> new ArrayList<>()).add(i);
         }
-        while (!q.isEmpty()) {
-            final int i = q.removeFirst();
-            final List<Integer> next = indices.get(arr[i]);
-            next.add(i - 1);
-            next.add(i + 1);
-            for (int j : next) {
-                if (j >= 0 && j < n && dp[j] == null) {
-                    dp[j] = dp[i] + 1;
-                    q.offerLast(j);
+        final Deque<Integer> q = new ArrayDeque<>();
+        q.offerLast(0);
+        final Set<Integer> skips = new HashSet<>();
+        final boolean[] visited = new boolean[arr.length];
+        for (int level = 0; !q.isEmpty(); level++) {
+            for (int size = q.size(); size > 0; size--) {
+                final int curr = q.removeFirst();
+                if (curr == arr.length - 1) {
+                    return level;
+                }
+                if (!visited[curr + 1]) {
+                    visited[curr + 1] = true;
+                    q.offerLast(curr + 1);
+                }
+                if (curr > 0 && !visited[curr - 1]) {
+                    visited[curr - 1] = true;
+                    q.offerLast(curr - 1);
+                }
+                if (skips.add(arr[curr])) {
+                    for (int next : map.get(arr[curr])) {
+                        if (next != curr && !visited[next]) {
+                            visited[next] = true;
+                            q.offerLast(next);
+                        }
+                    }
                 }
             }
-            next.clear();
         }
-        return dp[0];
+        return -1;
     }
 }
