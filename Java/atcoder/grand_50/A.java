@@ -13,8 +13,8 @@ public final class A {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         for (int i = 0; i < n; i++) {
-            final int u = 1 + (2 * i) % n;
-            final int v = 1 + (2 * i + 1) % n;
+            final int u = 1 + (2 * i + 1) % n;
+            final int v = 1 + (2 * i + 2) % n;
             System.out.println(u + " " + v);
         }
     }
