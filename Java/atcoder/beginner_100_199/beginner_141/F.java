@@ -9,11 +9,47 @@ import java.util.StringTokenizer;
 
 public final class F {
 
+    // Gaussian Elimination & Markov Chains
+    // https://codeforces.com/blog/entry/68953
+    // https://codeforces.com/blog/entry/60003
     public static void main(String[] args) {
-        // TODO Gaussian Elimination
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final long[] arr = fs.nextLongArray(n);
+        long totalXor = 0;
+        for (int i = 0; i < n; i++) {
+            totalXor ^= arr[i];
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 60; j++) {
+                if (((totalXor & (1L << j)) != 0) && (arr[i] & (1L << j)) != 0) {
+                    arr[i] ^= 1L << j;
+                }
+            }
+        }
+        final long[] basis = new long[60];
+        for (int i = 0; i < n; i++) {
+            insertVector(arr[i], basis);
+        }
+        long res = 0;
+        for (int i = 59; i >= 0; i--) {
+            if (basis[i] > 0 && (res & (1L << i)) == 0) {
+                res ^= basis[i];
+            }
+        }
+        System.out.println(res * 2 + totalXor);
+    }
+
+    private static void insertVector(long mask, long[] basis) {
+        for (int i = 59; i >= 0; i--) {
+            if ((mask & (1L << i)) != 0) {
+                if (basis[i] == 0) {
+                    basis[i] = mask;
+                    return;
+                }
+                mask ^= basis[i];
+            }
+        }
     }
 
     static final class Utils {

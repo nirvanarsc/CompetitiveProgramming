@@ -1,30 +1,26 @@
 package leetcode.weekly_contests.weekly_213;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 public class P_1640 {
 
     public boolean canFormArray(int[] arr, int[][] pieces) {
-        final Map<Integer, Integer> firsts = new HashMap<>();
+        final int[] first = new int[105];
+        Arrays.fill(first, -1);
         for (int i = 0; i < pieces.length; i++) {
-            firsts.put(pieces[i][0], i);
+            first[pieces[i][0]] = i;
         }
-        int idx = 0;
-        while (idx < arr.length) {
-            if (!firsts.containsKey(arr[idx])) {
+        for (int i = 0; i < arr.length; i++) {
+            final int idx = first[arr[i]];
+            if (idx == -1) {
                 return false;
             }
-            final int[] next = pieces[firsts.get(arr[idx])];
-            for (int num : next) {
-                if (idx == arr.length) {
+            for (int k = 0; k < pieces[idx].length; k++) {
+                if (arr[i++] != pieces[idx][k]) {
                     return false;
                 }
-                if (arr[idx] != num) {
-                    return false;
-                }
-                idx++;
             }
+            i -= 1;
         }
         return true;
     }
