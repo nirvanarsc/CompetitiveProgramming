@@ -4,7 +4,7 @@ import utils.DataStructures.TreeNode;
 
 public class P_1379 {
 
-    @SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
+    @SuppressWarnings("ReturnOfNull")
     public TreeNode getTargetCopy(TreeNode original, TreeNode cloned, TreeNode target) {
         if (original == null) {
             return null;
@@ -14,6 +14,6 @@ public class P_1379 {
         }
         final TreeNode left = getTargetCopy(original.left, cloned.left, target);
         final TreeNode right = getTargetCopy(original.right, cloned.right, target);
-        return left == null ? right : left;
+        return left != null? left: right;
     }
 }

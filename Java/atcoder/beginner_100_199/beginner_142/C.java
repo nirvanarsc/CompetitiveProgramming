@@ -1,19 +1,27 @@
-package atcoder;
+package atcoder.beginner_100_199.beginner_142;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public final class A {
+public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final int[][] pairs = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            pairs[i] = new int[] { fs.nextInt(), i + 1 };
+        }
+        Arrays.sort(pairs, Comparator.comparingInt(a -> a[0]));
+        for (int[] p : pairs) {
+            System.out.print(p[1] + " ");
+        }
+        System.out.println();
     }
 
     static final class Utils {
