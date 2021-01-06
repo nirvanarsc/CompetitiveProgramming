@@ -25,13 +25,72 @@ public final class F {
                 list.add(new int[] { u, v });
             }
             list.sort(Comparator.comparingInt(a -> a[1]));
-            // TODO coordinate compression + dp
-            final int currU = 0;
-            final int currD = 0;
-            for (int i = 0; i < list.size() - 1; i++) {
+            final List<int[]> masks = new ArrayList<>();
+            for (int i = 0; i < list.size(); i++) {
                 final int[] l = list.get(i);
-                final int[] r = list.get(i + 1);
+                if (i < list.size() - 1 && list.get(i + 1)[1] == l[1]) {
+                    masks.add(new int[] { 3, l[1] });
+                    i++;
+                } else {
+                    masks.add(l);
+                }
             }
+            int prevC = 1;
+            final List<Integer> arr = new ArrayList<>();
+            for (int[] mask : masks) {
+                f(mask[1], prevC, arr);
+                arr.add(mask[0]);
+                prevC = mask[1] + 1;
+            }
+            f(n + 1, prevC, arr);
+            final boolean ok = dfs(arr, 0, 0, new Boolean[arr.size()][4]);
+            System.out.println(ok ? "YES" : "NO");
+        }
+    }
+
+    private static boolean dfs(List<Integer> arr, int idx, int mask, Boolean[][] dp) {
+        if (idx == arr.size()) {
+            return mask == 3;
+        }
+        if (dp[idx][mask] != null) {
+            return dp[idx][mask];
+        }
+        boolean res = false;
+        if (arr.get(idx) == 2) {
+            if (mask == 0 || mask == 3) {
+                res = dfs(arr, idx + 1, 2, dp);
+            } else if (mask == 2) {
+                res = dfs(arr, idx + 1, 3, dp);
+            }
+        } else if (arr.get(idx) == 1) {
+            if (mask == 0 || mask == 3) {
+                res = dfs(arr, idx + 1, 1, dp);
+            } else if (mask == 1) {
+                res = dfs(arr, idx + 1, 3, dp);
+            }
+        } else if (arr.get(idx) == 0) {
+            if (mask == 0 || mask == 3) {
+                res = dfs(arr, idx + 1, 0, dp) || dfs(arr, idx + 1, 3, dp);
+            } else if (mask == 1) {
+                res = dfs(arr, idx + 1, 2, dp);
+            } else if (mask == 2) {
+                res = dfs(arr, idx + 1, 1, dp);
+            }
+        } else {
+            if (mask == 0 || mask == 3) {
+                res = dfs(arr, idx + 1, 3, dp);
+            }
+        }
+        return dp[idx][mask] = res;
+    }
+
+    private static void f(int n, int prevC, List<Integer> arr) {
+        int last = n - prevC;
+        if (last > 4) {
+            last = 4 - last % 2;
+        }
+        for (int i = 0; i < last; i++) {
+            arr.add(0);
         }
     }
 
