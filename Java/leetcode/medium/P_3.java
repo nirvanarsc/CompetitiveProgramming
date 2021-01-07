@@ -6,9 +6,8 @@ public class P_3 {
 
     public int lengthOfLongestSubstring(String s) {
         final char[] str = s.toCharArray();
-        final int[] map = new int[256];
-        int res = 0;
-        int j = 0;
+        final int[] map = new int[128];
+        int res = 0, j = 0;
         for (int i = 0; i < str.length; i++) {
             map[str[i]]++;
             while (map[str[i]] > 1) {
