@@ -1,6 +1,6 @@
 package leetcode.weekly_contests.weekly_216;
 
-public class P_3 {
+public class P_1664 {
 
     public int waysToMakeFair(int[] nums) {
         final int n = nums.length;
@@ -27,7 +27,6 @@ public class P_3 {
             }
             e += oddSum[n - 1] - oddSum[i];
             o += evenSum[n - 1] - evenSum[i];
-            System.out.println(e + " " + o);
             if (e == o) {
                 res += 1;
             }

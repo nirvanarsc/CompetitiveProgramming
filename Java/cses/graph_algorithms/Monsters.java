@@ -40,7 +40,7 @@ public final class Monsters {
             Arrays.fill(row, (int) 1e9);
         }
         final Deque<int[]> monsters = new ArrayDeque<>();
-        final int[] source = new int[3];
+        final int[] source = new int[2];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (grid[i][j] == 'M') {
@@ -54,22 +54,20 @@ public final class Monsters {
         monsterBFS(monsters, dist, grid, n, m);
         final Deque<int[]> q = new ArrayDeque<>(Collections.singleton(source));
         final boolean[][] seen = new boolean[n][m];
-        for (int level = 0; !q.isEmpty(); level++) {
+        for (int level = 1; !q.isEmpty(); level++) {
             for (int size = q.size(); size > 0; size--) {
                 final int[] curr = q.removeFirst();
                 int x = curr[0];
                 int y = curr[1];
                 if (x == 0 || x == n - 1 || y == 0 || y == m - 1) {
                     System.out.println("YES");
-                    System.out.println(curr[2]);
-                    final char[] res = new char[curr[2]];
-                    int idx = curr[2] - 1;
-                    while (idx >= 0) {
+                    System.out.println(level - 1);
+                    final char[] res = new char[level - 1];
+                    for (int i = res.length - 1; i >= 0; i--) {
                         final Node node = prev[x][y];
-                        res[idx] = node.p;
+                        res[i] = node.p;
                         x = node.r;
                         y = node.c;
-                        idx--;
                     }
                     System.out.println(res);
                     return;
@@ -78,10 +76,10 @@ public final class Monsters {
                     final int nx = x + dir[0];
                     final int ny = y + dir[1];
                     if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] == '.' && !seen[nx][ny]) {
-                        if (dist[x][y] > level) {
+                        if (dist[nx][ny] > level) {
                             seen[nx][ny] = true;
                             prev[nx][ny] = new Node(d.charAt(dir[2]), x, y);
-                            q.offerLast(new int[] { nx, ny, level + 1 });
+                            q.offerLast(new int[] { nx, ny });
                         }
                     }
                 }

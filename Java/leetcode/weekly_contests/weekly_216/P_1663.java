@@ -1,6 +1,6 @@
 package leetcode.weekly_contests.weekly_216;
 
-public class P_2 {
+public class P_1663 {
 
     public String getSmallestString(int n, int k) {
         final int[] str = new int[n];
