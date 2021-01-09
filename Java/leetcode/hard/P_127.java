@@ -1,9 +1,9 @@
-package leetcode.medium;
+package leetcode.hard;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -55,41 +55,33 @@ public class P_127 {
         return 0;
     }
 
-    public static int ladderLengthBFS(String beginWord, String endWord, List<String> wordList) {
-        final Set<String> words = new HashSet<>(wordList);
-        if (!words.contains(endWord)) {
-            return 0;
-        }
-
-        final Deque<String> queue = new LinkedList<>();
-        queue.offerLast(beginWord);
-        int level = 1;
-
-        while (!queue.isEmpty()) {
-            int levelSize = queue.size();
-            while (levelSize-- > 0) {
-                final String curr = queue.removeFirst();
-                final char[] chars = curr.toCharArray();
-                for (int i = 0; i < chars.length; i++) {
-                    final char ch = chars[i];
-                    for (char newChar = 'a'; newChar <= 'z'; newChar++) {
-                        if (newChar == ch) {
-                            continue;
-                        }
-                        chars[i] = newChar;
-                        final String tmp = new String(chars);
-                        if (tmp.equals(endWord)) {
-                            return level + 1;
-                        }
-                        if (words.contains(tmp)) {
-                            queue.offerLast(tmp);
-                            words.remove(tmp);
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        final Set<String> dict = new HashSet<>(wordList);
+        final Deque<String> q = new ArrayDeque<>();
+        q.offerLast(beginWord);
+        for (int level = 1; !q.isEmpty(); level++) {
+            for (int size = q.size(); size > 0; size--) {
+                final String curr = q.removeFirst();
+                if (curr.equals(endWord)) {
+                    return level;
+                }
+                final char[] s = curr.toCharArray();
+                for (int i = 0; i < s.length; i++) {
+                    final char original = s[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c != original) {
+                            s[i] = c;
+                            final String next = new String(s);
+                            if (dict.contains(next)) {
+                                q.offerLast(next);
+                                // instead of an additional "seen" Set
+                                dict.remove(next);
+                            }
                         }
                     }
-                    chars[i] = ch;
+                    s[i] = original;
                 }
             }
-            level++;
         }
         return 0;
     }

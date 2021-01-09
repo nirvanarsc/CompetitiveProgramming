@@ -32,7 +32,7 @@ public class P_1703 {
 
             currR -= (one.get(i + ll) - one.get(i + ll - 1)) * rr;
             currR += one.get(i + k - 1) - one.get(i + ll);
-            System.out.println(currL + currR);
+
             res = Math.min(currL + currR, res);
         }
         return res;
