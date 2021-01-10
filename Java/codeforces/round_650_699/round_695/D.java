@@ -19,7 +19,7 @@ public final class D {
         final int k = fs.nextInt();
         final int q = fs.nextInt();
         final long[] arr = fs.nextLongArray(n);
-        final int[] count = pre(n, k);
+        final long[] count = pre(n, k);
         long curr = 0;
         for (int i = 0; i < n; i++) {
             curr = (curr + (arr[i] * count[i]) % MOD) % MOD;
@@ -27,18 +27,21 @@ public final class D {
         for (int i = 0; i < q; i++) {
             final int u = fs.nextInt() - 1;
             final int v = fs.nextInt();
-            long diff = ((v - arr[u]) * count[u]) % MOD;
-            diff = (diff + MOD) % MOD;
+            final long diff = (Math.abs(v - arr[u]) * count[u]) % MOD;
+            if (v > arr[u]) {
+                curr = (curr + diff) % MOD;
+            } else {
+                curr = (curr - diff + MOD) % MOD;
+            }
             arr[u] = v;
-            curr = (curr + diff) % MOD;
             pw.println(curr);
         }
         pw.close();
     }
 
-    private static int[] pre(int n, int k) {
-        final int[][] dp = new int[n][k + 1];
-        final int[] count = new int[n];
+    private static long[] pre(int n, int k) {
+        final long[][] dp = new long[n][k + 1];
+        final long[] count = new long[n];
         for (int i = 0; i < n; i++) {
             dp[i][0] = 1;
         }

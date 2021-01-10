@@ -1,69 +1,34 @@
-package atcoder.beginner_100_199.beginner_187;
+package atcoder.regular_111;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] grid = new int[n][n];
-        for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            grid[u][v] = 1;
-            grid[v][u] = 1;
-        }
-        final boolean[] ok = new boolean[1 << n];
-        for (int mask = 1; mask < 1 << n; mask++) {
-            final List<Integer> bits = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    bits.add(i);
-                }
-            }
-            boolean res = true;
-            for (int i = 0; i < bits.size(); i++) {
-                for (int j = i + 1; j < bits.size(); j++) {
-                    final int u = bits.get(i);
-                    final int v = bits.get(j);
-                    if (grid[u][v] != 1) {
-                        res = false;
-                        break;
-                    }
-                }
-            }
-            ok[mask] = res;
-        }
-        final int[] dp = new int[1 << n];
-        Arrays.fill(dp, -1);
-        System.out.println(dfs((1 << n) - 1, 0, ok, dp));
+        final long n = fs.nextLong();
+        final long m = fs.nextLong();
+        // convert to base m and take the 2nd digit
+        // i.e. 100(10) => 202(7) => discard last digit, result is 0
+        final long modPow = modPow(10, n, m * m);
+        System.out.println(modPow / m);
     }
 
-    private static int dfs(int target, int currMask, boolean[] ok, int[] dp) {
-        if (currMask == target) {
-            return 0;
-        }
-        if (dp[currMask] != -1) {
-            return dp[currMask];
-        }
-        int res = (int) 1e9;
-        final int available = target ^ currMask;
-        // https://cp-algorithms.com/algebra/all-submasks.html
-        for (int subMask = available; subMask > 0; subMask = (subMask - 1) & available) {
-            if (ok[subMask]) {
-                res = Math.min(res, 1 + dfs(target, currMask | subMask, ok, dp));
+    private static long modPow(long a, long n, long mod) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                res = res * a % mod;
             }
+            a = a * a % mod;
+            n /= 2;
         }
-        return dp[currMask] = res;
+        return res;
     }
 
     static final class Utils {

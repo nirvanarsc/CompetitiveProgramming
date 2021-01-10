@@ -1,69 +1,63 @@
-package atcoder.beginner_100_199.beginner_187;
+package atcoder.regular_111;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final int[][] grid = new int[n][n];
+        final int[][] edges = new int[m][2];
         for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            grid[u][v] = 1;
-            grid[v][u] = 1;
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
-        final boolean[] ok = new boolean[1 << n];
-        for (int mask = 1; mask < 1 << n; mask++) {
-            final List<Integer> bits = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    bits.add(i);
-                }
+        final int[] c = fs.nextIntArray(n);
+        final Map<Integer, List<int[]>> g = new HashMap<>();
+        final int[] res = new int[m];
+        Arrays.fill(res, -1);
+        for (int i = 0; i < m; i++) {
+            final int u = edges[i][0];
+            final int v = edges[i][1];
+            if (c[u] < c[v]) {
+                res[i] = 1;
+            } else if(c[u] > c[v]) {
+                res[i] = 0;
+            } else if (c[u] == c[v]) {
+                g.computeIfAbsent(u, val -> new ArrayList<>()).add(new int[] { v, i, 1 });
+                g.computeIfAbsent(v, val -> new ArrayList<>()).add(new int[] { u, i, 0 });
             }
-            boolean res = true;
-            for (int i = 0; i < bits.size(); i++) {
-                for (int j = i + 1; j < bits.size(); j++) {
-                    final int u = bits.get(i);
-                    final int v = bits.get(j);
-                    if (grid[u][v] != 1) {
-                        res = false;
-                        break;
-                    }
-                }
-            }
-            ok[mask] = res;
         }
-        final int[] dp = new int[1 << n];
-        Arrays.fill(dp, -1);
-        System.out.println(dfs((1 << n) - 1, 0, ok, dp));
+        for (int i = 0; i < n; i++) {
+            dfs(i, -1, g, res);
+        }
+        for (int i = 0; i < m; i++) {
+            if (res[i] == 1) {
+                System.out.println("<-");
+            } else {
+                System.out.println("->");
+            }
+        }
     }
 
-    private static int dfs(int target, int currMask, boolean[] ok, int[] dp) {
-        if (currMask == target) {
-            return 0;
-        }
-        if (dp[currMask] != -1) {
-            return dp[currMask];
-        }
-        int res = (int) 1e9;
-        final int available = target ^ currMask;
-        // https://cp-algorithms.com/algebra/all-submasks.html
-        for (int subMask = available; subMask > 0; subMask = (subMask - 1) & available) {
-            if (ok[subMask]) {
-                res = Math.min(res, 1 + dfs(target, currMask | subMask, ok, dp));
+    private static void dfs(int u, int v, Map<Integer, List<int[]>> g, int[] res) {
+        for (int[] next : g.getOrDefault(u, Collections.emptyList())) {
+            if (res[next[0]] != -1) {
+                continue;
             }
+            res[next[1]] = next[2];
+            dfs(next[0], u, g, res);
         }
-        return dp[currMask] = res;
     }
 
     static final class Utils {

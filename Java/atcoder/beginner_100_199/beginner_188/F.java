@@ -1,11 +1,13 @@
-package atcoder.beginner_100_199.beginner_187;
+package atcoder.beginner_100_199.beginner_188;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -13,57 +15,40 @@ public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] grid = new int[n][n];
-        for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            grid[u][v] = 1;
-            grid[v][u] = 1;
-        }
-        final boolean[] ok = new boolean[1 << n];
-        for (int mask = 1; mask < 1 << n; mask++) {
-            final List<Integer> bits = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    bits.add(i);
+        final long x = fs.nextLong();
+        final long y = fs.nextLong();
+        final Map<Long, Long> map = new HashMap<>();
+        final Deque<Long> q = new ArrayDeque<>();
+        map.put(y, 0L);
+        q.offerLast(y);
+        while (!q.isEmpty()) {
+            final long curr = q.removeFirst();
+            final long c = map.get(curr);
+            if (curr == 1) {
+                continue;
+            }
+            if (curr % 2 != 0) {
+                if (!map.containsKey(curr + 1)) {
+                    map.put(curr + 1, c + 1);
+                    q.offerLast(curr + 1);
+                }
+                if (!map.containsKey(curr - 1)) {
+                    map.put(curr - 1, c + 1);
+                    q.offerLast(curr - 1);
+                }
+            } else {
+                if (!map.containsKey(curr / 2)) {
+                    map.put(curr / 2, c + 1);
+                    q.offerLast(curr / 2);
                 }
             }
-            boolean res = true;
-            for (int i = 0; i < bits.size(); i++) {
-                for (int j = i + 1; j < bits.size(); j++) {
-                    final int u = bits.get(i);
-                    final int v = bits.get(j);
-                    if (grid[u][v] != 1) {
-                        res = false;
-                        break;
-                    }
-                }
-            }
-            ok[mask] = res;
-        }
-        final int[] dp = new int[1 << n];
-        Arrays.fill(dp, -1);
-        System.out.println(dfs((1 << n) - 1, 0, ok, dp));
-    }
 
-    private static int dfs(int target, int currMask, boolean[] ok, int[] dp) {
-        if (currMask == target) {
-            return 0;
         }
-        if (dp[currMask] != -1) {
-            return dp[currMask];
+        long res = (long) 9e18;
+        for (Map.Entry<Long, Long> e : map.entrySet()) {
+            res = Math.min(res, Math.abs(x - e.getKey()) + e.getValue());
         }
-        int res = (int) 1e9;
-        final int available = target ^ currMask;
-        // https://cp-algorithms.com/algebra/all-submasks.html
-        for (int subMask = available; subMask > 0; subMask = (subMask - 1) & available) {
-            if (ok[subMask]) {
-                res = Math.min(res, 1 + dfs(target, currMask | subMask, ok, dp));
-            }
-        }
-        return dp[currMask] = res;
+        System.out.println(res);
     }
 
     static final class Utils {

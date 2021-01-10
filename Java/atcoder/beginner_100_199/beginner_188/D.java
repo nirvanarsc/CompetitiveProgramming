@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_187;
+package atcoder.beginner_100_199.beginner_188;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,61 +9,38 @@ import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] grid = new int[n][n];
-        for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            grid[u][v] = 1;
-            grid[v][u] = 1;
+        final int c = fs.nextInt();
+        final List<int[]> pairs = new ArrayList<>();
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            final int u = fs.nextInt();
+            final int v = fs.nextInt() + 1;
+            final int w = fs.nextInt();
+            pairs.add(new int[] { u, w, 0 });
+            pairs.add(new int[] { v, w, 1 });
         }
-        final boolean[] ok = new boolean[1 << n];
-        for (int mask = 1; mask < 1 << n; mask++) {
-            final List<Integer> bits = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    bits.add(i);
-                }
+        pairs.sort((a, b) -> a[0] == b[0] ? Integer.compare(a[2], b[2]) : Integer.compare(a[0], b[0]));
+        int prev = -1;
+        long currCost = 0;
+        for (int i = 0; i < pairs.size(); i++) {
+            final int[] curr = pairs.get(i);
+            if (prev != -1) {
+                res -= (curr[0] - prev) * Math.max(0, currCost - c);
             }
-            boolean res = true;
-            for (int i = 0; i < bits.size(); i++) {
-                for (int j = i + 1; j < bits.size(); j++) {
-                    final int u = bits.get(i);
-                    final int v = bits.get(j);
-                    if (grid[u][v] != 1) {
-                        res = false;
-                        break;
-                    }
-                }
-            }
-            ok[mask] = res;
-        }
-        final int[] dp = new int[1 << n];
-        Arrays.fill(dp, -1);
-        System.out.println(dfs((1 << n) - 1, 0, ok, dp));
-    }
-
-    private static int dfs(int target, int currMask, boolean[] ok, int[] dp) {
-        if (currMask == target) {
-            return 0;
-        }
-        if (dp[currMask] != -1) {
-            return dp[currMask];
-        }
-        int res = (int) 1e9;
-        final int available = target ^ currMask;
-        // https://cp-algorithms.com/algebra/all-submasks.html
-        for (int subMask = available; subMask > 0; subMask = (subMask - 1) & available) {
-            if (ok[subMask]) {
-                res = Math.min(res, 1 + dfs(target, currMask | subMask, ok, dp));
+            res += (curr[0] - prev) * currCost;
+            prev = curr[0];
+            if (curr[2] == 0) {
+                currCost += curr[1];
+            } else {
+                currCost -= curr[1];
             }
         }
-        return dp[currMask] = res;
+        System.out.println(res);
     }
 
     static final class Utils {

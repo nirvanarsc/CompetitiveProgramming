@@ -1,69 +1,60 @@
-package atcoder.beginner_100_199.beginner_187;
+package atcoder.beginner_100_199.beginner_188;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final int[][] grid = new int[n][n];
+        final int[] cost = fs.nextIntArray(n);
+        final int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            p[i] = new int[] { cost[i], i };
+        }
+        final Map<Integer, List<Integer>> g = new HashMap<>();
         for (int i = 0; i < m; i++) {
             final int u = fs.nextInt() - 1;
             final int v = fs.nextInt() - 1;
-            grid[u][v] = 1;
-            grid[v][u] = 1;
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(v);
         }
-        final boolean[] ok = new boolean[1 << n];
-        for (int mask = 1; mask < 1 << n; mask++) {
-            final List<Integer> bits = new ArrayList<>();
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    bits.add(i);
-                }
+        long res = (long) -1e18;
+        final boolean[] seen = new boolean[n];
+        Arrays.sort(p, Comparator.comparingInt(a -> a[0]));
+        for (int[] pair : p) {
+            if (seen[pair[1]]) {
+                continue;
             }
-            boolean res = true;
-            for (int i = 0; i < bits.size(); i++) {
-                for (int j = i + 1; j < bits.size(); j++) {
-                    final int u = bits.get(i);
-                    final int v = bits.get(j);
-                    if (grid[u][v] != 1) {
-                        res = false;
-                        break;
+            final Deque<Integer> q = new ArrayDeque<>();
+            q.offerLast(pair[1]);
+            while (!q.isEmpty()) {
+                final int curr = q.removeFirst();
+                if (curr != pair[1]) {
+                    res = Math.max(res, cost[curr] - cost[pair[1]]);
+                }
+                for (int next : g.getOrDefault(curr, Collections.emptyList())) {
+                    if (!seen[next]) {
+                        seen[next] = true;
+                        q.offerLast(next);
                     }
                 }
             }
-            ok[mask] = res;
         }
-        final int[] dp = new int[1 << n];
-        Arrays.fill(dp, -1);
-        System.out.println(dfs((1 << n) - 1, 0, ok, dp));
-    }
-
-    private static int dfs(int target, int currMask, boolean[] ok, int[] dp) {
-        if (currMask == target) {
-            return 0;
-        }
-        if (dp[currMask] != -1) {
-            return dp[currMask];
-        }
-        int res = (int) 1e9;
-        final int available = target ^ currMask;
-        // https://cp-algorithms.com/algebra/all-submasks.html
-        for (int subMask = available; subMask > 0; subMask = (subMask - 1) & available) {
-            if (ok[subMask]) {
-                res = Math.min(res, 1 + dfs(target, currMask | subMask, ok, dp));
-            }
-        }
-        return dp[currMask] = res;
+        System.out.println(res);
     }
 
     static final class Utils {
