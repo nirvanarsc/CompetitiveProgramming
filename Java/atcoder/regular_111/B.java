@@ -74,8 +74,8 @@ public final class B {
             }
             pairs[i] = new int[] { u, v };
         }
-        final UnionFind uf = new UnionFind(g.size());
-        final int[] hasCycle = new int[g.size()];
+        final UnionFind uf = new UnionFind(idx);
+        final int[] hasCycle = new int[idx];
         for (int[] pp : pairs) {
             final int u = g.get(pp[0]);
             final int v = g.get(pp[1]);
@@ -85,15 +85,15 @@ public final class B {
                 uf.union(u, v);
             }
         }
-        final boolean[] parentCycle = new boolean[g.size()];
-        for (int i = 0; i < g.size(); i++) {
+        final boolean[] parentCycle = new boolean[idx];
+        for (int i = 0; i < idx; i++) {
             if (hasCycle[i] > 0) {
                 parentCycle[uf.find(i)] = true;
             }
         }
-        final boolean[] ok = new boolean[g.size()];
+        final boolean[] ok = new boolean[idx];
         int res = 0;
-        for (int i = 0; i < g.size(); i++) {
+        for (int i = 0; i < idx; i++) {
             final int parent = uf.find(i);
             if (!ok[parent]) {
                 if (parentCycle[parent]) {

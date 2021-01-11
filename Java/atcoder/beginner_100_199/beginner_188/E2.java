@@ -5,33 +5,35 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class E2 {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int c = fs.nextInt();
-        final List<int[]> pairs = new ArrayList<>();
-        long res = 0;
-        for (int i = 0; i < n; i++) {
-            final int u = fs.nextInt();
-            final int v = fs.nextInt() + 1;
-            final int w = fs.nextInt();
-            pairs.add(new int[] { u, w, 0 });
-            pairs.add(new int[] { v, -w, 1 });
+        final int m = fs.nextInt();
+        final long[] cost = fs.nextLongArray(n);
+        final Map<Integer, List<Integer>> g = new HashMap<>();
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(v);
         }
-        pairs.sort((a, b) -> a[0] == b[0] ? Integer.compare(a[2], b[2]) : Integer.compare(a[0], b[0]));
-        int prev = pairs.get(0)[0];
-        long currCost = 0;
-        for (int i = 0; i < pairs.size(); i++) {
-            final int[] curr = pairs.get(i);
-            res += (curr[0] - prev) * Math.min(c, currCost);
-            currCost += curr[1];
-            prev = curr[0];
+        long res = (long) -1e18;
+        final long[] dp = new long[n];
+        Arrays.fill(dp, (long) 1e18);
+        for (int i = 0; i < n; i++) {
+            res = Math.max(res, cost[i] - dp[i]);
+            for (int next : g.getOrDefault(i, Collections.emptyList())) {
+                dp[next] = Math.min(dp[next], dp[i]);
+                dp[next] = Math.min(dp[next], cost[i]);
+            }
         }
         System.out.println(res);
     }
