@@ -1,67 +1,23 @@
-package atcoder.regular_111;
+package atcoder.beginner_100_199.beginner_148;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class C {
+
+    public static long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
-        }
-        final int[] c = fs.nextIntArray(n);
-        final Map<Integer, List<int[]>> g = new HashMap<>();
-        final int[] res = new int[m];
-        final boolean[] seen = new boolean[n];
-        Arrays.fill(res, -1);
-        for (int i = 0; i < m; i++) {
-            final int u = edges[i][0];
-            final int v = edges[i][1];
-            if (c[u] < c[v]) {
-                res[i] = 1;
-            } else if(c[u] > c[v]) {
-                res[i] = 0;
-            } else if (c[u] == c[v]) {
-                g.computeIfAbsent(u, val -> new ArrayList<>()).add(new int[] { v, i, 0 });
-                g.computeIfAbsent(v, val -> new ArrayList<>()).add(new int[] { u, i, 1 });
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            dfs(i, g, res, seen);
-        }
-        for (int i = 0; i < m; i++) {
-            if (res[i] == 1) {
-                System.out.println("<-");
-            } else {
-                System.out.println("->");
-            }
-        }
-    }
-
-    private static void dfs(int u, Map<Integer, List<int[]>> g, int[] res, boolean[] seen) {
-        if (seen[u]) {
-            return;
-        }
-        seen[u] = true;
-        for (int[] next : g.getOrDefault(u, Collections.emptyList())) {
-            res[next[1]] = next[2];
-            if (!seen[next[0]]) {
-                dfs(next[0], g, res, seen);
-            }
-        }
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        System.out.println(((long) a * b) / gcd(a, b));
     }
 
     static final class Utils {

@@ -1,67 +1,60 @@
-package atcoder.regular_111;
+package atcoder.beginner_100_199.beginner_149;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        final long m = fs.nextLong();
+        final int[] arr = fs.nextIntArray(n);
+        Utils.shuffleSort(arr);
+        final long[] pre = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            pre[i] = pre[i - 1] + arr[i - 1];
         }
-        final int[] c = fs.nextIntArray(n);
-        final Map<Integer, List<int[]>> g = new HashMap<>();
-        final int[] res = new int[m];
-        final boolean[] seen = new boolean[n];
-        Arrays.fill(res, -1);
-        for (int i = 0; i < m; i++) {
-            final int u = edges[i][0];
-            final int v = edges[i][1];
-            if (c[u] < c[v]) {
-                res[i] = 1;
-            } else if(c[u] > c[v]) {
-                res[i] = 0;
-            } else if (c[u] == c[v]) {
-                g.computeIfAbsent(u, val -> new ArrayList<>()).add(new int[] { v, i, 0 });
-                g.computeIfAbsent(v, val -> new ArrayList<>()).add(new int[] { u, i, 1 });
+        int lo = 0;
+        int hi = (int) 2e5 + 5;
+        while (lo < hi) {
+            final int mid = lo + hi + 1 >>> 1;
+            long curr = 0;
+            for (int i = 0; i < n; i++) {
+                curr += n - lowerBound(arr, mid - arr[i]);
             }
-        }
-        for (int i = 0; i < n; i++) {
-            dfs(i, g, res, seen);
-        }
-        for (int i = 0; i < m; i++) {
-            if (res[i] == 1) {
-                System.out.println("<-");
+            if (curr < m) {
+                hi = mid - 1;
             } else {
-                System.out.println("->");
+                lo = mid;
             }
         }
+        long res = 0;
+        long count = 0;
+        for (int row = n - 1; row >= 0; row--) {
+            final int curr = n - lowerBound(arr, lo - arr[row]);
+            res += (pre[n] - pre[n - curr]) + (long) curr * arr[row];
+            count += curr;
+        }
+        res -= (count - m) * lo;
+        System.out.println(res);
     }
 
-    private static void dfs(int u, Map<Integer, List<int[]>> g, int[] res, boolean[] seen) {
-        if (seen[u]) {
-            return;
-        }
-        seen[u] = true;
-        for (int[] next : g.getOrDefault(u, Collections.emptyList())) {
-            res[next[1]] = next[2];
-            if (!seen[next[0]]) {
-                dfs(next[0], g, res, seen);
+    private static int lowerBound(int[] arr, int target) {
+        int lo = 0, hi = arr.length;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (arr[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
             }
         }
+        return lo;
     }
 
     static final class Utils {

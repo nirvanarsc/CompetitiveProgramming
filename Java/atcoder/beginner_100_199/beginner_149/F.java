@@ -1,4 +1,4 @@
-package atcoder.regular_111;
+package atcoder.beginner_100_199.beginner_149;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,56 +12,63 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class F {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        final int[] pow2 = new int[n + 1];
+        int p = 1;
+        for (int i = 0; i <= n; i++) {
+            pow2[i] = p;
+            p = (p * 2) % MOD;
         }
-        final int[] c = fs.nextIntArray(n);
-        final Map<Integer, List<int[]>> g = new HashMap<>();
-        final int[] res = new int[m];
-        final boolean[] seen = new boolean[n];
-        Arrays.fill(res, -1);
-        for (int i = 0; i < m; i++) {
-            final int u = edges[i][0];
-            final int v = edges[i][1];
-            if (c[u] < c[v]) {
-                res[i] = 1;
-            } else if(c[u] > c[v]) {
-                res[i] = 0;
-            } else if (c[u] == c[v]) {
-                g.computeIfAbsent(u, val -> new ArrayList<>()).add(new int[] { v, i, 0 });
-                g.computeIfAbsent(v, val -> new ArrayList<>()).add(new int[] { u, i, 1 });
-            }
+        final Map<Integer, List<Integer>> g = new HashMap<>();
+        for (int i = 0; i < n - 1; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(v);
+            g.computeIfAbsent(v, val -> new ArrayList<>()).add(u);
         }
-        for (int i = 0; i < n; i++) {
-            dfs(i, g, res, seen);
-        }
-        for (int i = 0; i < m; i++) {
-            if (res[i] == 1) {
-                System.out.println("<-");
-            } else {
-                System.out.println("->");
-            }
-        }
+        final long[] res = { 0 };
+        dfs(0, -1, n, g, res, pow2);
+        System.out.println((res[0] * modPow(pow2[n], MOD - 2)) % MOD);
+
     }
 
-    private static void dfs(int u, Map<Integer, List<int[]>> g, int[] res, boolean[] seen) {
-        if (seen[u]) {
-            return;
-        }
-        seen[u] = true;
-        for (int[] next : g.getOrDefault(u, Collections.emptyList())) {
-            res[next[1]] = next[2];
-            if (!seen[next[0]]) {
-                dfs(next[0], g, res, seen);
+    private static int dfs(int u, int v, int n, Map<Integer, List<Integer>> g, long[] res, int[] pow2) {
+        int curr = 1;
+        final List<Integer> trees = new ArrayList<>();
+        for (int next : g.getOrDefault(u, Collections.emptyList())) {
+            if (next != v) {
+                final int t = dfs(next, u, n, g, res, pow2);
+                curr += t;
+                trees.add(t);
             }
         }
+        if (v != -1) {
+            trees.add(n - curr);
+        }
+        long now = pow2[n - 1] - 1;
+        for (int subtree : trees) {
+            now = (now - (pow2[subtree] - 1) + MOD) % MOD;
+        }
+        res[0] = (res[0] + now) % MOD;
+        return curr;
+    }
+
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {

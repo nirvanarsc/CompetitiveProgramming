@@ -1,14 +1,9 @@
-package atcoder.regular_111;
+package atcoder.beginner_100_199.beginner_149;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -17,51 +12,33 @@ public final class D {
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[][] edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
-        }
-        final int[] c = fs.nextIntArray(n);
-        final Map<Integer, List<int[]>> g = new HashMap<>();
-        final int[] res = new int[m];
-        final boolean[] seen = new boolean[n];
-        Arrays.fill(res, -1);
-        for (int i = 0; i < m; i++) {
-            final int u = edges[i][0];
-            final int v = edges[i][1];
-            if (c[u] < c[v]) {
-                res[i] = 1;
-            } else if(c[u] > c[v]) {
-                res[i] = 0;
-            } else if (c[u] == c[v]) {
-                g.computeIfAbsent(u, val -> new ArrayList<>()).add(new int[] { v, i, 0 });
-                g.computeIfAbsent(v, val -> new ArrayList<>()).add(new int[] { u, i, 1 });
+        final int k = fs.nextInt();
+        final int r = fs.nextInt();
+        final int s = fs.nextInt();
+        final int p = fs.nextInt();
+        final char[] t = fs.next().toCharArray();
+        final int[] map = new int[256];
+        map['s'] = r;
+        map['r'] = p;
+        map['p'] = s;
+        long res = 0;
+        for (int i = 0; i < k; i++) {
+            boolean prev = false;
+            for (int j = i; j < n; j += k) {
+                if (j > i && t[j - k] == t[j]) {
+                    if (prev) {
+                        res += map[t[j]];
+                        prev = false;
+                    } else {
+                        prev = true;
+                    }
+                } else {
+                    res += map[t[j]];
+                    prev = false;
+                }
             }
         }
-        for (int i = 0; i < n; i++) {
-            dfs(i, g, res, seen);
-        }
-        for (int i = 0; i < m; i++) {
-            if (res[i] == 1) {
-                System.out.println("<-");
-            } else {
-                System.out.println("->");
-            }
-        }
-    }
-
-    private static void dfs(int u, Map<Integer, List<int[]>> g, int[] res, boolean[] seen) {
-        if (seen[u]) {
-            return;
-        }
-        seen[u] = true;
-        for (int[] next : g.getOrDefault(u, Collections.emptyList())) {
-            res[next[1]] = next[2];
-            if (!seen[next[0]]) {
-                dfs(next[0], g, res, seen);
-            }
-        }
+        System.out.println(res);
     }
 
     static final class Utils {
