@@ -1,35 +1,86 @@
 package leetcode.hard;
 
 import java.util.Arrays;
-
-import utils.DataStructures.BIT;
+import java.util.HashMap;
+import java.util.Map;
 
 public class P_327 {
 
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int sum;
+
+        SegTree(int leftMost, int rightMost, int[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                sum = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
+            }
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = left.sum + right.sum;
+        }
+
+        private int query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return sum;
+            }
+            return left.query(l, r) + right.query(l, r);
+        }
+
+        private void update(int idx, int val) {
+            if (leftMost == rightMost) {
+                sum += val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+    }
+
     public int countRangeSum(int[] nums, int lower, int upper) {
-        int index = 0, count = 0;
-        final long[] sum = new long[nums.length + 1];
-        final long[] cand = new long[3 * sum.length];
-        final BIT bit = new BIT(cand.length);
-
-        for (int i = 0; i < sum.length; i++) {
-            sum[i] = i == 0 ? 0 : sum[i - 1] + nums[i - 1];
-            cand[index++] = sum[i];
-            cand[index++] = lower + sum[i] - 1;
-            cand[index++] = upper + sum[i];
+        int idx = 0;
+        int res = 0;
+        final int n = nums.length;
+        final long[] sum = new long[n + 1];
+        final long[] range = new long[3 * sum.length];
+        final SegTree st = new SegTree(0, range.length - 1, new int[range.length]);
+        for (int i = 0; i <= n; i++) {
+            sum[i] = i == 0 ? 0 : (sum[i - 1] + nums[i - 1]);
+            range[idx++] = sum[i];
+            range[idx++] = lower + sum[i];
+            range[idx++] = upper + sum[i];
         }
-        Arrays.sort(cand);
-
-        for (long value : sum) {
-            bit.add(Arrays.binarySearch(cand, value) + 1, 1);
+        Arrays.sort(range);
+        final Map<Long, Integer> map = new HashMap<>();
+        for (int i = 0; i < range.length; i++) {
+            map.put(range[i], i);
         }
-
-        for (long value : sum) {
-            bit.add(Arrays.binarySearch(cand, value) + 1, -1);
-            count += bit.query(Arrays.binarySearch(cand, upper + value) + 1);
-            count -= bit.query(Arrays.binarySearch(cand, lower + value - 1) + 1);
+        for (long val : sum) {
+            st.update(map.get(val), 1);
         }
-
-        return count;
+        for (long val : sum) {
+            st.update(map.get(val), -1);
+            res += st.query(map.get(val + lower), map.get(val + upper));
+        }
+        return res;
     }
 }
