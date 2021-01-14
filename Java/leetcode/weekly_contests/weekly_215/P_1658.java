@@ -1,33 +1,26 @@
 package leetcode.weekly_contests.weekly_215;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class P_1658 {
 
     public int minOperations(int[] nums, int x) {
-        final Map<Integer, Integer> prefix = new HashMap<>();
         final int n = nums.length;
-        int pre = 0;
-        int res = (int) 1e9;
-        for (int i = 0; i < nums.length; i++) {
-            pre += nums[i];
-            if (pre == x) {
-                res = Math.min(res, i + 1);
-            }
-            prefix.put(pre, i + 1);
+        final Map<Integer, Integer> pre = new HashMap<>(Collections.singletonMap(0, 0));
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            pre.put(sum, i + 1);
         }
-        int suff = 0;
-        for (int i = nums.length - 1, j = 1; i >= 0; i--, j++) {
-            suff += nums[i];
-            if (suff == x) {
-                res = Math.min(res, j);
-            }
-            if (prefix.containsKey(x - suff)) {
-                final int other = prefix.get(x - suff);
-                if (other <= n - j) {
-                    res = Math.min(res, j + prefix.get(x - suff));
-                }
+        int res = pre.getOrDefault(x, (int) 1e9);
+        sum = 0;
+        for (int i = n - 1, j = 1; i >= 0; i--, j++) {
+            sum += nums[i];
+            final Integer complement = pre.get(x - sum);
+            if (complement != null && complement + j <= n) {
+                res = Math.min(res, complement + j);
             }
         }
         return res == (int) 1e9 ? -1 : res;
