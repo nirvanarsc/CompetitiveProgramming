@@ -1,69 +1,73 @@
-package atcoder.beginner_100_199.beginner_127;
+package atcoder.beginner_100_199.beginner_151;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 public final class F {
 
-    public static class MedianFinder {
-        PriorityQueue<Integer> max;
-        PriorityQueue<Integer> min;
-        long leftSum;
-        long rightSum;
-
-        public MedianFinder() {
-            max = new PriorityQueue<>(Comparator.reverseOrder());
-            min = new PriorityQueue<>();
-        }
-
-        public void addNum(int num) {
-            min.add(num);
-            int pop = min.remove();
-            max.add(pop);
-            leftSum += num;
-            leftSum -= pop;
-            rightSum += pop;
-            if (max.size() > min.size()) {
-                pop = max.remove();
-                min.add(pop);
-                rightSum -= pop;
-                leftSum += pop;
-            }
-        }
-
-        public long findMedian() {
-            if (min.size() != max.size()) {
-                return min.element();
-            } else {
-                return max.element();
-            }
-        }
-    }
-
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int q = fs.nextInt();
-        final MedianFinder mf = new MedianFinder();
-        long b = 0;
-        for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            if (type == 1) {
-                final int l = fs.nextInt();
-                final int r = fs.nextInt();
-                mf.addNum(l);
-                b += r;
-            } else {
-                final long median = mf.findMedian();
-                final long res = mf.min.size() * median - mf.leftSum + mf.rightSum - mf.max.size() * median;
-                System.out.println(median + " " + (-res + b));
+        final int n = fs.nextInt();
+        final int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            p[i] = new int[] { fs.nextInt(), fs.nextInt() };
+        }
+        double res = 1e9;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    final double[] circle = getCircle(p[i], p[j], p[k]);
+                    if (circle != null) {
+                        final double[] center = { circle[0], circle[1] };
+                        final double radius = circle[2];
+                        if (ok(center, radius, p)) {
+                            res = Math.min(res, radius);
+                        }
+                    }
+                }
             }
         }
+        for (int[] p1 : p) {
+            for (int[] p2 : p) {
+                final double[] center = { 0.5 * (p1[0] + p2[0]), 0.5 * (p1[1] + p2[1]) };
+                final double radius = Math.hypot(p1[0] - p2[0], p1[1] - p2[1]) / 2.0;
+                if (ok(center, radius, p)) {
+                    res = Math.min(res, radius);
+                }
+            }
+        }
+        System.out.printf("%.6f\n", res);
+    }
+
+    @SuppressWarnings("ReturnOfNull")
+    private static double[] getCircle(int[] a, int[] b, int[] c) {
+        final double bx = b[0] - a[0];
+        final double by = b[1] - a[1];
+        final double cx = c[0] - a[0];
+        final double cy = c[1] - a[1];
+        final double B = bx * bx + by * by;
+        final double C = cx * cx + cy * cy;
+        final double D = bx * cy - by * cx;
+        if (D == 0) {
+            return null;
+        }
+        final double[] center = { a[0] + (cy * B - by * C) / (2 * D), a[1] + (bx * C - cx * B) / (2 * D) };
+        final double radius = Math.hypot(a[0] - center[0], a[1] - center[1]);
+        return new double[] { center[0], center[1], radius };
+    }
+
+    private static boolean ok(double[] center, double radius, int[][] p) {
+        for (int[] pp : p) {
+            final double d = Math.hypot(center[0] - pp[0], center[1] - pp[1]);
+            if (Double.compare(d, radius + 1e-8) > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static final class Utils {

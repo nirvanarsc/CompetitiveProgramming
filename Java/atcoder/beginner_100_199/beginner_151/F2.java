@@ -1,69 +1,57 @@
-package atcoder.beginner_100_199.beginner_127;
+package atcoder.beginner_100_199.beginner_151;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class F2 {
 
-    public static class MedianFinder {
-        PriorityQueue<Integer> max;
-        PriorityQueue<Integer> min;
-        long leftSum;
-        long rightSum;
-
-        public MedianFinder() {
-            max = new PriorityQueue<>(Comparator.reverseOrder());
-            min = new PriorityQueue<>();
-        }
-
-        public void addNum(int num) {
-            min.add(num);
-            int pop = min.remove();
-            max.add(pop);
-            leftSum += num;
-            leftSum -= pop;
-            rightSum += pop;
-            if (max.size() > min.size()) {
-                pop = max.remove();
-                min.add(pop);
-                rightSum -= pop;
-                leftSum += pop;
-            }
-        }
-
-        public long findMedian() {
-            if (min.size() != max.size()) {
-                return min.element();
-            } else {
-                return max.element();
-            }
-        }
-    }
-
+    // ternary search
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int q = fs.nextInt();
-        final MedianFinder mf = new MedianFinder();
-        long b = 0;
-        for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            if (type == 1) {
-                final int l = fs.nextInt();
-                final int r = fs.nextInt();
-                mf.addNum(l);
-                b += r;
+        final int n = fs.nextInt();
+        final int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            p[i] = new int[] { fs.nextInt(), fs.nextInt() };
+        }
+        double lo = 0;
+        double hi = 1000;
+        for (int i = 0; i < 100; i++) {
+            final double m1 = (lo * 2 + hi) / 3;
+            final double m2 = (lo + hi * 2) / 3;
+            if (g(m1, p) > g(m2, p)) {
+                lo = m1;
             } else {
-                final long median = mf.findMedian();
-                final long res = mf.min.size() * median - mf.leftSum + mf.rightSum - mf.max.size() * median;
-                System.out.println(median + " " + (-res + b));
+                hi = m2;
             }
         }
+        System.out.printf("%.6f\n", g(lo, p));
+    }
+
+    private static double f(double x, double y, int[][] p) {
+        double res = 0;
+        for (int[] pp : p) {
+            res = Math.max(res, Math.hypot(pp[0] - x, pp[1] - y));
+        }
+        return res;
+    }
+
+    private static double g(double x, int[][] p) {
+        double lo = 0;
+        double hi = 1000;
+        for (int i = 0; i < 100; i++) {
+            final double m1 = (lo * 2 + hi) / 3;
+            final double m2 = (lo + hi * 2) / 3;
+            if (f(x, m1, p) > f(x, m2, p)) {
+                lo = m1;
+            } else {
+                hi = m2;
+            }
+        }
+        return f(x, lo, p);
     }
 
     static final class Utils {

@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_129;
+package atcoder.beginner_100_199.beginner_151;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,55 +7,36 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class C {
 
-    private static final int[][] DIRS = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
-    private static final String d = "LURD";
-
-    // ternary search
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int[][] points = new int[n][3];
-        for (int i = 0; i < n; i++) {
-            final int x = fs.nextInt();
-            final int y = fs.nextInt();
-            final String dir = fs.next();
-            points[i] = new int[] { x, y, d.indexOf(dir) };
-        }
-        double lo = 0;
-        double hi = 1e12;
-        double res = 1e18;
-        for (int i = 0; i < 300; i++) {
-            final double m1 = lo + ((hi - lo) / 3.0);
-            final double m2 = hi - ((hi - lo) / 3.0);
-            final double left = f(points, m1);
-            final double right = f(points, m2);
-            if (Double.compare(left, right) > 0) {
-                lo = m1;
+        final int m = fs.nextInt();
+        int ac = 0;
+        int wa = 0;
+        final boolean[] ok = new boolean[n];
+        final int[] attempts = new int[n];
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final String res = fs.next();
+            if ("AC".equals(res)) {
+                if (!ok[u]) {
+                    ac++;
+                    ok[u] = true;
+                }
             } else {
-                hi = m2;
+                if (!ok[u]) {
+                    attempts[u]++;
+                }
             }
-            res = Math.min(res, left);
-            res = Math.min(res, right);
         }
-        System.out.println(String.format("%.10f", res));
-    }
-
-    private static double f(int[][] points, double mid) {
-        double minX = 1e18;
-        double maxX = -1e18;
-        double minY = 1e18;
-        double maxY = -1e18;
-        for (int[] p : points) {
-            final double x = p[0] + DIRS[p[2]][0] * mid;
-            final double y = p[1] + DIRS[p[2]][1] * mid;
-            minX = Math.min(minX, x);
-            maxX = Math.max(maxX, x);
-            minY = Math.min(minY, y);
-            maxY = Math.max(maxY, y);
+        for (int i = 0; i < n; i++) {
+            if (ok[i]) {
+                wa += attempts[i];
+            }
         }
-        return (maxX - minX) * (maxY - minY);
+        System.out.println(ac + " " + wa);
     }
 
     static final class Utils {

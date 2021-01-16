@@ -27,7 +27,7 @@ public final class C {
                 hi = m2;
             }
         }
-        System.out.println(String.format("%.6f", f(arr, lo)));
+        System.out.printf("%.6f\n", f(arr, lo));
     }
 
     private static double f(int[] arr, double in) {

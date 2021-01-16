@@ -7,22 +7,21 @@ import java.util.Random;
 public class P_215 {
 
     // Sort - O(n log n) // O(1)
-    public int findKthLargest1(int[] nums, int k) {
+    public int findKthLargestSort(int[] nums, int k) {
         Arrays.sort(nums);
         return nums[nums.length - k];
     }
 
     // Priority Queue - O(n log k) // O(k)
-    public int findKthLargest2(int[] nums, int k) {
+    public int findKthLargestPQ(int[] nums, int k) {
         final PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for (int val : nums) {
-            pq.offer(val);
-
+        for (int num : nums) {
+            pq.add(num);
             if (pq.size() > k) {
-                pq.poll();
+                pq.remove();
             }
         }
-        return pq.peek();
+        return pq.element();
     }
 
     // Randomized Quick Select - average O(n) // O(1)
