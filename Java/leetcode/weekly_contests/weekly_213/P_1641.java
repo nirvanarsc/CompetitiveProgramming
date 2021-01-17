@@ -3,19 +3,16 @@ package leetcode.weekly_contests.weekly_213;
 public class P_1641 {
 
     public int countVowelStrings(int n) {
-        int a = 1, e = 1, i = 1, o = 1, u = 1;
-        for (int j = 2; j <= n; j++) {
-            final int nA = a + e + i + o + u;
-            final int nE = e + i + o + u;
-            final int nI = i + o + u;
-            final int nO = o + u;
-            final int nU = u;
-            a = nA;
-            e = nE;
-            i = nI;
-            o = nO;
-            u = nU;
+        final int[] res = { 1, 1, 1, 1, 1 };
+        for (int i = 2; i <= n; i++) {
+            for (int j = res.length - 2; j >= 0; j--) {
+                res[j] += res[j + 1];
+            }
         }
-        return a + e + i + o + u;
+        int sum = 0;
+        for (int val : res) {
+            sum += val;
+        }
+        return sum;
     }
 }
