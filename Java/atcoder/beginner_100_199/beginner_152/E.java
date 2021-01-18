@@ -1,52 +1,59 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_152;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class E {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        final int[] arr = fs.nextIntArray(n);
+        final int[] clone = arr.clone();
+        final int[] factors = new int[(int) (1e6 + 5)];
+        for (int i = 0; i < n; i++) {
+            final int temp = arr[i];
+            for (int p = 2; p * p <= temp; p++) {
+                int count = 0;
+                while (arr[i] % p == 0) {
+                    count++;
+                    arr[i] /= p;
+                }
+                factors[p] = Math.max(factors[p], count);
+            }
+            factors[arr[i]] = Math.max(factors[arr[i]], 1);
         }
+        long lcm = 1;
+        for (int p = 2; p < factors.length; p++) {
+            for (int i = 0; i < factors[p]; i++) {
+                lcm = (lcm * p) % MOD;
+            }
+        }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            final long inv = modPow(clone[i], MOD - 2);
+            final long add = (inv * lcm) % MOD;
+            res = (res + add) % MOD;
+        }
+        System.out.println(res);
     }
 
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
-        }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = res * a % MOD;
             }
-            prev.add(curr + new String(shift));
+            a = a * a % MOD;
+            n /= 2;
         }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
+        return res;
     }
 
     static final class Utils {

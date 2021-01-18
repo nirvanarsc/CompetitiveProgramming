@@ -1,52 +1,46 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_153;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        final int d = fs.nextInt();
+        final int a = fs.nextInt();
+        final int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            p[i] = new int[] { fs.nextInt(), fs.nextInt() };
         }
-    }
-
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
-        }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
+        Arrays.sort(p, Comparator.comparingInt(v -> v[0]));
+        final Deque<long[]> q = new ArrayDeque<>();
+        long res = 0;
+        long total = 0;
+        for (int i = 0; i < n; i++) {
+            final long x = p[i][0];
+            long h = p[i][1];
+            while (!q.isEmpty() && q.getFirst()[0] < x) {
+                total -= q.removeFirst()[1];
             }
-            prev.add(curr + new String(shift));
+            h -= total;
+            if (h > 0) {
+                final long times = (h + a - 1) / a;
+                res += times;
+                final long damage = times * a;
+                total += damage;
+                q.offerLast(new long[] { x + 2 * d, damage });
+            }
         }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
+        System.out.println(res);
     }
 
     static final class Utils {

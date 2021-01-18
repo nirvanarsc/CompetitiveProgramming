@@ -6,19 +6,19 @@ public class P_1679 {
 
     public int maxOperations(int[] nums, int k) {
         Arrays.sort(nums);
-        int i = 0;
-        int j = nums.length - 1;
+        int lo = 0;
+        int hi = nums.length - 1;
         int res = 0;
-        while (i < j) {
-            final int sum = nums[i] + nums[j];
+        while (lo < hi) {
+            final int sum = nums[lo] + nums[hi];
             if (sum == k) {
+                lo++;
+                hi--;
                 res++;
-                i++;
-                j--;
             } else if (sum < k) {
-                i++;
+                lo++;
             } else {
-                j--;
+                hi--;
             }
         }
         return res;

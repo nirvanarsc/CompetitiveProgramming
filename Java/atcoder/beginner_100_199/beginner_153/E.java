@@ -1,52 +1,40 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_153;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final int h = fs.nextInt();
         final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        final int[][] m = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            m[i] = new int[] { fs.nextInt(), fs.nextInt() };
         }
+        final int[][] dp = new int[h][n];
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+        System.out.println(dfs(h, 0, 0, m, dp));
     }
 
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
+    private static int dfs(int h, int curr, int idx, int[][] m, int[][] dp) {
+        if (idx == m.length || curr >= h) {
+            return curr >= h ? 0 : (int) 1e9;
         }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
-            }
-            prev.add(curr + new String(shift));
+        if (dp[curr][idx] != -1) {
+            return dp[curr][idx];
         }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
+        int res = (int) 1e9;
+        res = Math.min(res, m[idx][1] + dfs(h, curr + m[idx][0], idx, m, dp));
+        res = Math.min(res, dfs(h, curr, idx + 1, m, dp));
+        return dp[curr][idx] = res;
     }
 
     static final class Utils {

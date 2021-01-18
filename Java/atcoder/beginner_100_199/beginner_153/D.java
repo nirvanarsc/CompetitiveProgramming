@@ -1,12 +1,9 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_153;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -14,39 +11,15 @@ public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        long h = fs.nextLong();
+        long factor = 1;
+        long res = 0;
+        while (h > 0) {
+            res += factor;
+            h /= 2;
+            factor <<= 1;
         }
-    }
-
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
-        }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
-            }
-            prev.add(curr + new String(shift));
-        }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
+        System.out.println(res);
     }
 
     static final class Utils {

@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_152;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,47 +6,79 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        final Map<Integer, List<int[]>> g = new HashMap<>();
+        for (int i = 0; i < (n - 1); i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(new int[] { v, i });
+            g.computeIfAbsent(v, val -> new ArrayList<>()).add(new int[] { u, i });
         }
+        final int m = fs.nextInt();
+        final int[][] edges = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        }
+        final long[] masks = new long[m];
+        for (int i = 0; i < m; i++) {
+            final int[] e = edges[i];
+            final long[] mask = { 0L };
+            dfs(new int[] { e[0], -1 }, -1, e[1], mask, g);
+            masks[i] = mask[0];
+        }
+        long res = 0L;
+        for (int i = 0; i < (1 << m); i++) {
+            long mask = 0L;
+            for (int j = 0; j < m; j++) {
+                if ((i & (1 << j)) != 0) {
+                    mask |= masks[j];
+                }
+            }
+            final int white = Long.bitCount(mask);
+            final long curr = 1L << (n - 1 - white);
+            // https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle
+            // Inclusion/Exclusion deciding factor!!
+            // Subtract all odds, add all evens - easily checked by bit count parity
+            // 001 -> 1
+            // 010 -> 1
+            // 011 -> 2
+            // 100 -> 1
+            // 101 -> 2
+            // 110 -> 2
+            // 111 -> 3
+            if (Integer.bitCount(i) % 2 == 0) {
+                res += curr;
+            } else {
+                res -= curr;
+            }
+        }
+        System.out.println(res);
     }
 
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
+    private static boolean dfs(int[] u, int v, int tar, long[] mask, Map<Integer, List<int[]>> g) {
+        if (v != -1) { mask[0] = mask[0] ^= 1L << u[1]; }
+        if (tar == u[0]) {
+            return true;
         }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
+        for (int[] next : g.getOrDefault(u[0], Collections.emptyList())) {
+            if (next[0] != v) {
+                if (dfs(next, u[0], tar, mask, g)) {
+                    return true;
+                }
             }
-            prev.add(curr + new String(shift));
         }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
+        if (v != -1) { mask[0] = mask[0] ^= 1L << u[1]; }
+        return false;
     }
 
     static final class Utils {

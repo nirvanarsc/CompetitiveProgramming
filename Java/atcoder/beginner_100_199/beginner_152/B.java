@@ -1,52 +1,33 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_152;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final char[] l = new char[b];
+        final char[] r = new char[a];
+        for (int i = 0; i < b; i++) {
+            l[i] = Character.forDigit(a, 10);
         }
-    }
-
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
+        for (int i = 0; i < a; i++) {
+            r[i] = Character.forDigit(b, 10);
         }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
-            }
-            prev.add(curr + new String(shift));
+        final String ll = new String(l);
+        final String rr = new String(r);
+        if (ll.compareTo(rr) <= 0) {
+            System.out.println(ll);
+        } else {
+            System.out.println(rr);
         }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
     }
 
     static final class Utils {

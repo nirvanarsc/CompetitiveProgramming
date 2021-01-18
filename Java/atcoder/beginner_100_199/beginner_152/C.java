@@ -1,52 +1,81 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_152;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class C {
+
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int sum;
+
+        SegTree(int leftMost, int rightMost, int[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                sum = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
+            }
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = left.sum + right.sum;
+        }
+
+        private int query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return sum;
+            }
+            return left.query(l, r) + right.query(l, r);
+        }
+
+        private void update(int idx, int val) {
+            if (leftMost == rightMost) {
+                sum += val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+    }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println((1 << n) - 1);
-        for (String s : f(n)) {
-            System.out.println(s);
+        final int[] arr = fs.nextIntArray(n);
+        for (int i = 0; i < n; i++) {
+            arr[i]--;
         }
-    }
-
-    private static List<String> f(int n) {
-        if (n == 1) {
-            return new ArrayList<>(Collections.singletonList("AB"));
-        }
-        final List<String> prev = f(n - 1);
-        final int size = prev.size();
-        for (int i = 0; i < size; i++) {
-            final String curr = prev.get(i);
-            prev.set(i, curr + curr);
-            final char[] shift = new char[curr.length()];
-            for (int j = 0; j < curr.length(); j++) {
-                final char c = curr.charAt(j);
-                shift[j] = c == 'A' ? 'B' : 'A';
+        final SegTree st = new SegTree(0, n - 1, new int[n]);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            st.update(arr[i], 1);
+            final int greater = st.query(arr[i], n - 1);
+            if (greater == i + 1) {
+                res++;
             }
-            prev.add(curr + new String(shift));
         }
-        final char[] last = new char[1 << n];
-        int idx = 0;
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'A';
-        }
-        for (int i = 0; i < 1 << (n - 1); i++) {
-            last[idx++] = 'B';
-        }
-        prev.add(new String(last));
-        return prev;
+        System.out.println(res);
     }
 
     static final class Utils {
