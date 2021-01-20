@@ -1,49 +1,40 @@
-package atcoder.beginner_100_199.beginner_154;
+package atcoder.beginner_100_199.beginner_155;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final char[] s = fs.next().toCharArray();
-        final int k = fs.nextInt();
-        final int[][][] dp = new int[s.length][4][2];
-        for (int[][] r1 : dp) {
-            for (int[] r2 : r1) {
-                Arrays.fill(r2, -1);
+        final PrintWriter pw = new PrintWriter(System.out);
+        final int n = fs.nextInt();
+        final Map<String, Integer> f = new HashMap<>();
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, f.merge(fs.next(), 1, Integer::sum));
+        }
+        final List<String> res = new ArrayList<>();
+        for (Map.Entry<String, Integer> e : f.entrySet()) {
+            if (e.getValue() == max) {
+                res.add(e.getKey());
             }
         }
-        System.out.println(dfs(s, 0, k, 0, dp));
-    }
-
-    private static int dfs(char[] s, int idx, int k, int seenSmaller, int[][][] dp) {
-        if (idx == s.length) {
-            return k == 0 ? 1 : 0;
+        res.sort(Comparator.naturalOrder());
+        for (String s : res) {
+            pw.println(s);
         }
-        if (dp[idx][k][seenSmaller] != -1) {
-            return dp[idx][k][seenSmaller];
-        }
-        int res = 0;
-        final int curr = s[idx] - '0';
-        int max = 9;
-        if (seenSmaller == 0) {
-            max = Math.min(max, curr);
-        }
-        for (int i = 0; i <= max; i++) {
-            final int nextSmaller = i < curr ? 1 : 0;
-            if (i > 0 && k > 0) {
-                res += dfs(s, idx + 1, k - 1, nextSmaller | seenSmaller, dp);
-            } else if (i == 0) {
-                res += dfs(s, idx + 1, k, nextSmaller | seenSmaller, dp);
-            }
-        }
-        return dp[idx][k][seenSmaller] = res;
+        pw.close();
     }
 
     static final class Utils {

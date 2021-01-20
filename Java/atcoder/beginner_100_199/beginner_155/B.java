@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_154;
+package atcoder.beginner_100_199.beginner_155;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,43 +7,24 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final char[] s = fs.next().toCharArray();
-        final int k = fs.nextInt();
-        final int[][][] dp = new int[s.length][4][2];
-        for (int[][] r1 : dp) {
-            for (int[] r2 : r1) {
-                Arrays.fill(r2, -1);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        boolean ok = true;
+        for (int num : arr) {
+            if (num % 2 == 0 && num % 3 != 0 && num % 5 != 0) {
+                ok = false;
+                break;
             }
         }
-        System.out.println(dfs(s, 0, k, 0, dp));
-    }
-
-    private static int dfs(char[] s, int idx, int k, int seenSmaller, int[][][] dp) {
-        if (idx == s.length) {
-            return k == 0 ? 1 : 0;
+        if (ok) {
+            System.out.println("APPROVED");
+        } else {
+            System.out.println("DENIED");
         }
-        if (dp[idx][k][seenSmaller] != -1) {
-            return dp[idx][k][seenSmaller];
-        }
-        int res = 0;
-        final int curr = s[idx] - '0';
-        int max = 9;
-        if (seenSmaller == 0) {
-            max = Math.min(max, curr);
-        }
-        for (int i = 0; i <= max; i++) {
-            final int nextSmaller = i < curr ? 1 : 0;
-            if (i > 0 && k > 0) {
-                res += dfs(s, idx + 1, k - 1, nextSmaller | seenSmaller, dp);
-            } else if (i == 0) {
-                res += dfs(s, idx + 1, k, nextSmaller | seenSmaller, dp);
-            }
-        }
-        return dp[idx][k][seenSmaller] = res;
     }
 
     static final class Utils {
