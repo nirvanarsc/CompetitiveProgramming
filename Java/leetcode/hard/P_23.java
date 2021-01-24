@@ -8,22 +8,23 @@ import utils.DataStructures.ListNode;
 public class P_23 {
 
     public ListNode mergeKLists(ListNode[] lists) {
-        final PriorityQueue<ListNode> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a.val));
-        for (ListNode node : lists) {
-            if (node != null) {
-                pq.offer(node);
+        final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparingInt(a -> lists[a].val));
+        for (int i = 0; i < lists.length; i++) {
+            if (lists[i] != null) {
+                pq.offer(i);
             }
         }
-        final ListNode dummy = new ListNode(-1);
-        ListNode iter = dummy;
+        final ListNode res = new ListNode(-1);
+        ListNode iter = res;
         while (!pq.isEmpty()) {
-            final ListNode remove = pq.remove();
-            iter.next = remove;
+            final int curr = pq.remove();
+            iter.next = lists[curr];
             iter = iter.next;
-            if (remove.next != null) {
-                pq.offer(remove.next);
+            lists[curr] = lists[curr].next;
+            if (lists[curr] != null) {
+                pq.offer(curr);
             }
         }
-        return dummy.next;
+        return res.next;
     }
 }
