@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_155;
+package atcoder.beginner_100_199.beginner_159;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,40 +7,23 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final char[] s = fs.next().toCharArray();
-        final int[][] dp = new int[s.length][2];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
-        for (int i = s.length - 1; i >= 0; i--) {
-            dfs(s, i, 0, dp);
-            dfs(s, i, 1, dp);
-        }
-        System.out.println(dp[0][0]);
+        final int n = s.length;
+        final boolean res = f(s, 0, n - 1) && f(s, 0, (n - 3) / 2) && f(s, (n + 1) / 2, n - 1);
+        System.out.println(res ? "Yes" : "No");
     }
 
-    private static int dfs(char[] s, int idx, int carry, int[][] dp) {
-        if (s.length == idx) {
-            return carry;
-        }
-        if (dp[idx][carry] != -1) {
-            return dp[idx][carry];
-        }
-        int res = (int) 1e9;
-        final int x = s[idx] - '0' + carry;
-        for (int a = 0; a < 10; a++) {
-            final int b = a - x;
-            if (b < 0) {
-                res = Math.min(res, dfs(s, idx + 1, 1, dp) + a + b + 10);
-            } else {
-                res = Math.min(res, dfs(s, idx + 1, 0, dp) + a + b);
+    private static boolean f(char[] s, int start, int end) {
+        while (start < end) {
+            if (s[start++] != s[end--]) {
+                return false;
             }
         }
-        return dp[idx][carry] = res;
+        return true;
     }
 
     static final class Utils {

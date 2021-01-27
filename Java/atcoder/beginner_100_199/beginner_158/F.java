@@ -1,46 +1,55 @@
-package atcoder.beginner_100_199.beginner_155;
+package atcoder.beginner_100_199.beginner_158;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class F {
+
+    private static final int MOD = 998244353;
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final char[] s = fs.next().toCharArray();
-        final int[][] dp = new int[s.length][2];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
+        final int n = fs.nextInt();
+        final int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            p[i] = new int[] { fs.nextInt(), fs.nextInt() };
         }
-        for (int i = s.length - 1; i >= 0; i--) {
-            dfs(s, i, 0, dp);
-            dfs(s, i, 1, dp);
+        Arrays.sort(p, Comparator.comparingInt(a -> a[0]));
+        final Map<Integer, List<Integer>> g = new HashMap<>();
+        final Deque<int[]> dq = new ArrayDeque<>();
+        for (int i = n - 1; i >= 0; i--) {
+            final int x = p[i][0];
+            final int d = p[i][1];
+            while (!dq.isEmpty() && dq.getFirst()[0] < x + d) {
+                g.computeIfAbsent(i, val -> new ArrayList<>()).add(dq.removeFirst()[1]);
+            }
+            dq.addFirst(new int[] { x, i });
         }
-        System.out.println(dp[0][0]);
+        long res = 1;
+        for (int[] root : dq) {
+            res = (res * dfs(root[1], g)) % MOD;
+        }
+        System.out.println(res);
     }
 
-    private static int dfs(char[] s, int idx, int carry, int[][] dp) {
-        if (s.length == idx) {
-            return carry;
+    private static long dfs(int idx, Map<Integer, List<Integer>> g) {
+        long res = 1;
+        for (int next : g.getOrDefault(idx, Collections.emptyList())) {
+            res = (res * dfs(next, g)) % MOD;
         }
-        if (dp[idx][carry] != -1) {
-            return dp[idx][carry];
-        }
-        int res = (int) 1e9;
-        final int x = s[idx] - '0' + carry;
-        for (int a = 0; a < 10; a++) {
-            final int b = a - x;
-            if (b < 0) {
-                res = Math.min(res, dfs(s, idx + 1, 1, dp) + a + b + 10);
-            } else {
-                res = Math.min(res, dfs(s, idx + 1, 0, dp) + a + b);
-            }
-        }
-        return dp[idx][carry] = res;
+        return (res + 1) % MOD;
     }
 
     static final class Utils {

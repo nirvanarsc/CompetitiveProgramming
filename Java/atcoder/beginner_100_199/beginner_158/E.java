@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_155;
+package atcoder.beginner_100_199.beginner_158;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,36 +11,31 @@ public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final int n = fs.nextInt();
+        final int p = fs.nextInt();
         final char[] s = fs.next().toCharArray();
-        final int[][] dp = new int[s.length][2];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
-        for (int i = s.length - 1; i >= 0; i--) {
-            dfs(s, i, 0, dp);
-            dfs(s, i, 1, dp);
-        }
-        System.out.println(dp[0][0]);
-    }
-
-    private static int dfs(char[] s, int idx, int carry, int[][] dp) {
-        if (s.length == idx) {
-            return carry;
-        }
-        if (dp[idx][carry] != -1) {
-            return dp[idx][carry];
-        }
-        int res = (int) 1e9;
-        final int x = s[idx] - '0' + carry;
-        for (int a = 0; a < 10; a++) {
-            final int b = a - x;
-            if (b < 0) {
-                res = Math.min(res, dfs(s, idx + 1, 1, dp) + a + b + 10);
-            } else {
-                res = Math.min(res, dfs(s, idx + 1, 0, dp) + a + b);
+        if (p == 2 || p == 5) {
+            long res = 0;
+            for (int i = 0; i < n; i++) {
+                if ((s[i] - '0') % p == 0) {
+                    res += i + 1;
+                }
             }
+            System.out.println(res);
+            return;
         }
-        return dp[idx][carry] = res;
+        final int[] rem = new int[p];
+        rem[0] = 1;
+        long res = 0;
+        int curr = 0;
+        int shift = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            curr = (curr + shift * (s[i] - '0')) % p;
+            res += rem[curr];
+            rem[curr]++;
+            shift = (shift * 10) % p;
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

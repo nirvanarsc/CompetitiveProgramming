@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_155;
+package atcoder.beginner_100_199.beginner_158;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,40 +7,19 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final char[] s = fs.next().toCharArray();
-        final int[][] dp = new int[s.length][2];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
-        for (int i = s.length - 1; i >= 0; i--) {
-            dfs(s, i, 0, dp);
-            dfs(s, i, 1, dp);
-        }
-        System.out.println(dp[0][0]);
-    }
-
-    private static int dfs(char[] s, int idx, int carry, int[][] dp) {
-        if (s.length == idx) {
-            return carry;
-        }
-        if (dp[idx][carry] != -1) {
-            return dp[idx][carry];
-        }
-        int res = (int) 1e9;
-        final int x = s[idx] - '0' + carry;
-        for (int a = 0; a < 10; a++) {
-            final int b = a - x;
-            if (b < 0) {
-                res = Math.min(res, dfs(s, idx + 1, 1, dp) + a + b + 10);
-            } else {
-                res = Math.min(res, dfs(s, idx + 1, 0, dp) + a + b);
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        for (int i = 1; i <= 10000; i++) {
+            if ((i * 8) / 100 == a && ((i * 10) / 100 == b)) {
+                System.out.println(i);
+                return;
             }
         }
-        return dp[idx][carry] = res;
+        System.out.println(-1);
     }
 
     static final class Utils {

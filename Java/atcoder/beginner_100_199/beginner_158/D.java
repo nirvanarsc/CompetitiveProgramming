@@ -1,46 +1,52 @@
-package atcoder.beginner_100_199.beginner_155;
+package atcoder.beginner_100_199.beginner_158;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final Deque<Character> dq = new ArrayDeque<>();
         final char[] s = fs.next().toCharArray();
-        final int[][] dp = new int[s.length][2];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
+        for (char c : s) {
+            dq.addLast(c);
         }
-        for (int i = s.length - 1; i >= 0; i--) {
-            dfs(s, i, 0, dp);
-            dfs(s, i, 1, dp);
-        }
-        System.out.println(dp[0][0]);
-    }
-
-    private static int dfs(char[] s, int idx, int carry, int[][] dp) {
-        if (s.length == idx) {
-            return carry;
-        }
-        if (dp[idx][carry] != -1) {
-            return dp[idx][carry];
-        }
-        int res = (int) 1e9;
-        final int x = s[idx] - '0' + carry;
-        for (int a = 0; a < 10; a++) {
-            final int b = a - x;
-            if (b < 0) {
-                res = Math.min(res, dfs(s, idx + 1, 1, dp) + a + b + 10);
+        final int n = fs.nextInt();
+        boolean reversed = false;
+        for (int i = 0; i < n; i++) {
+            final int type = fs.nextInt();
+            if (type == 1) {
+                reversed ^= true;
             } else {
-                res = Math.min(res, dfs(s, idx + 1, 0, dp) + a + b);
+                final int op = fs.nextInt();
+                final char c = fs.next().charAt(0);
+                if (!reversed) {
+                    if (op == 1) {
+                        dq.addFirst(c);
+                    } else {
+                        dq.addLast(c);
+                    }
+                } else {
+                    if (op == 1) {
+                        dq.addLast(c);
+                    } else {
+                        dq.addFirst(c);
+                    }
+                }
             }
         }
-        return dp[idx][carry] = res;
+        final char[] res = new char[dq.size()];
+        for (int i = 0; !dq.isEmpty(); i++) {
+            res[i] = reversed ? dq.removeLast() : dq.removeFirst();
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
