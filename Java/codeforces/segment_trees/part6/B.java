@@ -11,6 +11,7 @@ public final class B {
 
     private static final int MOD = (int) (1e9 + 7);
 
+    // Multiplication and Sum
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;

@@ -1,14 +1,14 @@
-package codeforces.segment_trees.part6;
+package codeforces.round_650_699.round_698;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class E {
 
-    // Assignment and Sum
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
@@ -76,21 +76,92 @@ public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
-        final int n = fs.nextInt();
-        final int q = fs.nextInt();
-        final SegTree st = new SegTree(0, n - 1, new int[n]);
-        for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            final int l = fs.nextInt();
-            final int r = fs.nextInt();
-            if (type == 1) {
-                st.add(l, r - 1, fs.nextInt());
+        final int t = fs.nextInt();
+        outer:
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            final int q = fs.nextInt();
+            final char[] start = fs.next().toCharArray();
+            final char[] end = fs.next().toCharArray();
+            final int[] arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = end[i] - '0';
+            }
+            int e = 0;
+            for (int i = 0; i < n; i++) {
+                e += start[i] - '0';
+            }
+            System.out.println(Arrays.toString(arr));
+            final SegTree st = new SegTree(0, n - 1, arr);
+            final int[][] queries = new int[q][2];
+            for (int i = 0; i < q; i++) {
+                queries[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+            }
+            for (int i = q - 1; i >= 0; i--) {
+                final int l = queries[i][0];
+                final int r = queries[i][1];
+                final int range = r - l + 1;
+                final long sum = st.query(l, r);
+                System.out.println(l + " " + r + " " + sum + " " + range);
+                if (sum * 2 == range) {
+                    System.out.println("NO");
+                    continue outer;
+                } else if (sum * 2 < range) {
+                    st.add(l, r, 0);
+                } else {
+                    st.add(l, r, 1);
+                }
+            }
+            if (st.sum == e) {
+                System.out.println("YES");
             } else {
-                pw.println(st.query(l, r - 1));
+                System.out.println("NO");
             }
         }
-        pw.close();
+    }
+
+    static final class Utils {
+        public static void shuffleSort(int[] x) {
+            shuffle(x);
+            Arrays.sort(x);
+        }
+
+        public static void shuffleSort(long[] x) {
+            shuffle(x);
+            Arrays.sort(x);
+        }
+
+        public static void shuffle(int[] x) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= x.length - 2; i++) {
+                final int j = i + r.nextInt(x.length - i);
+                swap(x, i, j);
+            }
+        }
+
+        public static void shuffle(long[] x) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= x.length - 2; i++) {
+                final int j = i + r.nextInt(x.length - i);
+                swap(x, i, j);
+            }
+        }
+
+        public static void swap(int[] x, int i, int j) {
+            final int t = x[i];
+            x[i] = x[j];
+            x[j] = t;
+        }
+
+        public static void swap(long[] x, int i, int j) {
+            final long t = x[i];
+            x[i] = x[j];
+            x[j] = t;
+        }
+
+        private Utils() {}
     }
 
     static class FastScanner {

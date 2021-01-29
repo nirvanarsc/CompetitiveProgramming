@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 
 public final class C {
 
+    // Bitwise OR and AND
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;

@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 
 public final class D {
 
+    // Addition and Sum
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
