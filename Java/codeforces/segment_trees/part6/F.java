@@ -13,7 +13,7 @@ public final class F {
         int leftMost, rightMost;
         SegTree left, right;
         long sum;
-        long operation;
+        long operation = Long.MAX_VALUE;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
@@ -24,6 +24,7 @@ public final class F {
                 final int mid = leftMost + rightMost >>> 1;
                 left = new SegTree(leftMost, mid, arr);
                 right = new SegTree(mid + 1, rightMost, arr);
+                sum = left.sum + right.sum;
             }
         }
 

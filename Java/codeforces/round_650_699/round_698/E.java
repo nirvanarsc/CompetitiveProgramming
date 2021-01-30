@@ -3,6 +3,7 @@ package codeforces.round_650_699.round_698;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -13,7 +14,7 @@ public final class E {
         int leftMost, rightMost;
         SegTree left, right;
         long sum;
-        long operation;
+        long operation = Long.MAX_VALUE;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
@@ -24,6 +25,7 @@ public final class E {
                 final int mid = leftMost + rightMost >>> 1;
                 left = new SegTree(leftMost, mid, arr);
                 right = new SegTree(mid + 1, rightMost, arr);
+                sum = left.sum + right.sum;
             }
         }
 
@@ -75,6 +77,7 @@ public final class E {
     }
 
     public static void main(String[] args) {
+        final PrintWriter pw = new PrintWriter(System.out);
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         outer:
@@ -87,11 +90,6 @@ public final class E {
             for (int i = 0; i < n; i++) {
                 arr[i] = end[i] - '0';
             }
-            int e = 0;
-            for (int i = 0; i < n; i++) {
-                e += start[i] - '0';
-            }
-            System.out.println(Arrays.toString(arr));
             final SegTree st = new SegTree(0, n - 1, arr);
             final int[][] queries = new int[q][2];
             for (int i = 0; i < q; i++) {
@@ -102,9 +100,8 @@ public final class E {
                 final int r = queries[i][1];
                 final int range = r - l + 1;
                 final long sum = st.query(l, r);
-                System.out.println(l + " " + r + " " + sum + " " + range);
                 if (sum * 2 == range) {
-                    System.out.println("NO");
+                    pw.println("NO");
                     continue outer;
                 } else if (sum * 2 < range) {
                     st.add(l, r, 0);
@@ -112,12 +109,16 @@ public final class E {
                     st.add(l, r, 1);
                 }
             }
-            if (st.sum == e) {
-                System.out.println("YES");
-            } else {
-                System.out.println("NO");
+            boolean ok = true;
+            for (int i = 0; i < n; i++) {
+                if (st.query(i, i) != start[i] - '0') {
+                    ok = false;
+                    break;
+                }
             }
+            pw.println(ok ? "YES" : "NO");
         }
+        pw.close();
     }
 
     static final class Utils {
