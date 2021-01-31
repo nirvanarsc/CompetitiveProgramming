@@ -1,55 +1,35 @@
 package leetcode.medium;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class P_31 {
 
-    public static void nextPermutation(int[] nums) {
-        int idx = nums.length - 1, swapIdx = nums.length - 1;
-
-        while (idx != 0 && nums[idx - 1] >= nums[idx]) {
-            idx--;
+    public void nextPermutation(int[] nums) {
+        final List<Integer> boxed = Arrays.stream(nums).boxed().collect(Collectors.toList());
+        nextPermutation(boxed);
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = boxed.get(i);
         }
+    }
 
-        if (idx == 0) {
-            reverse(0, nums.length - 1, nums);
+    private static void nextPermutation(List<Integer> arr) {
+        final int n = arr.size();
+        int i = n - 2;
+        while (i >= 0 && arr.get(i) >= arr.get(i + 1)) {
+            i--;
+        }
+        if (i == -1) {
+            Collections.reverse(arr);
             return;
         }
-
-        idx -= 1;
-        while (nums[swapIdx] <= nums[idx]) {
-            swapIdx--;
+        int swap = n - 1;
+        while (arr.get(i) >= arr.get(swap)) {
+            swap--;
         }
-
-        final int temp = nums[idx];
-        nums[idx] = nums[swapIdx];
-        nums[swapIdx] = temp;
-
-        reverse(idx + 1, nums.length - 1, nums);
+        Collections.swap(arr, i, swap);
+        Collections.reverse(arr.subList(i + 1, n));
     }
-
-    private static void reverse(int from, int to, int[] arr) {
-        for (int i = from; 2 * i < to + from; i++) {
-            final int temp = arr[i];
-            arr[i] = arr[to + from - i];
-            arr[to + from - i] = temp;
-        }
-    }
-
-    public static void main(String[] args) {
-        test(new int[] { 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
-        test(new int[] { 2, 3, 1 });
-        test(new int[] { 1, 3, 2 });
-        test(new int[] { 1, 1, 5 });
-        test(new int[] { 1, 5, 1 });
-    }
-
-    private static void test(int[] nums) {
-        System.out.println(Arrays.toString(nums));
-        nextPermutation(nums);
-        System.out.println(Arrays.toString(nums));
-        System.out.println();
-    }
-
-    private P_31() {}
 }
