@@ -1,38 +1,33 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_161;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int s = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
-        for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
+        int n = fs.nextInt() - 1;
+        final Deque<Long> q = new ArrayDeque<>();
+        for (int i = 1; i < 10; i++) {
+            q.offerLast((long) i);
+        }
+        while (n > 0) {
+            for (int j = q.size(); j > 0 && n > 0; j--, n--) {
+                final long curr = q.removeFirst();
+                final int last = (int) (curr % 10);
+                for (int i = Math.max(0, last - 1); i <= Math.min(9, last + 1); i++) {
+                    q.offerLast(curr * 10 + i);
                 }
             }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
         }
-        System.out.println(ans);
+        System.out.println(q.getFirst());
     }
 
     static final class Utils {

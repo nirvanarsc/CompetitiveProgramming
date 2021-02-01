@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_161;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,30 +9,41 @@ import java.util.StringTokenizer;
 
 public final class F {
 
-    private static final int MOD = 998244353;
-
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int s = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
-        for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
+        final long n = fs.nextLong();
+        int l = 0;
+        for (long p = 1; p * p <= n; p++) {
+            if (n % p == 0) {
+                if (p > 1 && f(n, p)) {
+                    l++;
+                }
+                if (p != n / p) {
+                    if (f(n, n / p)) {
+                        l++;
+                    }
                 }
             }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
         }
-        System.out.println(ans);
+        long r = 0;
+        for (long p = 1; p * p <= (n - 1); p++) {
+            if ((n - 1) % p == 0) {
+                if (p > 1) {
+                    r++;
+                }
+                if (p != (n - 1) / p) {
+                    r++;
+                }
+            }
+        }
+        System.out.println(l + r);
+    }
+
+    private static boolean f(long a, long b) {
+        while (a % b == 0) {
+            a /= b;
+        }
+        return a % b == 1;
     }
 
     static final class Utils {

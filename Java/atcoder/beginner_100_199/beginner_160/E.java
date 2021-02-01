@@ -1,38 +1,55 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_160;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int s = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
-        for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
-                }
-            }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
+        final int x = fs.nextInt();
+        final int y = fs.nextInt();
+        final int aL = fs.nextInt();
+        final int bL = fs.nextInt();
+        final int cL = fs.nextInt();
+        final int[] a = fs.nextIntArray(aL);
+        final int[] b = fs.nextIntArray(bL);
+        final int[] c = fs.nextIntArray(cL);
+        Utils.shuffleSort(a);
+        Utils.shuffleSort(b);
+        reverse(a, 0, aL - 1);
+        reverse(b, 0, bL - 1);
+        final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int i = 0; i < x; i++) {
+            pq.offer(a[i]);
         }
-        System.out.println(ans);
+        for (int i = 0; i < y; i++) {
+            pq.offer(b[i]);
+        }
+        for (int i = 0; i < cL; i++) {
+            pq.offer(c[i]);
+        }
+        long res = 0;
+        for (int i = 0; i < x + y; i++) {
+            res += pq.remove();
+        }
+        System.out.println(res);
+    }
+
+    private static void reverse(int[] nums, int from, int to) {
+        while (from < to) {
+            final int t = nums[from];
+            nums[from] = nums[to];
+            nums[to] = t;
+            from++;
+            to--;
+        }
     }
 
     static final class Utils {

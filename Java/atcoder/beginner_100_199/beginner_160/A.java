@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_160;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,32 +7,16 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int s = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
-        for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
-                }
-            }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
+        final char[] s = fs.next().toCharArray();
+        if (s[2] == s[3] && s[4] == s[5]) {
+            System.out.println("Yes");
+        } else {
+            System.out.println("No");
         }
-        System.out.println(ans);
     }
 
     static final class Utils {

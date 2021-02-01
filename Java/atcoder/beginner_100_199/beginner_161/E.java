@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_161;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,32 +7,35 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int s = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
-        for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
-                }
+        final int k = fs.nextInt();
+        final int c = fs.nextInt();
+        final char[] s = fs.next().toCharArray();
+        final int[] left = new int[n];
+        final int[] right = new int[n];
+        int curr = 1;
+        for (int i = 0; i < n && curr <= k; i++) {
+            if (s[i] == 'o') {
+                left[i] = curr++;
+                i += c;
             }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
         }
-        System.out.println(ans);
+        curr = k;
+        for (int i = n - 1; i >= 0 && curr >= 1; i--) {
+            if (s[i] == 'o') {
+                right[i] = curr--;
+                i -= c;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (left[i] != 0 && right[i] != 0 && left[i] == right[i]) {
+                System.out.println(i + 1);
+            }
+        }
     }
 
     static final class Utils {

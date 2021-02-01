@@ -1,38 +1,59 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_160;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int s = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
-        for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
+        final int x = fs.nextInt();
+        final int y = fs.nextInt();
+        final Map<Integer, List<Integer>> g = new HashMap<>();
+        for (int i = 1; i <= n; i++) {
+            if (i > 1) {
+                g.computeIfAbsent(i, val -> new ArrayList<>()).add(i - 1);
+            }
+            if (i < n) {
+                g.computeIfAbsent(i, val -> new ArrayList<>()).add(i + 1);
+            }
+        }
+        g.computeIfAbsent(x, val -> new ArrayList<>()).add(y);
+        g.computeIfAbsent(y, val -> new ArrayList<>()).add(x);
+        final int[] count = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            final Deque<Integer> q = new ArrayDeque<>();
+            q.offerLast(i);
+            final boolean[] seen = new boolean[n + 1];
+            seen[i] = true;
+            for (int j = 0; !q.isEmpty(); j++) {
+                for (int size = q.size(); size > 0; size--) {
+                    final int curr = q.removeFirst();
+                    count[j]++;
+                    for (int next : g.getOrDefault(curr, Collections.emptyList())) {
+                        if (!seen[next]) {
+                            seen[next] = true;
+                            q.offerLast(next);
+                        }
+                    }
                 }
             }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
         }
-        System.out.println(ans);
+        for (int i = 1; i < n; i++) {
+            System.out.println(count[i] / 2);
+        }
     }
 
     static final class Utils {

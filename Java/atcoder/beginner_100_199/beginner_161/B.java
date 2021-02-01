@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_159;
+package atcoder.beginner_100_199.beginner_161;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,32 +7,24 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int s = fs.nextInt();
+        final int m = fs.nextInt();
         final int[] arr = fs.nextIntArray(n);
-        long ans = 0;
-        long[] dp = new long[s + 1];
+        int total = 0;
         for (int i = 0; i < n; i++) {
-            // q += 1;
-            dp[0] += 1;
-            // q *= (1 + x^a[i])
-            final long[] nextDp = new long[s + 1];
-            for (int j = 0; j <= s; j++) {
-                nextDp[j] = (nextDp[j] + dp[j]) % MOD;
-                if (j + arr[i] <= s) {
-                    nextDp[j + arr[i]] = (nextDp[j + arr[i]] + dp[j]) % MOD;
-                }
-            }
-            dp = nextDp;
-            ans = (ans + dp[s]) % MOD;
+            total += arr[i];
         }
-        System.out.println(ans);
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (arr[i] * 4 * m >= total) {
+                count++;
+            }
+        }
+        System.out.println(count >= m ? "Yes" : "No");
     }
 
     static final class Utils {
