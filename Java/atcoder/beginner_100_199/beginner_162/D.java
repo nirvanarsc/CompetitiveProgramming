@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_162;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,80 +7,47 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C implements Runnable {
-
-    private static final int MOD = 998244353;
+public final class D {
 
     public static void main(String[] args) {
-        new Thread(null, new C(), "ThreadName", 1 << 26).start();
-    }
-
-    @Override
-    public void run() {
         final FastScanner fs = new FastScanner();
-        final int h = fs.nextInt();
-        final int w = fs.nextInt();
-        final int k = fs.nextInt();
-        final char[][] g = new char[h][w];
-        for (int i = 0; i < k; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            final char c = fs.next().toCharArray()[0];
-            g[u][v] = c;
-        }
-        final long[][] dp = new long[h][w];
-        for (int i = 0; i < h; i++) {
-            Arrays.fill(dp[i], -1L);
-        }
-        final long inv = modPow(3, MOD - 2);
-        final long pow = modPow(3, h * w - k);
-        System.out.println((dfs(g, 0, 0, h, w, inv, dp) * pow) % MOD);
-    }
-
-    private static long dfs(char[][] g, int i, int j, int n, int m, long inv, long[][] dp) {
-        if (i == n - 1 && j == m - 1) {
-            return 1;
-        }
+        final int n = fs.nextInt();
+        final char[] s = fs.next().toCharArray();
         long res = 0;
-        if (dp[i][j] != -1) {
-            return dp[i][j];
-        }
-        final char curr = g[i][j];
-        if (curr == 'X') {
-            if (j < m - 1) {
-                res = (res + dfs(g, i, j + 1, n, m, inv, dp)) % MOD;
-            }
-            if (i < n - 1) {
-                res = (res + dfs(g, i + 1, j, n, m, inv, dp)) % MOD;
-            }
-        } else if (curr == 'R') {
-            if (j < m - 1) {
-                res = (res + dfs(g, i, j + 1, n, m, inv, dp)) % MOD;
-            }
-        } else if (curr == 'D') {
-            if (i < n - 1) {
-                res = (res + dfs(g, i + 1, j, n, m, inv, dp)) % MOD;
-            }
-        } else {
-            if (j < m - 1) {
-                res = (res + (2L * inv * dfs(g, i, j + 1, n, m, inv, dp)) % MOD) % MOD;
-            }
-            if (i < n - 1) {
-                res = (res + (2L * inv * dfs(g, i + 1, j, n, m, inv, dp)) % MOD) % MOD;
+        for (int i = 1; i < n - 1; i++) {
+            if (s[i] == 'R') {
+                res += f(n, s, i, 'G', 'B');
+            } else if(s[i] == 'B') {
+                res += f(n, s, i, 'R', 'G');
+            } else {
+                res += f(n, s, i, 'R', 'B');
             }
         }
-        return dp[i][j] = res;
+        System.out.println(res);
     }
 
-    private static long modPow(long a, long n) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = res * a % MOD;
-            }
-            a = a * a % MOD;
-            n /= 2;
+    private static long f(int n, char[] s, int i, char c1, char c2) {
+        long res = 0;
+        int l1 = 0;
+        int l2 = 0;
+        int r1 = 0;
+        int r2 = 0;
+        int samePos = 0;
+        for (int j = 0; j < i; j++) {
+            if (s[j] == c1) { l1++; }
+            if (s[j] == c2) { l2++; }
         }
+        for (int j = i + 1; j < n; j++) {
+            if (s[j] == c1) { r1++; }
+            if (s[j] == c2) { r2++; }
+        }
+        for (int j = i - 1, k = i + 1; j >= 0 && k < n; j--, k++) {
+            if (s[j] == c1 && s[k] == c2) { samePos++; }
+            if (s[j] == c2 && s[k] == c1) { samePos++; }
+        }
+        res += l1 * r2;
+        res += l2 * r1;
+        res -= samePos;
         return res;
     }
 

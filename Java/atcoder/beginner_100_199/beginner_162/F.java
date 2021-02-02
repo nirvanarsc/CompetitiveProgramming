@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_162;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,81 +7,66 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C implements Runnable {
-
-    private static final int MOD = 998244353;
+public final class F implements Runnable {
 
     public static void main(String[] args) {
-        new Thread(null, new C(), "ThreadName", 1 << 26).start();
+        new Thread(null, new F(), "ThreadName", 1 << 26).start();
     }
 
     @Override
     public void run() {
         final FastScanner fs = new FastScanner();
-        final int h = fs.nextInt();
-        final int w = fs.nextInt();
-        final int k = fs.nextInt();
-        final char[][] g = new char[h][w];
-        for (int i = 0; i < k; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            final char c = fs.next().toCharArray()[0];
-            g[u][v] = c;
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final long[][] dp1 = new long[n][3];
+        final long[][] dp2 = new long[n][3];
+        for (long[] row : dp1) {
+            Arrays.fill(row, Long.MIN_VALUE);
         }
-        final long[][] dp = new long[h][w];
-        for (int i = 0; i < h; i++) {
-            Arrays.fill(dp[i], -1L);
+        for (long[] row : dp2) {
+            Arrays.fill(row, Long.MIN_VALUE);
         }
-        final long inv = modPow(3, MOD - 2);
-        final long pow = modPow(3, h * w - k);
-        System.out.println((dfs(g, 0, 0, h, w, inv, dp) * pow) % MOD);
-    }
-
-    private static long dfs(char[][] g, int i, int j, int n, int m, long inv, long[][] dp) {
-        if (i == n - 1 && j == m - 1) {
-            return 1;
-        }
-        long res = 0;
-        if (dp[i][j] != -1) {
-            return dp[i][j];
-        }
-        final char curr = g[i][j];
-        if (curr == 'X') {
-            if (j < m - 1) {
-                res = (res + dfs(g, i, j + 1, n, m, inv, dp)) % MOD;
-            }
-            if (i < n - 1) {
-                res = (res + dfs(g, i + 1, j, n, m, inv, dp)) % MOD;
-            }
-        } else if (curr == 'R') {
-            if (j < m - 1) {
-                res = (res + dfs(g, i, j + 1, n, m, inv, dp)) % MOD;
-            }
-        } else if (curr == 'D') {
-            if (i < n - 1) {
-                res = (res + dfs(g, i + 1, j, n, m, inv, dp)) % MOD;
-            }
+        if (n % 2 == 0) {
+            System.out.println(dfs1(arr, 0, 1, dp1));
         } else {
-            if (j < m - 1) {
-                res = (res + (2L * inv * dfs(g, i, j + 1, n, m, inv, dp)) % MOD) % MOD;
-            }
-            if (i < n - 1) {
-                res = (res + (2L * inv * dfs(g, i + 1, j, n, m, inv, dp)) % MOD) % MOD;
-            }
+            System.out.println(Math.max(dfs1(arr, 0, 2, dp1), dfs2(arr, 0, 1, dp2)));
         }
-        return dp[i][j] = res;
     }
 
-    private static long modPow(long a, long n) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = res * a % MOD;
-            }
-            a = a * a % MOD;
-            n /= 2;
+    private static long dfs1(int[] arr, int idx, int skip1, long[][] dp) {
+        if (idx == arr.length - 1 && skip1 > 0) {
+            return 0;
         }
-        return res;
+        if (idx >= arr.length) {
+            return 0;
+        }
+        if (dp[idx][skip1] != Long.MIN_VALUE) {
+            return dp[idx][skip1];
+        }
+        long res = Long.MIN_VALUE;
+        if (skip1 > 0) {
+            res = Math.max(res, dfs1(arr, idx + 1, skip1 - 1, dp));
+        }
+        res = Math.max(res, arr[idx] + dfs1(arr, idx + 2, skip1, dp));
+        return dp[idx][skip1] = res;
+    }
+
+    private static long dfs2(int[] arr, int idx, int skip2, long[][] dp) {
+        if (idx == arr.length - 1 && skip2 > 0) {
+            return 0;
+        }
+        if (idx >= arr.length) {
+            return 0;
+        }
+        if (dp[idx][skip2] != Long.MIN_VALUE) {
+            return dp[idx][skip2];
+        }
+        long res = Long.MIN_VALUE;
+        if (skip2 > 0) {
+            res = Math.max(res, dfs2(arr, idx + 2, skip2 - 1, dp));
+        }
+        res = Math.max(res, arr[idx] + dfs2(arr, idx + 2, skip2, dp));
+        return dp[idx][skip2] = res;
     }
 
     static final class Utils {

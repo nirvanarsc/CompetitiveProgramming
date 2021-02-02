@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.keyence;
+package atcoder.beginner_100_199.beginner_162;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,81 +7,24 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C implements Runnable {
+public final class C {
 
-    private static final int MOD = 998244353;
+    public static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
 
     public static void main(String[] args) {
-        new Thread(null, new C(), "ThreadName", 1 << 26).start();
-    }
-
-    @Override
-    public void run() {
         final FastScanner fs = new FastScanner();
-        final int h = fs.nextInt();
-        final int w = fs.nextInt();
-        final int k = fs.nextInt();
-        final char[][] g = new char[h][w];
-        for (int i = 0; i < k; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            final char c = fs.next().toCharArray()[0];
-            g[u][v] = c;
-        }
-        final long[][] dp = new long[h][w];
-        for (int i = 0; i < h; i++) {
-            Arrays.fill(dp[i], -1L);
-        }
-        final long inv = modPow(3, MOD - 2);
-        final long pow = modPow(3, h * w - k);
-        System.out.println((dfs(g, 0, 0, h, w, inv, dp) * pow) % MOD);
-    }
-
-    private static long dfs(char[][] g, int i, int j, int n, int m, long inv, long[][] dp) {
-        if (i == n - 1 && j == m - 1) {
-            return 1;
-        }
+        final int n = fs.nextInt();
         long res = 0;
-        if (dp[i][j] != -1) {
-            return dp[i][j];
-        }
-        final char curr = g[i][j];
-        if (curr == 'X') {
-            if (j < m - 1) {
-                res = (res + dfs(g, i, j + 1, n, m, inv, dp)) % MOD;
-            }
-            if (i < n - 1) {
-                res = (res + dfs(g, i + 1, j, n, m, inv, dp)) % MOD;
-            }
-        } else if (curr == 'R') {
-            if (j < m - 1) {
-                res = (res + dfs(g, i, j + 1, n, m, inv, dp)) % MOD;
-            }
-        } else if (curr == 'D') {
-            if (i < n - 1) {
-                res = (res + dfs(g, i + 1, j, n, m, inv, dp)) % MOD;
-            }
-        } else {
-            if (j < m - 1) {
-                res = (res + (2L * inv * dfs(g, i, j + 1, n, m, inv, dp)) % MOD) % MOD;
-            }
-            if (i < n - 1) {
-                res = (res + (2L * inv * dfs(g, i + 1, j, n, m, inv, dp)) % MOD) % MOD;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                for (int k = 1; k <= n; k++) {
+                    res += gcd(i, gcd(j, k));
+                }
             }
         }
-        return dp[i][j] = res;
-    }
-
-    private static long modPow(long a, long n) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = res * a % MOD;
-            }
-            a = a * a % MOD;
-            n /= 2;
-        }
-        return res;
+        System.out.println(res);
     }
 
     static final class Utils {
