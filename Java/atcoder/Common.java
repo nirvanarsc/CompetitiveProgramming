@@ -54,4 +54,54 @@ public class Common {
             return res;
         }
     }
+
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        long sum;
+
+        SegTree(int leftMost, int rightMost, int[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                sum = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
+            }
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = left.sum + right.sum;
+        }
+
+        private long query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return sum;
+            }
+            return left.query(l, r) + right.query(l, r);
+        }
+
+        private void update(int idx, long val) {
+            if (leftMost == rightMost) {
+                sum += val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+    }
 }

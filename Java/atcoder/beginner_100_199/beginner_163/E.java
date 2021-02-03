@@ -1,64 +1,43 @@
-package atcoder.beginner_100_199.beginner_162;
+package atcoder.beginner_100_199.beginner_163;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import utils.DataStructures.ListNode;
+
 public final class E {
 
-    private static final int MOD = (int) (1e9 + 7);
 
-    // https://codeforces.com/blog/entry/53925
-    // Mobius Function
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int k = fs.nextInt();
-        final List<Integer> primes = new ArrayList<>();
-        final boolean[] composite = new boolean[k + 5];
-        final int[] mobius = new int[k + 5];
-        Arrays.fill(mobius, 1);
-        for (int i = 2; i < k + 5; i++) {
-            if (!composite[i]) {
-                mobius[i] = -1;
-                primes.add(i);
-            }
-            for (int j = 0; j < primes.size() && i * primes.get(j) < k + 5; j++) {
-                composite[i * primes.get(j)] = true;
-                mobius[i * primes.get(j)] = -mobius[i];
-                if (i % primes.get(j) == 0) {
-                    mobius[i * primes.get(j)] = 0;
-                    break;
-                }
-            }
+        final int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new int[] { fs.nextInt(), i };
         }
-        long res = 0;
-        for (int i = 1; i <= k; i++) {
-            long curr = 0;
-            for (int d = 1; d <= k / i; d++) {
-                curr = (curr + (mobius[d] * modPow(k / (i * d), n)) % MOD) % MOD;
-            }
-            curr = (i * curr) % MOD;
-            res = (res + curr) % MOD;
+        Arrays.sort(arr, (a, b) -> Integer.compare(b[0], a[0]));
+        final long[][] dp = new long[n][n];
+        for (long[] row : dp) {
+            Arrays.fill(row, -1L);
         }
-        System.out.println(res);
+        System.out.println(dfs(arr, 0, 0, dp));
     }
 
-    private static long modPow(long a, long n) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 != 0) {
-                res = res * a % MOD;
-            }
-            a = a * a % MOD;
-            n /= 2;
+    private static long dfs(int[][] arr, int idx, int left, long[][] dp) {
+        if (idx == arr.length) {
+            return 0;
         }
-        return res;
+        if (dp[idx][left] != -1L) {
+            return dp[idx][left];
+        }
+        final int right = arr.length - (idx - left) - 1;
+        return dp[idx][left] = Math.max(
+                (long) arr[idx][0] * Math.abs(arr[idx][1] - left) + dfs(arr, idx + 1, left + 1, dp),
+                (long) arr[idx][0] * Math.abs(arr[idx][1] - right) + dfs(arr, idx + 1, left, dp));
     }
 
     static final class Utils {

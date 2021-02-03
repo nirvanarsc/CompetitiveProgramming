@@ -18,55 +18,29 @@ public final class F implements Runnable {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int[] arr = fs.nextIntArray(n);
-        final long[][] dp1 = new long[n][3];
-        final long[][] dp2 = new long[n][3];
-        for (long[] row : dp1) {
-            Arrays.fill(row, Long.MIN_VALUE);
+        final long[][] dp = new long[n][3];
+        for (long[] row : dp) {
+            Arrays.fill(row, (long) -9e18);
         }
-        for (long[] row : dp2) {
-            Arrays.fill(row, Long.MIN_VALUE);
-        }
-        if (n % 2 == 0) {
-            System.out.println(dfs1(arr, 0, 1, dp1));
-        } else {
-            System.out.println(Math.max(dfs1(arr, 0, 2, dp1), dfs2(arr, 0, 1, dp2)));
-        }
+        System.out.println(dfs(arr, 0, (n % 2) + 1, dp));
     }
 
-    private static long dfs1(int[] arr, int idx, int skip1, long[][] dp) {
-        if (idx == arr.length - 1 && skip1 > 0) {
+    private static long dfs(int[] arr, int idx, int skip, long[][] dp) {
+        if (idx == arr.length - 1 && skip > 0) {
             return 0;
         }
         if (idx >= arr.length) {
             return 0;
         }
-        if (dp[idx][skip1] != Long.MIN_VALUE) {
-            return dp[idx][skip1];
+        if (dp[idx][skip] != (long) -9e18) {
+            return dp[idx][skip];
         }
-        long res = Long.MIN_VALUE;
-        if (skip1 > 0) {
-            res = Math.max(res, dfs1(arr, idx + 1, skip1 - 1, dp));
+        long res = (long) -9e18;
+        if (skip > 0) {
+            res = Math.max(res, dfs(arr, idx + 1, skip - 1, dp));
         }
-        res = Math.max(res, arr[idx] + dfs1(arr, idx + 2, skip1, dp));
-        return dp[idx][skip1] = res;
-    }
-
-    private static long dfs2(int[] arr, int idx, int skip2, long[][] dp) {
-        if (idx == arr.length - 1 && skip2 > 0) {
-            return 0;
-        }
-        if (idx >= arr.length) {
-            return 0;
-        }
-        if (dp[idx][skip2] != Long.MIN_VALUE) {
-            return dp[idx][skip2];
-        }
-        long res = Long.MIN_VALUE;
-        if (skip2 > 0) {
-            res = Math.max(res, dfs2(arr, idx + 2, skip2 - 1, dp));
-        }
-        res = Math.max(res, arr[idx] + dfs2(arr, idx + 2, skip2, dp));
-        return dp[idx][skip2] = res;
+        res = Math.max(res, arr[idx] + dfs(arr, idx + 2, skip, dp));
+        return dp[idx][skip] = res;
     }
 
     static final class Utils {
