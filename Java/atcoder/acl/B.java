@@ -11,27 +11,28 @@ import java.util.StringTokenizer;
 public final class B {
 
     private static final class BIT {
-        private final int length;
+        private final int n;
         private final long[] data;
 
-        private BIT(int length) {
-            this.length = length;
-            data = new long[length];
+        private BIT(int n) {
+            this.n = n;
+            data = new long[n + 1];
         }
 
         public void add(int idx, long val) {
-            idx++;
-            while (idx <= length) {
-                data[idx - 1] += val;
-                idx += lsb(idx);
+            for (int i = idx + 1; i <= n; i += lsb(i)) {
+                data[i] += val;
             }
         }
 
-        public long sum(int idx) {
+        public long sum(int l, int r) {
+            return sum(r - 1) - sum(l - 1);
+        }
+
+        private long sum(int idx) {
             long res = 0;
-            while (idx > 0) {
-                res += data[idx - 1];
-                idx -= lsb(idx);
+            for (int i = idx + 1; i > 0; i -= lsb(i)) {
+                res += data[i];
             }
             return res;
         }
@@ -59,7 +60,7 @@ public final class B {
             } else {
                 final int l = fs.nextInt();
                 final int r = fs.nextInt();
-                pw.println(bit.sum(r) - bit.sum(l));
+                pw.println(bit.sum(l, r));
             }
         }
         pw.close();

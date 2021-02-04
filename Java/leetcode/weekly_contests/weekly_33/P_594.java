@@ -12,8 +12,9 @@ public class P_594 {
         }
         int res = 0;
         for (Map.Entry<Integer, Integer> e : map.entrySet()) {
-            if (map.containsKey(e.getKey() - 1)) {
-                res = Math.max(res, e.getValue() + map.get(e.getKey() - 1));
+            final Integer other = map.get(e.getKey() - 1);
+            if (other != null) {
+                res = Math.max(res, e.getValue() + other);
             }
         }
         return res;

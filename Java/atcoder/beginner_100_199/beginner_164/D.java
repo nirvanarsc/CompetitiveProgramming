@@ -1,36 +1,109 @@
 package atcoder.beginner_100_199.beginner_164;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 public final class D {
 
     public static void main(String[] args) {
-        final Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
-        final int P = 2019;
-        final char[] str = in.nextLine().toCharArray();
-        final int N = str.length;
-        final int[] digits = new int[N];
-        for (int i = 0; i < N; i++) {
-            digits[i] = Character.getNumericValue(str[i]);
+        final FastScanner fs = new FastScanner();
+        final char[] s = fs.next().toCharArray();
+        final int[] rem = new int[2019];
+        rem[0] = 1;
+        long res = 0;
+        int curr = 0;
+        int base = 1;
+        for (int i = s.length - 1; i >= 0; i--) {
+            final int l = base * (s[i] - '0');
+            curr = (curr + l) % 2019;
+            base = (base * 10) % 2019;
+            res += rem[curr]++;
         }
-        final int[] remainders = new int[P];
-        remainders[0] = 1;
-        int sum = 0;
-        int shift = 1;
-        long ans = 0;
-        long tt = 0;
-        for (int pos = N - 1; pos >= 0; pos--) {
-            sum = (sum + shift * digits[pos]) % P;
-            ans += remainders[sum];
-            remainders[sum]++;
-            shift = (shift * 10) % P;
+        System.out.println(res);
+    }
+
+    static final class Utils {
+        public static void shuffleSort(int[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
         }
-        for (int l : remainders) {
-            tt += l * (l - 1) / 2;
+
+        public static void shuffleSort(long[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
         }
-        System.out.println(tt);
-//        System.out.println(ans);
+
+        public static void shuffle(int[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
+        }
+
+        public static void shuffle(long[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
+        }
+
+        public static void swap(int[] arr, int i, int j) {
+            final int t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        public static void swap(long[] arr, int i, int j) {
+            final long t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        private Utils() {}
+    }
+
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer("");
+
+        private String next() {
+            while (!st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    //noinspection CallToPrintStackTrace
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        int[] nextIntArray(int n) {
+            final int[] a = new int[n];
+            for (int i = 0; i < n; i++) { a[i] = nextInt(); }
+            return a;
+        }
+
+        long[] nextLongArray(int n) {
+            final long[] a = new long[n];
+            for (int i = 0; i < n; i++) { a[i] = nextLong(); }
+            return a;
+        }
     }
 }

@@ -1,44 +1,99 @@
 package atcoder.beginner_100_199.beginner_164;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
-import utils.DataStructures.TreeNode;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 public final class A {
 
-    public List<List<Integer>> verticalTraversal(TreeNode root) {
-        final TreeMap<Integer, List<int[]>> map = new TreeMap<>();
-        dfs(root, map, 0, 0);
-        return map.values()
-                  .stream()
-                  .map(list -> list
-                          .stream()
-                          .sorted((a, b) -> a[1] == b[1] ? Integer.compare(a[0], b[0])
-                                                         : Integer.compare(a[1], b[1]))
-                          .map(t -> t[0])
-                          .collect(Collectors.toList()))
-                  .collect(Collectors.toList());
-    }
-
-    private static void dfs(TreeNode root, TreeMap<Integer, List<int[]>> g, int d, int level) {
-        if (root == null) {
-            return;
-        }
-        g.computeIfAbsent(d, v -> new ArrayList<>()).add(new int[] { root.val, level });
-        dfs(root.left, g, d - 1, level + 1);
-        dfs(root.right, g, d + 1, level + 1);
-    }
-
     public static void main(String[] args) {
-        final Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
-        final int sheep = in.nextInt();
-        final int wolves = in.nextInt();
-        System.out.println(sheep <= wolves ? "unsafe" : "safe");
+        final FastScanner fs = new FastScanner();
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        System.out.println(n <= m ? "unsafe" : "safe");
+    }
+
+    static final class Utils {
+        public static void shuffleSort(int[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffleSort(long[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffle(int[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
+        }
+
+        public static void shuffle(long[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
+        }
+
+        public static void swap(int[] arr, int i, int j) {
+            final int t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        public static void swap(long[] arr, int i, int j) {
+            final long t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        private Utils() {}
+    }
+
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer("");
+
+        private String next() {
+            while (!st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    //noinspection CallToPrintStackTrace
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        int[] nextIntArray(int n) {
+            final int[] a = new int[n];
+            for (int i = 0; i < n; i++) { a[i] = nextInt(); }
+            return a;
+        }
+
+        long[] nextLongArray(int n) {
+            final long[] a = new long[n];
+            for (int i = 0; i < n; i++) { a[i] = nextLong(); }
+            return a;
+        }
     }
 }
