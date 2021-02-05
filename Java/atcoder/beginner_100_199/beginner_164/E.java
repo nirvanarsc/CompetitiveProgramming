@@ -3,9 +3,12 @@ package atcoder.beginner_100_199.beginner_164;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -13,9 +16,10 @@ public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final int s = Math.min(3000, fs.nextInt());
+        final int s = Math.min(2999, fs.nextInt());
         final List<List<int[]>> g = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             g.add(new ArrayList<>());
@@ -32,36 +36,44 @@ public final class E {
         for (int i = 0; i < n; i++) {
             trade[i] = new int[] { fs.nextInt(), fs.nextInt() };
         }
-        long[][] dp = new long[n][3000];
+        final long[][] dp = new long[n][3000];
         for (long[] row : dp) {
             Arrays.fill(row, (long) 1e18);
         }
-        dfs(g, trade, 0, s, dp);
+        final PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(val -> val[0]));
+        pq.offer(new long[] { 0, 0, s });
+        while (!pq.isEmpty()) {
+            final long[] curr = pq.remove();
+            final long val = curr[0];
+            final int u = (int) curr[1];
+            final int currS = (int) curr[2];
+            if (val > dp[u][currS]) {
+                continue;
+            }
+            for (int[] next : g.get(u)) {
+                if (currS >= next[1]) {
+                    add(dp, pq, next[0], currS - next[1], val + next[2]);
+                }
+            }
+            if (currS + trade[u][0] < 3000) {
+                add(dp, pq, u, currS + trade[u][0], val + trade[u][1]);
+            }
+        }
         for (int i = 1; i < n; i++) {
             long res = (long) 1e18;
             for (int j = 0; j < 3000; j++) {
                 res = Math.min(res, dp[i][j]);
             }
-            System.out.println(res);
+            pw.println(res);
         }
+        pw.close();
     }
 
-    private static long dfs(List<List<int[]>> g, int[][] trade, int u, int s, long[][] dp) {
-        if (dp[u][s] != (long) 1e18) {
-            return dp[u][s];
+    private static void add(long[][] dp, PriorityQueue<long[]> pq, int nextU, int nextS, long nextVal) {
+        if (dp[nextU][nextS] > nextVal) {
+            dp[nextU][nextS] = nextVal;
+            pq.offer(new long[] { nextVal, nextU, nextS });
         }
-        long res = (long) 1e18;
-        if (s + trade[u][0] < 3000) {
-            res = Math.min(res, trade[u][1] + dfs(g, trade, u, s + trade[u][0], dp));
-        }
-        if (s > 0) {
-            for (int[] next : g.get(u)) {
-                if (s >= next[1]) {
-                    res = Math.min(res, next[2] + dfs(g, trade, next[0], s - next[1], dp));
-                }
-            }
-        }
-        return dp[u][s] = res;
     }
 
     static final class Utils {

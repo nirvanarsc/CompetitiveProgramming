@@ -90,7 +90,8 @@ public class P_1568 {
             for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j] == 1) {
                     grid[i][j] = 0;
-                    if (numIslands(grid) > 1) {
+                    final int islands = numIslands(grid);
+                    if (islands == 0 || islands > 1) {
                         return 1;
                     }
                     grid[i][j] = 1;
