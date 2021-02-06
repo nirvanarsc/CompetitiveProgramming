@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 public class P_1569 {
 
     private static class Combinations {
@@ -28,22 +27,10 @@ public class P_1569 {
             }
         }
 
-        long ncr(int n, int r) {
-            if (n < r) { return 0; }
-            if (n < 0 || r < 0) { return 0; }
-            return factorial[n] * (facInverse[r] * facInverse[n - r] % MOD) % MOD;
-        }
-
-        long modpow(long a, long n) {
-            long res = 1;
-            while (n > 0) {
-                if (n % 2 == 1) {
-                    res = res * a % MOD;
-                }
-                a = a * a % MOD;
-                n /= 2;
-            }
-            return res;
+        long nck(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
         }
     }
 
@@ -68,6 +55,6 @@ public class P_1569 {
                 right.add(nums.get(i));
             }
         }
-        return (dfs(left, comb) * dfs(right, comb) % MOD) * comb.ncr(nums.size() - 1, left.size()) % MOD;
+        return (dfs(left, comb) * dfs(right, comb) % MOD) * comb.nck(nums.size() - 1, left.size()) % MOD;
     }
 }

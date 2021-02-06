@@ -1,8 +1,8 @@
 package leetcode.medium;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
 import utils.DataStructures.TreeNode;
@@ -11,7 +11,7 @@ public class P_199 {
 
     public List<Integer> rightSideView(TreeNode root) {
         final List<Integer> res = new ArrayList<>();
-        final Deque<TreeNode> queue = new LinkedList<>();
+        final Deque<TreeNode> queue = new ArrayDeque<>();
         if (root != null) {
             queue.offerLast(root);
         }
@@ -33,21 +33,20 @@ public class P_199 {
         return res;
     }
 
-    public List<Integer> rightSideViewRecursive(TreeNode root) {
-        final List<Integer> result = new ArrayList<>();
-        rightView(root, result, 0);
-        return result;
+    public List<Integer> rightSideViewDfs(TreeNode root) {
+        final List<Integer> res = new ArrayList<>();
+        dfs(root, res, 0);
+        return res;
     }
 
-    public void rightView(TreeNode curr, List<Integer> result, int level) {
-        if (curr == null) {
+    public void dfs(TreeNode node, List<Integer> res, int depth) {
+        if (node == null) {
             return;
         }
-        if (level == result.size()) {
-            result.add(curr.val);
+        if (depth == res.size()) {
+            res.add(node.val);
         }
-
-        rightView(curr.right, result, level + 1);
-        rightView(curr.left, result, level + 1);
+        dfs(node.right, res, depth + 1);
+        dfs(node.left, res, depth + 1);
     }
 }
