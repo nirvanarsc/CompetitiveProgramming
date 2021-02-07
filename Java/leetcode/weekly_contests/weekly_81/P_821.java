@@ -1,25 +1,28 @@
 package leetcode.weekly_contests.weekly_81;
 
+import java.util.Arrays;
+
 public class P_821 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int[] shortestToChar(String S, char C) {
-        final int n = S.length();
-        final int[] arr = new int[n];
-        int lastC = n;
+    public int[] shortestToChar(String s, char c) {
+        final int n = s.length();
+        final int[] res = new int[n];
+        Arrays.fill(res, (int) 1e9);
+        int curr = (int) 1e6;
+        final char[] str = s.toCharArray();
         for (int i = 0; i < n; i++) {
-            if (S.charAt(i) == C) {
-                lastC = 0;
+            if (str[i] == c) {
+                curr = i;
             }
-            arr[i] = lastC++;
+            res[i] = Math.min(res[i], Math.abs(i - curr));
         }
-        lastC = n;
+        curr = (int) 1e6;
         for (int i = n - 1; i >= 0; i--) {
-            if (S.charAt(i) == C) {
-                lastC = 0;
+            if (str[i] == c) {
+                curr = i;
             }
-            arr[i] = Math.min(lastC++, arr[i]);
+            res[i] = Math.min(res[i], Math.abs(i - curr));
         }
-        return arr;
+        return res;
     }
 }
