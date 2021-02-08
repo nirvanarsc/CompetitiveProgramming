@@ -1,136 +1,209 @@
 package atcoder.beginner_100_199.beginner_165;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Random;
 
 public final class F {
 
-    public static int upper_bound(long[] array, long key) {
-        int lower = -1, upper = array.length;
-        while (upper - lower > 1) {
-            final int mid = (lower + upper) / 2;
-            final int comp = Long.compare(array[mid], key);
-            if (comp <= 0) {
-                lower = mid;
-            } else {
-                upper = mid;
-            }
-        }
-        return upper;
-    }
-
-    public static void dfs(int node, int parent, long[] vs, long[] lis, int lis_max,
-                           List<List<Integer>> adj, int[] answer) {
-        final int lis_index = upper_bound(lis, vs[node]);
-        boolean updated = false;
-        long updated_lis = 0;
-        if (lis[lis_index] > vs[node] && lis[lis_index - 1] < vs[node]) {
-            updated = true;
-            updated_lis = lis[lis_index];
-            lis[lis_index] = vs[node];
-            lis_max = Math.max(lis_max, lis_index);
-        }
-        answer[node] = lis_max;
-        for (int next : adj.get(node)) {
-            if (next == parent) {
-                continue;
-            }
-            dfs(next, node, vs, lis, lis_max, adj, answer);
-        }
-        if (updated) {
-            lis[lis_index] = updated_lis;
-        }
-    }
-
     public static void main(String[] args) throws IOException {
-        try (final Scanner sc = new Scanner(System.in)) {
-            final int N = sc.nextInt();
-            final List<List<Integer>> adj = new ArrayList<>();
-            for (int i = 0; i < N; i++) {
-                adj.add(new ArrayList<>());
-            }
-            final long[] as = new long[N];
-            for (int i = 0; i < N; i++) {
-                as[i] = sc.nextLong();
-            }
-            for (int i = 0; i < N - 1; i++) {
-                final int u = sc.nextInt() - 1;
-                final int v = sc.nextInt() - 1;
-                adj.get(u).add(v);
-                adj.get(v).add(u);
-            }
-            final long[] lis = new long[N + 1];
-            Arrays.fill(lis, Long.MAX_VALUE);
-            lis[0] = 0;
-            final int[] answer = new int[N];
-            dfs(0, -1, as, lis, 0, adj, answer);
-            for (int i = 0; i < N; i++) {
-                System.out.println(answer[i]);
-            }
+        final FastReader fs = new FastReader();
+        final int n = fs.nextInt();
+        final int[] c = new int[n];
+        final List<List<Integer>> g = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            c[i] = fs.nextInt();
+            g.add(new ArrayList<>());
         }
+        for (int i = 0; i < (n - 1); i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(v);
+            g.get(v).add(u);
+        }
+        final int[] res = new int[n];
+        final int[] dp = new int[n];
+        final int[] len = { 0 };
+        dfs(0, -1, g, c, res, dp, len);
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(res[i]);
+            sb.append('\n');
+        }
+        System.out.println(sb);
     }
 
-    public static class Scanner implements Closeable {
-        private final BufferedReader br;
-        private StringTokenizer tok;
+    private static void dfs(int u, int v, List<List<Integer>> g, int[] c, int[] res, int[] dp, int[] len) {
+        final int i = lowerBound(dp, len[0], c[u]);
+        final int old = dp[i];
+        final boolean flag = i == len[0];
+        dp[i] = c[u];
+        len[0] += flag ? 1 : 0;
+        res[u] = len[0];
+        for (int next : g.get(u)) {
+            if (next != v) {
+                dfs(next, u, g, c, res, dp, len);
+            }
+        }
+        dp[i] = old;
+        len[0] -= flag ? 1 : 0;
+    }
 
-        public Scanner(InputStream is) {
-            br = new BufferedReader(new InputStreamReader(is));
+    public static int lowerBound(int[] nums, int to, int target) {
+        int lo = 0, hi = to;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (nums[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    static final class Utils {
+        public static void shuffleSort(int[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
         }
 
-        private void getLine() throws IOException {
-            while (!hasNext()) {
-                tok = new StringTokenizer(br.readLine());
+        public static void shuffleSort(long[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffle(int[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
             }
         }
 
-        private boolean hasNext() {
-            return tok != null && tok.hasMoreTokens();
+        public static void shuffle(long[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
         }
 
-        public String next() throws IOException {
-            getLine();
-            return tok.nextToken();
+        public static void swap(int[] arr, int i, int j) {
+            final int t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        public static void swap(long[] arr, int i, int j) {
+            final long t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        private Utils() {}
+    }
+
+    static class FastReader {
+        private static final int BUFFER_SIZE = 1 << 16;
+        private final DataInputStream din;
+        private final byte[] buffer;
+        private int bufferPointer, bytesRead;
+
+        FastReader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        FastReader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException {
+            final byte[] buf = new byte[1024]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n') {
+                    break;
+                }
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
         }
 
         public int nextInt() throws IOException {
-            return Integer.parseInt(next());
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (neg) { return -ret; }
+            return ret;
         }
 
         public long nextLong() throws IOException {
-            return Long.parseLong(next());
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') { c = read(); }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+            if (neg) { return -ret; }
+            return ret;
         }
 
         public double nextDouble() throws IOException {
-            return Double.parseDouble(next());
-        }
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ') { c = read(); }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
 
-        public int[] nextIntArray(int n) throws IOException {
-            final int[] ret = new int[n];
-            for (int i = 0; i < n; i++) {
-                ret[i] = nextInt();
+            do {
+                ret = ret * 10 + c - '0';
             }
+            while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+
+            if (neg) { return -ret; }
             return ret;
         }
 
-        public long[] nextLongArray(int n) throws IOException {
-            final long[] ret = new long[n];
-            for (int i = 0; i < n; i++) {
-                ret[i] = nextLong();
-            }
-            return ret;
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1) { buffer[0] = -1; }
         }
 
-        @Override
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) { fillBuffer(); }
+            return buffer[bufferPointer++];
+        }
+
         public void close() throws IOException {
-            br.close();
+            din.close();
         }
     }
 }

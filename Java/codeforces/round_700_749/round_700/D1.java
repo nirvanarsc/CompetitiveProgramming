@@ -1,76 +1,83 @@
-package atcoder.beginner_100_199.beginner_165;
+package codeforces.round_700_749.round_700;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.StringTokenizer;
 
-public final class E {
+public final class D1 {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        if (n % 2 != 0) {
-            for (int l = 1, r = n - 1, k = 0; k < m; l++, r--, k++) {
-                pw.printf("%d %d\n", l, r);
+        final int[] arr = fs.nextIntArray(n);
+        int res = 0;
+        Set<Integer> uniq = new HashSet<>();
+        int[] last = new int[(int) (1e5 + 5)];
+        Arrays.fill(last, -1);
+        for (int i = 0; i < arr.length; i++) {
+            int j = i;
+            while (j < arr.length && arr[i] == arr[j]) {
+                j++;
             }
-        } else {
-            boolean flag = false;
-            for (int l = 1, r = n - 1, k = 0; k < m; l++, r--, k++) {
-                if (!flag && r - l <= n / 2) {
-                    --r;
-                    flag = true;
+            final int curr = j - i;
+            if (last[arr[i]] == -1) {
+                if (curr > 1) {
+                    res += 2;
+                } else {
+                    res += 1;
                 }
-                pw.printf("%d %d\n", l, r);
             }
+
+            i = j - 1;
+
         }
-        pw.close();
+        System.out.println(res);
     }
 
     static final class Utils {
-        public static void shuffleSort(int[] arr) {
-            shuffle(arr);
-            Arrays.sort(arr);
+        public static void shuffleSort(int[] x) {
+            shuffle(x);
+            Arrays.sort(x);
         }
 
-        public static void shuffleSort(long[] arr) {
-            shuffle(arr);
-            Arrays.sort(arr);
+        public static void shuffleSort(long[] x) {
+            shuffle(x);
+            Arrays.sort(x);
         }
 
-        public static void shuffle(int[] arr) {
+        public static void shuffle(int[] x) {
             final Random r = new Random();
 
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
+            for (int i = 0; i <= x.length - 2; i++) {
+                final int j = i + r.nextInt(x.length - i);
+                swap(x, i, j);
             }
         }
 
-        public static void shuffle(long[] arr) {
+        public static void shuffle(long[] x) {
             final Random r = new Random();
 
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
+            for (int i = 0; i <= x.length - 2; i++) {
+                final int j = i + r.nextInt(x.length - i);
+                swap(x, i, j);
             }
         }
 
-        public static void swap(int[] arr, int i, int j) {
-            final int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
+        public static void swap(int[] x, int i, int j) {
+            final int t = x[i];
+            x[i] = x[j];
+            x[j] = t;
         }
 
-        public static void swap(long[] arr, int i, int j) {
-            final long t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
+        public static void swap(long[] x, int i, int j) {
+            final long t = x[i];
+            x[i] = x[j];
+            x[j] = t;
         }
 
         private Utils() {}
