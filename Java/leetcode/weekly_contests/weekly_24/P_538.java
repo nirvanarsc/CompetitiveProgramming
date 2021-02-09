@@ -4,21 +4,19 @@ import utils.DataStructures.TreeNode;
 
 public class P_538 {
 
-    int sum;
-
     public TreeNode convertBST(TreeNode root) {
-        dfs(root);
+        dfs(root, new int[] { 0 });
         return root;
     }
 
-    private void dfs(TreeNode node) {
+    private static void dfs(TreeNode node, int[] curr) {
         if (node == null) {
             return;
         }
-        dfs(node.right);
-        final int t = node.val;
-        node.val += sum;
-        sum += t;
-        dfs(node.left);
+        dfs(node.right, curr);
+        final int temp = node.val;
+        node.val += curr[0];
+        curr[0] += temp;
+        dfs(node.left, curr);
     }
 }

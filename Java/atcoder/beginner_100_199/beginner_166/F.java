@@ -7,26 +7,12 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class B {
+public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int k = fs.nextInt();
-        final int[] freq = new int[n];
-        for (int i = 0; i < k; i++) {
-            final int d = fs.nextInt();
-            for (int j = 0; j < d; j++) {
-                freq[fs.nextInt() - 1]++;
-            }
-        }
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            if (freq[i] == 0) {
-                res++;
-            }
-        }
-        System.out.println(res);
+        System.out.println(n);
     }
 
     static final class Utils {
