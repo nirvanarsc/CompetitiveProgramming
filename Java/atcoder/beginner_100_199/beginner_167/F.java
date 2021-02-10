@@ -7,45 +7,12 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int x = fs.nextInt();
-        final int[][] g = new int[n][m + 1];
-        for (int i = 0; i < n; i++) {
-            final int[] row = new int[m + 1];
-            for (int j = 0; j <= m; j++) {
-                row[j] = fs.nextInt();
-            }
-            g[i] = row;
-        }
-        int res = (int) 1e9;
-        for (int mask = 0; mask < (1 << n); mask++) {
-            final int[] know = new int[m];
-            int cost = 0;
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    cost += g[i][0];
-                    for (int j = 0; j < m; j++) {
-                        know[j] += g[i][j + 1];
-                    }
-                }
-            }
-            boolean ok = true;
-            for (int i = 0; i < m; i++) {
-                if (know[i] < x) {
-                    ok = false;
-                    break;
-                }
-            }
-            if (ok) {
-                res = Math.min(res, cost);
-            }
-        }
-        System.out.println(res == (int) 1e9 ? -1 : res);
+        System.out.println(n);
     }
 
     static final class Utils {

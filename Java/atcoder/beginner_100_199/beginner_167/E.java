@@ -1,29 +1,22 @@
 package atcoder.beginner_100_199.beginner_167;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 public final class E {
 
     private static final int MOD = 998244353;
 
-    static class Solver {
+    private static class Combinations {
         long[] factorial;
         long[] facInverse;
         long[] inverse;
 
-        void solve(int n, int m, int k) {
-            init(n);
-            int sum = 0;
-            for (int i = 0; i <= k; i++) {
-                final long edge = ncr(n - 1, i);
-                sum = (int) ((sum + (edge * (m * modpow(m - 1, n - 1 - i) % MOD)) % MOD) % MOD);
-            }
-            System.out.println(sum);
-        }
-
-        void init(int n) {
+        Combinations(int n) {
             final int MAX = n + 2;
             factorial = new long[MAX];
             facInverse = new long[MAX];
@@ -38,16 +31,28 @@ public final class E {
             }
         }
 
-        long ncr(int n, int r) {
-            if (n < r) { return 0; }
-            if (n < 0 || r < 0) { return 0; }
-            return factorial[n] * (facInverse[r] * facInverse[n - r] % MOD) % MOD;
+        long nck(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
         }
 
-        long modpow(long a, long n) {
+        // combinations with repetition
+        long ncr(int n, int k) {
+            return nck(n + k - 1, k);
+        }
+
+        // permutations with repetition
+        long npk(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * facInverse[n - k] % MOD;
+        }
+
+        long modPow(long a, long n) {
             long res = 1;
             while (n > 0) {
-                if (n % 2 == 1) {
+                if (n % 2 != 0) {
                     res = res * a % MOD;
                 }
                 a = a * a % MOD;
@@ -58,11 +63,104 @@ public final class E {
     }
 
     public static void main(String[] args) {
-        final Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
-        final int n = in.nextInt();
-        final int m = in.nextInt();
-        final int k = in.nextInt();
-        in.nextLine();
-        new Solver().solve(n, m, k);
+        final FastScanner fs = new FastScanner();
+        final Combinations comb = new Combinations((int) (2e5 + 5));
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int k = fs.nextInt();
+        long res = 0;
+        for (int x = 0; x <= k; x++) {
+            // for each split of k same colored blocks
+            // | c1 ... | c2 ... | c3 ... | ck ... |
+            // factor of m for the first c1 + factor of 1 for the rest [c2 ~ ck]
+            // comb.nck(n-1, x) for the number of ways to split the [c1 ~ ck] block
+            // total number of choices for the remaining blocks => (m - 1) ^ (n - x - 1)
+            long add = comb.modPow(m - 1, n - x - 1);
+            add = (add * m) % MOD;
+            add = (add * comb.nck(n - 1, x)) % MOD;
+            res = (res + add) % MOD;
+        }
+        System.out.println(res);
+    }
+
+    static final class Utils {
+        public static void shuffleSort(int[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffleSort(long[] arr) {
+            shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffle(int[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
+        }
+
+        public static void shuffle(long[] arr) {
+            final Random r = new Random();
+
+            for (int i = 0; i <= arr.length - 2; i++) {
+                final int j = i + r.nextInt(arr.length - i);
+                swap(arr, i, j);
+            }
+        }
+
+        public static void swap(int[] arr, int i, int j) {
+            final int t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        public static void swap(long[] arr, int i, int j) {
+            final long t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+
+        private Utils() {}
+    }
+
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer("");
+
+        private String next() {
+            while (!st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    //noinspection CallToPrintStackTrace
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        int[] nextIntArray(int n) {
+            final int[] a = new int[n];
+            for (int i = 0; i < n; i++) { a[i] = nextInt(); }
+            return a;
+        }
+
+        long[] nextLongArray(int n) {
+            final long[] a = new long[n];
+            for (int i = 0; i < n; i++) { a[i] = nextLong(); }
+            return a;
+        }
     }
 }

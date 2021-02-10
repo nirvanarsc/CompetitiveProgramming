@@ -1,4 +1,4 @@
-package atcoder.beginner_100_199.beginner_167;
+package codeforces.sit_star;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,64 +7,59 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class B {
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int a = fs.nextInt();
-        final int b = fs.nextInt();
-        final int c = fs.nextInt();
-        int k = fs.nextInt();
-        int res = 0;
-        final int pickA = Math.min(k, a);
-        res += pickA;
-        k -= pickA;
-        final int pickB = Math.min(k, b);
-        k -= pickB;
-        final int pickC = Math.min(k, c);
-        res -= pickC;
-        System.out.println(res);
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            final int x = fs.nextInt();
+            final int y = fs.nextInt();
+            final int stairs = (x - 1) * 20;
+            final int elev = (y - 1) * 5 + (x - 1) * 5;
+            System.out.println(Math.min(stairs, elev));
+        }
     }
 
     static final class Utils {
-        public static void shuffleSort(int[] arr) {
-            shuffle(arr);
-            Arrays.sort(arr);
+        public static void shuffleSort(int[] x) {
+            shuffle(x);
+            Arrays.sort(x);
         }
 
-        public static void shuffleSort(long[] arr) {
-            shuffle(arr);
-            Arrays.sort(arr);
+        public static void shuffleSort(long[] x) {
+            shuffle(x);
+            Arrays.sort(x);
         }
 
-        public static void shuffle(int[] arr) {
+        public static void shuffle(int[] x) {
             final Random r = new Random();
 
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
+            for (int i = 0; i <= x.length - 2; i++) {
+                final int j = i + r.nextInt(x.length - i);
+                swap(x, i, j);
             }
         }
 
-        public static void shuffle(long[] arr) {
+        public static void shuffle(long[] x) {
             final Random r = new Random();
 
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
+            for (int i = 0; i <= x.length - 2; i++) {
+                final int j = i + r.nextInt(x.length - i);
+                swap(x, i, j);
             }
         }
 
-        public static void swap(int[] arr, int i, int j) {
-            final int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
+        public static void swap(int[] x, int i, int j) {
+            final int t = x[i];
+            x[i] = x[j];
+            x[j] = t;
         }
 
-        public static void swap(long[] arr, int i, int j) {
-            final long t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
+        public static void swap(long[] x, int i, int j) {
+            final long t = x[i];
+            x[i] = x[j];
+            x[j] = t;
         }
 
         private Utils() {}

@@ -7,45 +7,30 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class D2 {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int x = fs.nextInt();
-        final int[][] g = new int[n][m + 1];
-        for (int i = 0; i < n; i++) {
-            final int[] row = new int[m + 1];
-            for (int j = 0; j <= m; j++) {
-                row[j] = fs.nextInt();
-            }
-            g[i] = row;
-        }
-        int res = (int) 1e9;
-        for (int mask = 0; mask < (1 << n); mask++) {
-            final int[] know = new int[m];
-            int cost = 0;
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) != 0) {
-                    cost += g[i][0];
-                    for (int j = 0; j < m; j++) {
-                        know[j] += g[i][j + 1];
-                    }
+        final long k = fs.nextLong();
+        final int d = 60;
+        final int[][] dp = new int[d][(int) (2e5 + 5)];
+        for (int i = 0; i < d; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0) {
+                    dp[0][j] = fs.nextInt() - 1;
+                } else {
+                    dp[i][j] = dp[i - 1][dp[i - 1][j]];
                 }
             }
-            boolean ok = true;
-            for (int i = 0; i < m; i++) {
-                if (know[i] < x) {
-                    ok = false;
-                    break;
-                }
-            }
-            if (ok) {
-                res = Math.min(res, cost);
+        }
+        int v = 0;
+        for (int i = d - 1; i >= 0; i--) {
+            if ((k & (1L << i)) != 0) {
+                v = dp[i][v];
             }
         }
-        System.out.println(res == (int) 1e9 ? -1 : res);
+        System.out.println(v + 1);
     }
 
     static final class Utils {
