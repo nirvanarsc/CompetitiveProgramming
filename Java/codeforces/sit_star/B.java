@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -13,28 +15,30 @@ public final class B {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final int[] a = fs.nextIntArray(2);
-            final int[] b = fs.nextIntArray(2);
-            final int[] c = fs.nextIntArray(2);
-            if (a[0] == b[0]) {
-                if (c[1] == a[1]) {
-                    System.out.println(c[0] + " " + b[1]);
+            final int[] arr = fs.nextIntArray(6);
+            final Map<Integer, Integer> x = new HashMap<>();
+            final Map<Integer, Integer> y = new HashMap<>();
+            for (int i = 0; i < arr.length; i++) {
+                if (i % 2 == 0) {
+                    x.merge(arr[i], 1, Integer::sum);
                 } else {
-                    System.out.println(c[0] + " " + a[1]);
-                }
-            } else if(a[0] == c[0]) {
-                if (b[1] == a[1]) {
-                    System.out.println(b[0] + " " + c[1]);
-                } else {
-                    System.out.println(b[0] + " " + a[1]);
-                }
-            } else if(b[0] == c[0]) {
-                if (a[1] == b[1]) {
-                    System.out.println(a[0] + " " + c[1]);
-                } else {
-                    System.out.println(a[0] + " " + b[1]);
+                    y.merge(arr[i], 1, Integer::sum);
                 }
             }
+            int xx = -1;
+            int yy = -1;
+            for (int i = 0; i < 6; i++) {
+                if (i % 2 == 0) {
+                    if (x.get(arr[i]) == 1) {
+                        xx = arr[i];
+                    }
+                } else {
+                    if (y.get(arr[i]) == 1) {
+                        yy = arr[i];
+                    }
+                }
+            }
+            System.out.println(xx + " " + yy);
         }
     }
 

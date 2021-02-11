@@ -3,6 +3,7 @@ package codeforces.sit_star;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -10,41 +11,61 @@ import java.util.StringTokenizer;
 
 public final class H {
 
-    private static final int MOD = (int) (1e9 + 7);
-
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-
-        long curr = 1;
-        for (int i = 0; i < 4; i++) {
-            curr = (curr * (998244353 - 2)) % MOD;
+        final PrintWriter pw = new PrintWriter(System.out);
+        final int n = fs.nextInt();
+        final PriorityQueue<Integer> one = new PriorityQueue<>();
+        final PriorityQueue<Integer> two = new PriorityQueue<>();
+        int ones = 0;
+        int twos = 0;
+        for (int i = 0; i < n; i++) {
+            final int c = fs.nextInt();
+            final int t = fs.nextInt();
+            if (t == 1) {
+                one.add(c);
+            } else {
+                two.add(c);
+            }
         }
-        for (int i = 0; i < 4; i++) {
-            curr = (curr * (998244353 - 3)) % MOD;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (!one.isEmpty() && !two.isEmpty()) {
+                if (one.element() < two.element()) {
+                    if (ones < 2 * (twos + 1)) {
+                        ones++;
+                        res += one.remove();
+                    } else {
+                        twos++;
+                        res += two.remove();
+                    }
+                } else {
+                    if (twos < 2 * (ones + 1)) {
+                        twos++;
+                        res += two.remove();
+                    } else {
+                        ones++;
+                        res += one.remove();
+                    }
+                }
+            } else if (!one.isEmpty()) {
+                if (ones < 2 * (twos + 1)) {
+                    ones++;
+                    res += one.remove();
+                } else {
+                    res = -1;
+                }
+            } else if (!two.isEmpty()) {
+                if (twos < 2 * (ones + 1)) {
+                    twos++;
+                    res += two.remove();
+                } else {
+                    res = -1;
+                }
+            }
+            pw.println(res);
         }
-        curr = (curr * (998244353 - 4)) % MOD;
-
-        System.out.println(curr);
-        for (int i = 1; i < 100; i++) {
-            System.out.println((curr * i) % MOD);
-        }
-
-
-//        final int n = fs.nextInt();
-//        PriorityQueue<Integer> one = new PriorityQueue<>();
-//        PriorityQueue<Integer> two = new PriorityQueue<>();
-//        int prevT = 0;
-//        int prevC = 0;
-//        for (int i = 0; i < n; i++) {
-//            int c = fs.nextInt();
-//            int t = fs.nextInt();
-//            if (t == 1) {
-//                one.add(c);
-//            } else {
-//                two.add(c);
-//            }
-//        }
-
+        pw.close();
     }
 
     static final class Utils {

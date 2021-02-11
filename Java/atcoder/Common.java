@@ -1,5 +1,9 @@
 package atcoder;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.IntStream;
+
 public class Common {
 
     private static final int MOD = (int) (1e9 + 7);
@@ -103,5 +107,71 @@ public class Common {
                 recalc();
             }
         }
+    }
+
+    private static class CombinationIterator {
+        int n;
+        int k;
+        int[] combination;
+
+        CombinationIterator(int n, int k) {
+            this.n = n;
+            this.k = k;
+            combination = IntStream.range(0, k).toArray();
+        }
+
+        @SuppressWarnings("ConstantConditions")
+        public int[] next() {
+            final int[] res = combination.clone();
+            combination = nextCombination(combination, n, k);
+            return res;
+        }
+
+        public boolean hasNext() {
+            return combination != null;
+        }
+
+        @SuppressWarnings("ReturnOfNull")
+        private static int[] nextCombination(int[] curr, int n, int k) {
+            if (curr[k - 1] < n - 1) {
+                curr[k - 1]++;
+                return curr;
+            }
+            int idx = k - 1;
+            while (idx > 0 && curr[idx] == curr[idx - 1] + 1) {
+                idx--;
+            }
+            if (idx == 0) {
+                return null;
+            }
+            idx--;
+            curr[idx]++;
+            for (int i = idx + 1; i < k; i++) {
+                curr[i] = curr[i - 1] + 1;
+            }
+            return curr;
+        }
+    }
+
+    public static List<Integer> nextPermutation(List<Integer> perm) {
+        int swapIdx = -1;
+        final int n = perm.size();
+        for (int i = n - 1; i >= 1; i--) {
+            if (perm.get(i - 1) < perm.get(i)) {
+                swapIdx = i - 1;
+                break;
+            }
+        }
+        if (swapIdx == -1) {
+            return Collections.emptyList();
+        }
+        for (int i = n - 1; i >= 1; i--) {
+            if (perm.get(i) > perm.get(swapIdx)) {
+                Collections.swap(perm, swapIdx, i);
+                break;
+            }
+        }
+        Collections.reverse(perm.subList(swapIdx + 1, perm.size()));
+        return perm;
     }
 }

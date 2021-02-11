@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -31,23 +30,17 @@ public final class I {
             freq2[pairs[i][1]]++;
         }
         for (int[] p : pairs) {
-            if (p[0] == p[1]) {
-                res = Math.min(res, 2 * n - freq2[p[0]]);
-            } else {
-                res = Math.min(res, 2 * n - (freq1[p[0]] + freq1[p[1]]));
-            }
+            res = Math.min(res, 2 * n - freq2[p[0]]);
         }
-        List<Integer> ff = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
         for (int i = 0; i < freq1.length; i++) {
             if (freq1[i] > 0) {
-                ff.add(i);
+                list.add(i);
             }
         }
-        ff.sort(Comparator.reverseOrder());
-        for (int i = 0; i < Math.min(ff.size(), 100); i++) {
-            for (int j = i + 1; j < Math.min(ff.size(), 100); j++) {
-                res = Math.min(res, 2 * n - (freq1[ff.get(i)] + freq1[ff.get(j)]));
-            }
+        list.sort((a, b) -> Integer.compare(freq1[b], freq1[a]));
+        if (list.size() > 1) {
+            res = Math.min(res, 2 * n - (freq1[list.get(0)] + freq1[list.get(1)]));
         }
         System.out.println(res);
     }
