@@ -3,15 +3,9 @@ package leetcode.biweekly_contests.biweekly_19;
 public class P_1342 {
 
     public int numberOfSteps(int num) {
-        int step = 0;
-        while (num > 0) {
-            if (num % 2 != 0) {
-                num--;
-            } else {
-                num >>= 1;
-            }
-            step++;
+        if (num <= 1) {
+            return num;
         }
-        return step;
+        return numberOfSteps(num / 2) + 1 + num % 2;
     }
 }

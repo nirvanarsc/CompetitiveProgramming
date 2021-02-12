@@ -4,38 +4,39 @@ package leetcode.biweekly_contests.biweekly_43;
 public class P_1718 {
 
     public int[] constructDistancedSequence(int n) {
-        final int[] curr = new int[2 * n - 1];
-        return dfs(curr, 0, 0, n);
+        return dfs(new int[2 * n - 1], n, 0, 0);
     }
 
-    private static int[] dfs(int[] curr, int idx, int mask, int n) {
-        if (idx == curr.length) {
-            return curr;
+    private static int[] dfs(int[] arr, int n, int idx, int mask) {
+        if (idx == arr.length) {
+            return arr;
         }
-        if (curr[idx] != 0) {
-            return dfs(curr, idx + 1, mask, n);
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            if ((mask & (1 << i)) == 0) {
-                if (i == 0) {
-                    curr[idx] = 1;
-                    final int[] dfs = dfs(curr, idx + 1, mask | 1, n);
-                    if (dfs != null) {
-                        return dfs;
-                    }
-                    curr[idx] = 0;
-                } else {
-                    if ((idx + i + 1) < curr.length && curr[idx + i + 1] == 0) {
-                        curr[idx] = curr[idx + i + 1] = i + 1;
-                        final int[] dfs = dfs(curr, idx + 1, mask | (1 << i), n);
+        if (arr[idx] == 0) {
+            for (int k = n; k >= 1; k--) {
+                if ((mask & (1 << k)) == 0) {
+                    if (k == 1) {
+                        arr[idx] = 1;
+                        final int[] dfs = dfs(arr, n, idx + 1, mask | (1 << 1));
                         if (dfs != null) {
                             return dfs;
                         }
-                        curr[idx] = curr[idx + i + 1] = 0;
+                        arr[idx] = 0;
+                    } else {
+                        if (idx + k < arr.length && arr[idx + k] == 0) {
+                            arr[idx] = k;
+                            arr[idx + k] = k;
+                            final int[] dfs = dfs(arr, n, idx + 1, mask | (1 << k));
+                            if (dfs != null) {
+                                return dfs;
+                            }
+                            arr[idx] = 0;
+                            arr[idx + k] = 0;
+                        }
                     }
                 }
             }
+            return null;
         }
-        return null;
+        return dfs(arr, n, idx + 1, mask);
     }
 }
