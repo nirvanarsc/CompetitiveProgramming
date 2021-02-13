@@ -8,37 +8,35 @@ import java.util.PriorityQueue;
 
 public class P_1091 {
     private static final int[][] DIRS =
-            { { -1, -1 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 1 }, { 1, -1 }, { 1, 0 }, { 1, 1 } };
+            { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 }, { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } };
 
     public int shortestPathBinaryMatrix(int[][] grid) {
+        final Deque<int[]> q = new ArrayDeque<>();
         final int n = grid.length;
         final int m = grid[0].length;
-        if (grid[0][0] == 1 || grid[n - 1][m - 1] == 1) {
-            return -1;
+        if (grid[0][0] == 0) {
+            q.offerLast(new int[] { 0, 0 });
         }
-        final boolean[][] visited = new boolean[n][m];
-        final int[] target = { n - 1, m - 1 };
-        visited[0][0] = true;
-        final Deque<int[]> queue = new ArrayDeque<>();
-        queue.offerLast(new int[] { 0, 0 });
-        int ans = 0;
-        while (!queue.isEmpty()) {
-            for (int i = queue.size(); i > 0; i--) {
-                final int[] curr = queue.removeFirst();
-                if (Arrays.equals(curr, target)) {
-                    return ans + 1;
+        final boolean[][] seen = new boolean[n][m];
+        for (int level = 1; !q.isEmpty(); level++) {
+            for (int size = q.size(); size > 0; size--) {
+                final int[] curr = q.removeFirst();
+                final int x = curr[0];
+                final int y = curr[1];
+                if (x == n - 1 && y == m - 1) {
+                    return level;
                 }
                 for (int[] dir : DIRS) {
-                    final int nextX = curr[0] + dir[0];
-                    final int nextY = curr[1] + dir[1];
-                    if (nextX >= 0 && nextX < n && nextY >= 0 && nextY < m && !visited[nextX][nextY]
-                        && grid[nextX][nextY] == 0) {
-                        queue.offerLast(new int[] { nextX, nextY });
-                        visited[nextX][nextY] = true;
+                    final int nx = x + dir[0];
+                    final int ny = y + dir[1];
+                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] == 0) {
+                        if (!seen[nx][ny]) {
+                            seen[nx][ny] = true;
+                            q.offerLast(new int[] { nx, ny });
+                        }
                     }
                 }
             }
-            ans++;
         }
         return -1;
     }
