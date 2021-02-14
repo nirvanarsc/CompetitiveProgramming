@@ -25,19 +25,32 @@ public class P_53 {
         return res;
     }
 
-    public int maxSubArrayRecursive(int[] nums) {
-        return recurse(nums, 0, new int[] { Integer.MIN_VALUE, 0 })[0];
+    public int maxSubArrayDFS(int[] nums) {
+        final int[][] dp = new int[nums.length][3];
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+        return dfs(nums, 0, 0, dp);
     }
 
-    public int[] recurse(int[] nums, int pos, int[] pair) {
-        if (pos == nums.length - 1) {
-            pair[1] = nums[pos];
-            pair[0] = Math.max(pair[0], pair[1]);
-            return pair;
+    private static int dfs(int[] nums, int idx, int status, int[][] dp) {
+        if (idx == nums.length) {
+            return status != 0 ? 0 : (int) -1e9;
         }
-        pair[1] = Math.max(nums[pos], nums[pos] + recurse(nums, pos + 1, pair)[1]);
-        pair[0] = Math.max(pair[0], pair[1]);
-        return pair;
+        if (dp[idx][status] != -1) {
+            return dp[idx][status];
+        }
+        int res = (int) -1e9;
+        if (status == 0) {
+            res = Math.max(res, dfs(nums, idx + 1, 0, dp));
+            res = Math.max(res, nums[idx] + dfs(nums, idx + 1, 1, dp));
+        } else if (status == 1) {
+            res = Math.max(res, nums[idx] + dfs(nums, idx + 1, 1, dp));
+            res = Math.max(res, dfs(nums, idx + 1, 2, dp));
+        } else {
+            res = Math.max(res, dfs(nums, idx + 1, 2, dp));
+        }
+        return dp[idx][status] = res;
     }
 
     public int maxSubArrayDC(int[] nums) {
