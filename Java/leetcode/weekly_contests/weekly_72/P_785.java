@@ -1,35 +1,76 @@
 package leetcode.weekly_contests.weekly_72;
 
-import utils.DataStructures.UnionFind;
-
 public class P_785 {
 
-    enum Color {
-        RED,
-        BLUE,
-    }
-
     public boolean isBipartite(int[][] graph) {
-        final Color[] colors = new Color[graph.length];
+        final int[] colors = new int[graph.length];
         for (int i = 0; i < graph.length; i++) {
-            if (colors[i] == null && !dfs(graph, i, colors, Color.RED)) {
+            if (colors[i] == 0) {
+                if (!dfs(i, graph, colors, 1)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean dfs(int u, int[][] g, int[] colors, int c) {
+        if (colors[u] != 0) {
+            return colors[u] == c;
+        }
+        colors[u] = c;
+        for (int n : g[u]) {
+            if (!dfs(n, g, colors, c ^ 3)) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean dfs(int[][] graph, int at, Color[] colors, Color color) {
-        if (colors[at] != null) {
-            return colors[at] == color;
-        }
-        colors[at] = color;
-        for (int n : graph[at]) {
-            if (!dfs(graph, n, colors, color == Color.RED ? Color.BLUE : Color.RED)) {
-                return false;
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
             }
         }
-        return true;
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
     }
 
     public boolean isBipartiteUF(int[][] graph) {

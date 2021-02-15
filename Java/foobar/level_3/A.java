@@ -3,6 +3,7 @@ package foobar.level_3;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
 public final class A {
 
     public static void main(String[] args) {

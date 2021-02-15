@@ -1,70 +1,26 @@
-package atcoder.beginner_100_199.beginner_167;
+package atcoder.beginner_100_199.beginner_168;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final List<int[]> left = new ArrayList<>();
-        final List<int[]> right = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            final char[] curr = fs.next().toCharArray();
-            final Deque<Character> dq = new ArrayDeque<>();
-            for (char c : curr) {
-                if (!dq.isEmpty() && dq.getFirst() == '(' && c == ')') {
-                    dq.removeFirst();
-                } else {
-                    dq.addFirst(c);
-                }
-            }
-            int a = 0;
-            int b = 0;
-            while (!dq.isEmpty()) {
-                final char c = dq.removeFirst();
-                if (c == '(') {
-                    a++;
-                } else {
-                    b++;
-                }
-            }
-            if (a - b > 0) {
-                left.add(new int[] { a, b });
-            } else {
-                right.add(new int[] { a, b });
-            }
-        }
-        left.sort(Comparator.comparingInt(val -> val[1]));
-        right.sort((a, b) -> Integer.compare(b[0], a[0]));
-        int open = 0;
-        for (int[] ll : left) {
-            if (open < ll[1]) {
-                System.out.println("No");
-                return;
-            }
-            open -= ll[1];
-            open += ll[0];
-        }
-        for (int[] rr : right) {
-            if (open < rr[1]) {
-                System.out.println("No");
-                return;
-            }
-            open -= rr[1];
-            open += rr[0];
-        }
-        System.out.println(open == 0 ? "Yes" : "No");
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int h = fs.nextInt();
+        final int m = fs.nextInt();
+        final double hh = h * 30 + m / 2.0;
+        final double mm = m * 6;
+        final double diff = Math.abs(hh - mm);
+        final double deg = Math.min(diff, 360 - diff);
+        final double c = b * b + a * a - 2.0 * b * a * Math.cos(Math.toRadians(deg));
+        System.out.printf("%.9f\n", Math.sqrt(c));
     }
 
     static final class Utils {

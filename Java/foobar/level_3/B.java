@@ -2,6 +2,7 @@ package foobar.level_3;
 
 import java.util.Arrays;
 
+@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
 public final class B {
 
     public static void main(String[] args) {

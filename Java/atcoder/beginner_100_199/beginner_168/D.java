@@ -1,70 +1,66 @@
-package atcoder.beginner_100_199.beginner_167;
+package atcoder.beginner_100_199.beginner_168;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class F {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
-        final List<int[]> left = new ArrayList<>();
-        final List<int[]> right = new ArrayList<>();
+        final int m = fs.nextInt();
+        final List<List<Integer>> g = new ArrayList<>();
         for (int i = 0; i < n; i++) {
-            final char[] curr = fs.next().toCharArray();
-            final Deque<Character> dq = new ArrayDeque<>();
-            for (char c : curr) {
-                if (!dq.isEmpty() && dq.getFirst() == '(' && c == ')') {
-                    dq.removeFirst();
-                } else {
-                    dq.addFirst(c);
+            g.add(new ArrayList<>());
+        }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(v);
+            g.get(v).add(u);
+        }
+        final int[] res = new int[n];
+        Arrays.fill(res, -1);
+        final Deque<int[]> dq = new ArrayDeque<>();
+        dq.offerLast(new int[] { 0, -1 });
+        while (!dq.isEmpty()) {
+            for (int size = dq.size(); size > 0; size--) {
+                final int[] curr = dq.removeFirst();
+                if (res[curr[0]] != -1) {
+                    continue;
+                }
+                res[curr[0]] = curr[1];
+                for (int next : g.get(curr[0])) {
+                    dq.offerLast(new int[] { next, curr[0] });
                 }
             }
-            int a = 0;
-            int b = 0;
-            while (!dq.isEmpty()) {
-                final char c = dq.removeFirst();
-                if (c == '(') {
-                    a++;
-                } else {
-                    b++;
-                }
-            }
-            if (a - b > 0) {
-                left.add(new int[] { a, b });
-            } else {
-                right.add(new int[] { a, b });
+        }
+        boolean ok = true;
+        for (int i = 1; i < n; i++) {
+            if (res[i] == -1) {
+                ok = false;
+                break;
             }
         }
-        left.sort(Comparator.comparingInt(val -> val[1]));
-        right.sort((a, b) -> Integer.compare(b[0], a[0]));
-        int open = 0;
-        for (int[] ll : left) {
-            if (open < ll[1]) {
-                System.out.println("No");
-                return;
+        if (!ok) {
+            pw.println("No");
+        } else {
+            pw.println("Yes");
+            for (int i = 1; i < n; i++) {
+                pw.println(res[i] + 1);
             }
-            open -= ll[1];
-            open += ll[0];
         }
-        for (int[] rr : right) {
-            if (open < rr[1]) {
-                System.out.println("No");
-                return;
-            }
-            open -= rr[1];
-            open += rr[0];
-        }
-        System.out.println(open == 0 ? "Yes" : "No");
+        pw.close();
     }
 
     static final class Utils {

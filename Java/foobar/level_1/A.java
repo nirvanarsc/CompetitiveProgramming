@@ -1,5 +1,6 @@
 package foobar.level_1;
 
+@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
 public final class A {
 
     public static void main(String[] args) {

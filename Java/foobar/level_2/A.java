@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("UtilityClassWithoutPrivateConstructor")
 public final class A {
 
     public static void main(String[] args) {
