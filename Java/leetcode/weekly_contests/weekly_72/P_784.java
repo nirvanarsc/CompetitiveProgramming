@@ -9,7 +9,7 @@ import java.util.List;
 @SuppressWarnings("MethodParameterNamingConvention")
 public class P_784 {
 
-    public List<String> letterCasePermutation(String S) {
+    public List<String> letterCasePermutationDFS(String S) {
         final List<String> res = new ArrayList<>();
         dfs(S.toCharArray(), 0, res);
         return res;
@@ -41,5 +41,37 @@ public class P_784 {
             }
         }
         return new ArrayList<>(q);
+    }
+
+    public List<String> letterCasePermutation(String S) {
+        int n = 0;
+        final char[] s = S.toCharArray();
+        for (int i = 0; i < s.length; i++) {
+            if (!isDigit(s[i])) {
+                if ('A' <= s[i] && s[i] <= 'Z') {
+                    s[i] ^= 32;
+                }
+                n++;
+            }
+        }
+        final List<String> res = new ArrayList<>();
+        for (int mask = 0; mask < (1 << n); mask++) {
+            int maskIdx = 0;
+            final char[] curr = s.clone();
+            for (int i = 0; i < curr.length; i++) {
+                if (!isDigit(curr[i])) {
+                    if ((mask & (1 << maskIdx)) != 0) {
+                        curr[i] ^= 32;
+                    }
+                    maskIdx++;
+                }
+            }
+            res.add(new String(curr));
+        }
+        return res;
+    }
+
+    private static boolean isDigit(char c) {
+        return '0' <= c && c <= '9';
     }
 }
