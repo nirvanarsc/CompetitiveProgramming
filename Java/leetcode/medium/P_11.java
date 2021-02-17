@@ -3,14 +3,15 @@ package leetcode.medium;
 public final class P_11 {
 
     public int maxArea(int[] height) {
+        int lo = 0;
+        int hi = height.length - 1;
         int res = 0;
-        int i = 0, j = height.length - 1;
-        while (i < j) {
-            res = Math.max(res, Math.min(height[i], height[j]) * (j - i));
-            if (height[i] < height[j]) {
-                i++;
+        while (lo < hi) {
+            res = Math.max(res, (hi - lo) * Math.min(height[lo], height[hi]));
+            if (height[lo] < height[hi]) {
+                lo++;
             } else {
-                j--;
+                hi--;
             }
         }
         return res;
