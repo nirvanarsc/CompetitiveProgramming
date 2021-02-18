@@ -33,15 +33,17 @@ public final class F {
             for (Map.Entry<Integer, Integer> e : freq2.entrySet()) {
                 pairs.add(new int[] { e.getKey(), e.getValue() });
             }
-            pairs.sort(Comparator.comparingInt(a -> a[0]));
+            pairs.sort(Comparator.comparingInt(v -> v[0]));
             final long[] pre = new long[pairs.size() + 1];
+            final long[] pre2 = new long[pairs.size() + 1];
             for (int i = 1; i <= pairs.size(); i++) {
                 pre[i] = pre[i - 1] + (long) pairs.get(i - 1)[0] * pairs.get(i - 1)[1];
+                pre2[i] = pre2[i - 1] + pairs.get(i - 1)[1];
             }
             for (int i = 0; i < pairs.size(); i++) {
                 final long ll = pre[i];
-                final long rr = pre[pairs.size()] - pre[i + 1] -
-                                ((long) pairs.get(i)[0] * (pairs.size() - i - 1));
+                final long rr = pre[pairs.size()] - pre[i + 1]
+                                - pairs.get(i)[0] * (pre2[pairs.size()] - pre2[i + 1]);
                 res = Math.min(res, ll + rr);
             }
             System.out.println(res);
