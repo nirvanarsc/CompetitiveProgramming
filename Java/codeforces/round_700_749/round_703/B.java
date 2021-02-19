@@ -1,4 +1,4 @@
-package atcoder.sample;
+package codeforces.round_700_749.round_703;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,12 +7,29 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        System.out.println(n);
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            final int[] x = new int[n];
+            final int[] y = new int[n];
+            for (int i = 0; i < n; i++) {
+                x[i] = fs.nextInt();
+                y[i] = fs.nextInt();
+            }
+            if (n % 2 != 0) {
+                System.out.println(1);
+            } else {
+                Utils.shuffleSort(x);
+                Utils.shuffleSort(y);
+                final long d1 = x[n / 2] - x[n / 2 - 1] + 1;
+                final long d2 = y[n / 2] - y[n / 2 - 1] + 1;
+                System.out.println(d1 * d2);
+            }
+        }
     }
 
     static final class Utils {

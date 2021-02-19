@@ -16,44 +16,46 @@ public final class F {
     }
 
     static final class Utils {
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+        }
+
         public static void shuffleSort(int[] arr) {
-            shuffle(arr);
+            Shuffler.shuffle(arr);
             Arrays.sort(arr);
         }
 
         public static void shuffleSort(long[] arr) {
-            shuffle(arr);
+            Shuffler.shuffle(arr);
             Arrays.sort(arr);
-        }
-
-        public static void shuffle(int[] arr) {
-            final Random r = new Random();
-
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
-            }
-        }
-
-        public static void shuffle(long[] arr) {
-            final Random r = new Random();
-
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
-            }
-        }
-
-        public static void swap(int[] arr, int i, int j) {
-            final int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
-        }
-
-        public static void swap(long[] arr, int i, int j) {
-            final long t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
         }
 
         private Utils() {}
