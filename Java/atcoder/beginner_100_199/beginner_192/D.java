@@ -1,47 +1,135 @@
 package atcoder.beginner_100_199.beginner_192;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.StringTokenizer;
 
-public class D {
+public final class D {
 
     public static void main(String[] args) {
-        // TODO 自动生成的方法存根
-        final Scanner sc = new Scanner(System.in);
-        final String string = sc.next();
-        final BigInteger m = sc.nextBigInteger();
+        final FastScanner fs = new FastScanner();
+        final String x = fs.next();
+        final BigInteger m = new BigInteger(fs.next());
         int d = 0;
-        for (int i = 0; i < string.length(); i++) {
-            d = Math.max(d, string.charAt(i) - '0');
+        for (int i = 0; i < x.length(); i++) {
+            d = Math.max(d, x.charAt(i) - '0');
         }
-        long l = d + 1;
-        long r = (long) 1e18;
-        final BigInteger x = new BigInteger(string);
-        if (string.length() == 1) {
-            if (x.longValue() <= m.longValue()) {
+        if (x.length() == 1) {
+            if (Integer.valueOf(x) <= m.longValue()) {
                 System.out.println(1);
             } else {
                 System.out.println(0);
             }
             return;
         }
-        long ans = 0;
-        while (l < r) {
-            final long mid = (l + r + 1) / 2;
-            final BigInteger d1 = BigInteger.valueOf(mid);
-            BigInteger res = BigInteger.valueOf(0);
+        long lo = 1;
+        long hi = (long) 1e18;
+        while (lo < hi) {
+            final long mid = lo + hi + 1 >>> 1;
+            final BigInteger base = BigInteger.valueOf(mid);
+            BigInteger curr = BigInteger.ZERO;
             boolean ok = true;
-            for (int i = 0; i < string.length(); i++) {
-                res = res.multiply(d1).add(BigInteger.valueOf(string.charAt(i) - '0'));
-                if (res.compareTo(m) > 0) {
+            for (int i = 0; i < x.length(); i++) {
+                curr = curr.multiply(base).add(BigInteger.valueOf(x.charAt(i) - '0'));
+                if (curr.compareTo(m) > 0) {
                     ok = false;
                     break;
                 }
             }
-            if (!ok) { r = mid - 1; } else {l = mid;}
+            if (ok) {
+                lo = mid;
+            } else {
+                hi = mid - 1;
+            }
         }
-        System.out.println(Math.max(0, l - d));
+        System.out.println(Math.max(0, lo - d));
     }
 
+    static final class Utils {
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+        }
+
+        public static void shuffleSort(int[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffleSort(long[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        private Utils() {}
+    }
+
+    static class FastScanner {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer("");
+
+        private String next() {
+            while (!st.hasMoreTokens()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    //noinspection CallToPrintStackTrace
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        int[] nextIntArray(int n) {
+            final int[] a = new int[n];
+            for (int i = 0; i < n; i++) { a[i] = nextInt(); }
+            return a;
+        }
+
+        long[] nextLongArray(int n) {
+            final long[] a = new long[n];
+            for (int i = 0; i < n; i++) { a[i] = nextLong(); }
+            return a;
+        }
+    }
 }
 

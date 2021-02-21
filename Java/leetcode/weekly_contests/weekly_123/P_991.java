@@ -2,12 +2,15 @@ package leetcode.weekly_contests.weekly_123;
 
 public class P_991 {
 
-    public int brokenCalcRecursive(int x, int y) {
+    public int brokenCalcDFS(int x, int y) {
+        return dfs(x, y);
+    }
+
+    private static int dfs(int x, int y) {
         if (x >= y) {
             return x - y;
         }
-
-        return 1 + y % 2 + brokenCalc(x, (y + 1) >> 1);
+        return 1 + y % 2 + dfs(x, (y + y % 2) / 2);
     }
 
     public int brokenCalc(int x, int y) {

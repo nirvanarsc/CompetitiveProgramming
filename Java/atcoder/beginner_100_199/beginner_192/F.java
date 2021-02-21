@@ -14,17 +14,42 @@ public final class F {
         final int n = fs.nextInt();
         final long x = fs.nextLong();
         final int[] arr = fs.nextIntArray(n);
-        System.out.println(dfs(arr, 0, 0, x));
+        long res = (long) 9e18;
+        for (int len = 1; len <= n; len++) {
+            final int[][][] dp = new int[n][len + 1][len + 1];
+            for (int[][] r1 : dp) {
+                for (int[] r2 : r1) {
+                    Arrays.fill(r2, -1);
+                }
+            }
+            final int currBest = dfs(arr, 0, 0, len, len, (int) (x % len), dp);
+            if (currBest != (int) -1e9) {
+                res = Math.min(res, (x - currBest) / len);
+            }
+        }
+        System.out.println(res);
     }
 
-    private static long dfs(int[] arr, int idx, int mod, long x) {
+    private static int dfs(int[] arr, int idx, int mod, int len, int currMod, int tarMod, int[][][] dp) {
         if (idx == arr.length) {
-            return mod == 0 ? 0 : (long) -1e18;
+            if (mod == tarMod && len == 0) {
+                return 0;
+            }
+            return (int) -1e9;
         }
-        long res = -(long) 1e18;
-        res = Math.max(res, 1 + dfs(arr, idx + 1, (int) ((mod + arr[idx]) % x), x));
-        res = Math.max(res, dfs(arr, idx + 1, mod, x));
-        return res;
+        if (dp[idx][mod][len] != -1) {
+            return dp[idx][mod][len];
+        }
+        int res = (int) -1e9;
+        res = Math.max(res, dfs(arr, idx + 1, mod, len, currMod, tarMod, dp));
+        if (len > 0) {
+            final int nextMod = (currMod == 0) ? 0 : (mod + arr[idx]) % currMod;
+            final int dfs = dfs(arr, idx + 1, nextMod, len - 1, currMod, tarMod, dp);
+            if (dfs != (int) -1e9) {
+                res = Math.max(res, arr[idx] + dfs);
+            }
+        }
+        return dp[idx][mod][len] = res;
     }
 
     static final class Utils {
