@@ -1,9 +1,7 @@
 package leetcode.weekly_contests.weekly_152;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

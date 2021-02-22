@@ -13,7 +13,6 @@ public class P_1681 {
             return -1;
         }
         return dfs(nums, (1 << nums.length) - 1, size, new Integer[1 << nums.length]);
-
     }
 
     private static int dfs(int[] nums, int mask, int size, Integer[] dp) {
