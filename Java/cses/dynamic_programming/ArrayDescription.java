@@ -1,50 +1,47 @@
-package codeforces.round_700_749.round_704;
+package cses.dynamic_programming;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-@SuppressWarnings("ConstantConditions")
-public final class C {
+public final class ArrayDescription {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final char[] s = fs.next().toCharArray();
-        final char[] t = fs.next().toCharArray();
-        final List<TreeSet<Integer>> g = new ArrayList<>(26);
-        for (int i = 0; i < 26; i++) {
-            g.add(new TreeSet<>());
+        final int[] arr = fs.nextIntArray(n);
+        final int[][] dp = new int[n][m + 1];
+        if (arr[0] == 0) {
+            Arrays.fill(dp[0], 1);
+        } else {
+            dp[0][arr[0]] = 1;
         }
-        for (int i = 0; i < n; i++) {
-            g.get(s[i] - 'a').add(i);
-        }
-        final int[] curr = new int[m];
-        for (int i = 0; i < m; i++) {
-            if (i == 0) {
-                curr[0] = g.get(t[0] - 'a').first();
+        for (int i = 1; i < n; i++) {
+            if (arr[i] == 0) {
+                for (int j = 1; j <= m; j++) {
+                    for (int k : new int[] { j - 1, j, j + 1 }) {
+                        if (k >= 1 && k <= m) {
+                            dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;
+                        }
+                    }
+                }
             } else {
-                curr[i] = g.get(t[i] - 'a').higher(curr[i - 1]);
+                for (int k : new int[] { arr[i] - 1, arr[i], arr[i] + 1 }) {
+                    if (k >= 1 && k <= m) {
+                        dp[i][arr[i]] = (dp[i][arr[i]] + dp[i - 1][k]) % MOD;
+                    }
+                }
             }
         }
         int res = 0;
-        for (int i = 0; i < m - 1; i++) {
-            res = Math.max(res, curr[i + 1] - curr[i]);
-        }
-        for (int i = m - 1; i >= 0; i--) {
-            if (i == m - 1) {
-                curr[m - 1] = g.get(t[m - 1] - 'a').last();
-            } else {
-                res = Math.max(res, curr[i + 1] - curr[i]);
-                curr[i] = g.get(t[i] - 'a').lower(curr[i + 1]);
-            }
+        for (int i = 1; i <= m; i++) {
+            res = (res + dp[n - 1][i]) % MOD;
         }
         System.out.println(res);
     }

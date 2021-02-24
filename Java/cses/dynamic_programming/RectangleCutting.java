@@ -1,52 +1,36 @@
-package codeforces.round_700_749.round_704;
+package cses.dynamic_programming;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-@SuppressWarnings("ConstantConditions")
-public final class C {
+public final class RectangleCutting {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final char[] s = fs.next().toCharArray();
-        final char[] t = fs.next().toCharArray();
-        final List<TreeSet<Integer>> g = new ArrayList<>(26);
-        for (int i = 0; i < 26; i++) {
-            g.add(new TreeSet<>());
-        }
-        for (int i = 0; i < n; i++) {
-            g.get(s[i] - 'a').add(i);
-        }
-        final int[] curr = new int[m];
-        for (int i = 0; i < m; i++) {
-            if (i == 0) {
-                curr[0] = g.get(t[0] - 'a').first();
-            } else {
-                curr[i] = g.get(t[i] - 'a').higher(curr[i - 1]);
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int[][] dp = new int[a + 1][b + 1];
+        for (int i = 0; i <= a; i++) {
+            for (int j = 0; j <= b; j++) {
+                if (i == j) {
+                    dp[i][j] = 0;
+                } else {
+                    int res = (int) 1e9;
+                    for (int k = 1; k < i; k++) {
+                        res = Math.min(res, 1 + dp[k][j] + dp[i - k][j]);
+                    }
+                    for (int k = 1; k < j; k++) {
+                        res = Math.min(res, 1 + dp[i][k] + dp[i][j - k]);
+                    }
+                    dp[i][j] = res;
+                }
             }
         }
-        int res = 0;
-        for (int i = 0; i < m - 1; i++) {
-            res = Math.max(res, curr[i + 1] - curr[i]);
-        }
-        for (int i = m - 1; i >= 0; i--) {
-            if (i == m - 1) {
-                curr[m - 1] = g.get(t[m - 1] - 'a').last();
-            } else {
-                res = Math.max(res, curr[i + 1] - curr[i]);
-                curr[i] = g.get(t[i] - 'a').lower(curr[i + 1]);
-            }
-        }
-        System.out.println(res);
+        System.out.println(dp[a][b]);
     }
 
     static final class Utils {

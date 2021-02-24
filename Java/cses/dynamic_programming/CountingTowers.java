@@ -1,52 +1,58 @@
-package codeforces.round_700_749.round_704;
+package cses.dynamic_programming;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-@SuppressWarnings("ConstantConditions")
-public final class C {
+public final class CountingTowers {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final char[] s = fs.next().toCharArray();
-        final char[] t = fs.next().toCharArray();
-        final List<TreeSet<Integer>> g = new ArrayList<>(26);
-        for (int i = 0; i < 26; i++) {
-            g.add(new TreeSet<>());
+        final StringBuilder sb = new StringBuilder();
+        final int t = fs.nextInt();
+        final int[][] dp = new int[(int) 1e6][2];
+        dp[0][0] = 1;
+        dp[0][1] = 1;
+        final int[][] q = new int[t][2];
+        for (int i = 0; i < t; i++) {
+            q[i] = new int[] { fs.nextInt(), i };
         }
-        for (int i = 0; i < n; i++) {
-            g.get(s[i] - 'a').add(i);
-        }
-        final int[] curr = new int[m];
-        for (int i = 0; i < m; i++) {
-            if (i == 0) {
-                curr[0] = g.get(t[0] - 'a').first();
-            } else {
-                curr[i] = g.get(t[i] - 'a').higher(curr[i - 1]);
+        Arrays.sort(q, Comparator.comparingInt(a -> a[0]));
+        int prev = 1;
+        final int[] res = new int[t];
+        for (int i = 0; i < t; i++) {
+            for (int j = prev; j < q[i][0]; j++) {
+                dp[j][0] = add(dp[j][0], dp[j - 1][1]);
+                dp[j][0] = add(dp[j][0], dp[j - 1][0]);
+                dp[j][0] = add(dp[j][0], dp[j - 1][0]);
+                dp[j][0] = add(dp[j][0], dp[j - 1][0]);
+                dp[j][0] = add(dp[j][0], dp[j - 1][0]);
+                dp[j][1] = add(dp[j][1], dp[j - 1][1]);
+                dp[j][1] = add(dp[j][1], dp[j - 1][1]);
+                dp[j][1] = add(dp[j][1], dp[j - 1][0]);
             }
+            res[q[i][1]] = add(dp[q[i][0] - 1][0], dp[q[i][0] - 1][1]);
+            prev = q[i][0];
         }
-        int res = 0;
-        for (int i = 0; i < m - 1; i++) {
-            res = Math.max(res, curr[i + 1] - curr[i]);
+        for (int i = 0; i < t; i++) {
+            sb.append(res[i]);
+            sb.append('\n');
         }
-        for (int i = m - 1; i >= 0; i--) {
-            if (i == m - 1) {
-                curr[m - 1] = g.get(t[m - 1] - 'a').last();
-            } else {
-                res = Math.max(res, curr[i + 1] - curr[i]);
-                curr[i] = g.get(t[i] - 'a').lower(curr[i + 1]);
-            }
+        System.out.println(sb);
+    }
+
+    private static int add(int a, int b) {
+        a += b;
+        if (a > MOD) {
+            a -= MOD;
         }
-        System.out.println(res);
+        return a;
     }
 
     static final class Utils {
