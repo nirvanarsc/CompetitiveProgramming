@@ -11,7 +11,6 @@ import utils.DataStructures.ListNode;
 
 public final class E {
 
-
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
