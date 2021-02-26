@@ -1,0 +1,227 @@
+package cses.graph_algorithms;
+
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
+import java.util.Random;
+
+public final class LongestFlightRoute {
+
+    public static void main(String[] args) throws IOException {
+        final FastReader fs = new FastReader();
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<List<Integer>> g = new ArrayList<>(n);
+        final int[] inDegrees = new int[n];
+        for (int i = 0; i < n; i++) {
+            g.add(new ArrayList<>());
+        }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(v);
+            inDegrees[v]++;
+        }
+        final int[] d = new int[n];
+        final int[] prev = new int[n];
+        final int[] topSort = topSort(inDegrees, n, g);
+        Arrays.fill(prev, -1);
+        Arrays.fill(d, (int) -1e9);
+        d[n - 1] = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            final int u = topSort[i];
+            for (int v : g.get(u)) {
+                if (d[u] < d[v] + 1) {
+                    d[u] = d[v] + 1;
+                    prev[u] = v;
+                }
+            }
+        }
+        final List<Integer> res = new ArrayList<>();
+        int p = 0;
+        while (p != -1) {
+            res.add(p + 1);
+            p = prev[p];
+        }
+        if (res.get(res.size() - 1) != n) {
+            System.out.println("IMPOSSIBLE");
+            return;
+        }
+        final StringBuilder sb = new StringBuilder();
+        sb.append(res.size());
+        sb.append('\n');
+        for (int num : res) {
+            sb.append(num);
+            sb.append(' ');
+        }
+        System.out.println(sb);
+    }
+
+    private static int[] topSort(int[] inDegrees, int n, List<List<Integer>> g) {
+        final Deque<Integer> q = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            if (inDegrees[i] == 0) {
+                q.offerLast(i);
+            }
+        }
+        final int[] res = new int[n];
+        for (int i = 0; !q.isEmpty(); i++) {
+            final int curr = q.removeFirst();
+            res[i] = curr;
+            for (int next : g.get(curr)) {
+                if (--inDegrees[next] == 0) {
+                    q.offerLast(next);
+                }
+            }
+        }
+        return res;
+    }
+
+    static final class Utils {
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+        }
+
+        public static void shuffleSort(int[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffleSort(long[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        private Utils() {}
+    }
+
+    static class FastReader {
+        private static final int BUFFER_SIZE = 1 << 16;
+        private final DataInputStream din;
+        private final byte[] buffer;
+        private int bufferPointer, bytesRead;
+
+        FastReader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        FastReader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException {
+            final byte[] buf = new byte[1024]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n') {
+                    break;
+                }
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+
+        public int nextInt() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (neg) { return -ret; }
+            return ret;
+        }
+
+        public long nextLong() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') { c = read(); }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+            if (neg) { return -ret; }
+            return ret;
+        }
+
+        public double nextDouble() throws IOException {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ') { c = read(); }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
+                    ret += (c - '0') / (div *= 10);
+                }
+            }
+
+            if (neg) { return -ret; }
+            return ret;
+        }
+
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1) { buffer[0] = -1; }
+        }
+
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) { fillBuffer(); }
+            return buffer[bufferPointer++];
+        }
+
+        public void close() throws IOException {
+            din.close();
+        }
+    }
+}

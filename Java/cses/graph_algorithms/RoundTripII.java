@@ -1,45 +1,85 @@
-package cses.dynamic_programming;
+package cses.graph_algorithms;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class ElevatorRides {
+public final class RoundTripII {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int x = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        final int[] people = new int[1 << n];
-        final int[] weight = new int[1 << n];
-        Arrays.fill(people, n + 1);
-        people[0] = 1;
-        for (int mask = 0; mask < 1 << n; mask++) {
-            for (int i = 0; i < n; i++) {
-                if ((mask & (1 << i)) == 0) {
-                    final int nextP;
-                    final int nextW;
-                    if (weight[mask] + arr[i] <= x) {
-                        nextP = people[mask];
-                        nextW = weight[mask] + arr[i];
-                    } else {
-                        nextP = people[mask] + 1;
-                        nextW = arr[i];
+        final int m = fs.nextInt();
+        final List<List<Integer>> g = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            g.add(new ArrayList<>());
+        }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(v);
+        }
+        final boolean[] white = new boolean[n];
+        Arrays.fill(white, true);
+        final boolean[] gray = new boolean[n];
+        final boolean[] black = new boolean[n];
+        final Map<Integer, Integer> prev = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            if (!black[i]) {
+                prev.clear();
+                final int[] last = { -1 };
+                if (dfs(i, -1, white, gray, black, g, prev, last)) {
+                    final List<Integer> list = new ArrayList<>();
+                    int p = last[0];
+                    list.add(p + 1);
+                    p = prev.get(p);
+                    while (p != last[0]) {
+                        list.add(p + 1);
+                        p = prev.get(p);
                     }
-                    if (people[mask | (1 << i)] > nextP) {
-                        people[mask | (1 << i)] = nextP;
-                        weight[mask | (1 << i)] = nextW;
-                    } else if (people[mask | (1 << i)] == nextP) {
-                        weight[mask | (1 << i)] = Math.min(weight[mask | (1 << i)], nextW);
+                    list.add(p + 1);
+                    Collections.reverse(list);
+                    System.out.println(list.size());
+                    for (int num : list) {
+                        System.out.print(num + " ");
                     }
+                    System.out.println();
+                    return;
                 }
             }
         }
-        System.out.println(people[(1 << n) - 1]);
+        System.out.println("IMPOSSIBLE");
+    }
+
+    private static boolean dfs(int u, int v, boolean[] white, boolean[] gray, boolean[] black,
+                               List<List<Integer>> g, Map<Integer, Integer> p, int[] last) {
+        white[u] = false;
+        gray[u] = true;
+        p.put(u, v);
+        for (int n : g.get(u)) {
+            if (black[n]) {
+                continue;
+            }
+            if (gray[n]) {
+                p.put(n, u);
+                last[0] = n;
+                return true;
+            }
+            if (dfs(n, u, white, gray, black, g, p, last)) {
+                return true;
+            }
+        }
+        gray[u] = false;
+        black[u] = true;
+        return false;
     }
 
     static final class Utils {
