@@ -10,14 +10,16 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Random;
 
-public final class LongestFlightRoute {
+public final class GameRoutes {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
         final List<List<Integer>> g = new ArrayList<>(n);
-        final int[] inDeg = new int[n];
+        final int[] inDegrees = new int[n];
         for (int i = 0; i < n; i++) {
             g.add(new ArrayList<>());
         }
@@ -25,54 +27,34 @@ public final class LongestFlightRoute {
             final int u = fs.nextInt() - 1;
             final int v = fs.nextInt() - 1;
             g.get(u).add(v);
-            inDeg[v]++;
+            inDegrees[v]++;
         }
-        final int[] topSort = topSort(g, inDeg, n);
-        final int[] dp = new int[n];
-        final int[] prev = new int[n];
-        Arrays.fill(dp, (int) -1e9);
-        Arrays.fill(prev, -1);
-        dp[n - 1] = 0;
+        final int[] d = new int[n];
+        final int[] topSort = topSort(inDegrees, n, g);
+        d[n - 1] = 1;
         for (int i = n - 1; i >= 0; i--) {
             final int u = topSort[i];
             for (int v : g.get(u)) {
-                if (dp[v] + 1 > dp[u]) {
-                    dp[u] = dp[v] + 1;
-                    prev[u] = v;
-                }
+                d[u] = (d[u] + d[v]) % MOD;
             }
         }
-        final StringBuilder sb = new StringBuilder();
-        int p = 0;
-        int count = 0;
-        while (p != -1) {
-            sb.append(p + 1);
-            sb.append(' ');
-            if (prev[p] == -1 && p != (n - 1)) {
-                System.out.println("IMPOSSIBLE");
-                return;
-            }
-            p = prev[p];
-            count++;
-        }
-        System.out.println(count);
-        System.out.println(sb);
+        System.out.println(d[0]);
     }
 
-    private static int[] topSort(List<List<Integer>> g, int[] inDeg, int n) {
-        final Deque<Integer> dq = new ArrayDeque<>();
+    private static int[] topSort(int[] inDegrees, int n, List<List<Integer>> g) {
+        final Deque<Integer> q = new ArrayDeque<>();
         for (int i = 0; i < n; i++) {
-            if (inDeg[i] == 0) {
-                dq.offerLast(i);
+            if (inDegrees[i] == 0) {
+                q.offerLast(i);
             }
         }
         final int[] res = new int[n];
-        for (int i = 0; !dq.isEmpty(); i++) {
-            final int u = dq.removeFirst();
-            res[i] = u;
-            for (int v : g.get(u)) {
-                if (--inDeg[v] == 0) {
-                    dq.offerLast(v);
+        for (int i = 0; !q.isEmpty(); i++) {
+            final int curr = q.removeFirst();
+            res[i] = curr;
+            for (int next : g.get(curr)) {
+                if (--inDegrees[next] == 0) {
+                    q.offerLast(next);
                 }
             }
         }

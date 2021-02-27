@@ -2,23 +2,24 @@ package leetcode.medium;
 
 public class P_29 {
 
-    @SuppressWarnings("LocalCanBeFinal")
     public int divide(int dividend, int divisor) {
-        if (dividend == Integer.MIN_VALUE && divisor == -1) {
+        if (Integer.MIN_VALUE == dividend && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-        boolean sign = dividend > 0 == divisor > 0;
+        final boolean sign = dividend < 0 ^ divisor < 0;
         int a = Math.abs(dividend);
-        int b = Math.abs(divisor);
+        final int b = Math.abs(divisor);
         int res = 0;
         while (a - b >= 0) {
-            int x = 0;
-            while (a - (b << 1 << x) >= 0) {
-                x++;
+            int currD = b;
+            int count = 1;
+            while (a - (currD << 1) >= 0) {
+                currD <<= 1;
+                count <<= 1;
             }
-            res += 1 << x;
-            a -= b << x;
+            a -= currD;
+            res += count;
         }
-        return sign ? res : -res;
+        return sign ? -res : res;
     }
 }

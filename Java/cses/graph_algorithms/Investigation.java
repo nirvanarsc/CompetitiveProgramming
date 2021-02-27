@@ -3,80 +3,66 @@ package cses.graph_algorithms;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 
-public final class LongestFlightRoute {
+public final class Investigation {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final List<List<Integer>> g = new ArrayList<>(n);
-        final int[] inDeg = new int[n];
+        final List<List<int[]>> g = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             g.add(new ArrayList<>());
         }
         for (int i = 0; i < m; i++) {
             final int u = fs.nextInt() - 1;
             final int v = fs.nextInt() - 1;
-            g.get(u).add(v);
-            inDeg[v]++;
+            final int w = fs.nextInt();
+            g.get(u).add(new int[] { v, w });
         }
-        final int[] topSort = topSort(g, inDeg, n);
-        final int[] dp = new int[n];
-        final int[] prev = new int[n];
-        Arrays.fill(dp, (int) -1e9);
-        Arrays.fill(prev, -1);
-        dp[n - 1] = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            final int u = topSort[i];
-            for (int v : g.get(u)) {
-                if (dp[v] + 1 > dp[u]) {
-                    dp[u] = dp[v] + 1;
-                    prev[u] = v;
+        final PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(val -> val[0]));
+        pq.offer(new long[] { 0, 0 });
+        final long[] d = new long[n];
+        final long[] num = new long[n];
+        final int[] minf = new int[n];
+        final int[] maxf = new int[n];
+        final boolean[] seen = new boolean[n];
+        Arrays.fill(d, (long) 1e18);
+        d[0] = 0;
+        num[0] = 1;
+        while (!pq.isEmpty()) {
+            final long[] curr = pq.remove();
+            final long w = curr[0];
+            final int u = (int) curr[1];
+            if (seen[u]) {
+                continue;
+            }
+            seen[u] = true;
+            for (int[] next : g.get(u)) {
+                final long nextW = w + next[1];
+                if (nextW == d[next[0]]) {
+                    num[next[0]] = (num[next[0]] + num[u]) % MOD;
+                    minf[next[0]] = Math.min(minf[next[0]], minf[u] + 1);
+                    maxf[next[0]] = Math.max(maxf[next[0]], maxf[u] + 1);
+                    pq.add(new long[] { nextW, next[0] });
+                } else if (nextW < d[next[0]]) {
+                    d[next[0]] = nextW;
+                    num[next[0]] = num[u];
+                    minf[next[0]] = minf[u] + 1;
+                    maxf[next[0]] = maxf[u] + 1;
+                    pq.add(new long[] { nextW, next[0] });
                 }
             }
         }
-        final StringBuilder sb = new StringBuilder();
-        int p = 0;
-        int count = 0;
-        while (p != -1) {
-            sb.append(p + 1);
-            sb.append(' ');
-            if (prev[p] == -1 && p != (n - 1)) {
-                System.out.println("IMPOSSIBLE");
-                return;
-            }
-            p = prev[p];
-            count++;
-        }
-        System.out.println(count);
-        System.out.println(sb);
-    }
-
-    private static int[] topSort(List<List<Integer>> g, int[] inDeg, int n) {
-        final Deque<Integer> dq = new ArrayDeque<>();
-        for (int i = 0; i < n; i++) {
-            if (inDeg[i] == 0) {
-                dq.offerLast(i);
-            }
-        }
-        final int[] res = new int[n];
-        for (int i = 0; !dq.isEmpty(); i++) {
-            final int u = dq.removeFirst();
-            res[i] = u;
-            for (int v : g.get(u)) {
-                if (--inDeg[v] == 0) {
-                    dq.offerLast(v);
-                }
-            }
-        }
-        return res;
+        System.out.printf("%d %d %d %d\n", d[n - 1], num[n - 1], minf[n - 1], maxf[n - 1]);
     }
 
     static final class Utils {

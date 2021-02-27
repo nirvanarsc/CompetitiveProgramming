@@ -3,80 +3,66 @@ package cses.graph_algorithms;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
 import java.util.Random;
 
-public final class LongestFlightRoute {
+public final class PlanetQueriesII {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
+        final PrintWriter pw = new PrintWriter(System.out);
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final List<List<Integer>> g = new ArrayList<>(n);
-        final int[] inDeg = new int[n];
-        for (int i = 0; i < n; i++) {
-            g.add(new ArrayList<>());
-        }
-        for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            g.get(u).add(v);
-            inDeg[v]++;
-        }
-        final int[] topSort = topSort(g, inDeg, n);
+        final int q = fs.nextInt();
+        final boolean[] vis = new boolean[n];
         final int[] dp = new int[n];
-        final int[] prev = new int[n];
-        Arrays.fill(dp, (int) -1e9);
-        Arrays.fill(prev, -1);
-        dp[n - 1] = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            final int u = topSort[i];
-            for (int v : g.get(u)) {
-                if (dp[v] + 1 > dp[u]) {
-                    dp[u] = dp[v] + 1;
-                    prev[u] = v;
-                }
+        final int[][] parent = new int[20][n];
+        for (int i = 0; i < n; i++) {
+            parent[0][i] = fs.nextInt() - 1;
+        }
+        for (int i = 1; i < 20; ++i) {
+            for (int j = 0; j < n; ++j) {
+                parent[i][j] = parent[i - 1][parent[i - 1][j]];
             }
         }
-        final StringBuilder sb = new StringBuilder();
-        int p = 0;
-        int count = 0;
-        while (p != -1) {
-            sb.append(p + 1);
-            sb.append(' ');
-            if (prev[p] == -1 && p != (n - 1)) {
-                System.out.println("IMPOSSIBLE");
-                return;
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                dfs(i, vis, parent, dp);
             }
-            p = prev[p];
-            count++;
         }
-        System.out.println(count);
-        System.out.println(sb);
+        for (int i = 0; i < q; i++) {
+            final int x = fs.nextInt() - 1;
+            final int y = fs.nextInt() - 1;
+            int res = -1;
+            // end of the cycle (Case: x and y are in cycle such that x appears after y)
+            final int xRoot = lift(x, dp[x], parent);
+            // if y is in front of x
+            if (lift(x, dp[x] - dp[y], parent) == y) {
+                res = dp[x] - dp[y];
+            } else if (lift(xRoot, dp[xRoot] - dp[y], parent) == y) {
+                res = dp[x] + dp[xRoot] - dp[y];
+            }
+            pw.println(res);
+        }
+        pw.close();
     }
 
-    private static int[] topSort(List<List<Integer>> g, int[] inDeg, int n) {
-        final Deque<Integer> dq = new ArrayDeque<>();
-        for (int i = 0; i < n; i++) {
-            if (inDeg[i] == 0) {
-                dq.offerLast(i);
+    private static int lift(int x, int d, int[][] parent) {
+        for (int i = 0; i < 20; i++) {
+            if ((d & (1 << i)) != 0) {
+                x = parent[i][x];
             }
         }
-        final int[] res = new int[n];
-        for (int i = 0; !dq.isEmpty(); i++) {
-            final int u = dq.removeFirst();
-            res[i] = u;
-            for (int v : g.get(u)) {
-                if (--inDeg[v] == 0) {
-                    dq.offerLast(v);
-                }
-            }
+        return x;
+    }
+
+    private static void dfs(int u, boolean[] vis, int[][] parent, int[] dp) {
+        if (vis[u]) {
+            return;
         }
-        return res;
+        vis[u] = true;
+        dfs(parent[0][u], vis, parent, dp);
+        dp[u] = dp[parent[0][u]] + 1;
     }
 
     static final class Utils {

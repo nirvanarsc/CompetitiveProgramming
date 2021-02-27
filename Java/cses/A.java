@@ -1,82 +1,20 @@
-package cses.graph_algorithms;
+package cses;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
 import java.util.Random;
 
-public final class LongestFlightRoute {
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final List<List<Integer>> g = new ArrayList<>(n);
-        final int[] inDeg = new int[n];
-        for (int i = 0; i < n; i++) {
-            g.add(new ArrayList<>());
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            System.out.println(n);
         }
-        for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            g.get(u).add(v);
-            inDeg[v]++;
-        }
-        final int[] topSort = topSort(g, inDeg, n);
-        final int[] dp = new int[n];
-        final int[] prev = new int[n];
-        Arrays.fill(dp, (int) -1e9);
-        Arrays.fill(prev, -1);
-        dp[n - 1] = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            final int u = topSort[i];
-            for (int v : g.get(u)) {
-                if (dp[v] + 1 > dp[u]) {
-                    dp[u] = dp[v] + 1;
-                    prev[u] = v;
-                }
-            }
-        }
-        final StringBuilder sb = new StringBuilder();
-        int p = 0;
-        int count = 0;
-        while (p != -1) {
-            sb.append(p + 1);
-            sb.append(' ');
-            if (prev[p] == -1 && p != (n - 1)) {
-                System.out.println("IMPOSSIBLE");
-                return;
-            }
-            p = prev[p];
-            count++;
-        }
-        System.out.println(count);
-        System.out.println(sb);
-    }
-
-    private static int[] topSort(List<List<Integer>> g, int[] inDeg, int n) {
-        final Deque<Integer> dq = new ArrayDeque<>();
-        for (int i = 0; i < n; i++) {
-            if (inDeg[i] == 0) {
-                dq.offerLast(i);
-            }
-        }
-        final int[] res = new int[n];
-        for (int i = 0; !dq.isEmpty(); i++) {
-            final int u = dq.removeFirst();
-            res[i] = u;
-            for (int v : g.get(u)) {
-                if (--inDeg[v] == 0) {
-                    dq.offerLast(v);
-                }
-            }
-        }
-        return res;
     }
 
     static final class Utils {
