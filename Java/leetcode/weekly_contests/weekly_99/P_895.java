@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class P_895 {
 
     static class FreqStack {
@@ -19,8 +20,7 @@ public class P_895 {
 
         public void push(int x) {
             stack.computeIfAbsent(freq.getOrDefault(x, 0) + 1, v -> new ArrayDeque<>()).addFirst(x);
-            freq.merge(x, 1, Integer::sum);
-            maxFreq = Math.max(maxFreq, freq.get(x));
+            maxFreq = Math.max(maxFreq, freq.merge(x, 1, Integer::sum));
         }
 
         public int pop() {
