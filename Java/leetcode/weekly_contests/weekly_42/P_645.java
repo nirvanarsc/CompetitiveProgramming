@@ -1,22 +1,19 @@
 package leetcode.weekly_contests.weekly_42;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class P_645 {
 
     public int[] findErrorNums(int[] nums) {
-        final Set<Integer> set = new HashSet<>();
-        int dup = -1;
+        final boolean[] seen = new boolean[(int) (1e4 + 5)];
         int sum = 0;
+        int dup = -1;
         for (int num : nums) {
-            if (!set.add(num)) {
+            if (seen[num]) {
                 dup = num;
-            } else {
-                sum += num;
             }
+            seen[num] = true;
+            sum += num;
         }
-        final int miss = nums.length * (nums.length + 1) / 2 - sum;
-        return new int[] { dup, miss };
+        final int other = ((nums.length * (nums.length + 1)) / 2) - sum + dup;
+        return new int[] { dup, other };
     }
 }

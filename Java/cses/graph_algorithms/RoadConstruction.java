@@ -1,20 +1,77 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class A {
+public final class RoadConstruction {
+
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final PrintWriter pw = new PrintWriter(System.out);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final UnionFind uf = new UnionFind(n);
+        int max = 1;
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            if (uf.find(u) != uf.find(v)) {
+                uf.union(u, v);
+                max = Math.max(max, uf.size()[uf.find(u)]);
+            }
+            pw.println(uf.count() + " " + max);
         }
+        pw.close();
     }
 
     static final class Utils {
@@ -91,14 +148,6 @@ public final class A {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
-        }
-
-        public int nextSign() throws IOException {
-            byte c = read();
-            while ('+' != c && '-' != c) {
-                c = read();
-            }
-            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {

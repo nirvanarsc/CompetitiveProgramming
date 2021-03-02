@@ -1,19 +1,92 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public final class A {
+public final class GiantPizza {
 
+    // 2SAT
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<List<List<int[]>>> g1 = new ArrayList<>(2);
+        final List<List<List<int[]>>> g2 = new ArrayList<>(2);
+        for (int i = 0; i < 2; i++) {
+            g1.add(new ArrayList<>(m));
+            g2.add(new ArrayList<>(m));
+        }
+        for (int i = 0; i < m; i++) {
+            g1.get(0).add(new ArrayList<>());
+            g1.get(1).add(new ArrayList<>());
+            g2.get(0).add(new ArrayList<>());
+            g2.get(1).add(new ArrayList<>());
+        }
+        for (int i = 0; i < n; i++) {
+            final int signU = fs.nextSign();
+            final int u = fs.nextInt() - 1;
+            final int signV = fs.nextSign();
+            final int v = fs.nextInt() - 1;
+            g1.get(1 - signU).get(u).add(new int[] { signV, v });
+            g1.get(1 - signV).get(v).add(new int[] { signU, u });
+            g2.get(signV).get(v).add(new int[] { 1 - signU, u });
+            g2.get(signU).get(u).add(new int[] { 1 - signV, v });
+        }
+        final List<int[]> topSort = new ArrayList<>(2 * m);
+        boolean[] seen = new boolean[2 * m];
+        for (int i = 0; i < m; i++) {
+            dfs1(new int[] { 0, i }, g1, seen, topSort, m);
+            dfs1(new int[] { 1, i }, g1, seen, topSort, m);
+        }
+        seen = new boolean[2 * m];
+        final int[] res = new int[2 * m];
+        final boolean[] flag = new boolean[2 * m];
+        int cc = 1;
+        for (int i = topSort.size() - 1; i >= 0; i--) {
+            final int[] u = topSort.get(i);
+            if (!seen[u[1] + (u[0] == 1 ? m : 0)]) {
+                dfs2(u, g2, seen, flag, res, m, cc);
+                cc++;
+            }
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < m; i++) {
+            sb.append(flag[i] ? '+' : '-');
+            sb.append(' ');
+        }
+        System.out.println(sb);
+    }
+
+    private static void dfs1(int[] u, List<List<List<int[]>>> g, boolean[] seen, List<int[]> topSort, int m) {
+        if (seen[u[1] + (u[0] == 1 ? m : 0)]) {
+            return;
+        }
+        seen[u[1] + (u[0] == 1 ? m : 0)] = true;
+        for (int[] v : g.get(u[0]).get(u[1])) {
+            dfs1(v, g, seen, topSort, m);
+        }
+        topSort.add(u);
+    }
+
+    private static void dfs2(int[] u, List<List<List<int[]>>> g, boolean[] seen, boolean[] flag, int[] res,
+                             int m, int cc) {
+        if (seen[u[1] + (u[0] == 1 ? m : 0)]) {
+            return;
+        }
+        seen[u[1] + (u[0] == 1 ? m : 0)] = true;
+        for (int[] v : g.get(u[0]).get(u[1])) {
+            dfs2(v, g, seen, flag, res, m, cc);
+        }
+        res[u[1] + (u[0] == 1 ? m : 0)] = cc;
+        flag[u[1]] = u[0] == 0;
+        if (res[u[1]] == res[u[1] + m]) {
+            System.out.println("IMPOSSIBLE");
+            System.exit(0);
         }
     }
 

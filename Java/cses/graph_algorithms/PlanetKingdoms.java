@@ -1,20 +1,77 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public final class A {
+public final class PlanetKingdoms {
 
+    // Kosaraju’s algorithm
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<List<Integer>> g1 = new ArrayList<>(n);
+        final List<List<Integer>> g2 = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            g1.add(new ArrayList<>());
+            g2.add(new ArrayList<>());
         }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g1.get(u).add(v);
+            g2.get(v).add(u);
+        }
+        final List<Integer> topSort = new ArrayList<>(n);
+        boolean[] seen = new boolean[n];
+        final int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            dfs1(i, g1, seen, topSort);
+        }
+        seen = new boolean[n];
+        int cc = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            final int u = topSort.get(i);
+            if (!seen[u]) {
+                dfs2(u, g2, seen, res, cc);
+                cc++;
+            }
+        }
+        final StringBuilder sb = new StringBuilder();
+        sb.append(cc - 1);
+        sb.append('\n');
+        for (int i = 0; i < n; i++) {
+            sb.append(res[i]);
+            sb.append(' ');
+        }
+        System.out.println(sb);
+    }
+
+    private static void dfs1(int u, List<List<Integer>> g, boolean[] seen, List<Integer> topSort) {
+        if (seen[u]) {
+            return;
+        }
+        seen[u] = true;
+        for (int v : g.get(u)) {
+            dfs1(v, g, seen, topSort);
+        }
+        topSort.add(u);
+    }
+
+    private static void dfs2(int u, List<List<Integer>> g, boolean[] seen, int[] res, int cc) {
+        if (seen[u]) {
+            return;
+        }
+        seen[u] = true;
+        for (int v : g.get(u)) {
+            dfs2(v, g, seen, res, cc);
+        }
+        res[u] = cc;
     }
 
     static final class Utils {
@@ -91,14 +148,6 @@ public final class A {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
-        }
-
-        public int nextSign() throws IOException {
-            byte c = read();
-            while ('+' != c && '-' != c) {
-                c = read();
-            }
-            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {

@@ -1,20 +1,68 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public final class A {
+public final class PlanetCyclesRevAdj {
+
+    private static void dfs(int u, List<List<Integer>> rev, int[] dist) {
+        for (int v : rev.get(u)) {
+            if (dist[v] == -1) {
+                dist[v] = dist[u] + 1;
+                dfs(v, rev, dist);
+            }
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] arr = new int[n];
+        final List<List<Integer>> rev = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            rev.add(new ArrayList<>());
         }
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextInt() - 1;
+            rev.get(arr[i]).add(i);
+        }
+        final int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+        for (int i = 0; i < n; i++) {
+            if (dist[i] != -1) {
+                continue;
+            }
+            int slow = i;
+            int fast = i;
+            int l = 0;
+            do {
+                slow = arr[slow];
+                fast = arr[arr[fast]];
+            } while (slow != fast);
+            do {
+                slow = arr[slow];
+                l++;
+            } while (slow != fast);
+            do {
+                dist[slow] = l;
+                slow = arr[slow];
+            } while (slow != fast);
+            do {
+                dfs(slow, rev, dist);
+                slow = arr[slow];
+            } while (slow != fast);
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(dist[i]);
+            sb.append(' ');
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {
@@ -91,14 +139,6 @@ public final class A {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
-        }
-
-        public int nextSign() throws IOException {
-            byte c = read();
-            while ('+' != c && '-' != c) {
-                c = read();
-            }
-            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {

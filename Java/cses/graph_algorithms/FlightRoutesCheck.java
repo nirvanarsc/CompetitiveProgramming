@@ -1,19 +1,60 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public final class A {
+public final class FlightRoutesCheck {
 
+    // Kosaraju’s algorithm
+    // https://usaco.guide/solutions/cses-1682?lang=cpp
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<List<Integer>> g1 = new ArrayList<>(n);
+        final List<List<Integer>> g2 = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            g1.add(new ArrayList<>());
+            g2.add(new ArrayList<>());
+        }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g1.get(u).add(v);
+            g2.get(v).add(u);
+        }
+        final boolean[] seen = new boolean[n];
+        dfs(0, g1, seen);
+        for (int i = 0; i < n; i++) {
+            if (!seen[i]) {
+                System.out.println("NO");
+                System.out.println(1 + " " + (i + 1));
+                return;
+            }
+        }
+        Arrays.fill(seen, false);
+        dfs(0, g2, seen);
+        for (int i = 0; i < n; i++) {
+            if (!seen[i]) {
+                System.out.println("NO");
+                System.out.println((i + 1) + " " + 1);
+                return;
+            }
+        }
+        System.out.println("YES");
+    }
+
+    private static void dfs(int u, List<List<Integer>> g, boolean[] seen) {
+        seen[u] = true;
+        for (int v : g.get(u)) {
+            if (!seen[v]) {
+                dfs(v, g, seen);
+            }
         }
     }
 
@@ -91,14 +132,6 @@ public final class A {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
-        }
-
-        public int nextSign() throws IOException {
-            byte c = read();
-            while ('+' != c && '-' != c) {
-                c = read();
-            }
-            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {

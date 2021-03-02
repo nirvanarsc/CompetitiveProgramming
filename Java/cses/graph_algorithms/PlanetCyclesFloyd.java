@@ -1,4 +1,4 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,15 +6,55 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class A {
+public final class PlanetCyclesFloyd {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextInt() - 1;
         }
+        final int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+        for (int i = 0; i < n; i++) {
+            if (dist[i] != -1) {
+                continue;
+            }
+            if (dist[arr[i]] != -1) {
+                dist[i] = dist[arr[i]] + 1;
+                continue;
+            }
+            int slow = i;
+            int fast = i;
+            int l = 0;
+            int r = 0;
+            do {
+                slow = arr[slow];
+                fast = arr[arr[fast]];
+            } while (slow != fast);
+            do {
+                slow = arr[slow];
+                l++;
+            } while (slow != fast);
+            slow = i;
+            while (slow != fast) {
+                slow = arr[slow];
+                fast = arr[fast];
+                r++;
+            }
+            slow = i;
+            for (int j = 0; j < l + r; j++) {
+                dist[slow] = Math.max(l, l + r - j);
+                slow = arr[slow];
+            }
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(dist[i]);
+            sb.append(' ');
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {
@@ -91,14 +131,6 @@ public final class A {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
-        }
-
-        public int nextSign() throws IOException {
-            byte c = read();
-            while ('+' != c && '-' != c) {
-                c = read();
-            }
-            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {
