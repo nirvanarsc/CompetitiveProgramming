@@ -32,7 +32,9 @@ public final class GiantPizza {
             final int u = fs.nextInt() - 1;
             final int signV = fs.nextSign();
             final int v = fs.nextInt() - 1;
+            // not u -> v
             g1.get(1 - signU).get(u).add(new int[] { signV, v });
+            // not v -> u
             g1.get(1 - signV).get(v).add(new int[] { signU, u });
             g2.get(signV).get(v).add(new int[] { 1 - signU, u });
             g2.get(signU).get(u).add(new int[] { 1 - signV, v });
