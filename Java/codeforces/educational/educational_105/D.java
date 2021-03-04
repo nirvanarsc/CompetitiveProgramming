@@ -5,19 +5,54 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 public final class D {
 
+    private static int getRoot(List<Integer> list, int[][] g, int[] n, List<Integer> c, List<int[]> e) {
+        if (list.size() == 1) {
+            return list.get(0);
+        }
+        int max = -1;
+        for (int u : list) {
+            max = Math.max(max, g[list.get(0) - 1][u - 1]);
+        }
+        final List<List<Integer>> tree = new ArrayList<>();
+        tree.add(new ArrayList<>(Collections.singletonList(list.get(0))));
+        for (int i = 1; i < list.size(); i++) {
+            final int v = list.get(i);
+            int group = -1;
+            for (int j = 0; j < tree.size(); j++) {
+                if (g[v - 1][tree.get(j).get(0) - 1] != max) {
+                    group = j;
+                    break;
+                }
+            }
+            if (group == -1) {
+                group = tree.size();
+                tree.add(new ArrayList<>());
+            }
+            tree.get(group).add(v);
+        }
+        c.add(max);
+        final int root = ++n[0];
+        for (int i = 0; i < tree.size(); i++) {
+            final int childRoot = getRoot(tree.get(i), g, n, c, e);
+            e.add(new int[] { childRoot, root });
+        }
+        return root;
+    }
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        final int[][] g = new int[1005][1005];
-        final boolean[] seen = new boolean[1005];
+        final int[][] g = new int[n][n];
         final List<int[]> edges = new ArrayList<>();
         final List<Integer> c = new ArrayList<>();
+        final List<Integer> initial = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 g[i][j] = fs.nextInt();
@@ -25,53 +60,17 @@ public final class D {
         }
         for (int i = 0; i < n; i++) {
             c.add(g[i][i]);
+            initial.add(i + 1);
         }
-        int idx = n;
-        while (true) {
-            final List<Integer> all = new ArrayList<>();
-            for (int i = 0; i < idx; i++) {
-                if (!seen[i]) {
-                    all.add(i);
-                }
-            }
-            final int m = all.size();
-            if (m == 1) {
-                break;
-            }
-            int v = -1;
-            int best = (int) 1e9;
-            for (int i = 0; i < m; i++) {
-                for (int j = i + 1; j < m; j++) {
-                    if (g[all.get(i)][all.get(j)] < best) {
-                        best = g[all.get(i)][all.get(j)];
-                        v = all.get(i);
-                    }
-                }
-            }
-            c.add(best);
-            edges.add(new int[] { v, idx });
-            seen[v] = true;
-            for (int u : all) {
-                g[u][idx] = g[idx][u] = g[u][v];
-                if (g[v][u] == best) {
-                    edges.add(new int[] { u, idx });
-                    seen[u] = true;
-                }
-            }
-            idx++;
-        }
-        System.out.println(idx);
-        for (int i = 0; i < idx; i++) {
+        final int root = getRoot(initial, g, new int[] { n }, c, edges);
+        System.out.println(c.size());
+        for (int i = 0; i < c.size(); i++) {
             System.out.printf("%d ", c.get(i));
         }
         System.out.println();
-        for (int i = 0; i < idx; i++) {
-            if (!seen[i]) {
-                System.out.printf("%d\n", i + 1);
-            }
-        }
-        for (int i = 0; i < (idx - 1); i++) {
-            System.out.printf("%d %d\n", edges.get(i)[0] + 1, edges.get(i)[1] + 1);
+        System.out.println(root);
+        for (int i = 0; i < edges.size(); i++) {
+            System.out.printf("%d %d\n", edges.get(i)[0], edges.get(i)[1]);
         }
     }
 
