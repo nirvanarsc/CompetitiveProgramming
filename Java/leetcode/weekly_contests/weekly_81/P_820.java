@@ -3,12 +3,8 @@ package leetcode.weekly_contests.weekly_81;
 public class P_820 {
 
     static class Trie {
-        Trie[] children;
-        String word;
-
-        Trie() {
-            children = new Trie[26];
-        }
+        Trie[] children = new Trie[26];
+        int length;
     }
 
     public int minimumLengthEncoding(String[] words) {
@@ -22,7 +18,7 @@ public class P_820 {
                 }
                 curr = curr.children[c - 'a'];
             }
-            curr.word = word;
+            curr.length = word.length();
         }
         return dfs(root);
     }
@@ -37,7 +33,7 @@ public class P_820 {
             }
         }
         if (!hasChildren) {
-            res += root.word.length() + 1;
+            res += root.length + 1;
         }
         return res;
     }
