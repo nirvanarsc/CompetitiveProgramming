@@ -6,16 +6,21 @@ public class P_1332 {
         if (s.isEmpty()) {
             return 0;
         }
-        return isPalindrome(s, 0, s.length() - 1) ? 1 : 2;
+        if (isPalindrome(s)) {
+            return 1;
+        }
+        return 2;
     }
 
-    private static boolean isPalindrome(String s, int start, int end) {
-        while (start < end) {
-            if (s.charAt(start) != s.charAt(end)) {
+    private static boolean isPalindrome(String s) {
+        int lo = 0;
+        int hi = s.length() - 1;
+        while (lo < hi) {
+            if (s.charAt(lo) != s.charAt(hi)) {
                 return false;
             }
-            start++;
-            end--;
+            lo++;
+            hi--;
         }
         return true;
     }

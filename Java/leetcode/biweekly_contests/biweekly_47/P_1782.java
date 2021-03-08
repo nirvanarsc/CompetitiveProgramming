@@ -25,7 +25,7 @@ public class P_1782 {
         final int[] sorted = deg.clone();
         Arrays.sort(sorted);
         final int[] res = new int[queries.length];
-        for (int i = 0; i < queries.length; ++i) {
+        for (int i = 0; i < queries.length; i++) {
             int curr = 0;
             int l = 0;
             int r = sorted.length - 1;

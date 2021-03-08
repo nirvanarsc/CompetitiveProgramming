@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@SuppressWarnings("unused")
 public class Common {
 
     private static final int MOD = (int) (1e9 + 7);
@@ -153,7 +154,7 @@ public class Common {
         }
     }
 
-    public static List<Integer> nextPermutation(List<Integer> perm) {
+    private static List<Integer> nextPermutation(List<Integer> perm) {
         int swapIdx = -1;
         final int n = perm.size();
         for (int i = n - 1; i >= 1; i--) {
@@ -173,5 +174,23 @@ public class Common {
         }
         Collections.reverse(perm.subList(swapIdx + 1, perm.size()));
         return perm;
+    }
+
+    // Prefix XOR (1 ^ 2 ^ 3 ... ^ n)
+    private static int prefixXor(int n) {
+        // If n is a multiple of 4
+        if (n % 4 == 0) {
+            return n;
+        }
+        // If n % 4 gives remainder 1
+        if (n % 4 == 1) {
+            return 1;
+        }
+        // If n % 4 gives remainder 2
+        if (n % 4 == 2) {
+            return n + 1;
+        }
+        // If n % 4 gives remainder 3
+        return 0;
     }
 }
