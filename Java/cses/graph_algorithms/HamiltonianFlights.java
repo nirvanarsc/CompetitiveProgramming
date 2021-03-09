@@ -1,4 +1,4 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,15 +6,57 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class A {
+public final class HamiltonianFlights {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int[][] edges = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
+        final int[][] g = packG(edges, n);
+        final int[][] dp = new int[n][1 << n];
+        dp[0][1] = 1;
+        for (int mask = 1; mask < 1 << n; mask += 2) {
+            for (int u = 0; u < n - 1; u++) {
+                if (dp[u][mask] == 0) {
+                    continue;
+                }
+                for (int v : g[u]) {
+                    if ((mask & (1 << v)) == 0) {
+                        dp[v][mask | (1 << v)] = add(dp[v][mask | (1 << v)], dp[u][mask]);
+                    }
+                }
+            }
+        }
+        System.out.println(dp[n - 1][(1 << n) - 1]);
+    }
+
+    private static int add(int a, int b) {
+        a += b;
+        if (a >= MOD) {
+            a -= MOD;
+        }
+        return a;
+    }
+
+    private static int[][] packG(int[][] edges, int n) {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+        }
+        return g;
     }
 
     static final class Utils {
@@ -58,36 +100,6 @@ public final class A {
         public static void shuffleSort(long[] arr) {
             Shuffler.shuffle(arr);
             Arrays.sort(arr);
-        }
-
-        private static int[][] packG(int[][] edges, int n) {
-            final int[][] g = new int[n][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = edge[1];
-            }
-            return g;
-        }
-
-        private static int[][][] packGW(int[][] edges, int n) {
-            final int[][][] g = new int[n][][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]][2];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
-            }
-            return g;
         }
 
         private Utils() {}

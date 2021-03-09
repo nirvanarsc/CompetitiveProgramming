@@ -1,20 +1,72 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Random;
 
-public final class A {
+public final class KnightTour {
+
+    private static final int[][] DIRS =
+            { { 2, 1 }, { 2, -1 }, { -2, 1 }, { -2, -1 }, { 1, 2 }, { 1, -2 }, { -1, 2 }, { -1, -2 } };
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int y = fs.nextInt() - 1;
+        final int x = fs.nextInt() - 1;
+        final int n = 8;
+        final int[][] g = new int[n][n];
+        g[x][y] = 1;
+        dfs(g, x, y, 2, n);
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                sb.append(g[i][j]);
+                sb.append(' ');
+            }
+            sb.append('\n');
         }
+        System.out.println(sb);
+    }
+
+    private static boolean dfs(int[][] g, int x, int y, int move, int n) {
+        if (move == n * n + 1) {
+            return true;
+        }
+        final PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(val -> val[0]));
+        for (int[] dir : DIRS) {
+            final int nx = x + dir[0];
+            final int ny = y + dir[1];
+            if (nx >= 0 && nx < n && ny >= 0 && ny < n && g[nx][ny] == 0) {
+                pq.offer(new int[] { count(g, nx, ny, n), nx, ny });
+            }
+        }
+        while (!pq.isEmpty()) {
+            final int[] v = pq.remove();
+            final int nx = v[1];
+            final int ny = v[2];
+            g[nx][ny] = move;
+            if (dfs(g, nx, ny, move + 1, n)) {
+                return true;
+            }
+            g[nx][ny] = 0;
+        }
+        return false;
+    }
+
+    private static int count(int[][] g, int x, int y, int n) {
+        int res = 0;
+        for (int[] dir : DIRS) {
+            final int nx = x + dir[0];
+            final int ny = y + dir[1];
+            if (nx >= 0 && nx < n && ny >= 0 && ny < n && g[nx][ny] == 0) {
+                res++;
+            }
+        }
+        return res;
     }
 
     static final class Utils {
@@ -58,36 +110,6 @@ public final class A {
         public static void shuffleSort(long[] arr) {
             Shuffler.shuffle(arr);
             Arrays.sort(arr);
-        }
-
-        private static int[][] packG(int[][] edges, int n) {
-            final int[][] g = new int[n][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = edge[1];
-            }
-            return g;
-        }
-
-        private static int[][][] packGW(int[][] edges, int n) {
-            final int[][][] g = new int[n][][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]][2];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
-            }
-            return g;
         }
 
         private Utils() {}

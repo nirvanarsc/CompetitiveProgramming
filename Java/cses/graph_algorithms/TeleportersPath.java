@@ -1,20 +1,88 @@
-package cses;
+package cses.graph_algorithms;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public final class A {
+public final class TeleportersPath {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<List<int[]>> g = new ArrayList<>(n);
+        final boolean[] seen = new boolean[(int) (2e5 + 5)];
+        final int[] inDeg = new int[n];
+        final int[] outDeg = new int[n];
+        for (int i = 0; i < n; i++) {
+            g.add(new ArrayList<>());
         }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(new int[] { v, i });
+            outDeg[u]++;
+            inDeg[v]++;
+        }
+        if (!hasEulerianPath(inDeg, outDeg, n)) {
+            System.out.println("IMPOSSIBLE");
+            return;
+        }
+        final List<Integer> res = new ArrayList<>();
+        final int[] stack = new int[(int) (2e5 + 5)];
+        int j = 0;
+        stack[j++] = 0;
+        while (j > 0) {
+            final int u = stack[j - 1];
+            boolean flag = false;
+            while (outDeg[u] > 0) {
+                final int[] e = g.get(u).get(--outDeg[u]);
+                if (!seen[e[1]]) {
+                    seen[e[1]] = true;
+                    stack[j++] = e[0];
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                res.add(u);
+                j--;
+            }
+        }
+        if (res.size() != m + 1) {
+            System.out.println("IMPOSSIBLE");
+            return;
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = res.size() - 1; i >= 0; i--) {
+            sb.append(res.get(i) + 1);
+            sb.append(' ');
+        }
+        System.out.println(sb);
+    }
+
+    private static boolean hasEulerianPath(int[] in, int[] out, int n) {
+        int start = 0;
+        int end = 0;
+        int ii = -1;
+        int jj = -1;
+        for (int i = 0; i < n; i++) {
+            if (Math.abs(in[i] - out[i]) > 1) {
+                return false;
+            }
+            if (in[i] - out[i] == 1) {
+                end++;
+                jj = i;
+            } else if (out[i] - in[i] == 1) {
+                start++;
+                ii = i;
+            }
+        }
+        return start == 1 && end == 1 && ii == 0 && jj == n - 1;
     }
 
     static final class Utils {
@@ -58,36 +126,6 @@ public final class A {
         public static void shuffleSort(long[] arr) {
             Shuffler.shuffle(arr);
             Arrays.sort(arr);
-        }
-
-        private static int[][] packG(int[][] edges, int n) {
-            final int[][] g = new int[n][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = edge[1];
-            }
-            return g;
-        }
-
-        private static int[][][] packGW(int[][] edges, int n) {
-            final int[][][] g = new int[n][][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]][2];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
-            }
-            return g;
         }
 
         private Utils() {}
