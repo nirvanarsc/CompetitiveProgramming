@@ -6,14 +6,14 @@ public class P_322 {
 
     public int coinChange(int[] coins, int amount) {
         final int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1);
+        Arrays.fill(dp, (int) 1e9);
         dp[0] = 0;
         for (int coin : coins) {
-            for (int i = coin; i <= amount; i++) {
-                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            for (int currAmount = coin; currAmount <= amount; currAmount++) {
+                dp[currAmount] = Math.min(dp[currAmount], 1 + dp[currAmount - coin]);
             }
         }
-        return dp[amount] > amount ? -1 : dp[amount];
+        return dp[amount] == (int) 1e9 ? -1 : dp[amount];
     }
 
     public int coinChangeTopDown(int[] coins, int amount) {

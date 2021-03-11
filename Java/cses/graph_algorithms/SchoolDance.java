@@ -10,53 +10,59 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Random;
 
-public final class DistinctRoutes {
+public final class SchoolDance {
 
-    // Ford Fulkerson + Edmond Karp (O m^2 n)
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int n = a + b;
         final int m = fs.nextInt();
-        final long[][] g = new long[n][n];
-        final int[][] dirAdj = new int[m][2];
-        final int[][] undirAdj = new int[2 * m][2];
+        final int[][] g = new int[n + 2][n + 2];
+        final int[][] edges = new int[6 * m][2];
+        final int[][] dirEdges = new int[3 * m][2];
+        int l = 0;
+        int r = 0;
+        final int s = 0;
+        final int t = n + 1;
         for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            g[u][v] += 1;
-            dirAdj[i] = new int[] { u, v };
-            undirAdj[2 * i] = new int[] { u, v };
-            undirAdj[2 * i + 1] = new int[] { v, u };
+            final int u = fs.nextInt();
+            final int v = a + fs.nextInt();
+            g[s][u] = 1;
+            g[u][v] = 1;
+            g[v][t] = 1;
+            dirEdges[r++] = edges[l++] = new int[] { s, u };
+            dirEdges[r++] = edges[l++] = new int[] { u, v };
+            dirEdges[r++] = edges[l++] = new int[] { v, t };
+            edges[l++] = new int[] { u, s };
+            edges[l++] = new int[] { v, u };
+            edges[l++] = new int[] { t, v };
         }
-        final int[][] pUndirAdj = Utils.packG(undirAdj, n);
-        final int[][] pDirAdj = Utils.packG(dirAdj, n);
-        long maxFlow = 0;
+        final int[][] adj = Utils.packG(edges, n + 2);
+        final int[][] dirAdj = Utils.packG(dirEdges, n + 2);
+        int res = 0;
         while (true) {
-            final long flow = bfs(0, n, g, pUndirAdj);
+            final int flow = bfs(s, t, n + 2, g, adj);
             if (flow == 0) {
                 break;
             }
-            maxFlow += flow;
-        }
-        final StringBuilder res = new StringBuilder();
-        res.append(maxFlow);
-        res.append('\n');
-        final boolean[][] seen = new boolean[n][n];
-        for (int i = 0; i < maxFlow; i++) {
-            final List<Integer> p = new ArrayList<>();
-            dfs(0, n, seen, g, pDirAdj, p);
-            res.append(p.size());
-            res.append('\n');
-            for (int vv : p) {
-                res.append(1 + vv);
-                res.append(' ');
-            }
-            res.append('\n');
+            res += flow;
         }
         System.out.println(res);
+        final boolean[][] seen = new boolean[n + 2][n + 2];
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < res; i++) {
+            final List<Integer> p = new ArrayList<>();
+            dfs(s, t, seen, g, dirAdj, p);
+            sb.append(p.get(1));
+            sb.append(' ');
+            sb.append(p.get(2) - a);
+            sb.append('\n');
+        }
+        System.out.println(sb);
     }
 
-    private static long bfs(int s, int n, long[][] g, int[][] adj) {
+    private static int bfs(int s, int t, int n, int[][] g, int[][] adj) {
         final Deque<Integer> q = new ArrayDeque<>();
         q.offerLast(s);
         final int[] prev = new int[n];
@@ -65,7 +71,7 @@ public final class DistinctRoutes {
         boolean ok = false;
         while (!q.isEmpty()) {
             final int u = q.removeFirst();
-            if (u == n - 1) {
+            if (u == t) {
                 ok = true;
                 break;
             }
@@ -79,13 +85,13 @@ public final class DistinctRoutes {
         if (!ok) {
             return 0;
         }
-        int p = n - 1;
-        long min = (int) 1e18;
+        int p = t;
+        int min = (int) 1e9;
         while (prev[p] != -2) {
             min = Math.min(min, g[prev[p]][p]);
             p = prev[p];
         }
-        p = n - 1;
+        p = t;
         while (prev[p] != -2) {
             g[prev[p]][p] -= min;
             g[p][prev[p]] += min;
@@ -94,20 +100,19 @@ public final class DistinctRoutes {
         return min;
     }
 
-    private static boolean dfs(int u, int n, boolean[][] used, long[][] g, int[][] adj, List<Integer> path) {
-        if (u == n - 1) {
-            path.add(u);
+    private static boolean dfs(int u, int t, boolean[][] seen, int[][] g, int[][] adj, List<Integer> p) {
+        if (u == t) {
             return true;
         }
         for (int v : adj[u]) {
-            if (g[u][v] == 0 && !used[u][v]) {
-                used[u][v] = true;
-                path.add(u);
-                if (dfs(v, n, used, g, adj, path)) {
+            if (g[u][v] == 0 && !seen[u][v]) {
+                seen[u][v] = true;
+                p.add(u);
+                if (dfs(v, t, seen, g, adj, p)) {
                     return true;
                 }
-                used[u][v] = false;
-                path.remove(path.size() - 1);
+                p.remove(p.size() - 1);
+                seen[u][v] = false;
             }
         }
         return false;
