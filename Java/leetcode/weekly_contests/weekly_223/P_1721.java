@@ -11,16 +11,16 @@ public class P_1721 {
         for (int i = 0; i < k; i++) {
             iter = iter.next;
         }
-        final ListNode first = iter;
-        ListNode iter2 = new ListNode(-1);
-        iter2.next = head;
-        while (iter != null) {
-            iter = iter.next;
+        ListNode iter2 = iter;
+        ListNode swap = new ListNode(-1);
+        swap.next = head;
+        while (iter2 != null) {
             iter2 = iter2.next;
+            swap = swap.next;
         }
-        final int temp = first.val;
-        first.val = iter2.val;
-        iter2.val = temp;
+        final int t = swap.val;
+        swap.val = iter.val;
+        iter.val = t;
         return head;
     }
 }
