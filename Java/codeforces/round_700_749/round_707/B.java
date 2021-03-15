@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.sample;
+package codeforces.round_700_749.round_707;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,78 +9,36 @@ import java.util.StringTokenizer;
 
 public final class B {
 
-    private static final int MOD = 998244353;
-
-    private static final class UnionFind {
-        private final int[] parent;
-        private final int[] size;
-        private int count;
-
-        private UnionFind(int n) {
-            parent = new int[n];
-            size = new int[n];
-            count = n;
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-                size[i] = 1;
-            }
-        }
-
-        public int find(int p) {
-            // path compression
-            while (p != parent[p]) {
-                parent[p] = parent[parent[p]];
-                p = parent[p];
-            }
-            return p;
-        }
-
-        public void union(int p, int q) {
-            final int rootP = find(p);
-            final int rootQ = find(q);
-            if (rootP == rootQ) {
-                return;
-            }
-            // union by size
-            if (size[rootP] > size[rootQ]) {
-                parent[rootQ] = rootP;
-                size[rootP] += size[rootQ];
-            } else {
-                parent[rootP] = rootQ;
-                size[rootQ] += size[rootP];
-            }
-            count--;
-        }
-
-        public int count() { return count; }
-
-        public int[] size() { return size; }
-    }
-
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        final UnionFind uf = new UnionFind(n);
-        for (int i = 0; i < n; i++) {
-            uf.union(arr[i] - 1, i);
-        }
-        long res = 0;
-        res = (res + modPow(2, uf.count())) % MOD;
-        res = (res - 1 + MOD) % MOD;
-        System.out.println(res);
-    }
-
-    private static long modPow(long a, long n) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 != 0) {
-                res = res * a % MOD;
+        final StringBuilder sb = new StringBuilder();
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            final int[] arr = fs.nextIntArray(n);
+            final int[] pour = new int[n + 1];
+            for (int i = 0; i < n; i++) {
+                if (arr[i] > 0) {
+                    final int l = Math.max(0, i - arr[i] + 1);
+                    final int r = i + 1;
+                    pour[l]++;
+                    pour[r]--;
+                }
             }
-            a = a * a % MOD;
-            n /= 2;
+            for (int i = 1; i < n; i++) {
+                pour[i] += pour[i - 1];
+            }
+            for (int i = 0; i < n; i++) {
+                if (pour[i] > 0) {
+                    sb.append(1);
+                } else {
+                    sb.append(0);
+                }
+                sb.append(' ');
+            }
+            sb.append('\n');
         }
-        return res;
+        System.out.println(sb);
     }
 
     static final class Utils {
