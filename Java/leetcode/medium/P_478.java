@@ -1,18 +1,14 @@
 package leetcode.medium;
 
-import java.util.Random;
-
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic" })
 public class P_478 {
 
-    static class Solution {
-        Random rand;
+    class Solution {
         double x;
         double y;
         double r;
 
         Solution(double radius, double x_center, double y_center) {
-            rand = new Random();
             r = radius;
             x = x_center;
             y = y_center;
@@ -20,11 +16,11 @@ public class P_478 {
 
         public double[] randPoint() {
             while (true) {
-                final double randomX = 2 * r * Math.random();
-                final double randomY = 2 * r * Math.random();
-                final double dist = Math.hypot(randomX - r, randomY - r);
+                final double randomX = 2 * r * Math.random() - r;
+                final double randomY = 2 * r * Math.random() - r;
+                final double dist = Math.hypot(randomX, randomY);
                 if (dist <= r) {
-                    return new double[] { randomX, randomY };
+                    return new double[] { x + randomX, y + randomY };
                 }
             }
         }

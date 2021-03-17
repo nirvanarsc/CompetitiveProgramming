@@ -3,24 +3,35 @@ package cses.range_queries;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class RangeUpdatesAndSums {
+public final class SubarraySumQueries {
+
+    private static class Node {
+        long prefix;
+        long suffix;
+        long sum;
+        long best;
+
+        Node(long prefix, long suffix, long sum, long best) {
+            this.prefix = prefix;
+            this.suffix = suffix;
+            this.sum = sum;
+            this.best = best;
+        }
+    }
 
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
-        long sum;
-        long assignmentOperation = Long.MAX_VALUE;
-        long additionOperation;
+        Node node = nullValue();
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
             this.rightMost = rightMost;
             if (leftMost == rightMost) {
-                sum = arr[leftMost];
+                node = new Node(arr[leftMost], arr[leftMost], arr[leftMost], arr[leftMost]);
             } else {
                 final int mid = leftMost + rightMost >>> 1;
                 left = new SegTree(leftMost, mid, arr);
@@ -33,91 +44,47 @@ public final class RangeUpdatesAndSums {
             if (leftMost == rightMost) {
                 return;
             }
-            sum = left.sum + right.sum;
+            node = merge(left.node, right.node);
         }
 
-        private static long operation(long a, long b) {
-            if (b == Long.MAX_VALUE) {
-                return a;
+        private static Node nullValue() {
+            return new Node((long) -1e18, (long) -1e18, 0, (long) -1e18);
+        }
+
+        private static Node merge(Node left, Node right) {
+            final long newPre = Math.max(left.prefix, left.sum + right.prefix);
+            final long newSuff = Math.max(right.suffix, right.sum + left.suffix);
+            final long newSum = left.sum + right.sum;
+            final long newBest = Math.max(Math.max(left.best, right.best), left.suffix + right.prefix);
+            return new Node(newPre, newSuff, newSum, Math.max(0, newBest));
+        }
+
+        private Node query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return nullValue();
             }
-            return b;
+            if (l <= leftMost && rightMost <= r) {
+                return node;
+            }
+            return merge(left.query(l, r), right.query(l, r));
         }
 
-        private void propagate() {
+        private void update(int idx, int val) {
             if (leftMost == rightMost) {
-                return;
-            }
-            if (assignmentOperation == Long.MAX_VALUE) {
-                // addition
-                if (left.assignmentOperation != Long.MAX_VALUE) {
-                    left.assignmentOperation += additionOperation;
-                } else {
-                    left.additionOperation += additionOperation;
-                }
-                if (right.assignmentOperation != Long.MAX_VALUE) {
-                    right.assignmentOperation += additionOperation;
-                } else {
-                    right.additionOperation += additionOperation;
-                }
-                left.sum += (left.rightMost - left.leftMost + 1) * additionOperation;
-                right.sum += (right.rightMost - right.leftMost + 1) * additionOperation;
-                additionOperation = 0;
+                node = new Node(val, val, val, val);
             } else {
-                // assignment
-                left.assignmentOperation = operation(left.assignmentOperation, assignmentOperation);
-                right.assignmentOperation = operation(right.assignmentOperation, assignmentOperation);
-                left.sum = (left.rightMost - left.leftMost + 1) * assignmentOperation;
-                right.sum = (right.rightMost - right.leftMost + 1) * assignmentOperation;
-                left.additionOperation = 0;
-                right.additionOperation = 0;
-                assignmentOperation = Long.MAX_VALUE;
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
             }
-        }
-
-        private long query(int l, int r) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
-                return 0;
-            }
-            if (l <= leftMost && rightMost <= r) {
-                return sum;
-            }
-            return left.query(l, r) + right.query(l, r);
-        }
-
-        private void assign(int l, int r, long v) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
-                return;
-            }
-            if (l <= leftMost && rightMost <= r) {
-                assignmentOperation = operation(assignmentOperation, v);
-                sum = (rightMost - leftMost + 1) * v;
-                return;
-            }
-            left.assign(l, r, v);
-            right.assign(l, r, v);
-            recalc();
-        }
-
-        private void add(int l, int r, long v) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
-                return;
-            }
-            if (l <= leftMost && rightMost <= r) {
-                additionOperation += v;
-                sum += (rightMost - leftMost + 1) * v;
-                return;
-            }
-            left.add(l, r, v);
-            right.add(l, r, v);
-            recalc();
         }
     }
 
     public static void main(String[] args) throws IOException {
-        final PrintWriter pw = new PrintWriter(System.out);
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int q = fs.nextInt();
@@ -126,60 +93,88 @@ public final class RangeUpdatesAndSums {
             arr[i] = fs.nextInt();
         }
         final SegTree st = new SegTree(0, n - 1, arr);
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            final int l = fs.nextInt() - 1;
-            final int r = fs.nextInt() - 1;
-            if (type == 1) {
-                st.add(l, r, fs.nextInt());
-            } else if (type == 2) {
-                st.assign(l, r, fs.nextInt());
-            } else {
-                pw.println(st.query(l, r));
-            }
+            final int idx = fs.nextInt() - 1;
+            final int val = fs.nextInt();
+            st.update(idx, val);
+            sb.append(st.node.best);
+            sb.append('\n');
         }
-        pw.close();
+        System.out.println(sb);
     }
 
     static final class Utils {
-        public static void shuffleSort(int[] x) {
-            shuffle(x);
-            Arrays.sort(x);
-        }
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
 
-        public static void shuffleSort(long[] x) {
-            shuffle(x);
-            Arrays.sort(x);
-        }
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
 
-        public static void shuffle(int[] x) {
-            final Random r = new Random();
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
 
-            for (int i = 0; i <= x.length - 2; i++) {
-                final int j = i + r.nextInt(x.length - i);
-                swap(x, i, j);
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
             }
         }
 
-        public static void shuffle(long[] x) {
-            final Random r = new Random();
+        public static void shuffleSort(int[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
 
-            for (int i = 0; i <= x.length - 2; i++) {
-                final int j = i + r.nextInt(x.length - i);
-                swap(x, i, j);
+        public static void shuffleSort(long[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        private static int[][] packG(int[][] edges, int n) {
+            final int[][] g = new int[n][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
             }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = edge[1];
+            }
+            return g;
         }
 
-        public static void swap(int[] x, int i, int j) {
-            final int t = x[i];
-            x[i] = x[j];
-            x[j] = t;
-        }
-
-        public static void swap(long[] x, int i, int j) {
-            final long t = x[i];
-            x[i] = x[j];
-            x[j] = t;
+        private static int[][][] packGW(int[][] edges, int n) {
+            final int[][][] g = new int[n][][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
+            }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]][2];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
+            }
+            return g;
         }
 
         private Utils() {}
@@ -213,6 +208,14 @@ public final class RangeUpdatesAndSums {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
+        }
+
+        public int nextSign() throws IOException {
+            byte c = read();
+            while ('+' != c && '-' != c) {
+                c = read();
+            }
+            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {

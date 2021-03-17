@@ -3,18 +3,20 @@ package cses.range_queries;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class RangeUpdatesAndSums {
+public final class RangeQueriesAndCopies {
 
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
         long sum;
-        long assignmentOperation = Long.MAX_VALUE;
-        long additionOperation;
+
+        SegTree(int leftMost, int rightMost) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+        }
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
@@ -36,46 +38,7 @@ public final class RangeUpdatesAndSums {
             sum = left.sum + right.sum;
         }
 
-        private static long operation(long a, long b) {
-            if (b == Long.MAX_VALUE) {
-                return a;
-            }
-            return b;
-        }
-
-        private void propagate() {
-            if (leftMost == rightMost) {
-                return;
-            }
-            if (assignmentOperation == Long.MAX_VALUE) {
-                // addition
-                if (left.assignmentOperation != Long.MAX_VALUE) {
-                    left.assignmentOperation += additionOperation;
-                } else {
-                    left.additionOperation += additionOperation;
-                }
-                if (right.assignmentOperation != Long.MAX_VALUE) {
-                    right.assignmentOperation += additionOperation;
-                } else {
-                    right.additionOperation += additionOperation;
-                }
-                left.sum += (left.rightMost - left.leftMost + 1) * additionOperation;
-                right.sum += (right.rightMost - right.leftMost + 1) * additionOperation;
-                additionOperation = 0;
-            } else {
-                // assignment
-                left.assignmentOperation = operation(left.assignmentOperation, assignmentOperation);
-                right.assignmentOperation = operation(right.assignmentOperation, assignmentOperation);
-                left.sum = (left.rightMost - left.leftMost + 1) * assignmentOperation;
-                right.sum = (right.rightMost - right.leftMost + 1) * assignmentOperation;
-                left.additionOperation = 0;
-                right.additionOperation = 0;
-                assignmentOperation = Long.MAX_VALUE;
-            }
-        }
-
         private long query(int l, int r) {
-            propagate();
             if (r < leftMost || l > rightMost) {
                 return 0;
             }
@@ -85,39 +48,26 @@ public final class RangeUpdatesAndSums {
             return left.query(l, r) + right.query(l, r);
         }
 
-        private void assign(int l, int r, long v) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
-                return;
+        private SegTree updateVersion(SegTree prev, int idx, int val) {
+            final SegTree res = new SegTree(leftMost, rightMost);
+            if (leftMost == rightMost) {
+                res.sum = val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    res.left = left.updateVersion(prev.left, idx, val);
+                    res.right = prev.right;
+                } else {
+                    res.left = prev.left;
+                    res.right = right.updateVersion(prev.right, idx, val);
+                }
+                res.sum = res.left.sum + res.right.sum;
             }
-            if (l <= leftMost && rightMost <= r) {
-                assignmentOperation = operation(assignmentOperation, v);
-                sum = (rightMost - leftMost + 1) * v;
-                return;
-            }
-            left.assign(l, r, v);
-            right.assign(l, r, v);
-            recalc();
-        }
-
-        private void add(int l, int r, long v) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
-                return;
-            }
-            if (l <= leftMost && rightMost <= r) {
-                additionOperation += v;
-                sum += (rightMost - leftMost + 1) * v;
-                return;
-            }
-            left.add(l, r, v);
-            right.add(l, r, v);
-            recalc();
+            return res;
         }
     }
 
     public static void main(String[] args) throws IOException {
-        final PrintWriter pw = new PrintWriter(System.out);
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int q = fs.nextInt();
@@ -125,61 +75,102 @@ public final class RangeUpdatesAndSums {
         for (int i = 0; i < n; i++) {
             arr[i] = fs.nextInt();
         }
-        final SegTree st = new SegTree(0, n - 1, arr);
+        final SegTree[] sts = new SegTree[(int) (2e5 + 5)];
+        sts[0] = new SegTree(0, n - 1, arr);
+        final StringBuilder sb = new StringBuilder();
+        int lastSt = 1;
         for (int i = 0; i < q; i++) {
             final int type = fs.nextInt();
-            final int l = fs.nextInt() - 1;
-            final int r = fs.nextInt() - 1;
             if (type == 1) {
-                st.add(l, r, fs.nextInt());
+                final int k = fs.nextInt() - 1;
+                final int idx = fs.nextInt() - 1;
+                final int val = fs.nextInt();
+                sts[k] = sts[k].updateVersion(sts[k], idx, val);
             } else if (type == 2) {
-                st.assign(l, r, fs.nextInt());
+                final int k = fs.nextInt() - 1;
+                final int l = fs.nextInt() - 1;
+                final int r = fs.nextInt() - 1;
+                sb.append(sts[k].query(l, r));
+                sb.append('\n');
             } else {
-                pw.println(st.query(l, r));
+                final int k = fs.nextInt() - 1;
+                sts[lastSt++] = sts[k];
             }
         }
-        pw.close();
+        System.out.println(sb);
     }
 
     static final class Utils {
-        public static void shuffleSort(int[] x) {
-            shuffle(x);
-            Arrays.sort(x);
-        }
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
 
-        public static void shuffleSort(long[] x) {
-            shuffle(x);
-            Arrays.sort(x);
-        }
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
 
-        public static void shuffle(int[] x) {
-            final Random r = new Random();
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
 
-            for (int i = 0; i <= x.length - 2; i++) {
-                final int j = i + r.nextInt(x.length - i);
-                swap(x, i, j);
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
             }
         }
 
-        public static void shuffle(long[] x) {
-            final Random r = new Random();
+        public static void shuffleSort(int[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
 
-            for (int i = 0; i <= x.length - 2; i++) {
-                final int j = i + r.nextInt(x.length - i);
-                swap(x, i, j);
+        public static void shuffleSort(long[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        private static int[][] packG(int[][] edges, int n) {
+            final int[][] g = new int[n][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
             }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = edge[1];
+            }
+            return g;
         }
 
-        public static void swap(int[] x, int i, int j) {
-            final int t = x[i];
-            x[i] = x[j];
-            x[j] = t;
-        }
-
-        public static void swap(long[] x, int i, int j) {
-            final long t = x[i];
-            x[i] = x[j];
-            x[j] = t;
+        private static int[][][] packGW(int[][] edges, int n) {
+            final int[][][] g = new int[n][][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
+            }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]][2];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
+            }
+            return g;
         }
 
         private Utils() {}
@@ -213,6 +204,14 @@ public final class RangeUpdatesAndSums {
                 buf[cnt++] = (byte) c;
             }
             return new String(buf, 0, cnt);
+        }
+
+        public int nextSign() throws IOException {
+            byte c = read();
+            while ('+' != c && '-' != c) {
+                c = read();
+            }
+            return '+' == c ? 0 : 1;
         }
 
         public int nextInt() throws IOException {
