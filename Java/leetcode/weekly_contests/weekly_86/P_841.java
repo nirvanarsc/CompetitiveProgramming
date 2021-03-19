@@ -3,30 +3,51 @@ package leetcode.weekly_contests.weekly_86;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class P_841 {
 
-    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+    public boolean canVisitAllRoomsBFS(List<List<Integer>> rooms) {
+        final int n = rooms.size();
         final Deque<Integer> q = new ArrayDeque<>(Collections.singleton(0));
-        final boolean[] visited = new boolean[rooms.size()];
-        visited[0] = true;
-        final Set<Integer> keys = new HashSet<>(Collections.singleton(0));
+        final boolean[] seen = new boolean[n];
         while (!q.isEmpty()) {
             final int curr = q.removeFirst();
-            if (keys.size() == rooms.size()) {
-                return true;
+            if (seen[curr]) {
+                continue;
             }
+            seen[curr] = true;
             for (int key : rooms.get(curr)) {
-                keys.add(key);
-                if (!visited[key]) {
-                    visited[key] = true;
-                    q.offerLast(key);
-                }
+                q.offerLast(key);
             }
         }
-        return false;
+        for (int i = 0; i < n; i++) {
+            if (!seen[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        final int n = rooms.size();
+        final boolean[] seen = new boolean[n];
+        dfs(0, rooms, seen);
+        for (int i = 0; i < n; i++) {
+            if (!seen[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void dfs(int u, List<List<Integer>> g, boolean[] seen) {
+        if (seen[u]) {
+            return;
+        }
+        seen[u] = true;
+        for (int v : g.get(u)) {
+            dfs(v, g, seen);
+        }
     }
 }
