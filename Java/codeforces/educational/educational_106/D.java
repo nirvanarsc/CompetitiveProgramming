@@ -36,7 +36,11 @@ public final class D {
         final FastReader fs = new FastReader();
         final StringBuilder sb = new StringBuilder();
         final int t = fs.nextInt();
-        final int[] sieve = sieveOfEratosthenes();
+        final int[] smallestDiv = sieveOfEratosthenes();
+        final int[] count = new int[(int) (2e7 + 1)];
+        for (int i = 2; i < count.length; i++) {
+            count[i] = count[i / smallestDiv[i]] + (smallestDiv[i] != smallestDiv[i / smallestDiv[i]] ? 1 : 0);
+        }
         for (int test = 0; test < t; test++) {
             final int c = fs.nextInt();
             final int d = fs.nextInt();
@@ -44,9 +48,9 @@ public final class D {
             long res = 0;
             for (int p = 1; p * p <= x; p++) {
                 if (x % p == 0) {
-                    res += f(sieve, c, d, x, p);
+                    res += f(count, c, d, x, p);
                     if (p != x / p) {
-                        res += f(sieve, c, d, x, x / p);
+                        res += f(count, c, d, x, x / p);
                     }
                 }
             }
@@ -56,22 +60,13 @@ public final class D {
         System.out.println(sb);
     }
 
-    private static long f(int[] sieve, int c, int d, int x, int g) {
+    private static int f(int[] count, int c, int d, int x, int g) {
         int y = x / g + d;
         if (y % c != 0) {
             return 0;
         }
         y /= c;
-        int cnt = 0, last = 0;
-        while (y > 1) {
-            final int t = sieve[y];
-            if (last != t) {
-                cnt++;
-                last = t;
-            }
-            y /= t;
-        }
-        return 1L << cnt;
+        return 1 << count[y];
     }
 
     static final class Utils {

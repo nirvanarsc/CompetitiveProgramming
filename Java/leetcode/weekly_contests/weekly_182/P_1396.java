@@ -3,21 +3,22 @@ package leetcode.weekly_contests.weekly_182;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused" })
 public class P_1396 {
 
-    static class Pair {
-        String target;
-        int t;
+    class UndergroundSystem {
+        private class Pair {
+            String target;
+            int t;
 
-        Pair(String target, int t) {
-            this.target = target;
-            this.t = t;
+            Pair(String target, int t) {
+                this.target = target;
+                this.t = t;
+            }
         }
-    }
 
-    static class UndergroundSystem {
-        Map<String, int[]> avg;
-        Map<Integer, Pair> in;
+        private final Map<String, int[]> avg;
+        private final Map<Integer, Pair> in;
 
         UndergroundSystem() {
             avg = new HashMap<>();
@@ -31,9 +32,12 @@ public class P_1396 {
         public void checkOut(int id, String stationName, int t) {
             final Pair pair = in.get(id);
             final String key = pair.target + ',' + stationName;
-            avg.putIfAbsent(key, new int[] { 0, 0 });
-            avg.get(key)[0] += t - pair.t;
-            avg.get(key)[1] += 1;
+            final int[] other = avg.get(key);
+            if (other == null) {
+                avg.put(key, new int[] { t - pair.t, 1 });
+            } else {
+                avg.put(key, new int[] { other[0] + t - pair.t, other[1] + 1 });
+            }
         }
 
         public double getAverageTime(String startStation, String endStation) {
