@@ -1,4 +1,4 @@
-package kickstart.round_b;
+package kickstart.year_2020.round_b;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
