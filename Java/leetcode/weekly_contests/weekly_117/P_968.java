@@ -4,7 +4,9 @@ import utils.DataStructures.TreeNode;
 
 public class P_968 {
 
-    enum State {CAMERA, MONITORED, NOT_MONITORED}
+    enum State {
+        CAMERA, MONITORED, NOT_MONITORED
+    }
 
     static class Status {
         int cameras;

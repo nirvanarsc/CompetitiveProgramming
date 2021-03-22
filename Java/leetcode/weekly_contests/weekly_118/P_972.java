@@ -12,7 +12,9 @@ public class P_972 {
         if (i > 0) {
             final StringBuilder base = new StringBuilder(S.substring(0, i));
             final String rep = S.substring(i + 1, S.length() - 1);
-            for (int j = 0; j < 20; ++j) { base.append(rep); }
+            for (int j = 0; j < 20; ++j) {
+                base.append(rep);
+            }
             return Double.valueOf(base.toString());
         }
         return Double.valueOf(S);

@@ -15,10 +15,13 @@ public class P_971 {
         return dfs(root, voyage, res) ? res : Collections.singletonList(-1);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private boolean dfs(TreeNode root, int[] voyage, List<Integer> res) {
-        if (root == null) { return true; }
-        if (root.val != voyage[i++]) { return false; }
+        if (root == null) {
+            return true;
+        }
+        if (root.val != voyage[i++]) {
+            return false;
+        }
         if (root.left != null && root.left.val != voyage[i]) {
             res.add(root.val);
             return dfs(root.right, voyage, res) && dfs(root.left, voyage, res);

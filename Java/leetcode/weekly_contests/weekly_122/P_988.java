@@ -10,7 +10,6 @@ public class P_988 {
         return res[0];
     }
 
-    @SuppressWarnings("ConstantConditions")
     private static void dfs(TreeNode node, StringBuilder sb, String[] res) {
         if (node == null) {
             return;

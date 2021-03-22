@@ -1,6 +1,5 @@
 package leetcode.weekly_contests.weekly_117;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,28 +7,52 @@ import java.util.Set;
 
 public class P_966 {
 
-    @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
+    private Set<String> exact;
+    private Map<String, String> lower;
+    private Map<String, String> devowel;
+
     public String[] spellchecker(String[] wordlist, String[] queries) {
-        final Set<String> words = new HashSet<>(Arrays.asList(wordlist));
-        final Map<String, String> cap = new HashMap<>();
-        final Map<String, String> vowel = new HashMap<>();
-        for (String w : wordlist) {
-            final String lower = w.toLowerCase();
-            final String devowel = lower.replaceAll("[aeiou]", "#");
-            cap.putIfAbsent(lower, w);
-            vowel.putIfAbsent(devowel, w);
+        exact = new HashSet<>();
+        lower = new HashMap<>();
+        devowel = new HashMap<>();
+        for (String word : wordlist) {
+            exact.add(word);
+            final String wordLow = word.toLowerCase();
+            lower.putIfAbsent(wordLow, word);
+            final String wordLowDV = devowel(wordLow);
+            devowel.putIfAbsent(wordLowDV, word);
         }
-        for (int i = 0; i < queries.length; ++i) {
-            if (!words.contains(queries[i])) {
-                final String lower = queries[i].toLowerCase();
-                final String devowel = lower.replaceAll("[aeiou]", "#");
-                if (cap.containsKey(lower)) {
-                    queries[i] = cap.get(lower);
-                } else {
-                    queries[i] = vowel.getOrDefault(devowel, "");
-                }
-            }
+        final String[] res = new String[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            res[i] = solve(queries[i]);
         }
-        return queries;
+        return res;
+    }
+
+    public String solve(String query) {
+        if (exact.contains(query)) {
+            return query;
+        }
+        final String queryL = query.toLowerCase();
+        if (lower.containsKey(queryL)) {
+            return lower.get(queryL);
+        }
+        final String queryLV = devowel(queryL);
+        if (devowel.containsKey(queryLV)) {
+            return devowel.get(queryLV);
+        }
+        return "";
+    }
+
+    public String devowel(String word) {
+        final StringBuilder ans = new StringBuilder();
+        for (char c : word.toCharArray()) {
+            ans.append(isVowel(c) ? '*' : c);
+        }
+        return ans.toString();
+    }
+
+    public boolean isVowel(char c) {
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
     }
 }

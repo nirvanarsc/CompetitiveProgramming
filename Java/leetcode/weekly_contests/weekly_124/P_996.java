@@ -1,37 +1,54 @@
 package leetcode.weekly_contests.weekly_124;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class P_996 {
 
     @SuppressWarnings("MethodParameterNamingConvention")
     public int numSquarefulPerms(int[] A) {
-        Arrays.sort(A);
-        final List<Integer> list = new ArrayList<>();
-        for (int num : A) { list.add(num); }
-        final int[] ans = { 0 };
-        recurse(list, 0, ans);
-        return ans[0];
+        final int n = A.length;
+        final int[][] dp = new int[n + 1][1 << n];
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+        int res = dfs(A, n, 0, (1 << n) - 1, dp);
+        final int[] factorial = new int[n + 1];
+        factorial[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            factorial[i] = i * factorial[i - 1];
+        }
+        final Map<Integer, Integer> freq = new HashMap<>();
+        for (int num : A) {
+            freq.merge(num, 1, Integer::sum);
+        }
+        for (int f : freq.values()) {
+            res /= factorial[f];
+        }
+        return res;
     }
 
-    private static void recurse(List<Integer> list, int idx, int[] ans) {
-        if (idx >= list.size()) {
-            ans[0]++;
-            return;
+    private static int dfs(int[] arr, int prev, int mask, int target, int[][] dp) {
+        if (mask == target) {
+            return 1;
         }
-        final Set<Integer> set = new HashSet<>();
-        for (int i = idx; i < list.size(); i++) {
-            if ((idx == 0 || isSquare(list.get(idx - 1) + list.get(i))) && set.add(list.get(i))) {
-                Collections.swap(list, idx, i);
-                recurse(list, idx + 1, ans);
-                Collections.swap(list, idx, i);
+        if (dp[prev][mask] != -1) {
+            return dp[prev][mask];
+        }
+        int res = 0;
+        if (prev == arr.length) {
+            for (int i = 0; i < arr.length; i++) {
+                res += dfs(arr, i, mask | 1 << i, target, dp);
+            }
+        } else {
+            for (int i = 0; i < arr.length; i++) {
+                if ((mask & (1 << i)) == 0 && isSquare(arr[prev] + arr[i])) {
+                    res += dfs(arr, i, mask | 1 << i, target, dp);
+                }
             }
         }
+        return dp[prev][mask] = res;
     }
 
     private static boolean isSquare(int v) {
