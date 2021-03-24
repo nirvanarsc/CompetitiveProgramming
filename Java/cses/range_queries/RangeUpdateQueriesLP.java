@@ -33,44 +33,50 @@ public final class RangeUpdateQueriesLP {
             if (leftMost == rightMost) {
                 return;
             }
-            sum = left.sum + right.sum;
+            sum = applyAggregate(left) + applyAggregate(right);
         }
 
         private void propagate() {
             if (leftMost == rightMost) {
                 return;
             }
-            left.operation += operation;
-            right.operation += operation;
-            left.sum += (left.rightMost - left.leftMost + 1) * operation;
-            right.sum += (right.rightMost - right.leftMost + 1) * operation;
+            left.compose(operation);
+            right.compose(operation);
             operation = 0;
         }
 
+        private void compose(long add) {
+            operation += add;
+        }
+
+        private static long applyAggregate(SegTree curr) {
+            return curr.sum + (curr.rightMost - curr.leftMost + 1) * curr.operation;
+        }
+
         private long query(int l, int r) {
-            propagate();
             if (r < leftMost || l > rightMost) {
                 return 0;
             }
             if (l <= leftMost && rightMost <= r) {
-                return sum;
+                return applyAggregate(this);
             }
+            propagate();
+            recalc();
             return left.query(l, r) + right.query(l, r);
         }
 
-        private void add(int l, int r, long v) {
-            propagate();
+        private void update(int l, int r, long add) {
             if (r < leftMost || l > rightMost) {
                 return;
             }
             if (l <= leftMost && rightMost <= r) {
-                sum += (rightMost - leftMost + 1) * v;
-                operation += v;
+                compose(add);
                 return;
             }
-            left.add(l, r, v);
-            right.add(l, r, v);
-            sum = left.sum + right.sum;
+            propagate();
+            left.update(l, r, add);
+            right.update(l, r, add);
+            recalc();
         }
     }
 
@@ -90,7 +96,7 @@ public final class RangeUpdateQueriesLP {
                 final int l = fs.nextInt() - 1;
                 final int r = fs.nextInt() - 1;
                 final int u = fs.nextInt();
-                st.add(l, r, u);
+                st.update(l, r, u);
             } else {
                 final int idx = fs.nextInt() - 1;
                 pw.println(st.query(idx, idx));

@@ -3,18 +3,18 @@ package cses.range_queries;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
 public final class RangeUpdatesAndSums {
 
+    // Addition, Assignment and Sum
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
+        long set = Long.MAX_VALUE;
+        long add;
         long sum;
-        long assignmentOperation = Long.MAX_VALUE;
-        long additionOperation;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
@@ -30,95 +30,63 @@ public final class RangeUpdatesAndSums {
         }
 
         private void recalc() {
-            if (leftMost == rightMost) {
-                return;
-            }
-            sum = left.sum + right.sum;
-        }
-
-        private static long operation(long a, long b) {
-            if (b == Long.MAX_VALUE) {
-                return a;
-            }
-            return b;
+            sum = apply(left) + apply(right);
         }
 
         private void propagate() {
-            if (leftMost == rightMost) {
-                return;
+            left.compose(add, set);
+            right.compose(add, set);
+            set = Long.MAX_VALUE;
+            add = 0;
+        }
+
+        private void compose(long add, long set) {
+            if (set != Long.MAX_VALUE) {
+                this.set = set;
+                this.add = 0;
             }
-            if (assignmentOperation == Long.MAX_VALUE) {
-                // addition
-                if (left.assignmentOperation != Long.MAX_VALUE) {
-                    left.assignmentOperation += additionOperation;
-                } else {
-                    left.additionOperation += additionOperation;
-                }
-                if (right.assignmentOperation != Long.MAX_VALUE) {
-                    right.assignmentOperation += additionOperation;
-                } else {
-                    right.additionOperation += additionOperation;
-                }
-                left.sum += (left.rightMost - left.leftMost + 1) * additionOperation;
-                right.sum += (right.rightMost - right.leftMost + 1) * additionOperation;
-                additionOperation = 0;
-            } else {
-                // assignment
-                left.assignmentOperation = operation(left.assignmentOperation, assignmentOperation);
-                right.assignmentOperation = operation(right.assignmentOperation, assignmentOperation);
-                left.sum = (left.rightMost - left.leftMost + 1) * assignmentOperation;
-                right.sum = (right.rightMost - right.leftMost + 1) * assignmentOperation;
-                left.additionOperation = 0;
-                right.additionOperation = 0;
-                assignmentOperation = Long.MAX_VALUE;
+            this.add += add;
+        }
+
+        private static long apply(SegTree st) {
+            long res = st.sum;
+            if (st.set != Long.MAX_VALUE) {
+                res = (st.rightMost - st.leftMost + 1) * st.set;
             }
+            res += (st.rightMost - st.leftMost + 1) * st.add;
+            return res;
         }
 
         private long query(int l, int r) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
+            if (l > rightMost || r < leftMost) {
                 return 0;
             }
             if (l <= leftMost && rightMost <= r) {
-                return sum;
+                return apply(this);
             }
+            propagate();
+            recalc();
             return left.query(l, r) + right.query(l, r);
         }
 
-        private void assign(int l, int r, long v) {
-            propagate();
-            if (r < leftMost || l > rightMost) {
+        private void update(int l, int r, long add, long set) {
+            if (l > rightMost || r < leftMost) {
                 return;
             }
             if (l <= leftMost && rightMost <= r) {
-                assignmentOperation = operation(assignmentOperation, v);
-                sum = (rightMost - leftMost + 1) * v;
+                compose(add, set);
                 return;
             }
-            left.assign(l, r, v);
-            right.assign(l, r, v);
-            recalc();
-        }
-
-        private void add(int l, int r, long v) {
             propagate();
-            if (r < leftMost || l > rightMost) {
-                return;
-            }
-            if (l <= leftMost && rightMost <= r) {
-                additionOperation += v;
-                sum += (rightMost - leftMost + 1) * v;
-                return;
-            }
-            left.add(l, r, v);
-            right.add(l, r, v);
+            left.update(l, r, add, set);
+            right.update(l, r, add, set);
             recalc();
         }
     }
 
     public static void main(String[] args) throws IOException {
-        final PrintWriter pw = new PrintWriter(System.out);
         final FastReader fs = new FastReader();
+        final StringBuilder sb = new StringBuilder();
         final int n = fs.nextInt();
         final int q = fs.nextInt();
         final int[] arr = new int[n];
@@ -127,18 +95,21 @@ public final class RangeUpdatesAndSums {
         }
         final SegTree st = new SegTree(0, n - 1, arr);
         for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
+            final int t = fs.nextInt();
             final int l = fs.nextInt() - 1;
             final int r = fs.nextInt() - 1;
-            if (type == 1) {
-                st.add(l, r, fs.nextInt());
-            } else if (type == 2) {
-                st.assign(l, r, fs.nextInt());
+            if (t == 1) {
+                final long v = fs.nextLong();
+                st.update(l, r, v, Long.MAX_VALUE);
+            } else if (t == 2) {
+                final long v = fs.nextLong();
+                st.update(l, r, 0, v);
             } else {
-                pw.println(st.query(l, r));
+                sb.append(st.query(l, r));
+                sb.append('\n');
             }
         }
-        pw.close();
+        System.out.println(sb);
     }
 
     static final class Utils {

@@ -3,15 +3,17 @@ package codeforces.segment_trees.part8;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Random;
 
-public final class A {
+public final class B {
 
-    // Addition, Assignment and Sum
+    // Arithmetic Progression
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
-        long set = Long.MAX_VALUE;
-        long add;
+        long a;
+        long k;
         long sum;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
@@ -32,26 +34,22 @@ public final class A {
         }
 
         private void propagate() {
-            left.compose(add, set);
-            right.compose(add, set);
-            set = Long.MAX_VALUE;
-            add = 0;
+            left.compose(a, k, leftMost);
+            right.compose(a, k, leftMost);
+            a = 0;
+            k = 0;
         }
 
-        private void compose(long add, long set) {
-            if (set != Long.MAX_VALUE) {
-                this.set = set;
-                this.add = 0;
-            }
-            this.add += add;
+        private void compose(long a, long k, long parL) {
+            final long newA = a + k * (leftMost - parL);
+            this.k += k;
+            this.a += newA;
         }
 
         private static long apply(SegTree st) {
             long res = st.sum;
-            if (st.set != Long.MAX_VALUE) {
-                res = (st.rightMost - st.leftMost + 1) * st.set;
-            }
-            res += (st.rightMost - st.leftMost + 1) * st.add;
+            final long l = st.rightMost - st.leftMost + 1;
+            res += (l * (2 * st.a + (l - 1) * st.k)) / 2;
             return res;
         }
 
@@ -67,21 +65,23 @@ public final class A {
             return left.query(l, r) + right.query(l, r);
         }
 
-        private void update(int l, int r, long add, long set) {
+        private void update(int l, int r, long[] f) {
             if (l > rightMost || r < leftMost) {
                 return;
             }
             if (l <= leftMost && rightMost <= r) {
-                compose(add, set);
+                compose(f[0], f[1], leftMost);
+                f[0] += f[1] * (rightMost - leftMost + 1);
                 return;
             }
             propagate();
-            left.update(l, r, add, set);
-            right.update(l, r, add, set);
+            left.update(l, r, f);
+            right.update(l, r, f);
             recalc();
         }
     }
 
+    // https://codeforces.com/blog/entry/44478?#comment-290116
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final StringBuilder sb = new StringBuilder();
@@ -89,19 +89,95 @@ public final class A {
         final int q = fs.nextInt();
         final SegTree st = new SegTree(0, n - 1, new int[n]);
         for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            final int l = fs.nextInt();
-            final int r = fs.nextInt();
-            if (type == 1) {
-                st.update(l, r - 1, 0, fs.nextInt());
-            } else if (type == 2) {
-                st.update(l, r - 1, fs.nextInt(), Long.MAX_VALUE);
+            final int t = fs.nextInt();
+            final int l = fs.nextInt() - 1;
+            if (t == 1) {
+                final int r = fs.nextInt() - 1;
+                final long a = fs.nextLong();
+                final long k = fs.nextLong();
+                st.update(l, r, new long[] { a, k });
             } else {
-                sb.append(st.query(l, r - 1));
+                sb.append(st.query(l, l));
                 sb.append('\n');
             }
         }
         System.out.println(sb);
+    }
+
+    static final class Utils {
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+        }
+
+        public static void shuffleSort(int[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffleSort(long[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        private static int[][] packG(int[][] edges, int n) {
+            final int[][] g = new int[n][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
+            }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = edge[1];
+            }
+            return g;
+        }
+
+        private static int[][][] packGW(int[][] edges, int n) {
+            final int[][][] g = new int[n][][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
+            }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]][2];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
+            }
+            return g;
+        }
+
+        private Utils() {}
     }
 
     static class FastReader {

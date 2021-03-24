@@ -1,27 +1,31 @@
 package leetcode.weekly_contests.weekly_93;
 
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.PriorityQueue;
+import java.util.Comparator;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_870 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
     public int[] advantageCount(int[] A, int[] B) {
-        final PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(b[0], a[0]));
-        final Deque<Integer> deque = new ArrayDeque<>();
+        final int n = A.length;
+        final int[] res = new int[n];
         Arrays.sort(A);
-        for (int num : A) {
-            deque.addFirst(num);
+        final int[][] indexed = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            indexed[i] = new int[] { B[i], i };
         }
-        for (int i = 0; i < B.length; i++) {
-            pq.add(new int[] { B[i], i });
+        Arrays.sort(indexed, Comparator.comparingInt(a -> a[0]));
+        int lo = 0;
+        int hi = n - 1;
+        for (int i = n - 1; i >= 0; i--) {
+            final int j = indexed[i][1];
+            final int v = indexed[i][0];
+            if (v < A[hi]) {
+                res[j] = A[hi--];
+            } else {
+                res[j] = A[lo++];
+            }
         }
-        while (!pq.isEmpty()) {
-            final int[] curr = pq.remove();
-            A[curr[1]] = deque.element() > curr[0] ? deque.removeFirst() : deque.removeLast();
-        }
-        return A;
+        return res;
     }
 }

@@ -1,24 +1,25 @@
-package codeforces.segment_trees.part8;
+package cses.range_queries;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Random;
 
-public final class A {
+public final class PrefixSumQueries {
 
-    // Addition, Assignment and Sum
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
-        long set = Long.MAX_VALUE;
-        long add;
         long sum;
+        long pre;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
             this.rightMost = rightMost;
             if (leftMost == rightMost) {
                 sum = arr[leftMost];
+                pre = Math.max(0, arr[leftMost]);
             } else {
                 final int mid = leftMost + rightMost >>> 1;
                 left = new SegTree(leftMost, mid, arr);
@@ -28,80 +29,141 @@ public final class A {
         }
 
         private void recalc() {
-            sum = apply(left) + apply(right);
+            pre = Math.max(left.pre, left.sum + right.pre);
+            sum = left.sum + right.sum;
         }
 
-        private void propagate() {
-            left.compose(add, set);
-            right.compose(add, set);
-            set = Long.MAX_VALUE;
-            add = 0;
+        private static long[] merge(long[] l, long[] r) {
+            final long newPre = Math.max(l[0], l[1] + r[0]);
+            final long newSum = l[1] + r[1];
+            return new long[] { newPre, newSum };
         }
 
-        private void compose(long add, long set) {
-            if (set != Long.MAX_VALUE) {
-                this.set = set;
-                this.add = 0;
-            }
-            this.add += add;
-        }
-
-        private static long apply(SegTree st) {
-            long res = st.sum;
-            if (st.set != Long.MAX_VALUE) {
-                res = (st.rightMost - st.leftMost + 1) * st.set;
-            }
-            res += (st.rightMost - st.leftMost + 1) * st.add;
-            return res;
-        }
-
-        private long query(int l, int r) {
+        private long[] query(int l, int r) {
             if (l > rightMost || r < leftMost) {
-                return 0;
+                return new long[] { 0, 0 };
             }
             if (l <= leftMost && rightMost <= r) {
-                return apply(this);
+                return new long[] { pre, sum };
             }
-            propagate();
-            recalc();
-            return left.query(l, r) + right.query(l, r);
+            return merge(left.query(l, r), right.query(l, r));
         }
 
-        private void update(int l, int r, long add, long set) {
-            if (l > rightMost || r < leftMost) {
-                return;
+        private void update(int idx, int val) {
+            if (leftMost == rightMost) {
+                sum = pre = val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
             }
-            if (l <= leftMost && rightMost <= r) {
-                compose(add, set);
-                return;
-            }
-            propagate();
-            left.update(l, r, add, set);
-            right.update(l, r, add, set);
-            recalc();
         }
     }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final StringBuilder sb = new StringBuilder();
         final int n = fs.nextInt();
         final int q = fs.nextInt();
-        final SegTree st = new SegTree(0, n - 1, new int[n]);
+        final int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextInt();
+        }
+        final SegTree st = new SegTree(0, n - 1, arr);
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            final int l = fs.nextInt();
-            final int r = fs.nextInt();
-            if (type == 1) {
-                st.update(l, r - 1, 0, fs.nextInt());
-            } else if (type == 2) {
-                st.update(l, r - 1, fs.nextInt(), Long.MAX_VALUE);
+            final int t = fs.nextInt();
+            if (t == 1) {
+                final int l = fs.nextInt() - 1;
+                final int v = fs.nextInt();
+                st.update(l, v);
             } else {
-                sb.append(st.query(l, r - 1));
+                final int l = fs.nextInt() - 1;
+                final int r = fs.nextInt() - 1;
+                sb.append(st.query(l, r)[0]);
                 sb.append('\n');
             }
         }
         System.out.println(sb);
+    }
+
+    static final class Utils {
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+        }
+
+        public static void shuffleSort(int[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        public static void shuffleSort(long[] arr) {
+            Shuffler.shuffle(arr);
+            Arrays.sort(arr);
+        }
+
+        private static int[][] packG(int[][] edges, int n) {
+            final int[][] g = new int[n][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
+            }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = edge[1];
+            }
+            return g;
+        }
+
+        private static int[][][] packGW(int[][] edges, int n) {
+            final int[][][] g = new int[n][][];
+            final int[] size = new int[n];
+            for (int[] edge : edges) {
+                ++size[edge[0]];
+            }
+            for (int i = 0; i < n; i++) {
+                g[i] = new int[size[i]][2];
+            }
+            for (int[] edge : edges) {
+                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
+            }
+            return g;
+        }
+
+        private Utils() {}
     }
 
     static class FastReader {
