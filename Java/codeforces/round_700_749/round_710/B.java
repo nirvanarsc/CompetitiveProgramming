@@ -1,4 +1,4 @@
-package codeforces;
+package codeforces.round_700_749.round_710;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,15 +6,51 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
-public final class A {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final int k = fs.nextInt() + 1;
+            final char[] s = fs.next().toCharArray();
+            final TreeSet<Integer> ts = new TreeSet<>();
+            for (int i = 0; i < n; i++) {
+                if (s[i] == '*') {
+                    ts.add(i);
+                }
+            }
+            if (ts.size() == 1) {
+                System.out.println(1);
+                continue;
+            }
+            int l = ts.first();
+            int r = ts.last();
+            int res = 2;
+            while (r - l >= k) {
+                final Integer u = ts.lower(l + k);
+                final Integer v = ts.higher(r - k);
+                if (u != null && v != null) {
+                    if (u - l > v - r) {
+                        l = u;
+                        ts.remove(u);
+                    } else {
+                        r = v;
+                        ts.remove(v);
+                    }
+                } else if (u != null) {
+                    l = u;
+                    ts.remove(u);
+                } else if (v != null) {
+                    r = v;
+                    ts.remove(v);
+                }
+                res++;
+            }
+            System.out.println(res);
         }
     }
 

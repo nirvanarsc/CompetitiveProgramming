@@ -1,4 +1,4 @@
-package codeforces;
+package codeforces.round_700_749.round_710;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,11 @@ public final class A {
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final int m = fs.nextInt();
+            final long v = fs.nextLong();
+            final long r = (v - 1) % n;
+            final long c = (v - 1) / n;
+            System.out.println(r * m + c + 1);
         }
     }
 

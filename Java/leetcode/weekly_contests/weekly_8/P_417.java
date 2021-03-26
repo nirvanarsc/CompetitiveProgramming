@@ -13,22 +13,22 @@ public class P_417 {
         if (matrix.length == 0 || matrix[0].length == 0) {
             return Collections.emptyList();
         }
-        final List<List<Integer>> res = new ArrayList<>();
         final int n = matrix.length;
         final int m = matrix[0].length;
-        final boolean[][] pacific = new boolean[n][m];
-        final boolean[][] atlantic = new boolean[n][m];
+        final boolean[][] a = new boolean[n][m];
+        final boolean[][] b = new boolean[n][m];
         for (int i = 0; i < n; i++) {
-            dfs(matrix, pacific, Integer.MIN_VALUE, i, 0);
-            dfs(matrix, atlantic, Integer.MIN_VALUE, i, m - 1);
+            dfs(a, matrix, n, m, i, 0);
+            dfs(b, matrix, n, m, i, m - 1);
         }
         for (int i = 0; i < m; i++) {
-            dfs(matrix, pacific, Integer.MIN_VALUE, 0, i);
-            dfs(matrix, atlantic, Integer.MIN_VALUE, n - 1, i);
+            dfs(a, matrix, n, m, 0, i);
+            dfs(b, matrix, n, m, n - 1, i);
         }
+        final List<List<Integer>> res = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (pacific[i][j] && atlantic[i][j]) {
+                if (a[i][j] && b[i][j]) {
                     res.add(Arrays.asList(i, j));
                 }
             }
@@ -36,14 +36,17 @@ public class P_417 {
         return res;
     }
 
-    public void dfs(int[][] matrix, boolean[][] visited, int height, int x, int y) {
-        if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length
-            || visited[x][y] || matrix[x][y] < height) {
+    private static void dfs(boolean[][] seen, int[][] g, int n, int m, int r, int c) {
+        if (seen[r][c]) {
             return;
         }
-        visited[x][y] = true;
-        for (int[] d : DIRS) {
-            dfs(matrix, visited, matrix[x][y], x + d[0], y + d[1]);
+        seen[r][c] = true;
+        for (int[] dir : DIRS) {
+            final int nr = r + dir[0];
+            final int nc = c + dir[1];
+            if (nr >= 0 && nr < n && nc >= 0 && nc < m && g[r][c] <= g[nr][nc]) {
+                dfs(seen, g, n, m, nr, nc);
+            }
         }
     }
 }

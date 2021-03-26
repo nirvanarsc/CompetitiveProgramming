@@ -1,20 +1,30 @@
-package codeforces;
+package codeforces.round_700_749.round_710;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class A {
+public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final Map<Integer, Integer> f = new HashMap<>();
+            for (int i = 0; i < n; i++) {
+                f.merge(fs.nextInt(), 1, Integer::sum);
+            }
+            int max = 0;
+            for (Map.Entry<Integer, Integer> e : f.entrySet()) {
+                max = Math.max(max, e.getValue());
+            }
+            System.out.println(Math.max(n % 2, (2 * max) - n));
         }
     }
 

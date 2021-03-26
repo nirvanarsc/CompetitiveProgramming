@@ -6,35 +6,73 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
-public final class C {
+@SuppressWarnings({ "unchecked", "ConstantConditions" })
+public final class G {
+
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int mask;
+
+        SegTree(int leftMost, int rightMost, char[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                mask |= 1 << arr[leftMost] - 'a';
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                mask = left.mask | right.mask;
+            }
+        }
+
+        private int query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return mask;
+            }
+            return left.query(l, r) | right.query(l, r);
+        }
+    }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final char[] l = fs.next().toCharArray();
-            final char[] r = fs.next().toCharArray();
-            System.out.println(l.length + r.length - 2 * longestCommonSubstring(l, r));
-        }
-    }
-
-    private static int longestCommonSubstring(char[] l, char[] r) {
-        final int n = l.length;
-        final int m = r.length;
-        final int[][] dp = new int[n + 1][m + 1];
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (l[i] == r[j]) {
-                    dp[i + 1][j + 1] = dp[i][j] + 1;
-                } else {
-                    dp[i + 1][j + 1] = 0;
-                }
-                res = Math.max(res, dp[i + 1][j + 1]);
+            final char[] s = fs.next().toCharArray();
+            final TreeSet<Integer>[] ts = new TreeSet[26];
+            final SegTree st = new SegTree(0, s.length - 1, s);
+            for (int i = 0; i < 26; i++) {
+                ts[i] = new TreeSet<>();
             }
+            for (int i = 0; i < s.length; i++) {
+                ts[s[i] - 'a'].add(i);
+            }
+            final StringBuilder sb = new StringBuilder();
+            int i = 0;
+            int mask = st.mask;
+            while (mask > 0) {
+                for (int j = 25; j >= 0; j--) {
+                    if ((mask & (1 << j)) != 0) {
+                        final char c = (char) ('a' + j);
+                        final int ceiling = ts[j].ceiling(i);
+                        final int complement = st.query(ceiling, s.length - 1);
+                        if ((mask & complement) == mask) {
+                            sb.append(c);
+                            mask ^= 1 << j;
+                            i = ceiling + 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            System.out.println(sb);
         }
-        return res;
     }
 
     static final class Utils {

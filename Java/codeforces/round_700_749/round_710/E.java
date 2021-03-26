@@ -6,35 +6,56 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
-public final class C {
+@SuppressWarnings("ConstantConditions")
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final char[] l = fs.next().toCharArray();
-            final char[] r = fs.next().toCharArray();
-            System.out.println(l.length + r.length - 2 * longestCommonSubstring(l, r));
-        }
-    }
-
-    private static int longestCommonSubstring(char[] l, char[] r) {
-        final int n = l.length;
-        final int m = r.length;
-        final int[][] dp = new int[n + 1][m + 1];
-        int res = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (l[i] == r[j]) {
-                    dp[i + 1][j + 1] = dp[i][j] + 1;
-                } else {
-                    dp[i + 1][j + 1] = 0;
-                }
-                res = Math.max(res, dp[i + 1][j + 1]);
+            final int n = fs.nextInt();
+            final int[] arr = new int[n];
+            final TreeSet<Integer> ts1 = new TreeSet<>();
+            final TreeSet<Integer> ts2 = new TreeSet<>();
+            for (int i = 0; i < n; i++) {
+                ts1.add(i + 1);
+                ts2.add(i + 1);
+                arr[i] = fs.nextInt();
             }
+            final int[] min = new int[n];
+            final int[] max = new int[n];
+            min[0] = max[0] = arr[0];
+            ts1.remove(arr[0]);
+            ts2.remove(arr[0]);
+            for (int i = 1; i < n; i++) {
+                if (arr[i] != arr[i - 1]) {
+                    ts1.remove(arr[i]);
+                    ts2.remove(arr[i]);
+                    min[i] = max[i] = arr[i];
+                }
+            }
+            for (int i = 1; i < n; i++) {
+                if (max[i] != 0) {
+                    continue;
+                }
+                final int v = ts2.lower(max[i - 1]);
+                min[i] = ts1.pollFirst();
+                max[i] = v;
+                ts2.remove(v);
+            }
+            final StringBuilder sb1 = new StringBuilder();
+            final StringBuilder sb2 = new StringBuilder();
+            for (int i = 0; i < n; i++) {
+                sb1.append(min[i]);
+                sb1.append(' ');
+                sb2.append(max[i]);
+                sb2.append(' ');
+            }
+            System.out.println(sb1);
+            System.out.println(sb2);
         }
-        return res;
     }
 
     static final class Utils {
