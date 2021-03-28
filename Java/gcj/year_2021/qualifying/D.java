@@ -17,68 +17,58 @@ public final class D {
         final int n = fs.nextInt();
         final int q = fs.nextInt();
         for (int i = 0; i < t; i++) {
-            final List<Integer> l = new ArrayList<>();
-            final int m = query(1, 2, 3, fs);
-            if (m == 1) {
-                l.add(2);
-                l.add(1);
-                l.add(3);
-            } else if (m == 2) {
-                l.add(1);
-                l.add(2);
-                l.add(3);
-            } else {
-                l.add(1);
-                l.add(3);
-                l.add(2);
+            final List<Integer> list = new ArrayList<>(Arrays.asList(1, 2));
+            for (int j = 2; j < n; j++) {
+                add(list, j + 1, fs);
             }
-            int next = 4;
-            int last = -1;
-            while (l.size() < n) {
-                int lo = 0, hi = l.size() - 1;
-                while (lo < hi) {
-                    final int mid = lo + hi + 1 >>> 1;
-                    if (mid == l.size() - 1) {
-                        lo = l.size() - 1;
-                        break;
-                    }
-                    last = query(l.get(l.size() - 1), l.get(mid), next, fs);
-                    if (last == l.get(mid)) {
-                        hi = mid - 1;
-                    } else {
-                        lo = mid;
-                    }
-
-                }
-                if (lo == l.size() - 1) {
-                    if (last == l.get(l.size() - 1)) {
-                        l.add(next);
-                    } else {
-                        l.add(l.size() - 1, next);
-                    }
-                } else {
-                    last = query(l.get(l.size() - 1), l.get(lo), next, fs);
-                    if (last == l.get(lo)) {
-                        l.add(lo, next);
-                    } else {
-                        l.add(lo + 1, next);
-                    }
-                }
-                next++;
-            }
-            final StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < n; j++) {
-                sb.append(l.get(j));
-                sb.append(' ');
-            }
-            System.out.println(sb);
-            System.out.flush();
-            final int ans = fs.nextInt();
-            if (ans != 1) {
-                System.exit(1);
+            if (!printAns(list, fs)) {
+                return;
             }
         }
+    }
+
+    private static void add(List<Integer> list, int toAdd, FastScanner fs) {
+        final int targetIndex = getTargetIndex(list, toAdd, 0, list.size(), fs);
+        list.add(targetIndex, toAdd);
+    }
+
+    @SuppressWarnings("TailRecursion")
+    private static int getTargetIndex(List<Integer> list, int toAdd, int l, int r, FastScanner fs) {
+        if (l == r) {
+            return l;
+        }
+        if (l + 1 == r) {
+            if (r != list.size()) {
+                r++;
+            } else {
+                l--;
+            }
+        }
+        final int leftmostpivot = l;
+        final int rightmostpivot = r - 1;
+        final int nSplits = rightmostpivot - leftmostpivot + 1;
+        final int m1 = leftmostpivot + (nSplits - 1) / 3;
+        final int m2 = rightmostpivot - (nSplits - 1) / 3;
+        final int med = query(toAdd, list.get(m1), list.get(m2), fs);
+        if (med == list.get(m1)) {
+            return getTargetIndex(list, toAdd, l, m1, fs);
+        } else if (med == list.get(m2)) {
+            return getTargetIndex(list, toAdd, m2 + 1, r, fs);
+        } else {
+            return getTargetIndex(list, toAdd, m1 + 1, m2, fs);
+        }
+    }
+
+    private static boolean printAns(List<Integer> res, FastScanner fs) {
+        for (int i = 0; i < res.size(); i++) {
+            if (i != 0) {
+                System.out.print(" ");
+            }
+            System.out.print(res.get(i));
+        }
+        System.out.println();
         System.out.flush();
+        return fs.nextInt() == 1;
     }
 
     private static int query(int x, int y, int z, FastScanner fs) {

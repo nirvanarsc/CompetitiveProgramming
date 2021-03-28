@@ -102,12 +102,11 @@ public final class IncreasingArrayQueries {
         final Deque<Integer> currMax = new ArrayDeque<>();
         final long[] res = new long[q];
         for (int i = n - 1; i >= 0; i--) {
-            final int currVal = arr[i];
-            while (!currMax.isEmpty() && arr[currMax.getFirst()] < currVal) {
+            while (!currMax.isEmpty() && arr[currMax.getFirst()] < arr[i]) {
                 currMax.removeFirst();
             }
             final int to = currMax.isEmpty() ? n : currMax.getFirst();
-            st.update(i, to - 1, 0, currVal);
+            st.update(i, to - 1, 0, arr[i]);
             currMax.addFirst(i);
             for (int[] query : buckets[i]) {
                 res[query[1]] = st.query(i, query[0]) - (pre[query[0] + 1] - pre[i]);
