@@ -8,7 +8,7 @@ import utils.DataStructures.TreeNode;
 
 public class P_971 {
 
-    int i;
+    int idx;
 
     public List<Integer> flipMatchVoyage(TreeNode root, int[] voyage) {
         final List<Integer> res = new ArrayList<>();
@@ -19,13 +19,15 @@ public class P_971 {
         if (root == null) {
             return true;
         }
-        if (root.val != voyage[i++]) {
+        final int val = voyage[idx];
+        if (root.val != val) {
             return false;
         }
-        if (root.left != null && root.left.val != voyage[i]) {
-            res.add(root.val);
-            return dfs(root.right, voyage, res) && dfs(root.left, voyage, res);
+        idx++;
+        if (dfs(root.left, voyage, res) && dfs(root.right, voyage, res)) {
+            return true;
         }
-        return dfs(root.left, voyage, res) && dfs(root.right, voyage, res);
+        res.add(val);
+        return dfs(root.right, voyage, res) && dfs(root.left, voyage, res);
     }
 }
