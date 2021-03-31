@@ -1,49 +1,59 @@
 package leetcode.weekly_contests.weekly_109;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class P_936 {
 
-    public static final int[] INTS = new int[0];
-
     public int[] movesToStamp(String stamp, String target) {
-        final char[] targetC = target.toCharArray();
-        final char[] stampC = stamp.toCharArray();
-        int remainingLength = targetC.length;
-        final List<Integer> steps = new ArrayList<>();
-        while (remainingLength > 0) {
-            boolean found = false;
-            for (int i = 0; i <= targetC.length - stampC.length; i++) {
-                boolean match = true;
-                boolean hasNonQ = false;
-                for (int j = 0; j < stampC.length; j++) {
-                    if (targetC[i + j] != '?') {
-                        if (targetC[i + j] != stampC[j]) {
-                            match = false;
-                            break;
-                        }
-                        hasNonQ = true;
-                    }
+        final List<Integer> res = new ArrayList<>();
+        final char[] end = new char[target.length()];
+        Arrays.fill(end, '?');
+        final boolean ok = dfs(stamp.toCharArray(), target.toCharArray(), end, res);
+        if (!ok) {
+            //noinspection ZeroLengthArrayAllocation
+            return new int[0];
+        }
+        final int[] ret = new int[res.size()];
+        for (int i = 0; i < res.size(); i++) {
+            ret[i] = res.get(res.size() - 1 - i);
+        }
+        return ret;
+    }
+
+    private static boolean dfs(char[] s, char[] t, char[] end, List<Integer> res) {
+        if (Arrays.equals(t, end)) {
+            return true;
+        }
+        for (int i = 0; i < t.length; i++) {
+            if (match(s, t, i)) {
+                res.add(i);
+                for (int j = 0; j < s.length; j++) {
+                    t[i + j] = '?';
                 }
-                if (match && hasNonQ) {
-                    found = true;
-                    steps.add(i);
-                    for (int j = 0; j < stampC.length; j++) {
-                        if (targetC[i + j] != '?') {
-                            targetC[i + j] = '?';
-                            remainingLength--;
-                        }
-                    }
-                    break;
-                }
-            }
-            if (!found) {
-                return INTS;
+                //noinspection TailRecursion
+                return dfs(s, t, end, res);
             }
         }
-        Collections.reverse(steps);
-        return steps.stream().mapToInt(Integer::intValue).toArray();
+        return false;
+    }
+
+    private static boolean match(char[] s, char[] t, int idx) {
+        int replace = 0;
+        for (int i = 0; i < s.length; i++) {
+            final int j = i + idx;
+            if (j == t.length) {
+                return false;
+            }
+            if (t[j] == '?') {
+                continue;
+            }
+            replace++;
+            if (t[j] != s[i]) {
+                return false;
+            }
+        }
+        return replace > 0;
     }
 }
