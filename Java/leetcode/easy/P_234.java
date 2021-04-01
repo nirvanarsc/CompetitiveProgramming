@@ -6,12 +6,17 @@ import utils.DataStructures.ListNode;
 public class P_234 {
 
     public boolean isPalindrome(ListNode head) {
-        ListNode reverse = reverse(findMiddle(head), null);
-        while (reverse != null) {
-            if (head.val != reverse.val) {
+        final ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        final ListNode mid = findMiddle(dummy);
+        final ListNode t = mid.next;
+        mid.next = null;
+        ListNode rev = reverse(t, null);
+        while (rev != null) {
+            if (head.val != rev.val) {
                 return false;
             }
-            reverse = reverse.next;
+            rev = rev.next;
             head = head.next;
         }
         return true;
@@ -27,12 +32,12 @@ public class P_234 {
         return slow;
     }
 
-    private static ListNode reverse(ListNode list, ListNode newHead) {
-        if (list == null) {
-            return newHead;
+    private static ListNode reverse(ListNode node, ListNode tail) {
+        if (node == null) {
+            return tail;
         }
-        final ListNode next = list.next;
-        list.next = newHead;
-        return reverse(next, list);
+        final ListNode next = node.next;
+        node.next = tail;
+        return reverse(next, node);
     }
 }

@@ -26,7 +26,7 @@ public class P_936 {
         if (Arrays.equals(t, end)) {
             return true;
         }
-        for (int i = 0; i < t.length; i++) {
+        for (int i = 0; i < t.length - s.length + 1; i++) {
             if (match(s, t, i)) {
                 res.add(i);
                 for (int j = 0; j < s.length; j++) {
@@ -39,21 +39,14 @@ public class P_936 {
         return false;
     }
 
-    private static boolean match(char[] s, char[] t, int idx) {
-        int replace = 0;
+    private static boolean match(char[] s, char[] t, int j) {
+        boolean ok = false;
         for (int i = 0; i < s.length; i++) {
-            final int j = i + idx;
-            if (j == t.length) {
+            if (t[i + j] != '?' && t[i + j] != s[i]) {
                 return false;
             }
-            if (t[j] == '?') {
-                continue;
-            }
-            replace++;
-            if (t[j] != s[i]) {
-                return false;
-            }
+            ok |= t[i + j] != '?';
         }
-        return replace > 0;
+        return ok;
     }
 }
