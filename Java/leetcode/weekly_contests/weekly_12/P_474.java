@@ -1,37 +1,37 @@
 package leetcode.weekly_contests.weekly_12;
 
+import java.util.Arrays;
+
 public class P_474 {
 
     public int findMaxForm(String[] strs, int m, int n) {
-        final int[][] count = new int[strs.length][2];
-        for (int i = 0; i < strs.length; i++) {
-            int currZero = 0;
-            int currOne = 0;
-            for (char c : strs[i].toCharArray()) {
-                if (c == '0') {
-                    currZero++;
-                } else {
-                    currOne++;
-                }
+        final int[][] f = new int[strs.length][2];
+        final int[][][] dp = new int[strs.length][m + 1][n + 1];
+        for (int[][] row1 : dp) {
+            for (int[] row2 : row1) {
+                Arrays.fill(row2, -1);
             }
-            count[i][0] = currZero;
-            count[i][1] = currOne;
         }
-        return dfs(count, 0, m, n, new Integer[count.length][m + 1][n + 1]);
+        for (int i = 0; i < strs.length; i++) {
+            final String s = strs[i];
+            for (char c : s.toCharArray()) {
+                f[i][c - '0']++;
+            }
+        }
+        return dfs(f, 0, m, n, dp);
     }
 
-    private static int dfs(int[][] count, int i, int zeroes, int ones, Integer[][][] dp) {
-        if (i == count.length) {
+    private static int dfs(int[][] f, int idx, int m, int n, int[][][] dp) {
+        if (idx == f.length) {
             return 0;
         }
-        if (dp[i][zeroes][ones] != null) {
-            return dp[i][zeroes][ones];
+        if (dp[idx][m][n] != -1) {
+            return dp[idx][m][n];
         }
-        int take = 0;
-        if (count[i][0] <= zeroes && count[i][1] <= ones) {
-            take = 1 + dfs(count, i + 1, zeroes - count[i][0], ones - count[i][1], dp);
+        int res = dfs(f, idx + 1, m, n, dp);
+        if (f[idx][0] <= m && f[idx][1] <= n) {
+            res = Math.max(res, 1 + dfs(f, idx + 1, m - f[idx][0], n - f[idx][1], dp));
         }
-        final int skip = dfs(count, i + 1, zeroes, ones, dp);
-        return dp[i][zeroes][ones] = Math.max(take, skip);
+        return dp[idx][m][n] = res;
     }
 }

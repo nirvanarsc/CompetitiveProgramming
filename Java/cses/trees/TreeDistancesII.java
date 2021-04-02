@@ -3,52 +3,52 @@ package cses.trees;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 
 public final class TreeDistancesII {
 
+    static int n;
+    static int[][] g;
+    static int[] size;
+    static long[] res;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final PrintWriter pw = new PrintWriter(System.out);
-        final int n = fs.nextInt();
+        n = fs.nextInt();
         final int[][] edges = new int[n - 1][2];
         for (int i = 0; i < (n - 1); i++) {
             edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
-        final int[][] g = packG(edges, n);
-        final int[] size = new int[n];
-        final long[] res = new long[n];
-        dfs(0, -1, 0, res, g, size);
-        dfs2(0, -1, n, g, size, res);
+        g = packG(edges, n);
+        size = new int[n];
+        res = new long[n];
+        dfs(0, -1, 0);
+        dfs2(0, -1);
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            if (i != 0) {
-                sb.append(' ');
-            }
             sb.append(res[i]);
+            sb.append(' ');
         }
-        pw.println(sb);
-        pw.close();
+        System.out.println(sb);
     }
 
-    private static void dfs(int u, int v, int d, long[] res, int[][] g, int[] size) {
+    private static void dfs(int u, int v, int d) {
         res[0] += d;
         size[u] = 1;
         for (int next : g[u]) {
             if (next != v) {
-                dfs(next, u, d + 1, res, g, size);
+                dfs(next, u, d + 1);
                 size[u] += size[next];
             }
         }
     }
 
-    private static void dfs2(int u, int v, int n, int[][] g, int[] size, long[] res) {
+    private static void dfs2(int u, int v) {
         for (int next : g[u]) {
             if (next != v) {
                 res[next] = res[u] + n - (2 * size[next]);
-                dfs2(next, u, n, g, size, res);
+                dfs2(next, u);
             }
         }
     }
