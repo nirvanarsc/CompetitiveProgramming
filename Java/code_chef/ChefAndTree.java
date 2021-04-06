@@ -1,4 +1,4 @@
-package cses.trees;
+package code_chef;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,23 +6,21 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class PathQueries {
+public final class ChefAndTree {
 
-//    public int minOperations(int n) {
-//
-//    }
-
-
+    // https://www.codechef.com/problems/CHEFTREE
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
         long sum;
+        long max;
+        long operation;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
             this.rightMost = rightMost;
             if (leftMost == rightMost) {
-                sum = arr[leftMost];
+                max = arr[leftMost];
             } else {
                 final int mid = leftMost + rightMost >>> 1;
                 left = new SegTree(leftMost, mid, arr);
@@ -32,7 +30,27 @@ public final class PathQueries {
         }
 
         private void recalc() {
-            sum = left.sum + right.sum;
+            if (leftMost == rightMost) {
+                return;
+            }
+            max = Math.max(applyAggregate(left), applyAggregate(right));
+        }
+
+        private void propagate() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            left.compose(operation);
+            right.compose(operation);
+            operation = 0;
+        }
+
+        private void compose(long add) {
+            operation += add;
+        }
+
+        private static long applyAggregate(SegTree curr) {
+            return curr.max + curr.operation;
         }
 
         private long query(int l, int r) {
@@ -40,29 +58,32 @@ public final class PathQueries {
                 return 0;
             }
             if (l <= leftMost && rightMost <= r) {
-                return sum;
+                return applyAggregate(this);
             }
+            propagate();
+            recalc();
             return left.query(l, r) + right.query(l, r);
         }
 
-        private void update(int idx, long val) {
-            if (leftMost == rightMost) {
-                sum = val;
-            } else {
-                final int mid = leftMost + rightMost >>> 1;
-                if (idx <= mid) {
-                    left.update(idx, val);
-                } else {
-                    right.update(idx, val);
-                }
-                recalc();
+        private void update(int l, int r, long add) {
+            if (r < leftMost || l > rightMost) {
+                return;
             }
+            if (l <= leftMost && rightMost <= r) {
+                compose(add);
+                return;
+            }
+            propagate();
+            left.update(l, r, add);
+            right.update(l, r, add);
+            recalc();
         }
     }
 
     static int n;
     static int q;
     static int h;
+    static int labelTime;
     static int time;
     static int[][] parents;
     static int[][] edges;
@@ -74,6 +95,8 @@ public final class PathQueries {
     static int[] depth;
     static int[] label;
     static int[] topChain;
+    static int[] in;
+    static int[] out;
     static SegTree st;
 
     public static void main(String[] args) throws IOException {
@@ -96,6 +119,8 @@ public final class PathQueries {
         heavy = new int[n];
         label = new int[n];
         topChain = new int[n];
+        in = new int[n];
+        out = new int[n];
         st = new SegTree(0, n - 1, new int[n]);
         dfs1();
         initParents();
@@ -103,12 +128,17 @@ public final class PathQueries {
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < q; i++) {
             final int type = fs.nextInt();
-            final int u = fs.nextInt() - 1;
             if (type == 1) {
+                final int idx = fs.nextInt() - 1;
                 final int v = fs.nextInt();
-                st.update(label[u], v);
+                st.update(label[idx], v, 0);
+                arr[idx] = v;
             } else {
-                sb.append(queryChain(u, 0) + st.query(label[0], label[0]));
+                final int l = fs.nextInt() - 1;
+                final int r = fs.nextInt() - 1;
+                final int lca = getLca(l, r);
+                final long res = Math.max(queryChain(l, lca), queryChain(r, lca));
+                sb.append(Math.max(res, arr[lca]));
                 sb.append('\n');
             }
         }
@@ -116,14 +146,14 @@ public final class PathQueries {
     }
 
     private static long queryChain(int u, int v) {
-        long val = 0;
+        long val = (long) -1e9;
         while (depth[v] < depth[u]) {
             int top = topChain[u];
             if (depth[top] <= depth[v]) {
                 final int diff = depth[u] - depth[v];
                 top = getKthAncestor(u, diff - 1);
             }
-            val += st.query(label[top], label[u]);
+            val = Math.max(val, st.query(label[top], label[u]));
             u = parent[top];
         }
         return val;
@@ -138,6 +168,7 @@ public final class PathQueries {
             final int u = stack[stackIdx - 1];
             final int v = parent[u];
             if (idx[u] == 0) {
+                in[u] = time++;
                 size[u] = 1;
                 depth[u] = depth[parent[u]] + 1;
                 heavy[u] = g[u][0];
@@ -151,6 +182,7 @@ public final class PathQueries {
             } else {
                 stackIdx--;
                 size[v] += size[u];
+                out[u] = time++;
                 if (size[heavy[v]] < size[u]) {
                     heavy[v] = u;
                 }
@@ -164,8 +196,8 @@ public final class PathQueries {
         stack[stackIdx++] = 0;
         while (stackIdx > 0) {
             final int u = stack[--stackIdx];
-            label[u] = time++;
-            st.update(label[u], arr[u]);
+            label[u] = labelTime++;
+            st.update(label[u], arr[u], 0);
             for (int v : g[u]) {
                 if (v != parent[u] && v != heavy[u]) {
                     topChain[v] = v;
@@ -182,6 +214,7 @@ public final class PathQueries {
 //    private static void dfs1(int u, int v) {
 //        size[u] = 1;
 //        parent[u] = v;
+//        in[u] = time++;
 //        int max = g[u][0];
 //        for (int next : g[u]) {
 //            if (next != v) {
@@ -193,11 +226,12 @@ public final class PathQueries {
 //                }
 //            }
 //        }
+//        out[u] = time;
 //        heavy[u] = max;
 //    }
 //
 //    private static void dfs2(int u, int v) {
-//        label[u] = time++;
+//        label[u] = labelTime++;
 //        st.update(label[u], arr[u]);
 //        if (heavy[u] != v) {
 //            topChain[heavy[u]] = topChain[u];
@@ -234,11 +268,7 @@ public final class PathQueries {
         for (int i = 1; i < h; i++) {
             for (int u = 0; u < n; u++) {
                 final int nodeParent = parents[i - 1][u];
-                if (nodeParent != -1) {
-                    parents[i][u] = parents[i - 1][nodeParent];
-                } else {
-                    parents[i][u] = -1;
-                }
+                parents[i][u] = parents[i - 1][nodeParent];
             }
         }
     }
@@ -247,12 +277,24 @@ public final class PathQueries {
         for (int i = 0; i <= h; i++) {
             if ((k & (1 << i)) != 0) {
                 u = parents[i][u];
-                if (u == -1) {
-                    return -2;
-                }
             }
         }
         return u;
+    }
+
+    private static boolean isAncestor(int u, int v) {
+        return in[u] <= in[v] && out[v] <= out[u];
+    }
+
+    private static int getLca(int u, int v) {
+        if (isAncestor(u, v)) { return u; }
+        if (isAncestor(v, u)) { return v; }
+        for (int i = h; i >= 0; i--) {
+            if (!isAncestor(parents[i][u], v)) {
+                u = parents[i][u];
+            }
+        }
+        return parents[0][u];
     }
 
     static final class Utils {
