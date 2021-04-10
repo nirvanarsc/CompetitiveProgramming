@@ -1,7 +1,9 @@
 package leetcode.hard;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class P_329 {
@@ -74,45 +76,44 @@ public class P_329 {
     }
 
     public int longestIncreasingPathTopSort(int[][] matrix) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return 0;
-        }
         final int n = matrix.length;
         final int m = matrix[0].length;
-        final int[][] outdegree = new int[n][m];
+        final int[] inDegree = new int[n * m];
+        final List<List<Integer>> g = new ArrayList<>();
+        for (int i = 0; i < n * m; i++) {
+            g.add(new ArrayList<>());
+        }
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                for (int[] d : DIRS) {
-                    final int nx = i + d[0];
-                    final int ny = j + d[1];
-                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && matrix[i][j] < matrix[nx][ny]) {
-                        outdegree[i][j]++;
-                    }
-                }
-            }
-        }
-        final Deque<int[]> q = new ArrayDeque<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (outdegree[i][j] == 0) {
-                    q.add(new int[] { i, j });
-                }
-            }
-        }
-        int res;
-        for (res = 0; !q.isEmpty(); res++) {
-            for (int size = q.size(); size > 0; size--) {
-                final int[] node = q.removeFirst();
+                final int u = i * m + j;
                 for (int[] dir : DIRS) {
-                    final int nx = node[0] + dir[0];
-                    final int ny = node[1] + dir[1];
-                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && matrix[node[0]][node[1]] > matrix[nx][ny]) {
-                        if (--outdegree[nx][ny] == 0) {
-                            q.offerLast(new int[] { nx, ny });
-                        }
+                    final int nx = i + dir[0];
+                    final int ny = j + dir[1];
+                    final int v = nx * m + ny;
+                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && matrix[i][j] < matrix[nx][ny]) {
+                        inDegree[v]++;
+                        g.get(u).add(v);
                     }
                 }
             }
+        }
+        final Deque<Integer> dq = new ArrayDeque<>();
+        for (int i = 0; i < n * m; i++) {
+            if (inDegree[i] == 0) {
+                dq.offerLast(i);
+            }
+        }
+        int res = 0;
+        while (!dq.isEmpty()) {
+            for (int size = dq.size(); size > 0; size--) {
+                final int u = dq.removeFirst();
+                for (int next : g.get(u)) {
+                    if (--inDegree[next] == 0) {
+                        dq.offerLast(next);
+                    }
+                }
+            }
+            res++;
         }
         return res;
     }
