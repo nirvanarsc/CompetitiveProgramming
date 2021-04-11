@@ -1,29 +1,26 @@
 package leetcode.biweekly_contests.biweekly_16;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 import utils.DataStructures.TreeNode;
 
 public class P_1302 {
 
     public int deepestLeavesSum(TreeNode root) {
-        final Deque<TreeNode> queue = new LinkedList<>();
+        final Deque<TreeNode> dq = new ArrayDeque<>();
         int res = 0;
-        if (root != null) {
-            queue.offerLast(root);
-        }
-        while (!queue.isEmpty()) {
+        dq.offerLast(root);
+        while (!dq.isEmpty()) {
             res = 0;
-            final int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                final TreeNode curr = queue.removeFirst();
+            for (int size = dq.size(); size > 0; size--) {
+                final TreeNode curr = dq.removeFirst();
                 res += curr.val;
                 if (curr.left != null) {
-                    queue.offerLast(curr.left);
+                    dq.offerLast(curr.left);
                 }
                 if (curr.right != null) {
-                    queue.offerLast(curr.right);
+                    dq.offerLast(curr.right);
                 }
             }
         }
