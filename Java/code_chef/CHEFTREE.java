@@ -6,21 +6,24 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class ChefAndTree {
+public final class CHEFTREE {
 
     // https://www.codechef.com/problems/CHEFTREE
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
-        long sum;
-        long max;
+        long[] maxSum;
         long operation;
 
         SegTree(int leftMost, int rightMost, int[] arr) {
             this.leftMost = leftMost;
             this.rightMost = rightMost;
             if (leftMost == rightMost) {
-                max = arr[leftMost];
+                if (arr[leftMost] < limit) {
+                    maxSum = new long[] { arr[leftMost], 0 };
+                } else {
+                    maxSum = new long[] { -inf, 1 };
+                }
             } else {
                 final int mid = leftMost + rightMost >>> 1;
                 left = new SegTree(leftMost, mid, arr);
@@ -30,27 +33,19 @@ public final class ChefAndTree {
         }
 
         private void recalc() {
-            if (leftMost == rightMost) {
-                return;
-            }
-            max = Math.max(applyAggregate(left), applyAggregate(right));
+            maxSum = merge(left.maxSum, right.maxSum);
+        }
+
+        private static long[] merge(long[] l, long[] r) {
+            return new long[] { Math.max(l[0], r[0]), l[1] + r[1] };
         }
 
         private void propagate() {
-            if (leftMost == rightMost) {
-                return;
-            }
-            left.compose(operation);
-            right.compose(operation);
+            left.operation += operation;
+            right.operation += operation;
+            left.maxSum[0] += operation;
+            right.maxSum[0] += operation;
             operation = 0;
-        }
-
-        private void compose(long add) {
-            operation += add;
-        }
-
-        private static long applyAggregate(SegTree curr) {
-            return curr.max + curr.operation;
         }
 
         private long query(int l, int r) {
@@ -58,7 +53,7 @@ public final class ChefAndTree {
                 return 0;
             }
             if (l <= leftMost && rightMost <= r) {
-                return applyAggregate(this);
+                return maxSum[1];
             }
             propagate();
             recalc();
@@ -66,12 +61,23 @@ public final class ChefAndTree {
         }
 
         private void update(int l, int r, long add) {
-            if (r < leftMost || l > rightMost) {
+            if (r < leftMost || l > rightMost || maxSum[0] == -inf) {
+                return;
+            }
+            if (leftMost == rightMost) {
+                maxSum[0] += add;
+                if (maxSum[0] >= limit) {
+                    maxSum[0] = -inf;
+                    maxSum[1] = 1;
+                }
                 return;
             }
             if (l <= leftMost && rightMost <= r) {
-                compose(add);
-                return;
+                if (maxSum[0] + add < limit) {
+                    maxSum[0] += add;
+                    operation += add;
+                    return;
+                }
             }
             propagate();
             left.update(l, r, add);
@@ -80,19 +86,21 @@ public final class ChefAndTree {
         }
     }
 
+    static long inf = (long) 1e18;
     static int n;
     static int q;
     static int h;
     static int labelTime;
     static int time;
+    static long limit;
     static int[][] parents;
+    static int[] arr;
     static int[][] edges;
     static int[][] g;
-    static int[] arr;
-    static int[] heavy;
-    static int[] size;
     static int[] parent;
     static int[] depth;
+    static int[] size;
+    static int[] heavy;
     static int[] label;
     static int[] topChain;
     static int[] in;
@@ -101,149 +109,131 @@ public final class ChefAndTree {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        n = fs.nextInt();
-        q = fs.nextInt();
-        h = 18;
-        arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = fs.nextInt();
-        }
-        edges = new int[n - 1][2];
-        for (int i = 0; i < (n - 1); i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
-        }
-        g = packG();
-        parent = new int[n];
-        depth = new int[n];
-        size = new int[n];
-        heavy = new int[n];
-        label = new int[n];
-        topChain = new int[n];
-        in = new int[n];
-        out = new int[n];
-        st = new SegTree(0, n - 1, new int[n]);
-        dfs1();
-        initParents();
-        dfs2();
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            if (type == 1) {
-                final int idx = fs.nextInt() - 1;
-                final int v = fs.nextInt();
-                st.update(label[idx], v, 0);
-                arr[idx] = v;
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            limit = 0;
+            labelTime = 0;
+            time = 0;
+            h = 18;
+            n = fs.nextInt();
+            q = fs.nextInt();
+            final long a = fs.nextInt();
+            final long b = fs.nextInt();
+            arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = fs.nextInt();
+            }
+            edges = new int[n - 1][2];
+            for (int i = 0; i < (n - 1); i++) {
+                edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+            }
+            g = packG();
+            parent = new int[n];
+            depth = new int[n];
+            size = new int[n];
+            heavy = new int[n];
+            label = new int[n];
+            topChain = new int[n];
+            in = new int[n];
+            out = new int[n];
+            if (a != 0) {
+                limit = -b / a;
+                if (limit * a + b < 0) {
+                    limit++;
+                }
             } else {
-                final int l = fs.nextInt() - 1;
-                final int r = fs.nextInt() - 1;
-                final int lca = getLca(l, r);
-                final long res = Math.max(queryChain(l, lca), queryChain(r, lca));
-                sb.append(Math.max(res, arr[lca]));
-                sb.append('\n');
+                limit = b >= 0 ? -inf + 10 : inf;
+            }
+            dfs1(0, 0);
+            initParents();
+            dfs2(0, 0);
+            final int[] stArr = new int[n];
+            for (int i = 0; i < n; i++) {
+                stArr[label[i]] = arr[i];
+            }
+            st = new SegTree(0, n - 1, stArr);
+            for (int i = 0; i < q; i++) {
+                final int type = fs.nextInt();
+                if (type == 1) {
+                    final int l = fs.nextInt() - 1;
+                    final int r = fs.nextInt() - 1;
+                    final int w = fs.nextInt();
+                    final int lca = getLca(l, r);
+                    updateChain(l, lca, w);
+                    updateChain(r, lca, w);
+                    st.update(label[lca], label[lca], w);
+                } else {
+                    final int l = fs.nextInt() - 1;
+                    final int r = fs.nextInt() - 1;
+                    final int lca = getLca(l, r);
+                    final long res = queryChain(l, lca) + queryChain(r, lca) + st.query(label[lca], label[lca]);
+                    sb.append(res);
+                    sb.append('\n');
+                }
             }
         }
         System.out.println(sb);
     }
 
     private static long queryChain(int u, int v) {
-        long val = (long) -1e9;
+        long res = 0;
         while (depth[v] < depth[u]) {
             int top = topChain[u];
             if (depth[top] <= depth[v]) {
                 final int diff = depth[u] - depth[v];
                 top = getKthAncestor(u, diff - 1);
             }
-            val = Math.max(val, st.query(label[top], label[u]));
+            res += st.query(label[top], label[u]);
             u = parent[top];
         }
-        return val;
+        return res;
     }
 
-    private static void dfs1() {
-        final int[] stack = new int[n];
-        final int[] idx = new int[n];
-        int stackIdx = 0;
-        stack[stackIdx++] = 0;
-        while (stackIdx > 0) {
-            final int u = stack[stackIdx - 1];
-            final int v = parent[u];
-            if (idx[u] == 0) {
-                in[u] = time++;
-                size[u] = 1;
-                depth[u] = depth[parent[u]] + 1;
-                heavy[u] = g[u][0];
+    private static void updateChain(int u, int v, int w) {
+        while (depth[v] < depth[u]) {
+            int top = topChain[u];
+            if (depth[top] <= depth[v]) {
+                final int diff = depth[u] - depth[v];
+                top = getKthAncestor(u, diff - 1);
             }
-            if (idx[u] < g[u].length) {
-                final int next = g[u][idx[u]++];
-                if (next != v) {
-                    parent[next] = u;
-                    stack[stackIdx++] = next;
-                }
-            } else {
-                stackIdx--;
-                size[v] += size[u];
-                out[u] = time++;
-                if (size[heavy[v]] < size[u]) {
-                    heavy[v] = u;
-                }
-            }
+            st.update(label[top], label[u], w);
+            u = parent[top];
         }
     }
 
-    private static void dfs2() {
-        final int[] stack = new int[n];
-        int stackIdx = 0;
-        stack[stackIdx++] = 0;
-        while (stackIdx > 0) {
-            final int u = stack[--stackIdx];
-            label[u] = labelTime++;
-            st.update(label[u], arr[u], 0);
-            for (int v : g[u]) {
-                if (v != parent[u] && v != heavy[u]) {
-                    topChain[v] = v;
-                    stack[stackIdx++] = v;
+    private static void dfs1(int u, int v) {
+        size[u] = 1;
+        parent[u] = v;
+        in[u] = time++;
+        int max = g[u][0];
+        for (int next : g[u]) {
+            if (next != v) {
+                depth[next] = depth[u] + 1;
+                dfs1(next, u);
+                size[u] += size[next];
+                if (size[max] < size[next]) {
+                    max = next;
                 }
             }
-            if (heavy[u] != parent[u]) {
-                topChain[heavy[u]] = topChain[u];
-                stack[stackIdx++] = heavy[u];
+        }
+        out[u] = time;
+        heavy[u] = max;
+    }
+
+    private static void dfs2(int u, int v) {
+        label[u] = labelTime++;
+        if (heavy[u] != v) {
+            topChain[heavy[u]] = topChain[u];
+            dfs2(heavy[u], u);
+        }
+        for (int next : g[u]) {
+            if (next != v && next != heavy[u]) {
+                topChain[next] = next;
+                dfs2(next, u);
             }
         }
     }
-
-//    private static void dfs1(int u, int v) {
-//        size[u] = 1;
-//        parent[u] = v;
-//        in[u] = time++;
-//        int max = g[u][0];
-//        for (int next : g[u]) {
-//            if (next != v) {
-//                depth[next] = depth[u] + 1;
-//                dfs1(next, u);
-//                size[u] += size[next];
-//                if (size[max] < size[next]) {
-//                    max = next;
-//                }
-//            }
-//        }
-//        out[u] = time;
-//        heavy[u] = max;
-//    }
-//
-//    private static void dfs2(int u, int v) {
-//        label[u] = labelTime++;
-//        st.update(label[u], arr[u]);
-//        if (heavy[u] != v) {
-//            topChain[heavy[u]] = topChain[u];
-//            dfs2(heavy[u], u);
-//        }
-//        for (int next : g[u]) {
-//            if (next != v && next != heavy[u]) {
-//                topChain[next] = next;
-//                dfs2(next, u);
-//            }
-//        }
-//    }
 
     private static int[][] packG() {
         final int[][] g = new int[n][];

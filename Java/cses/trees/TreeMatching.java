@@ -1,4 +1,4 @@
-//package cses.trees;
+package cses.trees;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
