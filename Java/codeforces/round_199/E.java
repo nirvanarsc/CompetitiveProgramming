@@ -1,4 +1,4 @@
-package cses.trees;
+package codeforces.round_199;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,40 +6,179 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class FindingACentroid {
+public final class E {
+
+    private static class Centroid {
+        int n;
+        int[][] g;
+        int[] size;
+        int[] parent;
+        boolean[] seen;
+
+        Centroid(int n, int[][] g) {
+            this.n = n;
+            this.g = g;
+            size = new int[n];
+            parent = new int[n];
+            seen = new boolean[n];
+            initCentroid(0, -1);
+        }
+
+        private int getSize(int u, int v) {
+            if (seen[u]) {
+                return 0;
+            }
+            size[u] = 1;
+            for (int next : g[u]) {
+                if (next != v) {
+                    size[u] += getSize(next, u);
+                }
+            }
+            return size[u];
+        }
+
+        private void initCentroid(int u, int v) {
+            getSize(u, v);
+            final int c = findCentroid(u, -1, size[u]);
+            seen[c] = true;
+            parent[c] = v;
+            for (int next : g[c]) {
+                if (!seen[next]) {
+                    initCentroid(next, c);
+                }
+            }
+        }
+
+        private int findCentroid(int u, int v, int currSize) {
+            for (int x : g[u]) {
+                if (x != v) {
+                    if (!seen[x] && size[x] > currSize / 2) {
+                        //noinspection TailRecursion
+                        return findCentroid(x, u, currSize);
+                    }
+                }
+            }
+            return u;
+        }
+    }
+
+    private static class LCA {
+        int time;
+        int h;
+        int[] depth;
+        int[] in;
+        int[] out;
+        int[] parent;
+        int[][] parents;
+        int[][] g;
+
+        LCA(int n, int[][] g) {
+            this.g = g;
+            h = 18;
+            depth = new int[n];
+            in = new int[n];
+            out = new int[n];
+            parent = new int[n];
+            dfs(0, 0);
+            initParents();
+        }
+
+        private void dfs(int u, int v) {
+            parent[u] = v;
+            in[u] = time++;
+            for (int next : g[u]) {
+                if (next != v) {
+                    depth[next] = depth[u] + 1;
+                    dfs(next, u);
+                }
+            }
+            out[u] = time;
+        }
+
+        private void initParents() {
+            parents = new int[h + 1][n];
+            parents[0] = parent;
+            for (int i = 1; i < h; i++) {
+                for (int u = 0; u < n; u++) {
+                    final int nodeParent = parents[i - 1][u];
+                    parents[i][u] = parents[i - 1][nodeParent];
+                }
+            }
+        }
+
+        private boolean isAncestor(int u, int v) {
+            return in[u] <= in[v] && out[v] <= out[u];
+        }
+
+        private int getLca(int u, int v) {
+            if (isAncestor(u, v)) { return u; }
+            if (isAncestor(v, u)) { return v; }
+            for (int i = h; i >= 0; i--) {
+                if (!isAncestor(parents[i][u], v)) {
+                    u = parents[i][u];
+                }
+            }
+            return parents[0][u];
+        }
+
+        private int getDist(int u, int v) {
+            return depth[u] + depth[v] - 2 * depth[getLca(u, v)];
+        }
+    }
 
     static int n;
+    static int q;
     static int[][] edges;
     static int[][] g;
-    static int[] size;
-    static int res = -1;
+    static Centroid ct;
+    static LCA lca;
+    static int[] best;
+
+    private static void update(int u) {
+        best[u] = 0;
+        int v = u;
+        while (ct.parent[v] != -1) {
+            v = ct.parent[v];
+            best[v] = Math.min(best[v], lca.getDist(v, u));
+        }
+    }
+
+    private static int query(int u) {
+        int res = best[u];
+        int v = u;
+        while (ct.parent[v] != -1) {
+            v = ct.parent[v];
+            res = Math.min(res, best[v] + lca.getDist(v, u));
+        }
+        return res;
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         n = fs.nextInt();
+        q = fs.nextInt();
         edges = new int[n - 1][2];
-        size = new int[n];
         for (int i = 0; i < (n - 1); i++) {
             edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
         g = packG();
-        dfs(0, -1);
-        System.out.println(res + 1);
-    }
-
-    private static void dfs(int u, int v) {
-        size[u] = 1;
-        int max = 0;
-        for (int next : g[u]) {
-            if (next != v) {
-                dfs(next, u);
-                size[u] += size[next];
-                max = Math.max(max, size[next]);
+        ct = new Centroid(n, g);
+        lca = new LCA(n, g);
+        best = new int[n];
+        Arrays.fill(best, (int) 1e9);
+        final StringBuilder sb = new StringBuilder();
+        update(0);
+        for (int i = 0; i < q; i++) {
+            final int type = fs.nextInt();
+            final int u = fs.nextInt() - 1;
+            if (type == 1) {
+                update(u);
+            } else {
+                sb.append(query(u));
+                sb.append('\n');
             }
         }
-        if (max <= n / 2 && (n - size[u] <= n / 2)) {
-            res = u;
-        }
+        System.out.println(sb);
     }
 
     private static int[][] packG() {

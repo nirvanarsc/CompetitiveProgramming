@@ -3,7 +3,7 @@ package leetcode.biweekly_contests.biweekly_23;
 public class P_1400 {
 
     public boolean canConstruct(String s, int k) {
-        final int [] map = new int[26];
+        final int[] map = new int[26];
         for(char c: s.toCharArray()) {
             map[c-'a']++;
         }

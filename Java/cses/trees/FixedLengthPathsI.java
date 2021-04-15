@@ -6,39 +6,113 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class FindingACentroid {
+public final class FixedLengthPathsI {
+
+    private static class Centroid {
+        int n;
+        int[][] g;
+        int[] size;
+        int[] parent;
+        int[] level;
+        boolean[] seen;
+
+        Centroid(int n, int[][] g) {
+            this.n = n;
+            this.g = g;
+            size = new int[n];
+            parent = new int[n];
+            seen = new boolean[n];
+            initCentroid(0, -1);
+        }
+
+        private int getSize(int u, int v) {
+            if (seen[u]) {
+                return 0;
+            }
+            size[u] = 1;
+            for (int next : g[u]) {
+                if (next != v) {
+                    size[u] += getSize(next, u);
+                }
+            }
+            return size[u];
+        }
+
+        private void initCentroid(int u, int v) {
+            getSize(u, v);
+            final int c = findCentroid(u, -1, size[u]);
+            seen[c] = true;
+            parent[c] = v;
+            for (int next : g[c]) {
+                if (!seen[next]) {
+                    initCentroid(next, c);
+                }
+            }
+        }
+
+        private int findCentroid(int u, int v, int currSize) {
+            for (int x : g[u]) {
+                if (x != v) {
+                    if (!seen[x] && size[x] > currSize / 2) {
+                        //noinspection TailRecursion
+                        return findCentroid(x, u, currSize);
+                    }
+                }
+            }
+            return u;
+        }
+    }
 
     static int n;
+    static int k;
     static int[][] edges;
     static int[][] g;
-    static int[] size;
-    static int res = -1;
+    static Centroid ct;
+    static int[] count;
+    static long res;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         n = fs.nextInt();
+        k = fs.nextInt();
+        res = 0;
+        count = new int[n];
         edges = new int[n - 1][2];
-        size = new int[n];
         for (int i = 0; i < (n - 1); i++) {
             edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
         g = packG();
-        dfs(0, -1);
-        System.out.println(res + 1);
-    }
-
-    private static void dfs(int u, int v) {
-        size[u] = 1;
-        int max = 0;
-        for (int next : g[u]) {
-            if (next != v) {
-                dfs(next, u);
-                size[u] += size[next];
-                max = Math.max(max, size[next]);
+        ct = new Centroid(n, g);
+        System.out.println(Arrays.toString(ct.parent));
+        edges = new int[n - 1][2];
+        int idx = 0;
+        int root = -1;
+        for (int i = 0; i < n; i++) {
+            if (ct.parent[i] != -1) {
+                edges[idx++] = new int[] { i, ct.parent[i] };
+            } else {
+                root = i;
             }
         }
-        if (max <= n / 2 && (n - size[u] <= n / 2)) {
-            res = u;
+        for (int i= 0; i< (n-1); i++) {
+            System.out.println(Arrays.toString(edges[i]));
+        }
+        g = packG();
+        System.out.println();
+        for (int[] row: g) {
+            System.out.println(Arrays.toString(row));
+        }
+        dfs(root, -1, 0);
+        System.out.println(res);
+    }
+
+    private static void dfs(int u, int v, int depth) {
+        count[depth]++;
+        for (int next : g[u]) {
+            if (next != v) {
+                dfs(next, u, depth + 1);
+                res += count[k - depth];
+            }
         }
     }
 
