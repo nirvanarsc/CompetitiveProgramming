@@ -33,9 +33,9 @@ public class P_1074 {
         int res = 0;
         final int n = matrix.length;
         final int m = matrix[0].length;
-        final int[][] dp = new int[matrix.length + 1][matrix[0].length + 1];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
+        final int[][] dp = new int[n + 1][m + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 dp[i + 1][j + 1] = matrix[i][j] + dp[i + 1][j] + dp[i][j + 1] - dp[i][j];
             }
         }
