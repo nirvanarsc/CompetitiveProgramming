@@ -5,20 +5,19 @@ import utils.DataStructures.ListNode;
 public class P_19 {
 
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        final ListNode sentinel = new ListNode(-1);
-        sentinel.next = head;
-
-        ListNode iter1 = sentinel;
-        ListNode iter2 = sentinel;
-        for (int i = 0; i <= n; i++) {
-            iter1 = iter1.next;
+        final ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode iter = head;
+        for (int i = 0; i < n; i++) {
+            iter = iter.next;
         }
-        while (iter1 != null) {
-            iter1 = iter1.next;
+        ListNode iter2 = dummy;
+        while (iter != null) {
+            iter = iter.next;
             iter2 = iter2.next;
         }
-
+        //noinspection ConstantConditions
         iter2.next = iter2.next.next;
-        return sentinel.next;
+        return dummy.next;
     }
 }
