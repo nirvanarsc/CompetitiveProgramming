@@ -26,13 +26,13 @@ public class P_377 {
         return dp[target] = res;
     }
 
-    public int combinationSum4BottomUp(int[] candidates, int target) {
+    public int combinationSum4BottomUp(int[] nums, int target) {
         final int[] dp = new int[target + 1];
         dp[0] = 1;
-        for (int i = 1; i <= target; i++) {
-            for (int candidate : candidates) {
-                if (i - candidate >= 0) {
-                    dp[i] += dp[i - candidate];
+        for (int sum = 0; sum <= target; sum++) {
+            for (int num : nums) {
+                if (sum + num <= target) {
+                    dp[sum + num] += dp[sum];
                 }
             }
         }

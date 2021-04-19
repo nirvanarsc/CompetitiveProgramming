@@ -1,112 +1,54 @@
-package atcoder.regular_100_199.arc_117;
+package kickstart.year_2021.round_b;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
-
-    static int n;
-    static int[][] edges;
-    static int[][] g;
-    static int time;
-    static int[] res;
-    static int[] mark;
-    static int[] parent;
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        time = 1;
-        n = fs.nextInt();
-        edges = new int[n - 1][2];
-        for (int i = 0; i < (n - 1); i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        final int t = fs.nextInt();
+        for (int x = 1; x <= t; x++) {
+            final int n = fs.nextInt();
+            final int[] arr = fs.nextIntArray(n);
+            final int[] d1 = new int[n - 1];
+            final int[] d2 = new int[n - 1];
+            for (int i = 1; i < n; i++) {
+                d1[i - 1] = arr[i] - arr[i - 1];
+            }
+            for (int i = n - 1; i >= 1; i--) {
+                d2[n - i - 1] = arr[i] - arr[i - 1];
+            }
+            System.out.println("Case #" + x + ": " + Math.max(solve(d1), solve(d2)));
         }
-        g = packG();
-        res = new int[n];
-        parent = new int[n];
-        mark = new int[n];
-        final int[] ll = bfs(0);
-        final int[] rr = bfs(ll[0]);
-        final int u = ll[0];
-        int v = rr[0];
-        while (v != u) {
-            mark[v] = 1;
-            v = parent[v];
-        }
-        dfs(u, -1);
-        final StringBuilder sb = new StringBuilder();
+    }
+
+    private static int solve(int[] d) {
+        final int n = d.length;
+        int res = 0;
         for (int i = 0; i < n; i++) {
-            sb.append(res[i]);
-            sb.append(' ');
-        }
-        System.out.println(sb);
-    }
-
-    private static void dfs(int u, int v) {
-        res[u] = time;
-        int last = -1;
-        for (int next : g[u]) {
-            if (next == v) {
-                continue;
+            int j = i;
+            while (j < n && d[i] == d[j]) {
+                j++;
             }
-            if (mark[next] == 1) {
-                last = next;
-                continue;
+            res = Math.max(res, j - i + 1);
+            if (j < n) {
+                res = Math.max(res, j - i + 2);
             }
-            time++;
-            dfs(next, u);
-            time++;
-        }
-        if (last != -1) {
-            time++;
-            dfs(last, u);
-            time++;
-        }
-    }
-
-    private static int[] bfs(int u) {
-        final Deque<int[]> dq = new ArrayDeque<>();
-        final int[] res = { -1, -1 };
-        dq.offerLast(new int[] { u, -1 });
-        for (int level = 0; !dq.isEmpty(); level++) {
-            for (int size = dq.size(); size > 0; size--) {
-                final int[] curr = dq.removeFirst();
-                final int node = curr[0];
-                final int par = curr[1];
-                parent[node] = par;
-                res[0] = node;
-                res[1] = level;
-                for (int next : g[node]) {
-                    if (next != par) {
-                        dq.offerLast(new int[] { next, node });
-                    }
+            if (j < n - 1 && d[j] + d[j + 1] == 2 * d[i]) {
+                int end = j + 2;
+                while (end < n && d[end] == d[i]) {
+                    end++;
                 }
+                res = Math.max(res, end - i + 1);
             }
+            i = j - 1;
         }
         return res;
-    }
-
-    private static int[][] packG() {
-        final int[][] g = new int[n][];
-        final int[] size = new int[n];
-        for (int[] edge : edges) {
-            ++size[edge[0]];
-            ++size[edge[1]];
-        }
-        for (int i = 0; i < n; i++) {
-            g[i] = new int[size[i]];
-        }
-        for (int[] edge : edges) {
-            g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
-        }
-        return g;
     }
 
     static final class Utils {
