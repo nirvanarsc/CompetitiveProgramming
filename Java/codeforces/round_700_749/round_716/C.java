@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.arc_117;
+package codeforces.round_700_749.round_716;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,53 +9,57 @@ import java.util.StringTokenizer;
 
 public final class C {
 
-    private static final int MOD = 3;
+    private static long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
 
-    private static int[][] binomialCoeff(int n, int k) {
-        final int[][] dp = new int[n + 1][k + 1];
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= Math.min(i, k); j++) {
-                if (j == 0 || j == i) {
-                    dp[i][j] = 1;
-                } else {
-                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+    private static long[] bezout(long a, long b) {
+        if (b == 0) {
+            return new long[] { 1, 0 };
+        }
+        final long[] res = bezout(b, a % b);
+        return new long[] { res[1], res[0] - a / b * res[1] };
+    }
+
+    private static long modInverse(long a, long mod) {
+        return (a + mod) % mod;
+    }
+
+    public static void main(String[] args) {
+        final FastScanner fs = new FastScanner();
+        final int n = fs.nextInt();
+        long total = 1;
+        final boolean[] added = new boolean[n];
+        int count = 0;
+        for (int i = 1; i < n; i++) {
+            if (gcd(i, n) == 1) {
+                count++;
+                added[i] = true;
+                total = (total * i) % n;
+            }
+        }
+        if (total != 1) {
+            for (int i = 0; i < n; i++) {
+                if (added[i]) {
+                    final long modInverse = modInverse(bezout(i, n)[0], n);
+                    if ((modInverse * total) % n == 1) {
+                        count--;
+                        added[i] = false;
+                        break;
+                    }
                 }
             }
         }
-        return dp;
-    }
-
-    private static int[][] binom;
-
-    // https://www.youtube.com/watch?v=9JN5f7_3YmQ&ab_channel=Mathologer
-    public static void main(String[] args) {
-        final FastScanner fs = new FastScanner();
-        binom = binomialCoeff(3, 3);
-        final int n = fs.nextInt();
-        final char[] w = fs.next().toCharArray();
-        final String word = "BWR";
-        int res = 0;
-        for (int i = 0; i < w.length; i++) {
-            final int add = nCk(w.length - 1, i) * word.indexOf(w[i]) % MOD;
-            res = (res + add) % MOD;
+        final StringBuilder sb = new StringBuilder();
+        sb.append(count);
+        sb.append('\n');
+        for (int i = 0; i < n; i++) {
+            if (added[i]) {
+                sb.append(i);
+                sb.append(' ');
+            }
         }
-        if (w.length % 2 == 0) {
-            res = (-res + MOD) % MOD;
-        }
-        System.out.println(word.charAt(res));
-    }
-
-    // https://en.wikipedia.org/wiki/Lucas%27s_theorem
-    private static int nCk(int n, int k) {
-        int res = 1;
-        while (n > 0) {
-            final int u = n % MOD;
-            final int v = k % MOD;
-            res = (res * binom[u][v]) % MOD;
-            n /= MOD;
-            k /= MOD;
-        }
-        return res;
+        System.out.println(sb);
     }
 
     static final class Utils {

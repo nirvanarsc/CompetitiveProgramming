@@ -1,4 +1,4 @@
-package atcoder.regular_100_199.arc_117;
+package codeforces.round_700_749.round_716;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,55 +7,31 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class A {
 
-    private static final int MOD = 3;
-
-    private static int[][] binomialCoeff(int n, int k) {
-        final int[][] dp = new int[n + 1][k + 1];
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= Math.min(i, k); j++) {
-                if (j == 0 || j == i) {
-                    dp[i][j] = 1;
-                } else {
-                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
-                }
-            }
-        }
-        return dp;
-    }
-
-    private static int[][] binom;
-
-    // https://www.youtube.com/watch?v=9JN5f7_3YmQ&ab_channel=Mathologer
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        binom = binomialCoeff(3, 3);
-        final int n = fs.nextInt();
-        final char[] w = fs.next().toCharArray();
-        final String word = "BWR";
-        int res = 0;
-        for (int i = 0; i < w.length; i++) {
-            final int add = nCk(w.length - 1, i) * word.indexOf(w[i]) % MOD;
-            res = (res + add) % MOD;
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            final int[] arr = fs.nextIntArray(n);
+            boolean ok = true;
+            for (int i = 0; i < n; i++) {
+                if (!isSquare(arr[i])) {
+                    ok = false;
+                    break;
+                }
+            }
+            System.out.println(ok ? "NO" : "YES");
         }
-        if (w.length % 2 == 0) {
-            res = (-res + MOD) % MOD;
-        }
-        System.out.println(word.charAt(res));
     }
 
-    // https://en.wikipedia.org/wiki/Lucas%27s_theorem
-    private static int nCk(int n, int k) {
-        int res = 1;
-        while (n > 0) {
-            final int u = n % MOD;
-            final int v = k % MOD;
-            res = (res * binom[u][v]) % MOD;
-            n /= MOD;
-            k /= MOD;
+    private static boolean isSquare(int n) {
+        long r = n;
+        while (r * r > n) {
+            r = (r + n / r) / 2;
         }
-        return res;
+        return r * r == n;
     }
 
     static final class Utils {
