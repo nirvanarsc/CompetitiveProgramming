@@ -18,13 +18,13 @@ public class P_4 {
             normalized.put(s, n++);
         }
         final double[] bf = bellmanFord(source, sources, targets, rates, normalized, n);
-        for (double d : bf) {
-            if (d == Double.POSITIVE_INFINITY) {
+        for (double dist : bf) {
+            if (Double.compare(dist, Double.POSITIVE_INFINITY) == 0) {
                 return -1;
             }
         }
-        final double res = bf[normalized.get(target)];
-        return Double.compare(res, Double.MAX_VALUE) == 0 ? 0 : Math.pow(10, -res);
+        final int u = normalized.get(target);
+        return Double.compare(bf[u], Double.MAX_VALUE) == 0 ? 0 : Math.pow(10, -bf[u]);
     }
 
     // Bellman-Ford O (V*E) == O(V^3)
@@ -35,25 +35,25 @@ public class P_4 {
         dist[normalized.get(start)] = 0;
         for (int i = 0; i < sources.length; i++) {
             for (int j = 0; j < sources.length; j++) {
-                final int from = normalized.get(sources[j]);
-                final int to = normalized.get(targets[j]);
-                final double cost = -Math.log10(rates[j]);
-                if (Double.compare(dist[from], Double.MAX_VALUE) == 0) {
+                final int u = normalized.get(sources[j]);
+                final int v = normalized.get(targets[j]);
+                final double rate = -Math.log10(rates[j]);
+                if (Double.compare(dist[u], Double.MAX_VALUE) == 0) {
                     continue;
                 }
-                dist[to] = Math.min(dist[to], dist[from] + cost);
+                dist[v] = Math.min(dist[v], dist[u] + rate);
             }
         }
         for (int i = 0; i < sources.length; i++) {
             for (int j = 0; j < sources.length; j++) {
-                final int from = normalized.get(sources[j]);
-                final int to = normalized.get(targets[j]);
-                final double cost = -Math.log10(rates[j]);
-                if (Double.compare(dist[from], Double.MAX_VALUE) == 0) {
+                final int u = normalized.get(sources[j]);
+                final int v = normalized.get(targets[j]);
+                final double rate = -Math.log10(rates[j]);
+                if (Double.compare(dist[u], Double.MAX_VALUE) == 0) {
                     continue;
                 }
-                if (dist[from] + cost < dist[to]) {
-                    dist[to] = Double.POSITIVE_INFINITY;
+                if (dist[v] > dist[u] + rate) {
+                    dist[v] = Double.POSITIVE_INFINITY;
                 }
             }
         }
