@@ -3,19 +3,21 @@ package leetcode.weekly_contests.weekly_54;
 public class P_696 {
 
     public int countBinarySubstrings(String s) {
-        char prevC = s.charAt(0);
-        int prev = 0;
-        int curr = 0;
-        int ans = 0;
-        for (char c : s.toCharArray()) {
-            if (prevC != c) {
-                ans += Math.min(curr, prev);
-                prev = curr;
-                curr = 0;
+        final char[] w = s.toCharArray();
+        int prev = -1;
+        int res = 0;
+        for (int i = 0; i < w.length; i++) {
+            int j = i;
+            while (j < w.length && w[i] == w[j]) {
+                j++;
             }
-            curr++;
-            prevC = c;
+            final int curr = j - i;
+            if (prev != -1) {
+                res += Math.min(prev, curr);
+            }
+            prev = curr;
+            i = j - 1;
         }
-        return ans + Math.min(curr, prev);
+        return res;
     }
 }
