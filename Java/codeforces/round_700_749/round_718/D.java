@@ -1,4 +1,4 @@
-package codeforces.round_700_749.round_717;
+package codeforces.round_700_749.round_718;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,62 +9,90 @@ import java.util.StringTokenizer;
 
 public final class D {
 
+    static int[][][][] g;
+    static int[][][] dp;
+    static int n;
+    static int m;
+    static int k;
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int q = fs.nextInt();
-        final int[] smallestDiv = new int[(int) (1e5 + 5)];
-        Arrays.fill(smallestDiv, 1);
-        for (int i = 2; i < smallestDiv.length; i++) {
-            if (smallestDiv[i] == 1) {
-                for (int j = i; j < smallestDiv.length; j += i) {
-                    smallestDiv[j] = i;
-                }
+        n = fs.nextInt();
+        m = fs.nextInt();
+        k = fs.nextInt();
+        g = new int[n][m][][];
+        dp = new int[n][m][1 + (k / 2)];
+        for (int[][] r1 : dp) {
+            for (int[] r2 : r1) {
+                Arrays.fill(r2, -1);
             }
         }
-        final int[] a = new int[n];
-        final int[] next = new int[n];
-        final int[] map = new int[(int) (1e5 + 5)];
-        Arrays.fill(next, 1);
-        Arrays.fill(map, -1);
+        final int[][] size = new int[n][m];
         for (int i = 0; i < n; i++) {
-            a[i] = fs.nextInt();
-            int x = a[i];
-            while (x > 1) {
-                final int p = smallestDiv[x];
-                while (x % p == 0) {
-                    x /= p;
+            for (int j = 0; j < m; j++) {
+                size[i][j] = 4;
+                if (i == 0 || i == n - 1) {
+                    size[i][j]--;
                 }
-                next[i] = Math.max(next[i], map[p]);
-                map[p] = i + 1;
-            }
-            if (i > 0) {
-                next[i] = Math.max(next[i], next[i - 1]);
-            }
-        }
-        System.out.println(Arrays.toString(next));
-        final int h = 18;
-        final int[][] parents = new int[h + 1][n];
-        parents[0] = next;
-        for (int i = 1; i < h; i++) {
-            for (int u = 0; u < n; u++) {
-                final int nodeParent = parents[i - 1][u];
-                parents[i][u] = parents[i - 1][nodeParent];
-            }
-        }
-        for (int i = 0; i < q; i++) {
-            final int l = fs.nextInt() - 1;
-            int r = fs.nextInt() - 1;
-            int res = 0;
-            for (int j = h - 1; j >= 0; j--) {
-                if (parents[j][r] > l) {
-                    res += 1 << j;
-                    r = parents[j][r];
+                if (j == 0 || j == m - 1) {
+                    size[i][j]--;
                 }
+                g[i][j] = new int[size[i][j]][3];
             }
-            res++;
-            System.out.println(res);
         }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < (m - 1); j++) {
+                final int cost = fs.nextInt();
+                g[i][j][--size[i][j]] = new int[] { i, j + 1, cost };
+                g[i][j + 1][--size[i][j + 1]] = new int[] { i, j, cost };
+            }
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < m; j++) {
+                final int cost = fs.nextInt();
+                g[i][j][--size[i][j]] = new int[] { i + 1, j, cost };
+                g[i + 1][j][--size[i + 1][j]] = new int[] { i, j, cost };
+            }
+        }
+        final StringBuilder sb = new StringBuilder();
+        if (k % 2 != 0) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    sb.append(-1);
+                    sb.append(' ');
+                }
+                sb.append('\n');
+            }
+            System.out.println(sb);
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dfs(i, j, k / 2);
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                sb.append(2 * dp[i][j][k / 2]);
+                sb.append(' ');
+            }
+            sb.append('\n');
+        }
+        System.out.println(sb);
+    }
+
+    private static int dfs(int i, int j, int k) {
+        if (k == 0) {
+            return 0;
+        }
+        if (dp[i][j][k] != -1) {
+            return dp[i][j][k];
+        }
+        int res = (int) 1e9;
+        for (int[] next : g[i][j]) {
+            res = Math.min(res, next[2] + dfs(next[0], next[1], k - 1));
+        }
+        return dp[i][j][k] = res;
     }
 
     static final class Utils {

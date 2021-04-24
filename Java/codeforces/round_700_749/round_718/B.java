@@ -1,70 +1,67 @@
-package codeforces.round_700_749.round_717;
+package codeforces.round_700_749.round_718;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        final int q = fs.nextInt();
-        final int[] smallestDiv = new int[(int) (1e5 + 5)];
-        Arrays.fill(smallestDiv, 1);
-        for (int i = 2; i < smallestDiv.length; i++) {
-            if (smallestDiv[i] == 1) {
-                for (int j = i; j < smallestDiv.length; j += i) {
-                    smallestDiv[j] = i;
+        final int t = fs.nextInt();
+        final StringBuilder sb = new StringBuilder();
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            final int m = fs.nextInt();
+            final List<PriorityQueue<Integer>> rows = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                rows.add(new PriorityQueue<>());
+            }
+            final PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(b[1], a[1]));
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    final int num = fs.nextInt();
+                    rows.get(i).add(num);
+                    pq.add(new int[] { i, num });
+                    if (pq.size() > m) {
+                        pq.remove();
+                    }
                 }
             }
-        }
-        final int[] a = new int[n];
-        final int[] next = new int[n];
-        final int[] map = new int[(int) (1e5 + 5)];
-        Arrays.fill(next, 1);
-        Arrays.fill(map, -1);
-        for (int i = 0; i < n; i++) {
-            a[i] = fs.nextInt();
-            int x = a[i];
-            while (x > 1) {
-                final int p = smallestDiv[x];
-                while (x % p == 0) {
-                    x /= p;
-                }
-                next[i] = Math.max(next[i], map[p]);
-                map[p] = i + 1;
+            final List<int[]> minM = new ArrayList<>();
+            while (!pq.isEmpty()) {
+                minM.add(pq.remove());
             }
-            if (i > 0) {
-                next[i] = Math.max(next[i], next[i - 1]);
+            minM.sort(Comparator.comparingInt(a -> a[1]));
+            for (int[] pp : minM) {
+                rows.get(pp[0]).remove();
             }
-        }
-        System.out.println(Arrays.toString(next));
-        final int h = 18;
-        final int[][] parents = new int[h + 1][n];
-        parents[0] = next;
-        for (int i = 1; i < h; i++) {
-            for (int u = 0; u < n; u++) {
-                final int nodeParent = parents[i - 1][u];
-                parents[i][u] = parents[i - 1][nodeParent];
-            }
-        }
-        for (int i = 0; i < q; i++) {
-            final int l = fs.nextInt() - 1;
-            int r = fs.nextInt() - 1;
-            int res = 0;
-            for (int j = h - 1; j >= 0; j--) {
-                if (parents[j][r] > l) {
-                    res += 1 << j;
-                    r = parents[j][r];
+            final int[][] res = new int[n][m];
+            for (int j = 0; j < m; j++) {
+                final int[] min = minM.get(j);
+                res[min[0]][j] = min[1];
+                for (int i = 0; i < n; i++) {
+                    if (i != min[0]) {
+                        res[i][j] = rows.get(i).remove();
+                    }
                 }
             }
-            res++;
-            System.out.println(res);
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    sb.append(res[i][j]);
+                    sb.append(' ');
+                }
+                sb.append('\n');
+            }
         }
+        System.out.println(sb);
     }
 
     static final class Utils {
