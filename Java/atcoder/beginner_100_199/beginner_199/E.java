@@ -10,34 +10,60 @@ import java.util.StringTokenizer;
 public final class E {
 
     static int n;
+    static long[][] dp;
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int n = fs.nextInt();
-        System.out.println(n);
+        n = fs.nextInt();
+        dp = new long[n][1 << n];
+        for (long[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+        final int m = fs.nextInt();
+        final int[][] conditions = new int[m][3];
+        for (int i = 0; i < m; i++) {
+            conditions[i] = new int[] { fs.nextInt(), fs.nextInt(), fs.nextInt() };
+        }
+        System.out.println(dfs(0, 0, conditions));
     }
 
+    private static long dfs(int mask, int idx, int[][] conditions) {
+        if (idx == n) {
+            return 1;
+        }
+        if (dp[idx][mask] != -1) {
+            return dp[idx][mask];
+        }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            if ((mask & (1 << i)) == 0 && canPlace(mask | (1 << i), idx, conditions)) {
+                res += dfs(mask | (1 << i), idx + 1, conditions);
+            }
+        }
+        return dp[idx][mask] = res;
+    }
 
-
-
-//    private static int dfs(int mask, int[][] conditions) {
-//        if(mask == 0) {
-//            return 1;
-//        }
-//        int res = 0;
-//
-//        for (int i = 0; i < n; i++) {
-//            if((mask & (1 << i)) == 0) {
-//
-//
-//
-//            }
-//        }
-//
-//
-//    }
-
-
+    private static boolean canPlace(int mask, int idx, int[][] conditions) {
+        final int[] pre = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            if ((mask & (1 << i)) != 0) {
+                pre[i + 1] = 1;
+            }
+            pre[i + 1] += pre[i];
+        }
+        for (int[] cond : conditions) {
+            final int x = cond[0] - 1;
+            final int y = cond[1];
+            final int z = cond[2];
+            if (x < idx) {
+                continue;
+            }
+            if (pre[y] > z) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     static final class Utils {
         private static class Shuffler {

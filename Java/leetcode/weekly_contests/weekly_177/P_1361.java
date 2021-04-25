@@ -2,12 +2,12 @@ package leetcode.weekly_contests.weekly_177;
 
 public class P_1361 {
 
-    static class UnionFind {
+    private static final class UnionFind {
         private final int[] parent;
         private final int[] size;
         private int count;
 
-        UnionFind(int n) {
+        private UnionFind(int n) {
             parent = new int[n];
             size = new int[n];
             count = n;
@@ -44,31 +44,35 @@ public class P_1361 {
         }
 
         public int count() { return count; }
+
+        public int[] size() { return size; }
     }
 
     public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
         final UnionFind uf = new UnionFind(n);
-
+        final int[] inDeg = new int[n];
         for (int i = 0; i < leftChild.length; i++) {
-            if (leftChild[i] != -1) {
-                if (uf.find(i) != uf.find(leftChild[i])) {
-                    uf.union(i, leftChild[i]);
-                } else {
-                    return false;
-                }
+            final int u = leftChild[i];
+            if (u != -1) {
+                inDeg[u]++;
+                uf.union(i, u);
             }
         }
-
         for (int i = 0; i < rightChild.length; i++) {
-            if (rightChild[i] != -1) {
-                if (uf.find(i) != uf.find(rightChild[i])) {
-                    uf.union(i, rightChild[i]);
-                } else {
-                    return false;
-                }
+            final int u = rightChild[i];
+            if (u != -1) {
+                inDeg[u]++;
+                uf.union(i, u);
             }
         }
-
-        return uf.count() == 1;
+        int root = 0;
+        for (int i = 0; i < n; i++) {
+            if (inDeg[i] == 0) {
+                root++;
+            } else if (inDeg[i] > 1) {
+                return false;
+            }
+        }
+        return root == 1 && uf.count() == 1;
     }
 }
