@@ -55,8 +55,8 @@ public final class E {
         }
     }
 
-    @SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
-    public static int[] topsort(int n, Map<Integer, Set<Integer>> g) {
+    @SuppressWarnings("ReturnOfNull")
+    private static int[] topsort(int n, Map<Integer, Set<Integer>> g) {
         final State[] state = new State[n + 1];
         Arrays.fill(state, State.UNVISITED);
         final Deque<Integer> q = new ArrayDeque<>();
@@ -75,7 +75,7 @@ public final class E {
         return ans;
     }
 
-    public static boolean visit(Deque<Integer> q, State[] state, Map<Integer, Set<Integer>> g, int u) {
+    private static boolean visit(Deque<Integer> q, State[] state, Map<Integer, Set<Integer>> g, int u) {
         if (state[u] == State.VISITED) {
             return true;
         }
