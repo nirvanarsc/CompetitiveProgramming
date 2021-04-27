@@ -7,10 +7,10 @@ public class P_326 {
     }
 
     private static int getMaxPowerOfThree() {
-        int i = 3;
-        while (i * 3 > i) {
-            i *= 3;
+        int p = 3;
+        while (p * 3 > p) {
+            p *= 3;
         }
-        return i;
+        return p;
     }
 }

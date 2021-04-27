@@ -23,7 +23,7 @@ public final class A {
             for (long[] p : perm) {
                 final long[] res = f(p[0], p[1], p[2]);
                 if (res != null) {
-                    System.out.printf("Case #%d: %d %d %d%n", test, res[0], res[1], res[2]);
+                    System.out.printf("Case #%d: %d %d %d %d%n", test, res[0], res[1], res[2], res[3]);
                     break;
                 }
             }
@@ -33,11 +33,11 @@ public final class A {
     private static long[] f(long h, long m, long s) {
         for (int i = 0; i < 59; i++) {
             final long a = (60 * i * N - 60 * m + s) / 59;
-            final long H = (h + a) % MOD;
-            final long M = (m + a) % MOD;
-            final long S = (s + a) % MOD;
+            final long H = (h + a + MOD) % MOD;
+            final long M = (m + a + MOD) % MOD;
+            final long S = (s + a + MOD) % MOD;
             if (isValid(H, M, S)) {
-                return new long[] { H, M, S };
+                return new long[] { H / (5 * N), M / N, S / N, (S % N) / 720 };
             }
         }
         //noinspection ReturnOfNull
@@ -45,7 +45,7 @@ public final class A {
     }
 
     private static boolean isValid(long h, long m, long s) {
-        return 12 * (h % (5 * N)) == m && (60L * (m % N)) == s;
+        return (12 * (h % (5 * N)) == m) && ((60 * (m % N)) == s);
     }
 
     static final class Utils {

@@ -26,7 +26,7 @@ public final class B {
         }
 
         public long sum(int l, int r) {
-            return sum(r - 1) - sum(l - 1);
+            return sum(r) - sum(l - 1);
         }
 
         private long sum(int idx) {
@@ -59,7 +59,7 @@ public final class B {
                 bit.add(idx, val);
             } else {
                 final int l = fs.nextInt();
-                final int r = fs.nextInt();
+                final int r = fs.nextInt() - 1;
                 pw.println(bit.sum(l, r));
             }
         }
