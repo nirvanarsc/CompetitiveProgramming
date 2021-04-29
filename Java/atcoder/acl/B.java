@@ -40,6 +40,21 @@ public final class B {
         private static int lsb(int i) {
             return i & -i;  // zeroes all the bits except the least significant one
         }
+
+        // get k-th element
+        public int query(int k) {
+            int lo = 0;
+            int hi = n;
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (k > sum(mid)) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+            return lo;
+        }
     }
 
     public static void main(String[] args) {
