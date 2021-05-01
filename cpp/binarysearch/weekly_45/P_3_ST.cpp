@@ -67,12 +67,12 @@ class PlaylistQueue {
  public:
   PlaylistQueue(vector<string>& songs) {
     int n = songs.size() + (int)1e5;
-    int arr[n];
-    st = new SegTree(0, n - 1, arr);
+    int* arr = (int*)calloc(n, sizeof(int));
     for (int i = 0; i < songs.size(); i++) {
       mp[i] = songs[i];
-      st->update(i, 1);
+      arr[i] = 1;
     }
+    st = new SegTree(0, n - 1, arr);
     last = songs.size();
   }
 

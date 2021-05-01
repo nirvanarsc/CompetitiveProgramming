@@ -3,56 +3,41 @@ using namespace std;
 
 struct BIT {
   int n;
-  vector<int> data;
+  int* data;
 
   BIT(int _n) {
     n = _n;
-    data.resize(n + 1, 0);
+    data = (int*)calloc(n, sizeof(int));
   }
 
-  void add(int idx, long val) {
+  void add(int idx, int val) {
     for (int i = idx + 1; i <= n; i += lsb(i)) {
       data[i] += val;
     }
   }
 
-  long sum(int idx) {
-    long res = 0;
+  int sum(int idx) {
+    int res = 0;
     for (int i = idx + 1; i > 0; i -= lsb(i)) {
       res += data[i];
     }
     return res;
   }
 
-  long sum(int l, int r) { return sum(r) - sum(l - 1); }
+  int sum(int l, int r) { return sum(r) - sum(l - 1); }
 
   int query(int k) {
     int lo = 0;
     int hi = n;
-    for (int i = 0; i < 10; i++) {
-      cout << sum(i);
+    while (lo < hi) {
+      int mid = lo + ((hi - lo) >> 1);
+      if (k > sum(mid)) {
+        lo = mid + 1;
+      } else {
+        hi = mid;
+      }
     }
-    cout << "\n";
-
-auto lambda = [&](auto mid, auto k) -> bool {
-  cout << sum(mid) << " " << mid << " " << k << " " << n << "\n";
-    return k < sum(mid);
-};
-  int idx = data.begin() - data.begin();
-  int end = data.end() - data.begin();
-// cout << idx << " " << end << " " << n << "\n";
-cout << lower_bound(data.begin(), data.end(), k, lambda) - data.begin() << "\n";
-cout << "\n";
-    return lower_bound(data.begin(), data.end(), k, lambda) - data.begin();
-    // while (lo < hi) {
-    //   int mid = lo + ((hi - lo) >> 1);
-    //   if (k > sum(mid)) {
-    //     lo = mid + 1;
-    //   } else {
-    //     hi = mid;
-    //   }
-    // }
-    // return lo;
+    return lo;
   }
 
   int lsb(int i) {
@@ -87,11 +72,11 @@ class PlaylistQueue {
 };
 
 signed main() {
-  vector<string> v = {"a", "b", "c", "d", "e", "f", "g" };
+  vector<string> v = {"a", "b", "c"};
   PlaylistQueue* pq;
   pq = new PlaylistQueue(v);
-  cout << pq->play(6) << "\n";
-  // cout << pq->play(1) << "\n";
-  // cout << pq->play(2) << "\n";
-  // cout << pq->play(0) << "\n";
+  cout << pq->play(0) << "\n";
+  cout << pq->play(1) << "\n";
+  cout << pq->play(2) << "\n";
+  cout << pq->play(0) << "\n";
 }

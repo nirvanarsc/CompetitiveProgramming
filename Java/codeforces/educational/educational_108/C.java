@@ -37,8 +37,8 @@ public final class C {
                     g[fM[u[i]]] = new int[f[u[i]]];
                 }
             }
-            int[] sameSize = new int[n + 1];
-            int[] idx = new int[n + 1];
+            final int[] sameSize = new int[n + 1];
+            final int[] idx = new int[n + 1];
             for (int i = 0; i < n; i++) {
                 if (f[i] > 0) {
                     sameSize[f[i]]++;
@@ -51,20 +51,20 @@ public final class C {
                 Utils.shuffleSort(g[i]);
                 g[i] = reverse(g[i], g[i].length);
             }
-
             int uniq = 0;
             for (int i = 0; i <= n; i++) {
                 if (sameSize[i] > 0) {
                     idx[i] = uniq++;
                 }
             }
-            long[][] g2 = new long[uniq][];
+            final long[][] g2 = new long[uniq][];
             for (int i = 0; i < count; i++) {
-                if (g2[idx[g[i].length]] == null) {
-                    g2[idx[g[i].length]] = new long[g[i].length];
+                final int gIdx = idx[g[i].length];
+                if (g2[gIdx] == null) {
+                    g2[gIdx] = new long[g[i].length];
                 }
                 for (int j = 0; j < g[i].length; j++) {
-                    g2[idx[g[i].length]][j] += g[i][j];
+                    g2[gIdx][j] += g[i][j];
                 }
             }
             final long[][] pre = new long[uniq][];
