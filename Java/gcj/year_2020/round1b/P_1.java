@@ -1,4 +1,4 @@
-package gcj.round1b;
+package gcj.year_2020.round1b;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

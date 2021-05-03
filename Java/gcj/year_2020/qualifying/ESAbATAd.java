@@ -1,4 +1,4 @@
-package gcj.qualifying;
+package gcj.year_2020.qualifying;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,10 +1,10 @@
-package gcj.round1b;
+package gcj.year_2020.round1b;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
-public final class P_2 {
+public final class P_3 {
 
     public static void main(String[] args) {
         final Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
