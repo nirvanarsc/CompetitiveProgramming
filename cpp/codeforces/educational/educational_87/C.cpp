@@ -1,4 +1,7 @@
 #include <bits/stdc++.h>
+#define fast_io                \
+  ios::sync_with_stdio(false); \
+  cin.tie(nullptr);
 using namespace std;
 
 struct BIT {
@@ -47,36 +50,30 @@ struct BIT {
 
 BIT* bit;
 
-class PlaylistQueue {
-  unordered_map<int, string> mp;
-  int last;
-
- public:
-  PlaylistQueue(vector<string>& songs) {
-    bit = new BIT(songs.size() + (int)1e5);
-    for (int i = 0; i < songs.size(); i++) {
-      mp[i] = songs[i];
-      bit->add(i, 1);
-    }
-    last = songs.size();
-  }
-
-  string play(int i) {
-    int idx = bit->query(i + 1);
-    string res = mp[idx];
-    bit->add(idx, -1);
-    bit->add(last, 1);
-    mp[last++] = res;
-    return res;
-  }
-};
-
 signed main() {
-  vector<string> v = {"a", "b", "c"};
-  PlaylistQueue* pq;
-  pq = new PlaylistQueue(v);
-  cout << pq->play(0) << "\n";
-  cout << pq->play(1) << "\n";
-  cout << pq->play(2) << "\n";
-  cout << pq->play(0) << "\n";
+  fast_io;
+  int n, q;
+  cin >> n >> q;
+  bit = new BIT(n + 5);
+  for (int i = 0; i < n; i++) {
+    int v;
+    cin >> v;
+    bit->add(v, 1);
+  }
+  for (int i = 0; i < q; i++) {
+    int v;
+    cin >> v;
+    if (v < 0) {
+      int idx = bit->query(-v);
+      bit->add(idx, -1);
+    } else {
+      bit->add(v, 1);
+    }
+  }
+  int res = bit->query(1);
+  if(res == n + 5) {
+    cout << 0 << "\n";
+  } else {
+    cout << res << "\n";
+  }
 }
