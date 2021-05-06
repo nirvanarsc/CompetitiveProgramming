@@ -1,4 +1,4 @@
-package kickstart.year_2020.round_h;
+package codeforces.round_700_749.round_719;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,14 +7,14 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class F {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
-        for (int test = 1; test <= t; test++) {
+        for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println("Case #" + test + ": " + n);
+            System.out.println(n);
         }
     }
 

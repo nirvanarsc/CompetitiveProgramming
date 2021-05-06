@@ -73,8 +73,7 @@ class PlaylistQueue {
 
 signed main() {
   vector<string> v = {"a", "b", "c"};
-  PlaylistQueue* pq;
-  pq = new PlaylistQueue(v);
+  PlaylistQueue* pq = new PlaylistQueue(v);
   cout << pq->play(0) << "\n";
   cout << pq->play(1) << "\n";
   cout << pq->play(2) << "\n";

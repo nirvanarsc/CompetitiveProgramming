@@ -1,4 +1,4 @@
-package kickstart.year_2020.round_h;
+package codeforces.round_700_749.round_719;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,14 +7,33 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
-        for (int test = 1; test <= t; test++) {
+        for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println("Case #" + test + ": " + n);
+            final char[] w = fs.next().toCharArray();
+            final boolean[] seen = new boolean[26];
+            boolean ok = true;
+            for (int i = 0; i < w.length; i++) {
+                if (seen[w[i] - 'A']) {
+                    ok = false;
+                    break;
+                }
+                seen[w[i] - 'A'] = true;
+                int j = i;
+                while (j < w.length && w[j] == w[i]) {
+                    j++;
+                }
+                i = j - 1;
+            }
+            if (!ok) {
+                System.out.println("NO");
+            } else {
+                System.out.println("YES");
+            }
         }
     }
 

@@ -1,20 +1,41 @@
-package kickstart.year_2020.round_h;
+package codeforces.round_700_749.round_719;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class D {
+public final class E {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
-        for (int test = 1; test <= t; test++) {
+        for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println("Case #" + test + ": " + n);
+            final char[] w = fs.next().toCharArray();
+            final List<Integer> sheep = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                if (w[i] == '*') {
+                    sheep.add(i);
+                }
+            }
+            if (sheep.size() <= 1) {
+                System.out.println(0);
+                continue;
+            }
+            for (int i = 0; i < sheep.size(); i++) {
+                sheep.set(i, sheep.get(i) - i);
+            }
+            final int mid = sheep.size() / 2;
+            long res = 0;
+            for (int i = 0; i < sheep.size(); i++) {
+                res += Math.abs(sheep.get(i) - sheep.get(mid));
+            }
+            System.out.println(res);
         }
     }
 
