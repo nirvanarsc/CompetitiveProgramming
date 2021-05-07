@@ -42,7 +42,7 @@ public final class B {
         }
 
         // get k-th element
-        public int query(int k) {
+        public int getKth(int k) {
             int lo = 0;
             int hi = n;
             while (lo < hi) {

@@ -17,10 +17,10 @@ int main() {
       cin >> arr[i];
     }
     ll res = 0;
-    unordered_map<int, int> mp;
+    unordered_map<int, int>* mp = new unordered_map<int, int>();
     for (int i = 0; i < n; i++) {
       int curr = arr[i] - i;
-      res += mp[curr]++;
+      res += (*mp)[curr]++;
     }
     cout << res << "\n";
   }
