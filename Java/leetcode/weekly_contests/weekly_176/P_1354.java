@@ -6,23 +6,26 @@ import java.util.PriorityQueue;
 public class P_1354 {
 
     public boolean isPossible(int[] target) {
-        final PriorityQueue<Long> pq = new PriorityQueue<>(Comparator.reverseOrder());
+        final int n = target.length;
         long sum = 0;
-        for (int t : target) {
-            pq.add((long) t);
-            sum += t;
+        final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int num : target) {
+            sum += num;
+            pq.add(num);
         }
-
-        while (sum > target.length) {
-            final long max = pq.remove();
-            final long prev = 2 * max - sum;
-            if (prev < 1) {
+        while (sum > n) {
+            int max = pq.remove();
+            final long other = sum - max;
+            if (other >= max || other == 0) {
                 return false;
             }
-            pq.add(prev);
-            sum -= max - prev;
+            if (max % other == 0 && other != 1) {
+                return false;
+            }
+            max %= other;
+            pq.add(max);
+            sum = other + max;
         }
-
-        return sum == target.length;
+        return true;
     }
 }
