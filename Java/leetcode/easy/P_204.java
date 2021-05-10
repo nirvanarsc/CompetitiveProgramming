@@ -3,23 +3,20 @@ package leetcode.easy;
 public class P_204 {
 
     public int countPrimes(int n) {
-        final boolean[] seen = new boolean[n + 1];
-        int res = 0;
-        for (int i = 2; i * i < n; i++) {
-            if (!seen[i]) {
-                for (int j = i * i; j <= n; j += i) {
-                    seen[j] = true;
+        final boolean[] sieve = new boolean[n];
+        for (int p = 2; p * p < n; p++) {
+            if (!sieve[p]) {
+                for (int k = p * p; k < n; k += p) {
+                    sieve[k] = true;
                 }
             }
         }
-
-        for (int i = 2; i < n; i++) {
-            res += seen[i] ? 0 : 1;
+        int res = 0;
+        for (int p = 2; p < n; p++) {
+            if (!sieve[p]) {
+                res++;
+            }
         }
         return res;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new P_204().countPrimes(10));
     }
 }
