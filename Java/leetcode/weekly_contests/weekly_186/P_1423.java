@@ -3,34 +3,17 @@ package leetcode.weekly_contests.weekly_186;
 public class P_1423 {
 
     public int maxScore(int[] cardPoints, int k) {
-        final int len = cardPoints.length;
-        int j = len - k;
-        int res = 0, sum = 0;
-        for (int start = len - k; start < len + k; start++) {
-            sum += cardPoints[start % len];
-            if (start - j == k) {
-                sum -= cardPoints[j++ % len];
-            }
-            res = Math.max(sum, res);
+        final int n = cardPoints.length;
+        final int[] pre = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            pre[i] = pre[i - 1] + cardPoints[i - 1];
+        }
+        int curr = 0;
+        int res = pre[k];
+        for (int i = n - 1, j = k - 1; j >= 0; i--, j--) {
+            curr += cardPoints[i];
+            res = Math.max(res, pre[j] + curr);
         }
         return res;
-    }
-
-    public int maxScorePreSum(int[] cardPoints, int k) {
-        final int[] sums = new int[cardPoints.length];
-        int sum = 0;
-        for (int i = 0; i < cardPoints.length; i++) {
-            sum += cardPoints[i];
-            sums[i] = sum;
-        }
-        if (k == sums.length) {
-            return sum;
-        }
-        int max = 0;
-        for (int i = 0; i <= k; i++) {
-            final int curr = (i == 0 ? 0 : sums[i - 1]) + (sum - sums[sums.length - 1 + i - k]);
-            max = Math.max(max, curr);
-        }
-        return max;
     }
 }
