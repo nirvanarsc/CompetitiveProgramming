@@ -71,7 +71,7 @@ signed main() {
     }
   }
   int res = bit->query(1);
-  if(res == n + 5) {
+  if (res == n + 5) {
     cout << 0 << "\n";
   } else {
     cout << res << "\n";
