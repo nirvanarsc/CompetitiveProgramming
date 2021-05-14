@@ -12,6 +12,7 @@ struct ListNode {
     next = _next;
   }
 };
+
 struct TreeNode {
   int val;
   TreeNode* left;
