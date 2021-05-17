@@ -3,59 +3,50 @@ package codeforces.educational.educational_109;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 public final class D {
 
-    static TreeSet<Integer> ts;
     static int[][] dp;
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int[] arr = fs.nextIntArray(n);
-        dp = new int[n + 1][n];
+        final List<Integer> one = new ArrayList<>();
+        final List<Integer> zero = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (arr[i] == 0) {
+                zero.add(i);
+            } else {
+                one.add(i);
+            }
+        }
+        dp = new int[one.size()][zero.size()];
         for (int[] row : dp) {
             Arrays.fill(row, -1);
         }
-        ts = new TreeSet<>();
-        for (int i = 0; i < n; i++) {
-            if (arr[i] == 0) {
-                ts.add(i);
-            }
-        }
-        System.out.println(dfs(arr, -1, 0));
+        System.out.println(dfs(one, zero, 0, 0));
     }
 
-    private static int dfs(int[] arr, int prev, int idx) {
-        if (idx == arr.length) {
+    private static int dfs(List<Integer> one, List<Integer> zero, int i, int j) {
+        if (i == one.size()) {
             return 0;
         }
-        if (dp[prev + 1][idx] != -1) {
-            return dp[prev + 1][idx];
+        if (j == zero.size()) {
+            return (int) 1e9;
+        }
+        if (dp[i][j] != -1) {
+            return dp[i][j];
         }
         int res = (int) 1e9;
-        if (arr[idx] == 1) {
-
-            final Integer l = ts.lower(idx);
-            if (l != null) {
-                ts.remove(l);
-                res = Math.min(res, Math.abs(idx - l) + dfs(arr, l, idx + 1));
-                ts.add(l);
-            }
-            final Integer r = ts.higher(idx);
-            if (r != null) {
-                ts.remove(r);
-                res = Math.min(res, Math.abs(idx - r) + dfs(arr, prev, idx + 1));
-                ts.add(r);
-            }
-        } else {
-            res = Math.min(res, dfs(arr, prev, idx + 1));
-        }
-        return dp[prev + 1][idx] = res;
+        res = Math.min(res, dfs(one, zero, i, j + 1));
+        res = Math.min(res, Math.abs(one.get(i) - zero.get(j)) + dfs(one, zero, i + 1, j + 1));
+        return dp[i][j] = res;
     }
 
     static final class Utils {
