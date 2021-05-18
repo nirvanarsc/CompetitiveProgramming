@@ -5,13 +5,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 public final class C {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
@@ -19,36 +24,77 @@ public final class C {
         for (int test = 1; test <= t; test++) {
             final int n = fs.nextInt();
             final int[] arr = fs.nextIntArray(n);
-            List<Set<Integer>> edges = new ArrayList<>();
+            final List<Set<Integer>> g = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                edges.add(new HashSet<>());
+                g.add(new HashSet<>());
             }
             boolean ok = true;
-            List<Integer> curr = new ArrayList<>();
-            curr.add(0);
-            for (int i = 1; i < n; i++) {
-                if (Math.abs(arr[i] - arr[i - 1]) > 1) {
-                    ok = false;
-                    break;
-                }
-                if (arr[i] == 1) {
-                    edges.get(i).add(curr.get(0));
-                    curr.add(0, i);
-                } else if(arr[i] - 1 == curr.size()) {
-                    int idx = arr[i] - 1;
-                    edges.get(curr.get(idx)).add(i);
-                    curr.add(idx, i);
-                } else {
-                    int idx = arr[i] - 1;
-                    int u = curr.get(idx);
-                    int v = curr.get(idx + 1);
-                    edges.get(u).remove(v);
-                    edges.get(u).add(i);
-                    curr.add(idx, i);
+            final List<Integer> curr = new ArrayList<>();
+            if (arr[0] != 1) {
+                ok = false;
+            } else {
+                curr.add(0);
+                for (int i = 1; i < n; i++) {
+                    if (arr[i] - arr[i - 1] > 1) {
+                        ok = false;
+                        break;
+                    }
+                    if (arr[i] == 1) {
+                        g.get(i).add(curr.get(0));
+                        curr.clear();
+                        curr.add(i);
+                    } else if (arr[i] - 1 == curr.size()) {
+                        final int idx = arr[i] - 2;
+                        final int u = curr.get(idx);
+                        g.get(u).add(i);
+                        curr.add(i);
+                    } else {
+                        final int idx = arr[i] - 2;
+                        final int u = curr.get(idx);
+                        final int v = curr.get(idx + 1);
+                        g.get(u).remove(v);
+                        g.get(u).add(i);
+                        g.get(i).add(v);
+                        curr.subList(idx + 1, curr.size()).clear();
+                        curr.add(i);
+                    }
                 }
             }
+            if (!ok) {
+                System.out.println("Case #" + test + ": " + 0);
+                continue;
+            } else {
+                final int[] size = new int[n];
+                dfs(g, curr.get(0), size);
+                long up = 1L;
+                long down = 1L;
+                for (int i = 0; i < n; i++) {
+                    up = (up * (i + 1)) % MOD;
+                    down = (down * size[i]) % MOD;
+                }
+                final long inv = modPow(down, MOD - 2);
+                System.out.println("Case #" + test + ": " + (up * inv) % MOD);
+            }
+        }
+    }
 
-            System.out.println("Case #" + test + ": " + n);
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
+    }
+
+    private static void dfs(List<Set<Integer>> g, int u, int[] size) {
+        size[u] = 1;
+        for (int v : g.get(u)) {
+            dfs(g, v, size);
+            size[u] += size[v];
         }
     }
 

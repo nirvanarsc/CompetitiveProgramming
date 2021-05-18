@@ -9,19 +9,48 @@ import java.util.StringTokenizer;
 
 public final class B {
 
+    static int[][] dp;
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
+        dp = new int[2][(int) (1e6 + 5)];
+        Arrays.fill(dp[0], -1);
+        Arrays.fill(dp[1], -1);
         for (int test = 1; test <= t; test++) {
             final int n = fs.nextInt();
-            int res = 0;
-            for (int p = 2; p <= n; p++) {
-                if(n % p == 0) {
-                    res = Math.max(res, Integer.bitCount(n / p));
-                }
-            }
+            final int res = dfs(n, 0);
             System.out.println("Case #" + test + ": " + res);
         }
+    }
+
+    private static int dfs(int n, int p) {
+        if (n == 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return -(int) (1e6 + 5);
+        }
+        if (dp[p][n] != -1) {
+            return dp[p][n];
+        }
+        int res = 1;
+        if (p == 0) {
+            for (int k = 3; (long) k * k <= n; k++) {
+                if (n % k == 0) {
+                    res = Math.max(res, 1 + dfs((n / k) - 1, 1));
+                    res = Math.max(res, 1 + dfs(k - 1, 1));
+                }
+            }
+        } else {
+            for (int k = 2; (long) k * k <= n; k++) {
+                if (n % k == 0) {
+                    res = Math.max(res, 1 + dfs((n / k) - 1, 1));
+                    res = Math.max(res, 1 + dfs(k - 1, 1));
+                }
+            }
+        }
+        return dp[p][n] = res;
     }
 
     static final class Utils {

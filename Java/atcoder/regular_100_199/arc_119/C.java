@@ -16,18 +16,15 @@ public final class C {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int[] arr = fs.nextIntArray(n);
-        Map<Long, Integer> map = new HashMap<>(Collections.singletonMap(0L, 1));
+        final Map<Long, Integer> map = new HashMap<>(Collections.singletonMap(0L, 1));
         long pre = 0;
         long res = 0;
         for (int i = 0; i < n; i++) {
-            pre = arr[i] - (i == 0 ? 0 : arr[i - 1]);
-            System.out.println(pre);
+            pre += (i % 2 == 0 ? -1 : +1) * arr[i];
             res += map.getOrDefault(pre, 0);
-            map.merge(-(long) arr[i], 1, Integer::sum);
-
+            map.merge(pre, 1, Integer::sum);
         }
         System.out.println(res);
-
     }
 
     static final class Utils {

@@ -9,52 +9,46 @@ import java.util.StringTokenizer;
 
 public final class E {
 
-    // TODO CHECK TEST
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final int[] arr1 = fs.nextIntArray(n);
-        final int[] arr2 = fs.nextIntArray(m);
-        Utils.shuffleSort(arr1);
-        Utils.shuffleSort(arr2);
-        if (n == 1) {
-            long res = (long) 2e18;
-            for (int num : arr2) {
-                res = Math.min(res, num + arr1[0]);
-            }
-            System.out.println(res);
-            return;
-        }
-        final long[] sums = new long[n - 1];
+        final int[] h = fs.nextIntArray(n);
+        final int[] w = fs.nextIntArray(m);
+        Utils.shuffleSort(h);
+        final int[] even = new int[n];
+        final int[] odd = new int[n];
         for (int i = 0; i < n - 1; i++) {
-            sums[i] = arr1[i + 1] - arr1[i];
-        }
-        final long[] partial = new long[(n + 1) / 2];
-        for (int i = 1; i < sums.length; i += 2) {
-            partial[0] += sums[i];
-        }
-        for (int i = 1, oddIdx = 1; i < partial.length; i++, oddIdx += 2) {
-            partial[i] = partial[i - 1];
-            partial[i] -= sums[oddIdx];
-            partial[i] += sums[oddIdx - 1];
-        }
-        System.out.println(Arrays.toString(sums));
-        System.out.println(Arrays.toString(partial));
-        long res = (long) 2e18;
-        for (int num : arr2) {
-            int idx = lowerBound(arr1, num);
-            if (idx % 2 != 0) {
-                idx -= 1;
+            if (i % 2 == 0) {
+                even[i] = h[i + 1] - h[i];
+            } else {
+                odd[i] = h[i + 1] - h[i];
             }
-            final long curr = partial[idx / 2] + Math.abs(num - arr1[idx]);
-            res = Math.min(res, curr);
+        }
+        final long[] preEven = new long[n + 1];
+        final long[] preOdd = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            preEven[i] = preEven[i - 1] + even[i - 1];
+            preOdd[i] = preOdd[i - 1] + odd[i - 1];
+        }
+        long res = (long) 9e18;
+        for (int num : w) {
+            int idx = lowerBound(h, num);
+            if (idx == n) {
+                res = Math.min(res, preEven[n] + num - h[n - 1]);
+            } else {
+                if (idx % 2 != 0) {
+                    idx--;
+                }
+                res = Math.min(res, preEven[idx] + Math.abs(num - h[idx]) + (preOdd[n] - preOdd[idx + 1]));
+            }
         }
         System.out.println(res);
     }
 
-    public static int lowerBound(int[] arr, int target) {
-        int lo = 0, hi = arr.length;
+    private static int lowerBound(int[] arr, int target) {
+        int lo = 0;
+        int hi = arr.length;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
             if (arr[mid] < target) {
