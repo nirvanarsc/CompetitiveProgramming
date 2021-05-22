@@ -3,35 +3,53 @@ package codeforces.round_700_749.round_721;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class B2 {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final Map<Integer, List<Integer>> f = new HashMap<>();
             final int n = fs.nextInt();
-            final int[] arr = fs.nextIntArray(n);
-            for (int i = 0; i < n; i++) {
-                f.computeIfAbsent(arr[i], val -> new ArrayList<>()).add(i);
+            final char[] w = fs.next().toCharArray();
+            int zeroes = 0;
+            for (char c : w) {
+                zeroes += c == '0' ? 1 : 0;
             }
-            long res = 0;
-            for (List<Integer> list : f.values()) {
-                long pre = 0;
-                for (int idx : list) {
-                    res += pre * (n - idx);
-                    pre += idx + 1;
+            int diff = 0;
+            int l = 0;
+            int r = n - 1;
+            while (l < r) {
+                if (w[l] != w[r]) {
+                    diff++;
+                }
+                l++;
+                r--;
+            }
+            if (diff == 0) {
+                if (n % 2 != 0) {
+                    if (zeroes % 2 != 0 && w[n / 2] == '0' && zeroes > 1) {
+                        System.out.println("ALICE");
+                    } else {
+                        System.out.println("BOB");
+                    }
+                } else {
+                    System.out.println("BOB");
+                }
+            } else {
+                if (n % 2 != 0) {
+                    if (w[n / 2] == '0' && zeroes == 2) {
+                        System.out.println("DRAW");
+                    } else {
+                        System.out.println("ALICE");
+                    }
+                } else {
+                    System.out.println("ALICE");
                 }
             }
-            System.out.println(res);
         }
     }
 

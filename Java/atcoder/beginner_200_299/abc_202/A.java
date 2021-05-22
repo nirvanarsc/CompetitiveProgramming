@@ -1,4 +1,4 @@
-package codeforces.round_700_749.round_721;
+package atcoder.beginner_200_299.abc_202;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,40 +7,14 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class B {
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            final char[] w = fs.next().toCharArray();
-            int zeroes = 0;
-            for (char c : w) {
-                zeroes += c == '0' ? 1 : 0;
-            }
-            if (n % 2 != 0) {
-                if (zeroes % 2 != 0) {
-                    if(zeroes == 1) {
-                        System.out.println("BOB");
-                    } else {
-                        System.out.println("ALICE");
-                    }
-                } else {
-                    if ((zeroes / 2) % 2 == 0) {
-                        System.out.println("DRAW");
-                    } else {
-                        System.out.println("BOB");
-                    }
-                }
-            } else {
-                if ((zeroes / 2) % 2 == 0) {
-                    System.out.println("DRAW");
-                } else {
-                    System.out.println("BOB");
-                }
-            }
-        }
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int c = fs.nextInt();
+        System.out.println(21 - (a + b + c));
     }
 
     static final class Utils {

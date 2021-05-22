@@ -1,4 +1,4 @@
-package codeforces.round_700_749.round_721;
+package atcoder.beginner_200_299.abc_202;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,28 +11,85 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class E {
+
+    static int n;
+    static int[][] edges;
+    static int[][] g;
+    static int[] in;
+    static int[] out;
+    static Map<Integer, List<Integer>> dMap;
+    static int time;
 
     public static void main(String[] args) {
+        final StringBuilder sb = new StringBuilder();
         final FastScanner fs = new FastScanner();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final Map<Integer, List<Integer>> f = new HashMap<>();
-            final int n = fs.nextInt();
-            final int[] arr = fs.nextIntArray(n);
-            for (int i = 0; i < n; i++) {
-                f.computeIfAbsent(arr[i], val -> new ArrayList<>()).add(i);
-            }
-            long res = 0;
-            for (List<Integer> list : f.values()) {
-                long pre = 0;
-                for (int idx : list) {
-                    res += pre * (n - idx);
-                    pre += idx + 1;
-                }
-            }
-            System.out.println(res);
+        n = fs.nextInt();
+        edges = new int[n - 1][2];
+        for (int i = 1; i < n; i++) {
+            edges[i - 1] = new int[] { i, fs.nextInt() - 1 };
         }
+        g = packG();
+        in = new int[n];
+        out = new int[n];
+        dMap = new HashMap<>();
+        dfs(0, -1, 0);
+        final int q = fs.nextInt();
+        for (int i = 0; i < q; i++) {
+            final int u = fs.nextInt() - 1;
+            final int d = fs.nextInt();
+            final List<Integer> depths = dMap.get(d);
+            if (depths == null) {
+                sb.append(0);
+                sb.append('\n');
+                continue;
+            }
+            sb.append(lowerBound(depths, out[u]) - lowerBound(depths, in[u]));
+            sb.append('\n');
+        }
+        System.out.println(sb);
+    }
+
+    private static int lowerBound(List<Integer> arr, int target) {
+        int lo = 0;
+        int hi = arr.size();
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (in[arr.get(mid)] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    private static void dfs(int u, int p, int d) {
+        in[u] = time++;
+        for (int next : g[u]) {
+            if (next != p) {
+                dfs(next, u, d + 1);
+            }
+        }
+        out[u] = time++;
+        dMap.computeIfAbsent(d, val -> new ArrayList<>()).add(u);
+    }
+
+    private static int[][] packG() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+            ++size[edge[1]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+            g[edge[1]][--size[edge[1]]] = edge[0];
+        }
+        return g;
     }
 
     static final class Utils {

@@ -2,13 +2,17 @@ package binarysearch.weekly_42;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 public class P_3 {
 
-    public int[] solve(int[][] requests, int k) {
+    public int[] solveSweep(int[][] requests, int k) {
         final int n = requests.length;
         final List<Integer> res = new ArrayList<>();
         final TreeMap<Integer, List<int[]>> tm = new TreeMap<>();
@@ -17,50 +21,42 @@ public class P_3 {
             tm.computeIfAbsent(rq[0], v -> new ArrayList<>()).add(new int[] { 1, i });
             tm.computeIfAbsent(rq[1] + 1, v -> new ArrayList<>()).add(new int[] { -1, i });
         }
-        int count = 0;
-        int closed = 0;
+        final Set<Integer> open = new HashSet<>();
+        boolean shift = false;
         outer:
         for (Map.Entry<Integer, List<int[]>> e : tm.entrySet()) {
-            if (closed == k + 1) {
-                break;
-            }
-            final List<int[]> v = e.getValue();
-            boolean l = false;
-            boolean r = false;
-            v.sort((a, b) -> Integer.compare(a[0], b[0]));
-            for (int[] vv : v) {
-                if (vv[0] == 1) {
-                    count++;
-                    if (count == (k + 1)) {
-                        l = true;
+            final List<int[]> list = e.getValue();
+            list.sort(Comparator.comparingInt(a -> a[0]));
+            for (int[] val : list) {
+                if (val[0] == 1) {
+                    open.add(val[1]);
+                    if (open.size() > k) {
+                        if (!shift) {
+                            res.addAll(open);
+                            shift = true;
+                        } else {
+                            res.add(val[1]);
+                        }
                     }
                 } else {
-                    count--;
-                    if (count == (k + 1)) {
-                        r = true;
-                    }
-                    closed++;
-                    if (closed == k + 1) {
+                    open.remove(val[1]);
+                    if (--k < 0) {
                         break outer;
                     }
                 }
             }
-            for (int[] vv : v) {
-                if (l && vv[0] == 1) {
-                    res.add(vv[1]);
-                }
-                if (r && vv[0] == -1) {
-                    res.add(vv[1]);
-                }
-            }
-
         }
-        return res.stream().mapToInt(Integer::intValue).sorted().distinct().toArray();
+        return res.stream().mapToInt(Integer::intValue).sorted().toArray();
     }
 
-    public static void main(String[] args) {
-//        System.out.println(Arrays.toString(new P_3().solve(new int[][] { { 0, 1 }, { 2, 3 } }, 0)));
-        System.out.println(Arrays.toString(new P_3().solve(new int[][] { { 2, 3 }, { 3, 4 } }, 0)));
-        ;
+    public int[] solve(int[][] requests, int k) {
+        final List<int[]> list = new ArrayList<>(Arrays.asList(requests));
+        list.sort(Comparator.comparingInt(val -> val[0]));
+        final int earliest = list.get(k)[0];
+        list.sort(Comparator.comparingInt(val -> val[1]));
+        final int latest = list.get(k)[1];
+        return IntStream.range(0, requests.length)
+                        .filter(i -> earliest <= requests[i][1] && requests[i][0] <= latest)
+                        .toArray();
     }
 }

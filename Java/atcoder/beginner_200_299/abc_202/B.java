@@ -1,38 +1,29 @@
-package codeforces.round_700_749.round_721;
+package atcoder.beginner_200_299.abc_202;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class B {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final Map<Integer, List<Integer>> f = new HashMap<>();
-            final int n = fs.nextInt();
-            final int[] arr = fs.nextIntArray(n);
-            for (int i = 0; i < n; i++) {
-                f.computeIfAbsent(arr[i], val -> new ArrayList<>()).add(i);
+        final StringBuilder sb = new StringBuilder(fs.next());
+        final String rev = sb.reverse().toString();
+        final StringBuilder res = new StringBuilder();
+        for (int i = 0; i < rev.length(); i++) {
+            if (rev.charAt(i) == '6') {
+                res.append('9');
+            } else if (rev.charAt(i) == '9') {
+                res.append('6');
+            } else {
+                res.append(rev.charAt(i));
             }
-            long res = 0;
-            for (List<Integer> list : f.values()) {
-                long pre = 0;
-                for (int idx : list) {
-                    res += pre * (n - idx);
-                    pre += idx + 1;
-                }
-            }
-            System.out.println(res);
         }
+        System.out.println(res);
     }
 
     static final class Utils {

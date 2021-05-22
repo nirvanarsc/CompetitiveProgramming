@@ -1,13 +1,9 @@
-package codeforces.round_700_749.round_721;
+package atcoder.beginner_200_299.abc_202;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -15,24 +11,28 @@ public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final Map<Integer, List<Integer>> f = new HashMap<>();
-            final int n = fs.nextInt();
-            final int[] arr = fs.nextIntArray(n);
-            for (int i = 0; i < n; i++) {
-                f.computeIfAbsent(arr[i], val -> new ArrayList<>()).add(i);
-            }
-            long res = 0;
-            for (List<Integer> list : f.values()) {
-                long pre = 0;
-                for (int idx : list) {
-                    res += pre * (n - idx);
-                    pre += idx + 1;
-                }
-            }
-            System.out.println(res);
+        final int n = fs.nextInt();
+        final int[] a = new int[n];
+        final int[] b = new int[n];
+        final int[] c = new int[n];
+        final int[] fb = new int[n];
+        for (int i = 0; i < n; i++) {
+            a[i] = fs.nextInt() - 1;
         }
+        for (int i = 0; i < n; i++) {
+            b[i] = fs.nextInt() - 1;
+        }
+        for (int i = 0; i < n; i++) {
+            c[i] = fs.nextInt() - 1;
+        }
+        for (int i = 0; i < n; i++) {
+            fb[b[c[i]]]++;
+        }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            res += fb[a[i]];
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
