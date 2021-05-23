@@ -6,65 +6,67 @@ import java.util.Deque;
 
 public class P_943 {
 
-    // TSP
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public String shortestSuperstring(String[] A) {
-        final int n = A.length;
-        final int[][] graph = new int[n][n];
+    public String shortestSuperstring(String[] words) {
+        final int n = words.length;
+        final int[][] g = new int[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                graph[i][j] = calc(A[i], A[j]);
-                graph[j][i] = calc(A[j], A[i]);
+                g[i][j] = getCost(words[i], words[j]);
+                g[j][i] = getCost(words[j], words[i]);
             }
         }
-        final int[][] dp = new int[1 << n][n];
-        final int[][] path = new int[1 << n][n];
-        int last = -1, min = Integer.MAX_VALUE;
-
-        for (int i = 1; i < (1 << n); i++) {
-            Arrays.fill(dp[i], Integer.MAX_VALUE);
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) > 0) {
-                    final int prev = i - (1 << j);
-                    if (prev == 0) {
-                        dp[i][j] = A[j].length();
+        final int[][] dp = new int[n][1 << n];
+        final int[][] parent = new int[n][1 << n];
+        for (int[] row : dp) {
+            Arrays.fill(row, (int) 1e9);
+        }
+        for (int mask = 1; mask < (1 << n); mask++) {
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    final int prevMask = mask ^ (1 << i);
+                    if (prevMask == 0) {
+                        dp[i][mask] = words[i].length();
                     } else {
-                        for (int k = 0; k < n; k++) {
-                            if (dp[prev][k] < Integer.MAX_VALUE && dp[prev][k] + graph[k][j] < dp[i][j]) {
-                                dp[i][j] = dp[prev][k] + graph[k][j];
-                                path[i][j] = k;
+                        for (int j = 0; j < n; j++) {
+                            if (dp[j][prevMask] + g[j][i] < dp[i][mask]) {
+                                dp[i][mask] = dp[j][prevMask] + g[j][i];
+                                parent[i][mask] = j;
                             }
                         }
                     }
                 }
-                if (i == (1 << n) - 1 && dp[i][j] < min) {
-                    min = dp[i][j];
-                    last = j;
-                }
+            }
+        }
+        int last = -1;
+        int curr = (1 << n) - 1;
+        int min = (int) 1e9;
+        for (int i = 0; i < n; i++) {
+            if (dp[i][curr] < min) {
+                min = dp[i][curr];
+                last = i;
             }
         }
 
-        final StringBuilder sb = new StringBuilder();
-        int cur = (1 << n) - 1;
-        final Deque<Integer> stack = new ArrayDeque<>();
-        while (cur > 0) {
-            stack.addFirst(last);
-            final int temp = cur;
-            cur -= 1 << last;
-            last = path[temp][last];
+        final Deque<Integer> dq = new ArrayDeque<>();
+        while (curr != 0) {
+            dq.addFirst(last);
+            final int temp = curr;
+            curr ^= 1 << last;
+            last = parent[last][temp];
         }
 
-        int i = stack.removeFirst();
-        sb.append(A[i]);
-        while (!stack.isEmpty()) {
-            final int j = stack.pop();
-            sb.append(A[j].substring(A[j].length() - graph[i][j]));
+        final StringBuilder sb = new StringBuilder();
+        int i = dq.removeFirst();
+        sb.append(words[i]);
+        while (!dq.isEmpty()) {
+            final int j = dq.removeFirst();
+            sb.append(words[j].substring(words[j].length() - g[i][j]));
             i = j;
         }
         return sb.toString();
     }
 
-    private static int calc(String a, String b) {
+    private static int getCost(String a, String b) {
         for (int i = 1; i < a.length(); i++) {
             if (b.startsWith(a.substring(i))) {
                 return b.length() - a.length() + i;

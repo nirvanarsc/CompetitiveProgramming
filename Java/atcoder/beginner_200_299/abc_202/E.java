@@ -21,6 +21,7 @@ public final class E {
     static Map<Integer, List<Integer>> dMap;
     static int time;
 
+    // check small to large merging https://codeforces.com/blog/entry/90942?#comment-793972
     public static void main(String[] args) {
         final StringBuilder sb = new StringBuilder();
         final FastScanner fs = new FastScanner();
