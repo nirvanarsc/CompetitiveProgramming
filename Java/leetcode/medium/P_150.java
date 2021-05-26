@@ -1,38 +1,35 @@
 package leetcode.medium;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
 
 public class P_150 {
 
     public int evalRPN(String[] tokens) {
-        final Set<String> operations = new HashSet<>(Arrays.asList("+", "/", "*", "-"));
-        final Deque<Integer> stack = new ArrayDeque<>();
-        for (String s : tokens) {
-            if (operations.contains(s)) {
-                final int right = stack.removeFirst();
-                final int left = stack.removeFirst();
-                switch (s) {
-                    case "+":
-                        stack.addFirst(left + right);
-                        break;
-                    case "/":
-                        stack.addFirst(left / right);
-                        break;
-                    case "*":
-                        stack.addFirst(left * right);
-                        break;
-                    default:
-                        stack.addFirst(left - right);
-                }
+        final Deque<Integer> ops = new ArrayDeque<>();
+        final String operands = "+-*/";
+        for (String t : tokens) {
+            if (operands.contains(t)) {
+                ops.addFirst(eval(ops.removeFirst(), ops.removeFirst(), t.charAt(0)));
             } else {
-                stack.addFirst(Integer.parseInt(s));
+                ops.addFirst(Integer.parseInt(t));
             }
         }
+        return ops.removeFirst();
+    }
 
-        return stack.removeFirst();
+    private static int eval(int a, int b, char c) {
+        switch (c) {
+            case '+':
+                return b + a;
+            case '-':
+                return b - a;
+            case '/':
+                return b / a;
+            case '*':
+                return b * a;
+            default:
+                return -1;
+        }
     }
 }
