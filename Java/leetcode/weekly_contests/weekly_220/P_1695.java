@@ -6,12 +6,12 @@ public class P_1695 {
         int j = 0;
         int curr = 0;
         int res = 0;
-        final int[] map = new int[(int) (1e4 + 5)];
+        final int[] f = new int[(int) (1e4 + 5)];
         for (int num : nums) {
-            map[num]++;
+            f[num]++;
             curr += num;
-            while (map[num] > 1) {
-                map[nums[j]]--;
+            while (f[num] > 1) {
+                f[nums[j]]--;
                 curr -= nums[j++];
             }
             res = Math.max(res, curr);
