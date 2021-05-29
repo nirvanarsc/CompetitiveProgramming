@@ -5,29 +5,39 @@ import java.util.List;
 
 public class P_52 {
 
+    static int res;
+
     public int totalNQueens(int n) {
-        final int[] res = { 0 };
-        recurse(0, n, res, new ArrayList<>());
-        return res[0];
+        res = 0;
+        dfs(0, n, new ArrayList<>());
+        return res;
     }
 
-    private static void recurse(int row, int n, int[] res, List<Integer> currSolution) {
+    private static void dfs(int row, int n, List<Integer> curr) {
         if (row == n) {
-            res[0]++;
+            res++;
+            return;
         }
-        for (int i = 0; i < n; i++) {
-            currSolution.add(i);
-            if (isValid(row, currSolution)) {
-                recurse(row + 1, n, res, currSolution);
+        for (int col = 0; col < n; col++) {
+            if (canPlace(row, col, n, curr)) {
+                curr.add(1 << col);
+                dfs(row + 1, n, curr);
+                curr.remove(curr.size() - 1);
             }
-            currSolution.remove(currSolution.size() - 1);
         }
     }
 
-    private static boolean isValid(int row, List<Integer> placement) {
-        for (int i = 0; i < row; i++) {
-            final int diff = Math.abs(placement.get(i) - placement.get(row));
-            if (diff == 0 || diff == row - i) {
+    private static boolean canPlace(int row, int col, int n, List<Integer> curr) {
+        for (int i = row - 1, j = 1; i >= 0; i--, j++) {
+            final int L = col - j;
+            final int R = col + j;
+            if (L >= 0 && (curr.get(i) & (1 << L)) != 0) {
+                return false;
+            }
+            if ((curr.get(i) & (1 << col)) != 0) {
+                return false;
+            }
+            if (R < n && (curr.get(i) & (1 << R)) != 0) {
                 return false;
             }
         }
