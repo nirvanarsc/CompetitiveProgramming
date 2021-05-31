@@ -2,37 +2,26 @@ package leetcode.weekly_contests.weekly_243;
 
 public class P_4 {
 
-    static long[][] dp;
-    static boolean[][] seen;
-
     public int minSkips(int[] dist, int speed, int hoursBefore) {
-        int n = dist.length;
-        dp = new long[n][n];
-        seen = new boolean[n][n];
-        dfs(dist, speed, 0, 0);
+        final int n = dist.length;
+        final int[][] dp = new int[n + 1][n];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = speed * ceil(dp[i - 1][j], speed) + dist[i - 1];
+                if (j > 0) {
+                    dp[i][j] = Math.min(dp[i][j], dp[i - 1][j - 1] + dist[i - 1]);
+                }
+            }
+        }
         for (int i = 0; i < n; i++) {
-            if (dp[n - 1][i] * speed <= (long) speed * hoursBefore) {
+            if (dp[n][i] <= (long) speed * hoursBefore) {
                 return i;
             }
         }
         return -1;
     }
 
-    private static long dfs(int[] d, int speed, int idx, int skips) {
-        if (idx == d.length) {
-            return 0;
-        }
-        if (seen[idx][skips]) {
-            return dp[idx][skips];
-        }
-        long res = (long) 1e18;
-        int add = 0;
-        for (int i = 0; idx + i < d.length; i++) {
-            add += d[idx + i];
-            res = Math.min(res, (add + speed - 1) / speed + dfs(d, speed, idx + i + 1, skips + i));
-        }
-        seen[idx][skips] = true;
-        return dp[idx][skips] = res;
+    private static int ceil(int a, int b) {
+        return (a + b - 1) / b;
     }
-
 }

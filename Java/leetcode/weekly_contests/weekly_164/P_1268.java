@@ -7,47 +7,43 @@ import java.util.List;
 public class P_1268 {
 
     static class Trie {
-        Trie[] child;
-        List<String> suggestions;
-
-        Trie() {
-            child = new Trie[26];
-            suggestions = new ArrayList<>();
-        }
-    }
-
-    public List<List<String>> suggestedProductsTrie(String[] products, String searchWord) {
-        final List<List<String>> res = new ArrayList<>();
-        Trie root = new Trie();
-        Arrays.sort(products);
-
-        for (String product : products) {
-            Trie t = root;
-            for (char c : product.toCharArray()) {
-                if (t.child[c - 'a'] == null) {
-                    t.child[c - 'a'] = new Trie();
-                }
-                t = t.child[c - 'a'];
-                if (t.suggestions.size() < 3) {
-                    t.suggestions.add(product);
-                }
-            }
-        }
-
-        for (char c : searchWord.toCharArray()) {
-            if (root != null && root.child[c - 'a'] != null) {
-                res.add(root.child[c - 'a'].suggestions);
-            } else {
-                res.add(new ArrayList<>());
-            }
-            if (root != null) {
-                root = root.child[c - 'a'];
-            }
-        }
-        return res;
+        Trie[] children = new Trie[26];
+        List<String> list = new ArrayList<>();
     }
 
     public List<List<String>> suggestedProducts(String[] products, String searchWord) {
+        Arrays.sort(products);
+        final Trie root = new Trie();
+        for (String w : products) {
+            Trie iter = root;
+            for (char c : w.toCharArray()) {
+                if (iter.children[c - 'a'] == null) {
+                    iter.children[c - 'a'] = new Trie();
+                }
+                iter = iter.children[c - 'a'];
+                if (iter.list.size() < 3) {
+                    iter.list.add(w);
+                }
+            }
+        }
+        final List<List<String>> res = new ArrayList<>();
+        dfs(root, searchWord, 0, res);
+        return res;
+    }
+
+    private static void dfs(Trie trie, String word, int idx, List<List<String>> res) {
+        if (trie == null) {
+            res.add(new ArrayList<>());
+        } else if (idx > 0) {
+            res.add(trie.list);
+        }
+        if (idx == word.length()) {
+            return;
+        }
+        dfs(trie == null ? null : trie.children[word.charAt(idx) - 'a'], word, idx + 1, res);
+    }
+
+    public List<List<String>> suggestedProductsBS(String[] products, String searchWord) {
         final List<List<String>> ans = new ArrayList<>();
         Arrays.sort(products);
         for (int i = 1; i <= searchWord.length(); i++) {

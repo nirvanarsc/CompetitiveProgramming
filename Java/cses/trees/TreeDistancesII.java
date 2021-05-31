@@ -47,7 +47,7 @@ public final class TreeDistancesII {
     private static void dfs2(int u, int v) {
         for (int next : g[u]) {
             if (next != v) {
-                res[next] = res[u] + n - (2 * size[next]);
+                res[next] = res[u] + n - (2L * size[next]);
                 dfs2(next, u);
             }
         }
