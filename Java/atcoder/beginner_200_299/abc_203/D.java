@@ -5,9 +5,28 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.TreeSet;
 
 public final class D {
+
+
+    private static class NumMatrix {
+        int[][] dp;
+
+        NumMatrix(int[][] matrix) {
+            final int n = matrix.length;
+            final int m = matrix[0].length;
+            dp = new int[n + 1][m + 1];
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= m; j++) {
+                    dp[i][j] = matrix[i - 1][j - 1] + dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1];
+                }
+            }
+        }
+
+        public int sumRegion(int row1, int col1, int row2, int col2) {
+            return dp[row2 + 1][col2 + 1] - dp[row1][col2 + 1] - dp[row2 + 1][col1] + dp[row1][col1];
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
@@ -19,98 +38,35 @@ public final class D {
                 g[i][j] = fs.nextInt();
             }
         }
-        final TreeSet<int[]> min = new TreeSet<>((a, b) -> a[1] == b[1]
-                                                           ? Integer.compare(a[0], b[0])
-                                                           : Integer.compare(a[1], b[1]));
-        final TreeSet<int[]> max = new TreeSet<>((a, b) -> a[1] == b[1]
-                                                           ? Integer.compare(a[0], b[0])
-                                                           : Integer.compare(b[1], a[1]));
-        final boolean even = k % 2 == 0;
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; j < k; j++) {
-                final int[] add = { i * n + j, g[i][j] };
-                min.add(add);
-                max.add(min.pollFirst());
-                if (max.size() > min.size()) {
-                    min.add(max.pollFirst());
-                }
-            }
-        }
-        int res = even ? max.first()[1] : min.first()[1];
-        int r = 0;
-        boolean right = true;
-        while (r < (n - k)) {
-            if (right) {
-                for (int col = k; col < n; col++) {
-                    for (int row = r; row < r + k; row++) {
-                        final int[] rem = { row * n + (col - k), g[row][col - k] };
-                        max.remove(rem);
-                        min.remove(rem);
-
-                        final int[] add = { row * n + col, g[row][col] };
-                        min.add(add);
-                        max.add(min.pollFirst());
-                        if (max.size() > min.size()) {
-                            min.add(max.pollFirst());
-                        }
-                    }
-                    res = Math.min(res, even ? max.first()[1] : min.first()[1]);
-                }
-                // go down
-                if (r < (n - k)) {
-                    for (int col = n - k; col < n; col++) {
-                        final int[] rem = { r * n + col, g[r][col] };
-                        max.remove(rem);
-                        min.remove(rem);
-
-                        final int[] add = { (r + k) * n + col, g[r + k][col] };
-                        min.add(add);
-                        max.add(min.pollFirst());
-                        if (max.size() > min.size()) {
-                            min.add(max.pollFirst());
-                        }
-                    }
-                    res = Math.min(res, even ? max.first()[1] : min.first()[1]);
-                    r++;
-                }
-                right = false;
+        int lo = 0;
+        int hi = (int) 1e9;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (!f(g, mid, k, n)) {
+                lo = mid + 1;
             } else {
-                for (int col = n - k - 1; col >= 0; col--) {
-                    for (int row = r; row < r + k; row++) {
-                        final int[] rem = { row * n + col + k, g[row][col + k] };
-                        max.remove(rem);
-                        min.remove(rem);
-
-                        final int[] add = { row * n + col, g[row][col] };
-                        min.add(add);
-                        max.add(min.pollFirst());
-                        if (max.size() > min.size()) {
-                            min.add(max.pollFirst());
-                        }
-                    }
-                    res = Math.min(res, even ? max.first()[1] : min.first()[1]);
-                }
-                // go down
-                if (r < (n - k)) {
-                    for (int col = 0; col < k; col++) {
-                        final int[] rem = { r * n + col, g[r][col] };
-                        max.remove(rem);
-                        min.remove(rem);
-
-                        final int[] add = { (r + k) * n + col, g[r + k][col] };
-                        min.add(add);
-                        max.add(min.pollFirst());
-                        if (max.size() > min.size()) {
-                            min.add(max.pollFirst());
-                        }
-                    }
-                    res = Math.min(res, even ? max.first()[1] : min.first()[1]);
-                    r++;
-                }
-                right = true;
+                hi = mid;
             }
         }
-        System.out.println(res);
+        System.out.println(lo);
+    }
+
+    private static boolean f(int[][] g, int mid, int k, int n) {
+        final int[][] conv = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                conv[i][j] = g[i][j] > mid ? 1 : 0;
+            }
+        }
+        final NumMatrix nm = new NumMatrix(conv);
+        for (int i = 0; i < n - k + 1; i++) {
+            for (int j = 0; j < n - k + 1; j++) {
+                if (nm.sumRegion(i, j, i + k - 1, j + k - 1) < 1 + ((k * k) / 2)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     static final class Utils {

@@ -12,7 +12,44 @@ public final class F {
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final int k = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        Utils.shuffleSort(arr);
+        final int[] skips = new int[n];
+        for (int i = 0; i < n; i++) {
+            skips[i] = upperBound(arr, (arr[i] * 2) - 1);
+        }
+        final int[][] dp = new int[n + 1][32];
+        for (int[] row : dp) {
+            Arrays.fill(row, (int) 1e9);
+        }
+        dp[0][0] = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 31; j++) {
+                dp[skips[i] + 1][j + 1] = Math.min(dp[skips[i] + 1][j + 1], dp[i][j]);
+                dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j] + 1);
+            }
+        }
+        for (int i = 0; i < 31; i++) {
+            if (dp[n][i] <= k) {
+                System.out.println(i + " " + dp[n][i]);
+                return;
+            }
+        }
+    }
+
+    private static int upperBound(int[] arr, int target) {
+        int lo = 0;
+        int hi = arr.length - 1;
+        while (lo < hi) {
+            final int mid = lo + hi + 1 >>> 1;
+            if (arr[mid] > target) {
+                hi = mid - 1;
+            } else {
+                lo = mid;
+            }
+        }
+        return lo;
     }
 
     static final class Utils {

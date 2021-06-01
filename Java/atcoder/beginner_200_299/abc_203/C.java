@@ -25,8 +25,8 @@ public final class C {
             if (k < e.getKey()) {
                 break;
             }
-            for (int tt : e.getValue()) {
-                k += tt;
+            for (int num : e.getValue()) {
+                k += num;
             }
         }
         System.out.println(k);

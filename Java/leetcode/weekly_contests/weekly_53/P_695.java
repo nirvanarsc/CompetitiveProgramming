@@ -6,23 +6,29 @@ public class P_695 {
 
     public int maxAreaOfIsland(int[][] grid) {
         int res = 0;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                res = Math.max(res, dfs(grid, i, j));
+        final int n = grid.length;
+        final int m = grid[0].length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    final int[] temp = { 0 };
+                    dfs(grid, i, j, n, m, temp);
+                    res = Math.max(res, temp[0]);
+                }
             }
         }
         return res;
     }
 
-    private static int dfs(int[][] grid, int r, int c) {
-        if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length || grid[r][c] == 0) {
-            return 0;
-        }
-        int res = 1;
-        grid[r][c] = 0;
+    private static void dfs(int[][] g, int x, int y, int n, int m, int[] res) {
+        res[0]++;
+        g[x][y] = 0;
         for (int[] dir : DIRS) {
-            res += dfs(grid, r + dir[0], +c + dir[1]);
+            final int nx = x + dir[0];
+            final int ny = y + dir[1];
+            if (0 <= nx && nx < n && 0 <= ny && ny < m && g[nx][ny] == 1) {
+                dfs(g, nx, ny, n, m, res);
+            }
         }
-        return res;
     }
 }
