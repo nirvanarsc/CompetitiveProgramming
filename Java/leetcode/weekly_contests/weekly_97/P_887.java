@@ -1,53 +1,58 @@
 package leetcode.weekly_contests.weekly_97;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_887 {
 
-    public int superEggDrop(int K, int N) {
-        final int[][] dp = new int[N + 1][K + 1];
+    public int superEggDropTopDown(int k, int n) {
+        final int[][] dp = new int[n + 1][k + 1];
         int i;
-        for (i = 1; dp[i - 1][K] < N; ++i) {
-            for (int j = 1; j <= K; ++j) {
+        for (i = 1; dp[i - 1][k] < n; ++i) {
+            for (int j = 1; j <= k; ++j) {
                 dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j] + 1;
             }
         }
         return i - 1;
     }
 
-    public int superEggDropSpace(int K, int N) {
-        final int[] dp = new int[K + 1];
+    public int superEggDropSpace(int k, int n) {
+        final int[] dp = new int[k + 1];
         int i;
-        for (i = 0; dp[K] < N; ++i) {
-            for (int j = K; j > 0; --j) {
+        for (i = 0; dp[k] < n; ++i) {
+            for (int j = k; j > 0; --j) {
                 dp[j] += dp[j - 1] + 1;
             }
         }
         return i;
     }
 
-    public int superEggDropTopDown(int K, int N) {
-        return recurse(K, N, new Integer[K + 1][N + 1]);
+    static int[][] dp;
+
+    public int superEggDrop(int k, int n) {
+        dp = new int[n + 1][k + 1];
+        return dfs(n, k);
     }
 
-    private static int recurse(int egg, int floor, Integer[][] dp) {
-        if (egg == 1 || floor <= 1) {
-            return floor;
+    private static int dfs(int floors, int eggs) {
+        if (eggs == 1 || floors <= 1) {
+            return floors;
         }
-        if (dp[egg][floor] != null) {
-            return dp[egg][floor];
+        if (dp[floors][eggs] > 0) {
+            return dp[floors][eggs];
         }
-        int res = floor, lo = 1, hi = floor;
+        int res = (int) 1e9;
+        int lo = 1;
+        int hi = floors;
         while (lo < hi) {
-            final int mid = lo + hi >>> 1;
-            final int left = recurse(egg - 1, mid - 1, dp);
-            final int right = recurse(egg, floor - mid, dp);
-            if (left <= right) {
-                res = Math.min(res, 1 + Math.max(left, right));
-                lo = mid + 1;
+            final int mid = lo + hi + 1 >>> 1;
+            final int left = dfs(mid - 1, eggs - 1);
+            final int right = dfs(floors - mid, eggs);
+            if (left > right) {
+                hi = mid - 1;
             } else {
-                hi = mid;
+                lo = mid;
             }
         }
-        return dp[egg][floor] = res;
+        res = Math.min(res, 1 + Math.max(dfs(lo - 1, eggs - 1),
+                                         dfs(floors - lo, eggs)));
+        return dp[floors][eggs] = res;
     }
 }

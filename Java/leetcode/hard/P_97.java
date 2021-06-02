@@ -2,23 +2,33 @@ package leetcode.hard;
 
 public class P_97 {
 
+    static int[][] dp;
+    static boolean[][] seen;
+
     public boolean isInterleave(String s1, String s2, String s3) {
-        return dfs(s1, s2, 0, 0, s3, new Boolean[s1.length()][s2.length()]);
+        if (s3.length() != s1.length() + s2.length()) {
+            return false;
+        }
+        dp = new int[s1.length() + 1][s2.length() + 1];
+        seen = new boolean[s1.length() + 1][s2.length() + 1];
+        return dfs(s1.toCharArray(), s2.toCharArray(), s3.toCharArray(), 0, 0) > 0;
     }
 
-    private static boolean dfs(String s1, String s2, int i, int j, String s3, Boolean[][] dp) {
-        if (i == s1.length()) { return s2.substring(j).equals(s3.substring(i + j)); }
-        if (j == s2.length()) { return s1.substring(i).equals(s3.substring(i + j)); }
-        if (dp[i][j] != null) {
+    private static int dfs(char[] l, char[] r, char[] w, int i, int j) {
+        if (i + j == w.length) {
+            return 1;
+        }
+        if (seen[i][j]) {
             return dp[i][j];
         }
-        boolean res = false;
-        if (s1.charAt(i) == s3.charAt(i + j)) {
-            res = dfs(s1, s2, i + 1, j, s3, dp);
+        int res = 0;
+        if (i < l.length && l[i] == w[i + j]) {
+            res = Math.max(res, dfs(l, r, w, i + 1, j));
         }
-        if (s2.charAt(j) == s3.charAt(i + j)) {
-            res |= dfs(s1, s2, i, j + 1, s3, dp);
+        if (j < r.length && r[j] == w[i + j]) {
+            res = Math.max(res, dfs(l, r, w, i, j + 1));
         }
+        seen[i][j] = true;
         return dp[i][j] = res;
     }
 }
