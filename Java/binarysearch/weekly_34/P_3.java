@@ -1,27 +1,30 @@
 package binarysearch.weekly_34;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class P_3 {
 
+    static int[][][] dp;
+    static boolean[][][] seen;
+
     public boolean solve(int[] nums, int k) {
-        return dfs(nums, 0, 0, k, new HashMap<>()) == k;
+        final int n = nums.length;
+        dp = new int[n][k + 1][2];
+        seen = new boolean[n][k + 1][2];
+        return dfs(nums, 0, k, 0) > 0;
     }
 
-    private static int dfs(int[] nums, int idx, int sum, int k, Map<String, Integer> dp) {
-        if (idx >= nums.length) {
-            return sum;
+    private static int dfs(int[] nums, int idx, int tar, int taken) {
+        if (idx == nums.length) {
+            return tar == 0 ? 1 : 0;
         }
-        final String key = idx + "," + sum;
-        if (dp.containsKey(key)) {
-            return dp.get(key);
+        if (seen[idx][tar][taken]) {
+            return dp[idx][tar][taken];
         }
-        int res = dfs(nums, idx + 1, sum, k, dp);
-        if (sum + nums[idx] <= k) {
-            res = Math.max(res, dfs(nums, idx + 2, sum + nums[idx], k, dp));
+        int res = 0;
+        res = Math.max(res, dfs(nums, idx + 1, tar, 0));
+        if (taken == 0 && nums[idx] <= tar) {
+            res = Math.max(res, dfs(nums, idx + 1, tar - nums[idx], 1));
         }
-        dp.put(key, res);
-        return res;
+        seen[idx][tar][taken] = true;
+        return dp[idx][tar][taken] = res;
     }
 }
