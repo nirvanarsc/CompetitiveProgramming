@@ -1,77 +1,73 @@
 package binarysearch.weekly_33;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 public class P_4 {
 
-    private static class SegTree {
-        int leftMost, rightMost;
-        SegTree left, right;
-        int sum;
+    private static final class BIT {
+        private final int n;
+        private final long[] data;
 
-        SegTree(int leftMost, int rightMost) {
-            this.leftMost = leftMost;
-            this.rightMost = rightMost;
-            if (leftMost == rightMost) {
-                sum = 1;
-            } else {
-                final int mid = leftMost + rightMost >>> 1;
-                left = new SegTree(leftMost, mid);
-                right = new SegTree(mid + 1, rightMost);
-                recalc();
+        private BIT(int n) {
+            this.n = n;
+            data = new long[n + 1];
+        }
+
+        public void add(int idx, long val) {
+            for (int i = idx + 1; i <= n; i += lsb(i)) {
+                data[i] += val;
             }
         }
 
-        private void recalc() {
-            if (leftMost == rightMost) {
-                return;
-            }
-            sum = left.sum + right.sum;
+        public long sum(int l, int r) {
+            return sum(r) - sum(l - 1);
         }
 
-        private int query(int l, int r) {
-            if (r < leftMost || l > rightMost) {
-                return 0;
+        private long sum(int idx) {
+            long res = 0;
+            for (int i = idx + 1; i > 0; i -= lsb(i)) {
+                res += data[i];
             }
-            if (l <= leftMost && rightMost <= r) {
-                return sum;
-            }
-            return left.query(l, r) + right.query(l, r);
+            return res;
         }
 
-        private void update(int idx, int val) {
-            if (leftMost == rightMost) {
-                sum = val;
-            } else {
-                final int mid = leftMost + rightMost >>> 1;
-                if (idx <= mid) {
-                    left.update(idx, val);
+        private static int lsb(int i) {
+            return i & -i;  // zeroes all the bits except the least significant one
+        }
+
+        // get k-th element
+        public int getKth(int k) {
+            int lo = 0;
+            int hi = n;
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (k > sum(mid)) {
+                    lo = mid + 1;
                 } else {
-                    right.update(idx, val);
+                    hi = mid;
                 }
-                recalc();
             }
+            return lo;
         }
     }
 
     public int[] solve(int[] nums) {
-        if (nums.length == 0) {
-            return nums;
-        }
         final int n = nums.length;
-        final int[] res = new int[n];
-        final List<int[]> pairs = new ArrayList<>(n);
-        final SegTree st = new SegTree(0, n + 5);
+        final int[][] indexed = new int[n][2];
         for (int i = 0; i < n; i++) {
-            pairs.add(new int[] { nums[i], i });
+            indexed[i] = new int[] { nums[i], i };
         }
-        pairs.sort(Comparator.comparingInt(val -> val[0]));
+        final BIT bit = new BIT(n);
         for (int i = 0; i < n; i++) {
-            final int idx = pairs.get(i)[1];
-            res[i] = st.query(0, idx - 1);
-            st.update(idx, 0);
+            bit.add(i, 1);
+        }
+        Arrays.sort(indexed, Comparator.comparingInt(val -> val[0]));
+        final int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            final int u = indexed[i][1];
+            res[i] = (int) (bit.sum(u) - 1);
+            bit.add(u, -1);
         }
         return res;
     }
