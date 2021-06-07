@@ -1,30 +1,27 @@
 package leetcode.weekly_contests.weekly_63;
 
+import java.util.Arrays;
+
 public class P_746 {
 
+    static int[] dp;
+
     public int minCostClimbingStairs(int[] cost) {
-        final Integer[] dp = new Integer[cost.length];
-        return Math.min(dfs(cost, 0, dp), dfs(cost, 1, dp));
+        dp = new int[cost.length];
+        Arrays.fill(dp, -1);
+        return Math.min(dfs(cost, 0), dfs(cost, 1));
     }
 
-    private static int dfs(int[] cost, int i, Integer[] dp) {
-        if (i == cost.length) {
+    private static int dfs(int[] arr, int idx) {
+        if (idx >= arr.length) {
             return 0;
         }
-        if (i > cost.length) {
-            return Integer.MAX_VALUE;
+        if (dp[idx] != -1) {
+            return dp[idx];
         }
-        if (dp[i] != null) {
-            return dp[i];
-        }
-        int first = dfs(cost, i + 1, dp);
-        int second = dfs(cost, i + 2, dp);
-        if (first != Integer.MAX_VALUE) {
-            first += cost[i];
-        }
-        if (second != Integer.MAX_VALUE) {
-            second += cost[i];
-        }
-        return dp[i] = Math.min(first, second);
+        int res = (int) 1e9;
+        res = Math.min(res, arr[idx] + dfs(arr, idx + 1));
+        res = Math.min(res, arr[idx] + dfs(arr, idx + 2));
+        return dp[idx] = res;
     }
 }
