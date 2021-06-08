@@ -8,24 +8,27 @@ import utils.DataStructures.TreeNode;
 @SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
 public class P_105 {
 
+    static Map<Integer, Integer> inIdx;
+    static int n;
+
     public TreeNode buildTreeOld(int[] preorder, int[] inorder) {
-        final Map<Integer, Integer> inMap = new HashMap<>();
-        for (int i = 0; i < inorder.length; i++) {
-            inMap.put(inorder[i], i);
+        inIdx = new HashMap<>();
+        n = inorder.length;
+        for (int i = 0; i < n; i++) {
+            inIdx.put(inorder[i], i);
         }
-        return helper(preorder, 0, preorder.length - 1, 0, inorder.length - 1, inMap);
+        return dfs(0, n - 1, 0, preorder);
     }
 
-    private static TreeNode helper(int[] preorder, int preStart, int preEnd, int inStart, int end,
-                                   Map<Integer, Integer> map) {
-        if (inStart > end) {
+    private static TreeNode dfs(int l, int r, int inL, int[] pre) {
+        if (l > r) {
             return null;
         }
-
-        final TreeNode root = new TreeNode(preorder[preStart]);
-        final int i = map.get(root.val);
-        root.left = helper(preorder, preStart + 1, preStart + i - inStart, inStart, i - 1, map);
-        root.right = helper(preorder, preStart + (i - inStart) + 1, preEnd, i + 1, end, map);
+        final TreeNode root = new TreeNode(pre[l]);
+        final int mid = inIdx.get(pre[l]);
+        final int L = mid - inL + 1;
+        root.left = dfs(l + 1, l + L - 1, inL, pre);
+        root.right = dfs(l + L, r, mid + 1, pre);
         return root;
     }
 
@@ -45,8 +48,9 @@ public class P_105 {
         }
         final int root = preorder[idx++];
         final TreeNode res = new TreeNode(root);
-        res.left = dfs(preorder, in, l, in.get(root) - 1);
-        res.right = dfs(preorder, in, in.get(root) + 1, r);
+        final int idx = in.get(root);
+        res.left = dfs(preorder, in, l, idx - 1);
+        res.right = dfs(preorder, in, idx + 1, r);
         return res;
     }
 }
