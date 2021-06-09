@@ -1,7 +1,10 @@
 package binarysearch.weekly_32;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
 public class P_3 {
 
     class RunLengthDecoder {
@@ -48,35 +51,30 @@ public class P_3 {
         public RunLengthDecoder(String s) {
             int curr = 0;
             final int n = s.length();
-            final int[] arr = new int[n / 2];
-            for (int i = 0; i < n; i += 2) {
-                normalized.put(curr, i / 2);
-                arr[i / 2] = 1 << (s.charAt(i + 1) - 'a' + 1);
-                curr += s.charAt(i) - '0';
+            final List<Integer> list = new ArrayList<>();
+            for (int i = 0, stIdx = 0; i < n; i++) {
+                normalized.put(curr, stIdx++);
+                int j = i;
+                while (j < n && Character.isDigit(s.charAt(j))) {
+                    j++;
+                }
+                list.add(1 << (s.charAt(j) - 'a' + 1));
+                curr += Integer.parseInt(s.substring(i, j));
+                i = j;
             }
-            st = new SegTree(0, (n / 2) - 1, arr);
+            final int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
+            st = new SegTree(0, arr.length - 1, arr);
         }
 
         public String value(int i) {
-            final int u = normalized.floorEntry(i).getValue();
-            final int mask = st.query(u, u);
-            for (int idx = 0; idx < 30; idx++) {
-                if ((mask & (1 << idx)) != 0) {
-                    return String.valueOf((char) (idx + 'a' - 1));
-                }
-            }
-            return "?";
+            return valueInRange("a", i, i + 1);
         }
 
         public String valueInRange(String c, int i, int j) {
             final int l = normalized.floorEntry(i).getValue();
             final int r = normalized.floorEntry(j - 1).getValue();
             final int mask = st.query(l, r);
-            // System.out.println(mask + " " + l + " " + r);
-            // for(int k=0; k< 2; k++) {
-            //     System.out.println(st.query(k, k));
-            // }
-            for (int idx = c.charAt(0) - 'a' + 1; idx < 30; idx++) {
+            for (int idx = c.charAt(0) - 'a' + 1; idx < 27; idx++) {
                 if ((mask & (1 << idx)) != 0) {
                     return String.valueOf((char) (idx + 'a' - 1));
                 }
@@ -84,5 +82,4 @@ public class P_3 {
             return "?";
         }
     }
-
 }

@@ -1,7 +1,6 @@
 package leetcode.weekly_contests.weekly_220;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 
 public class P_1696 {
@@ -78,13 +77,12 @@ public class P_1696 {
 
     public int maxResultST(int[] nums, int k) {
         final int n = nums.length;
-        final int[] start = new int[n];
-        Arrays.fill(start, (int) -1e9);
-        final SegTree st = new SegTree(0, n - 1, start);
-        st.update(0, nums[0]);
+        final int[] arr = new int[n];
+        arr[0] = nums[0];
+        final SegTree st = new SegTree(0, n - 1, arr);
         for (int i = 1; i < n; i++) {
-            final int curr = nums[i] + st.query(Math.max(0, i - k), i);
-            st.update(i, curr);
+            final int l = Math.max(0, i - k);
+            st.update(i, nums[i] + st.query(l, i - 1));
         }
         return st.query(n - 1, n - 1);
     }

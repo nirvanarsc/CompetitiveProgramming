@@ -5,6 +5,8 @@ import java.util.Deque;
 
 public class P_1 {
 
+
+
     public int solve(int[] nums) {
         final Deque<Integer> dq = new ArrayDeque<>();
         final int n = nums.length;
