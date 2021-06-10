@@ -2,13 +2,13 @@ package leetcode.weekly_contests.weekly_59;
 
 import java.util.TreeMap;
 
-@SuppressWarnings({ "unused", "InnerClassMayBeStatic" })
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass" })
 public class P_731 {
 
-    class MyCalendarTwo {
+    class MyCalendarTwoTM {
         TreeMap<Integer, Integer> tm;
 
-        MyCalendarTwo() {
+        MyCalendarTwoTM() {
             tm = new TreeMap<>();
         }
 
@@ -29,82 +29,84 @@ public class P_731 {
         }
     }
 
-    class MyCalendarTwoST {
+    class MyCalendarTwo {
+
         private class SegTree {
             int leftMost, rightMost;
             SegTree left, right;
+            long add;
             long max;
-            long operation;
 
             SegTree(int leftMost, int rightMost) {
                 this.leftMost = leftMost;
                 this.rightMost = rightMost;
             }
 
-            private long operation(long a, long b) {
-                if (b == Long.MAX_VALUE) {
-                    return a;
-                }
-                if (a == Long.MAX_VALUE) {
-                    return b;
-                }
-                return b + a;
-            }
-
-            private void propagate() {
-                if (leftMost == rightMost) {
-                    return;
-                }
+            private void createChildren() {
                 if (left == null || right == null) {
                     final int mid = leftMost + rightMost >>> 1;
                     left = new SegTree(leftMost, mid);
                     right = new SegTree(mid + 1, rightMost);
                 }
-                left.operation = operation(left.operation, operation);
-                right.operation = operation(right.operation, operation);
-                left.max = operation(left.max, operation);
-                right.max = operation(right.max, operation);
-                operation = Long.MAX_VALUE;
+            }
+
+            private void recalc() {
+                max = Math.max(apply(left), apply(right));
+            }
+
+            private void propagate() {
+                createChildren();
+                left.compose(add);
+                right.compose(add);
+                add = 0;
+            }
+
+            private void compose(long add) {
+                this.add += add;
+            }
+
+            private long apply(SegTree st) {
+                return st.max + st.add;
             }
 
             private long query(int l, int r) {
-                propagate();
-                if (r < leftMost || l > rightMost) {
-                    return 0;
+                if (l > rightMost || r < leftMost) {
+                    return (long) -1e18;
                 }
                 if (l <= leftMost && rightMost <= r) {
-                    return max;
+                    return apply(this);
                 }
+                propagate();
+                recalc();
                 return Math.max(left.query(l, r), right.query(l, r));
             }
 
-            private void add(int l, int r, int v) {
-                propagate();
-                if (r < leftMost || l > rightMost) {
+            private void update(int l, int r, long add) {
+                if (l > rightMost || r < leftMost) {
                     return;
                 }
                 if (l <= leftMost && rightMost <= r) {
-                    max = operation(max, v);
-                    operation = operation(operation, v);
+                    compose(add);
                     return;
                 }
-                left.add(l, r, v);
-                right.add(l, r, v);
-                max = Math.max(left.max, right.max);
+                propagate();
+                left.update(l, r, add);
+                right.update(l, r, add);
+                recalc();
             }
         }
 
         SegTree st;
 
-        MyCalendarTwoST() {
+        public MyCalendarTwo() {
             st = new SegTree(0, (int) 1e9);
         }
 
         public boolean book(int start, int end) {
-            if (st.query(start, end - 1) >= 2) {
+            if (st.query(start, end - 1) > 1) {
                 return false;
             }
-            st.add(start, end - 1, 1);
+            st.update(start, end - 1, 1);
             return true;
         }
     }
