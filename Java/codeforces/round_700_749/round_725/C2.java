@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class C {
+public final class C2 {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
@@ -23,18 +23,25 @@ public final class C {
     }
 
     private static long f(int[] arr, int k) {
-        int lo = 0;
-        int hi = arr.length - 1;
         long res = 0;
-        while (lo < hi) {
-            if (arr[lo] + arr[hi] >= k) {
-                hi--;
-            } else {
-                res += hi - lo;
-                lo++;
-            }
+        for (int i = 0; i < arr.length; i++) {
+            res += upperBound(arr, i, k - arr[i] - 1);
         }
         return res;
+    }
+
+    private static int upperBound(int[] arr, int from, int target) {
+        int lo = from;
+        int hi = arr.length - 1;
+        while (lo < hi) {
+            final int mid = lo + hi + 1 >>> 1;
+            if (arr[mid] > target) {
+                hi = mid - 1;
+            } else {
+                lo = mid;
+            }
+        }
+        return lo - from;
     }
 
     static final class Utils {

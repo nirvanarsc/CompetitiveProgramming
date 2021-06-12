@@ -26,6 +26,7 @@ public final class G2 {
                 System.out.println(Math.min(x, y) / a);
                 continue;
             }
+            // ternary search
             long lo = 0;
             long hi = (long) (1e9 + 100);
             while (hi - lo > 1) {
