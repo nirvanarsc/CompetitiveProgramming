@@ -1,4 +1,4 @@
-package binarysearch.weekly_37;
+package leetcode.biweekly_contests.biweekly_54;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -21,7 +21,7 @@ public class P_4 {
 
     private int idx = -1;
 
-    public int solve(String expression) {
+    public int minOperationsToFlip(String expression) {
         idx = 0;
         final Deque<Tree> dq = new ArrayDeque<>();
         build(expression, dq);
