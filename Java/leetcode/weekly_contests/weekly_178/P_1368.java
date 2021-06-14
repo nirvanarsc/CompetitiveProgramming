@@ -1,32 +1,49 @@
 package leetcode.weekly_contests.weekly_178;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 
 public class P_1368 {
 
+    private static final int[][] DIRS = { { 0, 1, 1 }, { 0, -1, 2 }, { 1, 0, 3 }, { -1, 0, 4 }, };
+
     public int minCost(int[][] grid) {
-        final int[][] dirs = { { 0 }, { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-        final boolean[][] visited = new boolean[grid.length][grid[0].length];
-        final PriorityQueue<int[]> q = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
-        q.add(new int[] { 0, 0, 0 });
-        while (!q.isEmpty()) {
-            final int[] ints = q.remove();
-            if (ints[0] == grid.length - 1 && ints[1] == grid[0].length - 1) {
-                return ints[2];
-            }
-            final int currX = ints[0];
-            final int currY = ints[1];
-            visited[currX][currY] = true;
-            for (int i = 1; i < dirs.length; i++) {
-                final int nX = currX + dirs[i][0];
-                final int nY = currY + dirs[i][1];
-                final int nC = i == grid[currX][currY] ? ints[2] : ints[2] + 1;
-                if (nX >= 0 && nX < grid.length && nY >= 0 && nY < grid[0].length && !visited[nX][nY]) {
-                    q.add(new int[] { nX, nY, nC });
+        final int n = grid.length;
+        final int m = grid[0].length;
+        final int[] dp = new int[n * m];
+        Arrays.fill(dp, (int) 1e9);
+        dp[0] = 0;
+        final Deque<int[]> dq = new ArrayDeque<>();
+        dq.offerLast(new int[] { 0, 0 });
+        while (!dq.isEmpty()) {
+            final int[] curr = dq.removeFirst();
+            final int x = curr[0];
+            final int y = curr[1];
+            for (int[] dir : DIRS) {
+                final int nx = x + dir[0];
+                final int ny = y + dir[1];
+                if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+                    final int nw = grid[x][y] == dir[2] ? 0 : 1;
+                    final int u = getIdx(m, nx, ny);
+                    final int v = getIdx(m, x, y);
+                    // 0-1 BFS
+                    // https://cp-algorithms.com/graph/01_bfs.html
+                    if (dp[u] > dp[v] + nw) {
+                        dp[u] = dp[v] + nw;
+                        if (grid[x][y] == dir[2]) {
+                            dq.offerFirst(new int[] { nx, ny, nw });
+                        } else {
+                            dq.offerLast(new int[] { nx, ny, nw });
+                        }
+                    }
                 }
             }
         }
-        return -1;
+        return dp[getIdx(m, n - 1, m - 1)] == (int) 1e9 ? -1 : dp[(n * m) - 1];
+    }
+
+    private static int getIdx(int m, int x, int y) {
+        return (x * m) + y;
     }
 }

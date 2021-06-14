@@ -1,25 +1,29 @@
 package leetcode.weekly_contests.weekly_93;
 
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class P_871 {
 
     public int minRefuelStopsPQ(int target, int startFuel, int[][] stations) {
-        final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
-        int ans = 0, i = 0;
-        while (startFuel < target) {
-            while (i < stations.length && startFuel >= stations[i][0]) {
-                pq.offer(stations[i++][1]);
+        final PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(b[1], a[1]));
+        int res = 0;
+        final List<int[]> all = Stream.concat(Stream.of(stations), Stream.of(new int[] { target, 0 }))
+                                      .collect(Collectors.toUnmodifiableList());
+        for (int[] s : all) {
+            while (!pq.isEmpty() && startFuel < s[0]) {
+                startFuel += pq.remove()[1];
+                res++;
             }
-            if (pq.isEmpty()) {
+            if (startFuel < s[0]) {
                 return -1;
             }
-            startFuel += pq.remove();
-            ans++;
+            pq.offer(s);
         }
-        return ans;
+        return res;
     }
 
     public int minRefuelStops(int target, int startFuel, int[][] stations) {
