@@ -1,14 +1,13 @@
-package atcoder.acl;
+package codeforces.custom.LATOKEN;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public final class A {
+public final class C {
 
     private static final class UnionFind {
         private final int[] parent;
@@ -58,64 +57,93 @@ public final class A {
         public int[] size() { return size; }
     }
 
+    private static final int MOD = (int) (1e9 + 7);
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final PrintWriter pw = new PrintWriter(System.out);
-        final int n = fs.nextInt();
-        final int q = fs.nextInt();
-        final UnionFind uf = new UnionFind(n);
-        for (int i = 0; i < q; i++) {
-            final int type = fs.nextInt();
-            final int u = fs.nextInt();
-            final int v = fs.nextInt();
-            if (type == 0) {
-                uf.union(u, v);
-            } else {
-                pw.println(uf.find(u) == uf.find(v) ? 1 : 0);
+        final StringBuilder sb = new StringBuilder();
+        final int t = fs.nextInt();
+        for (int test = 0; test < t; test++) {
+            final int n = fs.nextInt();
+            final int[] l = new int[n];
+            final int[] r = new int[n];
+            final int[] map = new int[n];
+            for (int i = 0; i < n; i++) {
+                l[i] = fs.nextInt() - 1;
+                map[l[i]] = i;
             }
+            for (int i = 0; i < n; i++) {
+                r[i] = fs.nextInt() - 1;
+            }
+            final UnionFind uf = new UnionFind(n);
+            final boolean[] seen = new boolean[n];
+            for (int i = 0; i < n; i++) {
+                int u = i;
+                while (!seen[l[u]]) {
+                    seen[l[u]] = true;
+                    uf.union(l[u], r[u]);
+                    u = map[r[u]];
+                }
+            }
+            sb.append(modPow(2, uf.count))
+              .append('\n');
         }
-        pw.close();
+        System.out.println(sb);
+    }
+
+    private static long modPow(long a, int n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {
+        private static class Shuffler {
+            private static void shuffle(int[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void shuffle(long[] x) {
+                final Random r = new Random();
+
+                for (int i = 0; i <= x.length - 2; i++) {
+                    final int j = i + r.nextInt(x.length - i);
+                    swap(x, i, j);
+                }
+            }
+
+            private static void swap(int[] x, int i, int j) {
+                final int t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+
+            private static void swap(long[] x, int i, int j) {
+                final long t = x[i];
+                x[i] = x[j];
+                x[j] = t;
+            }
+        }
+
         public static void shuffleSort(int[] arr) {
-            shuffle(arr);
+            Shuffler.shuffle(arr);
             Arrays.sort(arr);
         }
 
         public static void shuffleSort(long[] arr) {
-            shuffle(arr);
+            Shuffler.shuffle(arr);
             Arrays.sort(arr);
-        }
-
-        public static void shuffle(int[] arr) {
-            final Random r = new Random();
-
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
-            }
-        }
-
-        public static void shuffle(long[] arr) {
-            final Random r = new Random();
-
-            for (int i = 0; i <= arr.length - 2; i++) {
-                final int j = i + r.nextInt(arr.length - i);
-                swap(arr, i, j);
-            }
-        }
-
-        public static void swap(int[] arr, int i, int j) {
-            final int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
-        }
-
-        public static void swap(long[] arr, int i, int j) {
-            final long t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
         }
 
         private Utils() {}

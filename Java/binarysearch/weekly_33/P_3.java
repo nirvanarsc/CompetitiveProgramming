@@ -19,6 +19,7 @@ public class P_3 {
         }
     }
 
+    // RabinKarp
     private long getHash(int lhs, int rhs) {
         // returns hash of substring [lhs, rhs)
         long val = hash[rhs] - hash[lhs] * pow[rhs - lhs];
