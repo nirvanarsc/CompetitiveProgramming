@@ -7,24 +7,24 @@ public final class P_22 {
 
     public List<String> generateParenthesis(int n) {
         final List<String> res = new ArrayList<>();
-        dfs(n, n, new StringBuilder(), res);
+        dfs(res, n, n, new StringBuilder());
         return res;
     }
 
-    private static void dfs(int open, int close, StringBuilder sb, List<String> res) {
+    private static void dfs(List<String> res, int open, int close, StringBuilder curr) {
         if (open == 0 && close == 0) {
-            res.add(new String(sb));
+            res.add(curr.toString());
             return;
         }
-        if (open > 0) {
-            sb.append('(');
-            dfs(open - 1, close, sb, res);
-            sb.deleteCharAt(sb.length() - 1);
+        if (close > open) {
+            curr.append(')');
+            dfs(res, open, close - 1, curr);
+            curr.deleteCharAt(curr.length() - 1);
         }
-        if (open < close) {
-            sb.append(')');
-            dfs(open, close - 1, sb, res);
-            sb.deleteCharAt(sb.length() - 1);
+        if (open > 0) {
+            curr.append('(');
+            dfs(res, open - 1, close, curr);
+            curr.deleteCharAt(curr.length() - 1);
         }
     }
 }
