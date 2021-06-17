@@ -27,4 +27,26 @@ public final class P_22 {
             curr.deleteCharAt(curr.length() - 1);
         }
     }
+
+    public List<String> generateParenthesisCatalan(int n) {
+        return dfs(1, n);
+    }
+
+    public List<String> dfs(int start, int end) {
+        final List<String> res = new ArrayList<>();
+        if (start > end) {
+            res.add("");
+            return res;
+        }
+        for (int i = start; i <= end; i++) {
+            final List<String> leftNodes = dfs(start, i - 1);
+            final List<String> rightNodes = dfs(i + 1, end);
+            for (String left : leftNodes) {
+                for (String right : rightNodes) {
+                    res.add('(' + left + ')' + right);
+                }
+            }
+        }
+        return res;
+    }
 }
