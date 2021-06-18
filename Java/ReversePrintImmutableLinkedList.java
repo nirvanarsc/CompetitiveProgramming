@@ -1,4 +1,4 @@
-@SuppressWarnings("ConstantConditions")
+
 public final class ReversePrintImmutableLinkedList {
 
     private static final class ListNode<T> {
@@ -41,6 +41,4 @@ public final class ReversePrintImmutableLinkedList {
         }
         reversePrint(head, null);
     }
-
-    private ReversePrintImmutableLinkedList() {}
 }

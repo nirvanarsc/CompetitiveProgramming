@@ -2,7 +2,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChunkNorris {
+public final class ChunkNorris {
 
     // https://www.josephsurin.me/posts/2020-08-24-googlectf-2020-writeups#chunk-norris
 
@@ -69,7 +69,7 @@ public class ChunkNorris {
         System.out.println(decode(message));
     }
 
-    public static String decode(BigInteger n) {
+    private static String decode(BigInteger n) {
         final StringBuilder s = new StringBuilder();
         for (byte value : n.toByteArray()) {
             s.append((char) value);

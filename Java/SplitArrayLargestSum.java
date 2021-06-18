@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public final class SplitArrayLargestSum {
 
-    public static int minimizeMaximum(int[] nums, int m) {
+    private static int minimizeMaximum(int[] nums, int m) {
         int max = 0;
         int sum = 0;
         for (int i : nums) {
@@ -24,7 +24,7 @@ public final class SplitArrayLargestSum {
         return low;
     }
 
-    public static int maximizeMinimum(int[] chocolate, int m) {
+    private static int maximizeMinimum(int[] chocolate, int m) {
         int min = Integer.MAX_VALUE;
         int sum = 0;
         for (int i : chocolate) {
@@ -70,24 +70,24 @@ public final class SplitArrayLargestSum {
         return peopleCount;
     }
 
-    public static int maxMinR(int[] chocolate, int m) {
+    private static int maxMinR(int[] chocolate, int m) {
         return findMaxMinOrMinMaxPartitionR(chocolate, m, true);
     }
 
-    public static int maxMin(int[] chocolate, int m) {
+    private static int maxMin(int[] chocolate, int m) {
         return findMaxMinOrMinMaxPartition(chocolate, m, true);
     }
 
-    public static int minMaxR(int[] chocolate, int m) {
+    private static int minMaxR(int[] chocolate, int m) {
         return findMaxMinOrMinMaxPartitionR(chocolate, m, false);
     }
 
-    public static int minMax(int[] chocolate, int m) {
+    private static int minMax(int[] chocolate, int m) {
         return findMaxMinOrMinMaxPartition(chocolate, m, false);
     }
 
     // Top down DP
-    public static int findMaxMinOrMinMaxPartitionR(int[] nums, int m, boolean maxMin) {
+    private static int findMaxMinOrMinMaxPartitionR(int[] nums, int m, boolean maxMin) {
         final int[][] dp = new int[nums.length][m + 1];
         final int[] sum = new int[nums.length];
         for (int i = nums.length - 1; i >= 0; i--) {
@@ -114,7 +114,7 @@ public final class SplitArrayLargestSum {
     }
 
     // Bottom up DP
-    public static int findMaxMinOrMinMaxPartition(int[] nums, int m, boolean maxMin) {
+    private static int findMaxMinOrMinMaxPartition(int[] nums, int m, boolean maxMin) {
         final int[] sums = new int[nums.length + 1];
         final int[][] dp = new int[m + 1][nums.length + 1];
         for (int i = 1; i <= nums.length; ++i) {
@@ -161,6 +161,4 @@ public final class SplitArrayLargestSum {
         System.out.println(maxMin(new int[] { 6, 3, 2, 8, 7, 5 }, 3));
         System.out.println(maxMin(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 6));
     }
-
-    private SplitArrayLargestSum() {}
 }
