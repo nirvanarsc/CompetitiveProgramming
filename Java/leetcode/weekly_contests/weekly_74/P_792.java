@@ -2,7 +2,6 @@ package leetcode.weekly_contests.weekly_74;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -11,32 +10,49 @@ import java.util.Map;
 @SuppressWarnings("MethodParameterNamingConvention")
 public class P_792 {
 
-    public int numMatchingSubseq(String S, String[] words) {
-        final Map<Character, List<Integer>> map = new HashMap<>();
-        int res = 0;
-        for (int i = 0; i < S.length(); i++) {
-            map.computeIfAbsent(S.charAt(i), v -> new ArrayList<>()).add(i);
+    public int numMatchingSubseq(String s, String[] words) {
+        final List<List<Integer>> g = new ArrayList<>(26);
+        for (int i = 0; i < 26; i++) {
+            g.add(new ArrayList<>());
         }
+        final int n = s.length();
+        for (int i = 0; i < n; i++) {
+            g.get(s.charAt(i) - 'a').add(i);
+        }
+        int res = 0;
         for (String w : words) {
-            if (isSubsequence(map, w)) {
+            if (isSubsequence(g, w)) {
                 res++;
             }
         }
         return res;
     }
 
-    public boolean isSubsequence(Map<Character, List<Integer>> map, String s) {
+    private static boolean isSubsequence(List<List<Integer>> g, String w) {
         int prev = 0;
-        for (int i = 0; i < s.length(); i++) {
-            final List<Integer> list = map.getOrDefault(s.charAt(i), Collections.emptyList());
-            int j = Collections.binarySearch(list, prev);
-            if (j < 0) { j = -j - 1; }
-            if (j == list.size()) {
+        for (int i = 0; i < w.length(); i++) {
+            final List<Integer> list = g.get(w.charAt(i) - 'a');
+            final int lb = lowerBound(list, prev);
+            if (lb == list.size() || list.get(lb) < prev) {
                 return false;
             }
-            prev = list.get(j) + 1;
+            prev = list.get(lb) + 1;
         }
         return true;
+    }
+
+    private static int lowerBound(List<Integer> list, int target) {
+        int lo = 0;
+        int hi = list.size();
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (list.get(mid) < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
     }
 
     static class Pair {
