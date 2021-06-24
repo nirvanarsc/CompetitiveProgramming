@@ -1,47 +1,34 @@
 package leetcode.weekly_contests.weekly_31;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_576 {
 
-    private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
     private static final int MOD = (int) (1e9 + 7);
+    private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
-    public int findPaths(int m, int n, int N, int i, int j) {
-        if (N == 0) {
-            return 0;
-        }
-        final int[][] grid = new int[m][n];
-        for (int k = 0; k < m; k++) {
-            for (int l = 0; l < n; l++) {
-                int res = 0;
-                for (int[] dir : DIRS) {
-                    final int nx = k + dir[0];
-                    final int ny = l + dir[1];
-                    if (nx < 0 || nx == m || ny < 0 || ny == n) {
-                        res++;
-                    }
-                }
-                grid[k][l] = res;
-            }
-        }
-        return grid[i][j] + recurse(grid, N - 1, i, j, new Integer[m][n][N]);
+    static int[][][] dp;
+    static boolean[][][] seen;
+
+    public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+        dp = new int[m][n][maxMove + 1];
+        seen = new boolean[m][n][maxMove + 1];
+        return dfs(startRow, startColumn, maxMove, m, n);
     }
 
-    private static int recurse(int[][] grid, int N, int i, int j, Integer[][][] dp) {
-        if (N == 0) {
+    private static int dfs(int r, int c, int d, int n, int m) {
+        if (r < 0 || r == n || c < 0 || c == m) {
+            return 1;
+        }
+        if (d == 0) {
             return 0;
         }
-        if (dp[i][j][N] != null) {
-            return dp[i][j][N];
+        if (seen[r][c][d]) {
+            return dp[r][c][d];
         }
         int res = 0;
         for (int[] dir : DIRS) {
-            final int nx = i + dir[0];
-            final int ny = j + dir[1];
-            if (nx >= 0 && nx < grid.length && ny >= 0 && ny < grid[0].length) {
-                res = (res + grid[nx][ny] + recurse(grid, N - 1, nx, ny, dp)) % MOD;
-            }
+            res = (res + dfs(r + dir[0], c + dir[1], d - 1, n, m)) % MOD;
         }
-        return dp[i][j][N] = res;
+        seen[r][c][d] = true;
+        return dp[r][c][d] = res;
     }
 }
