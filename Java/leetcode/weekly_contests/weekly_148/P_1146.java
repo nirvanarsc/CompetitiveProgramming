@@ -1,33 +1,34 @@
 package leetcode.weekly_contests.weekly_148;
 
-import java.util.Collections;
+import java.util.Map;
 import java.util.TreeMap;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "unchecked", "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
 public class P_1146 {
 
     // https://en.wikipedia.org/wiki/Persistent_data_structure#Fat_node
-    static class SnapshotArray {
-        TreeMap<Integer, Integer>[] tMap;
-        int version;
+    class SnapshotArray {
+        TreeMap<Integer, Integer>[] tm;
+        int snap;
 
-        SnapshotArray(int length) {
-            tMap = new TreeMap[length];
+        public SnapshotArray(int length) {
+            tm = new TreeMap[length];
             for (int i = 0; i < length; i++) {
-                tMap[i] = new TreeMap<>(Collections.singletonMap(0, 0));
+                tm[i] = new TreeMap<>();
             }
         }
 
         public void set(int index, int val) {
-            tMap[index].put(version, val);
+            tm[index].put(snap, val);
         }
 
         public int snap() {
-            return version++;
+            return snap++;
         }
 
         public int get(int index, int snap_id) {
-            return tMap[index].floorEntry(snap_id).getValue();
+            final Map.Entry<Integer, Integer> e = tm[index].floorEntry(snap_id);
+            return e == null ? 0 : e.getValue();
         }
     }
 }

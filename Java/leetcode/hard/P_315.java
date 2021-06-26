@@ -1,11 +1,8 @@
 package leetcode.hard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import utils.DataStructures.BIT;
 
 public class P_315 {
 
@@ -74,18 +71,66 @@ public class P_315 {
     }
 
     // Binary Indexed Tree
+    private static final class BIT {
+        private final int n;
+        private final long[] data;
+
+        private BIT(int n) {
+            this.n = n;
+            data = new long[n + 1];
+        }
+
+        public void add(int idx, long val) {
+            for (int i = idx + 1; i <= n; i += lsb(i)) {
+                data[i] += val;
+            }
+        }
+
+        public long sum(int l, int r) {
+            return sum(r) - sum(l - 1);
+        }
+
+        private long sum(int idx) {
+            long res = 0;
+            for (int i = idx + 1; i > 0; i -= lsb(i)) {
+                res += data[i];
+            }
+            return res;
+        }
+
+        private static int lsb(int i) {
+            return i & -i;  // zeroes all the bits except the least significant one
+        }
+
+        // get k-th element
+        public int getKth(int k) {
+            int lo = 0;
+            int hi = n;
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (k > sum(mid)) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+            return lo;
+        }
+    }
+
     public List<Integer> countSmallerBIT(int[] nums) {
-        final int[] tmp = nums.clone();
-        Arrays.sort(tmp);
-        for (int i = 0; i < nums.length; i++) {
-            nums[i] = Arrays.binarySearch(tmp, nums[i]) + 1;
+        final int n = nums.length;
+        final int maxNeg = (int) 1e4;
+        for (int i = 0; i < n; i++) {
+            nums[i] += maxNeg;
         }
-        final BIT bit = new BIT(nums.length);
-        final Integer[] ans = new Integer[nums.length];
-        for (int i = nums.length - 1; i >= 0; i--) {
-            ans[i] = bit.query(nums[i] - 1);
+        final BIT bit = new BIT(2 * maxNeg + 10);
+        final List<Integer> res = new ArrayList<>(n);
+        for (int i = n - 1; i >= 0; i--) {
             bit.add(nums[i], 1);
+            res.add((int) bit.sum(0, nums[i] - 1));
         }
-        return Arrays.asList(ans);
+        Collections.reverse(res);
+        return res;
     }
 }
