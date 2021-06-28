@@ -1,36 +1,18 @@
 package leetcode.weekly_contests.weekly_137;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 public class P_1047 {
 
-    public String removeDuplicates(String str) {
-        final Deque<Character> stack = new ArrayDeque<>();
-        for (char c : str.toCharArray()) {
-            if (!stack.isEmpty() && stack.peekFirst() == c) {
-                stack.removeFirst();
+    public String removeDuplicates(String s) {
+        final int n = s.length();
+        final char[] res = new char[n];
+        int size = 0;
+        for (int i = 0; i < n; i++) {
+            if (size > 0 && res[size - 1] == s.charAt(i)) {
+                size--;
             } else {
-                stack.addFirst(c);
+                res[size++] = s.charAt(i);
             }
         }
-        final StringBuilder sb = new StringBuilder();
-        while (!stack.isEmpty()) {
-            sb.append(stack.removeLast());
-        }
-        return sb.toString();
-    }
-
-    public static String removeDuplicatesImproved(String str) {
-        int i = 0;
-        final char[] stack = new char[str.length()];
-        for (int j = 0; j < str.length(); j++) {
-            if (i > 0 && stack[i - 1] == str.charAt(j)) {
-                --i;
-            } else {
-                stack[i++] = str.charAt(j);
-            }
-        }
-        return new String(stack, 0, i);
+        return new String(res, 0, size);
     }
 }

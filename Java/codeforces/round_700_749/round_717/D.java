@@ -46,7 +46,7 @@ public final class D {
         final int h = 18;
         final int[][] parents = new int[h + 1][n];
         parents[0] = next;
-        for (int i = 1; i < h; i++) {
+        for (int i = 1; i <= h; i++) {
             for (int u = 0; u < n; u++) {
                 final int nodeParent = parents[i - 1][u];
                 parents[i][u] = parents[i - 1][nodeParent];

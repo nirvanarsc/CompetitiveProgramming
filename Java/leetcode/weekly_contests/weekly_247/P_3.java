@@ -6,16 +6,6 @@ import java.util.Map;
 
 public class P_3 {
 
-
-    // aabbccadd -> 0001
-
-    // a
-    // aa
-    // aab
-    // aaabb
-    // ..
-    // 101011101 -> 101011100 -> 101011101 ^ 101011100 = 00000001
-
     public long wonderfulSubstrings(String word) {
         long res = 0;
         final Map<Integer, Long> map = new HashMap<>(Collections.singletonMap(0, 1L));
