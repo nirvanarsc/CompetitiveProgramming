@@ -2,19 +2,15 @@ package leetcode.weekly_contests.weekly_126;
 
 public class P_1004 {
 
-    public int longestOnes(int[] A, int K) {
-        int i = 0;
+    public int longestOnes(int[] nums, int k) {
         int res = 0;
-        for (int j = 0; j < A.length; j++) {
-            if (A[j] == 0) {
-                K--;
+        int j = 0;
+        for (int i = 0; i < nums.length; i++) {
+            k -= nums[i] == 0 ? 1 : 0;
+            while (k < 0) {
+                k += nums[j++] == 0 ? 1 : 0;
             }
-            while (K < 0) {
-                if (A[i++] == 0) {
-                    K++;
-                }
-            }
-            res = Math.max(res, j - i + 1);
+            res = Math.max(res, i - j + 1);
         }
         return res;
     }
