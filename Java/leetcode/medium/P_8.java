@@ -27,6 +27,4 @@ public class P_8 {
         }
         return sign ? res : -res;
     }
-
-
 }
