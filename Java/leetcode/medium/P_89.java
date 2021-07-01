@@ -7,18 +7,14 @@ import java.util.List;
 public class P_89 {
 
     public List<Integer> grayCode(int n) {
-        List<Integer> list = new ArrayList<>(Collections.singletonList(0));
-        for (int i = 1; i <= n; i++) {
-            final List<Integer> curr = new ArrayList<>(list);
-            Collections.reverse(list);
-            for (int t : list) {
-                t |= 1 << (i - 1);
-                curr.add(t);
+        final List<Integer> res = new ArrayList<>(Collections.singletonList(0));
+        for (int i = 0; i < n; i++) {
+            final int size = res.size();
+            for (int j = size - 1; j >= 0; j--) {
+                res.add((1 << i) | res.get(j));
             }
-            list = curr;
         }
-
-        return list;
+        return res;
     }
 
     public List<Integer> grayCodeBitwise(int n) {
