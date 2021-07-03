@@ -1,37 +1,38 @@
 package leetcode.hard;
 
-import java.util.Collections;
 import java.util.TreeSet;
 
 public class P_363 {
 
     public int maxSumSubmatrix(int[][] matrix, int k) {
-        if (matrix.length == 0) {
-            return 0;
-        }
         final int n = matrix.length;
         final int m = matrix[0].length;
-        int result = Integer.MIN_VALUE;
-
-        for (int left = 0; left < m; left++) {
-            final int[] sums = new int[n];
-            for (int right = left; right < m; right++) {
-                for (int i = 0; i < n; i++) {
-                    sums[i] += matrix[i][right];
+        int res = (int) -1e9;
+        for (int i = 0; i < n; i++) {
+            final int[] curr = new int[m];
+            for (int j = i; j < n; j++) {
+                for (int l = 0; l < m; l++) {
+                    curr[l] += matrix[j][l];
                 }
-                final TreeSet<Integer> set = new TreeSet<>(Collections.singleton(0));
-                int currSum = 0;
-                for (int sum : sums) {
-                    currSum += sum;
-                    final Integer minimumGap = set.ceiling(currSum - k);
-                    if (minimumGap != null) {
-                        result = Math.max(result, currSum - minimumGap);
-                    }
-                    set.add(currSum);
-                }
+                res = Math.max(res, f(curr, k));
             }
         }
+        return res;
+    }
 
-        return result;
+    private static int f(int[] arr, int k) {
+        final TreeSet<Integer> ts = new TreeSet<>();
+        ts.add(0);
+        int res = (int) -1e9;
+        int sum = 0;
+        for (int num : arr) {
+            sum += num;
+            final Integer compl = ts.ceiling(sum - k);
+            if (compl != null) {
+                res = Math.max(res, sum - compl);
+            }
+            ts.add(sum);
+        }
+        return res;
     }
 }

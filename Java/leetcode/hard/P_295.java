@@ -3,29 +3,31 @@ package leetcode.hard;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
 public class P_295 {
 
-    public static class MedianFinder {
-
-        PriorityQueue<Integer> max;
+    class MedianFinder {
         PriorityQueue<Integer> min;
+        PriorityQueue<Integer> max;
+        boolean odd;
 
         public MedianFinder() {
-            max = new PriorityQueue<>(Comparator.reverseOrder());
             min = new PriorityQueue<>();
+            max = new PriorityQueue<>(Comparator.reverseOrder());
         }
 
         public void addNum(int num) {
-            min.add(num);
-            max.add(min.remove());
-            if (max.size() > min.size()) {
-                min.add(max.remove());
+            odd ^= true;
+            max.add(num);
+            min.add(max.remove());
+            if (min.size() > max.size()) {
+                max.add(min.remove());
             }
         }
 
         public double findMedian() {
-            if (min.size() != max.size()) {
-                return min.element();
+            if (odd) {
+                return max.element();
             } else {
                 return 0.5 * (min.element() + max.element());
             }
