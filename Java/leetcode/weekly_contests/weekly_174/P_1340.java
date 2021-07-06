@@ -2,26 +2,40 @@ package leetcode.weekly_contests.weekly_174;
 
 public class P_1340 {
 
+    static boolean[] seen;
+    static int[] dp;
+
     public int maxJumps(int[] arr, int d) {
-        int res = 1;
-        final Integer[] dp = new Integer[1001];
-        for (int i = 0; i < arr.length; i++) {
-            res = Math.max(res, dfs(arr, i, d, dp));
+        final int n = arr.length;
+        seen = new boolean[n];
+        dp = new int[n];
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (!seen[i]) {
+                res = Math.max(res, dfs(arr, i, d));
+            }
         }
         return res;
     }
 
-    private static int dfs(int[] arr, int i, int d, Integer[] dp) {
-        if (dp[i] != null) {
-            return dp[i];
+    private static int dfs(int[] arr, int idx, int d) {
+        if (seen[idx]) {
+            return dp[idx];
         }
         int res = 1;
-        for (int j = i + 1; j <= Math.min(i + d, arr.length - 1) && arr[j] < arr[i]; j++) {
-            res = Math.max(res, 1 + dfs(arr, j, d, dp));
+        for (int j = 1; j <= d && idx + j < arr.length; j++) {
+            if (!(arr[idx] > arr[idx + j])) {
+                break;
+            }
+            res = Math.max(res, 1 + dfs(arr, idx + j, d));
         }
-        for (int j = i - 1; j >= Math.max(i - d, 0) && arr[j] < arr[i]; j--) {
-            res = Math.max(res, 1 + dfs(arr, j, d, dp));
+        for (int j = 1; j <= d && idx - j >= 0; j++) {
+            if (!(arr[idx] > arr[idx - j])) {
+                break;
+            }
+            res = Math.max(res, 1 + dfs(arr, idx - j, d));
         }
-        return dp[i] = res;
+        seen[idx] = true;
+        return dp[idx] = res;
     }
 }
