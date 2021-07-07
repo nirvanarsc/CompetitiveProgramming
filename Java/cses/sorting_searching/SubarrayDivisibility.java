@@ -17,7 +17,7 @@ public final class SubarrayDivisibility {
         long res = 0;
         int sum = 0;
         for (int i = 0; i < n; i++) {
-            sum = Math.floorMod(sum + fs.nextInt(), n);
+            sum = ((sum + fs.nextInt()) % n + n) % n;
             res += rem[sum];
             rem[sum]++;
         }
