@@ -8,20 +8,21 @@ public class P_300 {
         final int[] dp = new int[nums.length];
         int len = 0;
         for (int num : nums) {
-            final int i = lowerBound(dp, len, num);
-            dp[i] = num;
-            if (i == len) {
+            final int idx = lowerBound(dp, num, len);
+            if (idx == len) {
                 len++;
             }
+            dp[idx] = num;
         }
         return len;
     }
 
-    public int lowerBound(int[] nums, int to, int target) {
-        int lo = 0, hi = to;
+    private static int lowerBound(int[] arr, int target, int to) {
+        int lo = 0;
+        int hi = to;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (nums[mid] < target) {
+            if (arr[mid] < target) {
                 lo = mid + 1;
             } else {
                 hi = mid;
