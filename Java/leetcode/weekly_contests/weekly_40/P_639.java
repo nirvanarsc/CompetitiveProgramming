@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 public class P_639 {
 
-    private static final int MOD = (int) (1e9 + 7);
-
     static final int[][] map = new int[58][58];
 
     static {
@@ -42,42 +40,53 @@ public class P_639 {
         return (int) cur;
     }
 
+    private static final int MOD = (int) (1e9 + 7);
+
+    static long[] dp;
+    static boolean[] seen;
+
     public int numDecodings(String s) {
-        return (int) recurse(s, 0, new Long[s.length()]);
+        final int n = s.length();
+        dp = new long[n];
+        seen = new boolean[n];
+        return (int) (dfs(s.toCharArray(), 0) % MOD);
     }
 
-    private static long recurse(String s, int start, Long[] dp) {
-        if (start == s.length()) {
+    private static long dfs(char[] w, int idx) {
+        if (idx == w.length) {
             return 1;
         }
-        if (dp[start] != null) {
-            return dp[start];
+        if (seen[idx]) {
+            return dp[idx];
         }
-        long one = 0;
-        long two = 0;
-        final long nextOne = recurse(s, start + 1, dp);
-        if (s.charAt(start) == '*') {
-            one = 9 * nextOne;
-        } else if (s.charAt(start) != '0') {
-            one = nextOne;
-        }
-        if (start + 2 <= s.length()) {
-            final long nextTwo = recurse(s, start + 2, dp);
-            if (s.charAt(start) == '*' && s.charAt(start + 1) == '*') {
-                two = 15 * nextTwo;
-            } else if (s.charAt(start) == '*') {
-                two = s.charAt(start + 1) > '6' ? nextTwo : 2 * nextTwo;
-            } else if (s.charAt(start + 1) == '*') {
-                two = s.charAt(start) == '1' ? 9 * nextTwo
-                                             : s.charAt(start) == '2' ? 6 * nextTwo
-                                                                      : 0;
+        long res = 0;
+        if (idx < w.length - 1) {
+            if (w[idx + 1] == '*') {
+                if (w[idx] == '1') {
+                    res = (res + 9 * dfs(w, idx + 2)) % MOD;
+                } else if (w[idx] == '2') {
+                    res = (res + 6 * dfs(w, idx + 2)) % MOD;
+                } else if (w[idx] == '*') {
+                    res = (res + 15 * dfs(w, idx + 2)) % MOD;
+                }
             } else {
-                final int num = Integer.parseInt(s.substring(start, start + 2));
-                if (10 <= num && num <= 26) {
-                    two = nextTwo;
+                if (w[idx] == '1') {
+                    res = (res + dfs(w, idx + 2)) % MOD;
+                } else if (w[idx] == '2' && w[idx + 1] <= '6') {
+                    res = (res + dfs(w, idx + 2)) % MOD;
+                } else if (w[idx] == '*' && w[idx + 1] <= '6') {
+                    res = (res + 2 * dfs(w, idx + 2)) % MOD;
+                } else if (w[idx] == '*') {
+                    res = (res + dfs(w, idx + 2)) % MOD;
                 }
             }
         }
-        return dp[start] = (one + two) % MOD;
+        if (w[idx] == '*') {
+            res = (res + 9 * dfs(w, idx + 1)) % MOD;
+        } else if (w[idx] != '0') {
+            res = (res + dfs(w, idx + 1)) % MOD;
+        }
+        seen[idx] = true;
+        return dp[idx] = res;
     }
 }
