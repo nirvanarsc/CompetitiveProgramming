@@ -12,7 +12,7 @@ public class P_295 {
         boolean odd;
 
         public MedianFinder() {
-            min = new PriorityQueue<>();
+            min = new PriorityQueue<>(Comparator.naturalOrder());
             max = new PriorityQueue<>(Comparator.reverseOrder());
         }
 
