@@ -1,84 +1,89 @@
-package kickstart.year_2021.round_d;
+package codeforces.round_700_749.round_732;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-public final class C {
+public final class D {
+
+    private static final int MOD = 998244353;
+
+    private static class Combinations {
+        long[] factorial;
+        long[] facInverse;
+        long[] inverse;
+
+        Combinations(int n) {
+            final int MAX = n + 2;
+            factorial = new long[MAX];
+            facInverse = new long[MAX];
+            inverse = new long[MAX];
+            factorial[0] = factorial[1] = 1;
+            facInverse[0] = facInverse[1] = 1;
+            inverse[1] = 1;
+            for (int i = 2; i < MAX; i++) {
+                factorial[i] = factorial[i - 1] * i % MOD;
+                final long inv = inverse[i] = MOD - inverse[MOD % i] * (MOD / i) % MOD;
+                facInverse[i] = facInverse[i - 1] * inv % MOD;
+            }
+        }
+
+        long nck(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
+        }
+
+        // combinations with repetition
+        long ncr(int n, int k) {
+            return nck(n + k - 1, k);
+        }
+
+        // permutations with repetition
+        long npk(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * facInverse[n - k] % MOD;
+        }
+
+        long modPow(long a, long n) {
+            long res = 1;
+            while (n > 0) {
+                if (n % 2 != 0) {
+                    res = res * a % MOD;
+                }
+                a = a * a % MOD;
+                n /= 2;
+            }
+            return res;
+        }
+    }
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int t = fs.nextInt();
-        for (int x = 1; x <= t; x++) {
-            final TreeSet<long[]> ts = new TreeSet<>(Comparator.comparingLong(a -> a[0]));
+        final Combinations comb = new Combinations((int) (1e5 + 5));
+        for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            final int m = fs.nextInt();
+            final char[] w = fs.next().toCharArray();
+            int zeroes = 0;
+            int ones = 0;
             for (int i = 0; i < n; i++) {
-                ts.add(new long[] { fs.nextLong(), fs.nextLong() });
-            }
-            final long[] res = new long[m];
-            for (int i = 0; i < m; i++) {
-                final long s = fs.nextLong();
-                final long[] tt = { s };
-                final long[] lower = ts.lower(tt);
-                final long[] ceil = ts.ceiling(tt);
-                if (lower == null) {
-                    //noinspection ConstantConditions
-                    res[i] = ceil[0];
-                    ts.remove(ceil);
-                    if (ceil[0] != ceil[1]) {
-                        ts.add(new long[] { ceil[0] + 1, ceil[1] });
-                    }
-                } else if (ceil == null) {
-                    final long bestLo = Math.min(s, lower[1]);
-                    ts.remove(lower);
-                    final long[] ll = { lower[0], bestLo - 1 };
-                    final long[] rr = { bestLo + 1, lower[1] };
-                    if (ll[0] <= ll[1]) {
-                        ts.add(ll);
-                    }
-                    if (rr[0] <= rr[1]) {
-                        ts.add(rr);
-                    }
-                    res[i] = bestLo;
+                if (w[i] == '0') {
+                    zeroes++;
                 } else {
-                    final long bestLo = Math.min(s, lower[1]);
-                    final long bestHi = Math.max(s, ceil[0]);
-                    if (s - bestLo <= bestHi - s) {
-                        ts.remove(lower);
-                        final long[] ll = { lower[0], bestLo - 1 };
-                        final long[] rr = { bestLo + 1, lower[1] };
-                        if (ll[0] <= ll[1]) {
-                            ts.add(ll);
-                        }
-                        if (rr[0] <= rr[1]) {
-                            ts.add(rr);
-                        }
-                        res[i] = bestLo;
-                    } else {
-                        ts.remove(ceil);
-                        final long[] ll = { ceil[0], bestHi - 1 };
-                        final long[] rr = { bestHi + 1, ceil[1] };
-                        if (ll[0] <= ll[1]) {
-                            ts.add(ll);
-                        }
-                        if (rr[0] <= rr[1]) {
-                            ts.add(rr);
-                        }
-                        res[i] = bestHi;
+                    int j = i;
+                    while (j < n && w[j] == '1') {
+                        j++;
                     }
+                    ones += (j - i) / 2;
+                    i = j - 1;
                 }
             }
-            final StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < m; i++) {
-                sb.append(res[i]).append(' ');
-            }
-            System.out.println("Case #" + x + ": " + sb);
+            System.out.println(comb.nck(zeroes + ones, ones));
         }
     }
 

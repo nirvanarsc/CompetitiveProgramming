@@ -1,162 +1,82 @@
 package leetcode.weekly_contests.weekly_249;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class P_3 {
+
+    static int[][] dp;
+    static int[] good;
+    static boolean[][] seen;
+    static int size;
 
     private static final int MOD = (int) (1e9 + 7);
 
     public int colorTheGrid(int m, int n) {
-        if (m == 1) {
-            final int[][] dp = new int[n + 1][4];
-            return dfs(n, 0, dp);
+        dp = new int[n + 1][1 << (2 * m)];
+        seen = new boolean[n + 1][1 << (2 * m)];
+        size = m;
+        final List<Integer> masks = new ArrayList<>();
+        for (int mask = 0; mask < (1 << 2 * size); mask++) {
+            final int[] curr = parseMask(mask);
+            boolean ok = true;
+            for (int i = 0; i < size; i++) {
+                if (curr[i] == 0) {
+                    ok = false;
+                    break;
+                }
+                if (i > 0 && curr[i - 1] == curr[i]) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                masks.add(mask);
+            }
         }
-        if (m == 2) {
-            final int[][][] dp = new int[n + 1][4][4];
-            return dfs(n, 0, 0, dp);
-        }
-        if (m == 3) {
-            final int[][][][] dp = new int[n + 1][4][4][4];
-            return dfs(n, 0, 0, 0, dp);
-        }
-        if (m == 4) {
-            final int[][][][][] dp = new int[n + 1][4][4][4][4];
-            return dfs(n, 0, 0, 0, 0, dp);
-        }
-        final int[][][][][][] dp = new int[n + 1][4][4][4][4][4];
-        return dfs(n, 0, 0, 0, 0, 0, dp);
+        good = masks.stream().mapToInt(Integer::intValue).toArray();
+        return dfs(n, 0);
     }
 
-    int dfs(int n, int a0, int[][] dp) {
-        if (n == 0) { return 1; }
-        if (dp[n][a0] != 0) {
-            return dp[n][a0];
+    private static int[] parseMask(int mask) {
+        final int[] res = new int[size];
+        for (int i = size - 1; i >= 0; i--) {
+            final int c = mask & 3;
+            mask >>= 2;
+            res[i] = c;
         }
-        int ans = 0;
-        final int[] colors = { 1, 2, 3 };
-        for (int a : colors) {
-            if (a == a0) {
-                continue;
-            }
-            ans += dfs(n - 1, a, dp);
-            ans %= MOD;
-        }
-        return dp[n][a0] = ans;
+        return res;
     }
 
-    int dfs(int n, int a0, int b0, int[][][] dp) {
-        if (n == 0) { return 1; }
-        if (dp[n][a0][b0] != 0) {
-            return dp[n][a0][b0];
+    private static int dfs(int n, int mask) {
+        if (n == 0) {
+            return 1;
         }
-        int ans = 0;
-        final int[] colors = { 1, 2, 3 };
-        for (int a : colors) {
-            if (a == a0) {
-                continue;
-            }
-            for (int b : colors) {
-                if (b == b0 || b == a) {
-                    continue;
-                }
-                ans += dfs(n - 1, a, b, dp);
-                ans %= MOD;
-            }
+        if (seen[n][mask]) {
+            return dp[n][mask];
         }
-        return dp[n][a0][b0] = ans;
-    }
-
-    int dfs(int n, int a0, int b0, int c0, int[][][][] dp) {
-        if (n == 0) { return 1; }
-        if (dp[n][a0][b0][c0] != 0) {
-            return dp[n][a0][b0][c0];
-        }
-        int ans = 0;
-        final int[] colors = { 1, 2, 3 };
-        for (int a : colors) {
-            if (a == a0) {
-                continue;
+        int res = 0;
+        if (mask == 0) {
+            for (int next : good) {
+                res = (res + dfs(n - 1, next)) % MOD;
             }
-            for (int b : colors) {
-                if (b == b0 || b == a) {
-                    continue;
-                }
-                for (int c : colors) {
-                    if (c == c0 || c == b) {
-                        continue;
-                    }
-                    ans += dfs(n - 1, a, b, c, dp);
-                    ans %= MOD;
-                }
-            }
-        }
-        return dp[n][a0][b0][c0] = ans;
-    }
-
-    int dfs(int n, int a0, int b0, int c0, int d0, int[][][][][] dp) {
-        if (n == 0) { return 1; }
-        if (dp[n][a0][b0][c0][d0] != 0) {
-            return dp[n][a0][b0][c0][d0];
-        }
-        int ans = 0;
-        final int[] colors = { 1, 2, 3 };
-        for (int a : colors) {
-            if (a == a0) {
-                continue;
-            }
-            for (int b : colors) {
-                if (b == b0 || b == a) {
-                    continue;
-                }
-                for (int c : colors) {
-                    if (c == c0 || c == b) {
-                        continue;
-                    }
-                    for (int d : colors) {
-                        if (d == d0 || d == c) {
-                            continue;
-                        }
-                        ans += dfs(n - 1, a, b, c, d, dp);
-                        ans %= MOD;
+        } else {
+            final int[] prev = parseMask(mask);
+            for (int next : good) {
+                final int[] curr = parseMask(next);
+                boolean ok = true;
+                for (int i = 0; i < size; i++) {
+                    if (prev[i] == curr[i]) {
+                        ok = false;
+                        break;
                     }
                 }
-            }
-        }
-        return dp[n][a0][b0][c0][d0] = ans;
-    }
-
-    int dfs(int n, int a0, int b0, int c0, int d0, int e0, int[][][][][][] dp) {
-        if (n == 0) { return 1; }
-        if (dp[n][a0][b0][c0][d0][e0] != 0) {
-            return dp[n][a0][b0][c0][d0][e0];
-        }
-        int ans = 0;
-        final int[] colors = { 1, 2, 3 };
-        for (int a : colors) {
-            if (a == a0) {
-                continue;
-            }
-            for (int b : colors) {
-                if (b == b0 || b == a) {
-                    continue;
-                }
-                for (int c : colors) {
-                    if (c == c0 || c == b) {
-                        continue;
-                    }
-                    for (int d : colors) {
-                        if (d == d0 || d == c) {
-                            continue;
-                        }
-                        for (int e : colors) {
-                            if (e == e0 || e == d) {
-                                continue;
-                            }
-                            ans += dfs(n - 1, a, b, c, d, e, dp);
-                            ans %= MOD;
-                        }
-                    }
+                if (ok) {
+                    res = (res + dfs(n - 1, next)) % MOD;
                 }
             }
         }
-        return dp[n][a0][b0][c0][d0][e0] = ans;
+        seen[n][mask] = true;
+        return dp[n][mask] = res;
     }
 }

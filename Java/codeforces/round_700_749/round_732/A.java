@@ -1,85 +1,60 @@
-package kickstart.year_2021.round_d;
+package codeforces.round_700_749.round_732;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Deque;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-public final class C {
+public final class A {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final StringBuilder sb = new StringBuilder();
         final int t = fs.nextInt();
-        for (int x = 1; x <= t; x++) {
-            final TreeSet<long[]> ts = new TreeSet<>(Comparator.comparingLong(a -> a[0]));
+        for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            final int m = fs.nextInt();
+            final int[] a = fs.nextIntArray(n);
+            final int[] b = fs.nextIntArray(n);
+            int sum1 = 0;
+            int sum2 = 0;
             for (int i = 0; i < n; i++) {
-                ts.add(new long[] { fs.nextLong(), fs.nextLong() });
+                sum1 += a[i];
+                sum2 += b[i];
             }
-            final long[] res = new long[m];
-            for (int i = 0; i < m; i++) {
-                final long s = fs.nextLong();
-                final long[] tt = { s };
-                final long[] lower = ts.lower(tt);
-                final long[] ceil = ts.ceiling(tt);
-                if (lower == null) {
-                    //noinspection ConstantConditions
-                    res[i] = ceil[0];
-                    ts.remove(ceil);
-                    if (ceil[0] != ceil[1]) {
-                        ts.add(new long[] { ceil[0] + 1, ceil[1] });
-                    }
-                } else if (ceil == null) {
-                    final long bestLo = Math.min(s, lower[1]);
-                    ts.remove(lower);
-                    final long[] ll = { lower[0], bestLo - 1 };
-                    final long[] rr = { bestLo + 1, lower[1] };
-                    if (ll[0] <= ll[1]) {
-                        ts.add(ll);
-                    }
-                    if (rr[0] <= rr[1]) {
-                        ts.add(rr);
-                    }
-                    res[i] = bestLo;
-                } else {
-                    final long bestLo = Math.min(s, lower[1]);
-                    final long bestHi = Math.max(s, ceil[0]);
-                    if (s - bestLo <= bestHi - s) {
-                        ts.remove(lower);
-                        final long[] ll = { lower[0], bestLo - 1 };
-                        final long[] rr = { bestLo + 1, lower[1] };
-                        if (ll[0] <= ll[1]) {
-                            ts.add(ll);
-                        }
-                        if (rr[0] <= rr[1]) {
-                            ts.add(rr);
-                        }
-                        res[i] = bestLo;
-                    } else {
-                        ts.remove(ceil);
-                        final long[] ll = { ceil[0], bestHi - 1 };
-                        final long[] rr = { bestHi + 1, ceil[1] };
-                        if (ll[0] <= ll[1]) {
-                            ts.add(ll);
-                        }
-                        if (rr[0] <= rr[1]) {
-                            ts.add(rr);
-                        }
-                        res[i] = bestHi;
+            if (sum1 != sum2) {
+                sb.append(-1).append('\n');
+                continue;
+            }
+            int ops = 0;
+            final StringBuilder temp = new StringBuilder();
+            final Deque<Integer> greater = new ArrayDeque<>();
+            final Deque<Integer> smaller = new ArrayDeque<>();
+            for (int i = 0; i < n; i++) {
+                if (a[i] > b[i]) {
+                    greater.offerLast(i);
+                } else if (a[i] < b[i]) {
+                    smaller.offerLast(i);
+                }
+            }
+            while (!greater.isEmpty()) {
+                final int pop = greater.removeFirst();
+                while (a[pop] != b[pop]) {
+                    a[pop]--;
+                    a[smaller.getFirst()]++;
+                    temp.append(pop + 1).append(' ').append(smaller.getFirst() + 1).append('\n');
+                    ops++;
+                    if (a[smaller.getFirst()] == b[smaller.getFirst()]) {
+                        smaller.removeFirst();
                     }
                 }
             }
-            final StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < m; i++) {
-                sb.append(res[i]).append(' ');
-            }
-            System.out.println("Case #" + x + ": " + sb);
+            sb.append(ops).append('\n').append(temp);
         }
+        System.out.println(sb);
     }
 
     static final class Utils {

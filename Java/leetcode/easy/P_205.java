@@ -5,15 +5,20 @@ import java.util.Arrays;
 public class P_205 {
 
     public boolean isIsomorphic(String s, String t) {
-        final int[] m1 = new int[256];
-        final int[] m2 = new int[256];
-        Arrays.fill(m1, -1);
-        Arrays.fill(m2, -1);
-        for (int i = 0; i < s.length(); i++) {
-            if (m1[s.charAt(i)] != m2[t.charAt(i)]) {
+        final int[] l = new int[256];
+        final int[] r = new int[256];
+        Arrays.fill(l, -1);
+        Arrays.fill(r, -1);
+        final int n = s.length();
+        final char[] ss = s.toCharArray();
+        final char[] tt = t.toCharArray();
+        for (int i = 0; i < n; i++) {
+            if (l[ss[i]] == -1 && r[tt[i]] == -1) {
+                l[ss[i]] = tt[i];
+                r[tt[i]] = ss[i];
+            } else if (l[ss[i]] != tt[i] || r[tt[i]] != ss[i]) {
                 return false;
             }
-            m1[s.charAt(i)] = m2[t.charAt(i)] = i;
         }
         return true;
     }

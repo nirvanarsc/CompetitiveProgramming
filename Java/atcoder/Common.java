@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
-public class Common {
+public final class Common {
+
+    private Common() {}
 
     private static final int MOD = (int) (1e9 + 7);
 
