@@ -1,33 +1,32 @@
 package leetcode.weekly_contests.weekly_73;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class P_791 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public String customSortString(String S, String T) {
-        final Map<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < S.length(); i++) {
-            map.put(S.charAt(i), i);
+    public String customSortString(String order, String str) {
+        final int[] map = new int[26];
+        Arrays.fill(map, -1);
+        for (int i = 0; i < order.length(); i++) {
+            map[order.charAt(i) - 'a'] = i;
         }
-        return IntStream.range(0, T.length())
-                        .mapToObj(T::charAt)
-                        .sorted((a, b) -> {
-                            if (map.containsKey(a) && map.containsKey(b)) {
-                                return Integer.compare(map.get(a), map.get(b));
-                            }
-                            if (map.containsKey(a)) {
-                                return -1;
-                            }
-                            if (map.containsKey(b)) {
-                                return 1;
-                            }
-                            return Character.compare(a, b);
-                        })
-                        .map(String::valueOf)
-                        .collect(Collectors.joining());
+        int z = order.length();
+        for (int i = 0; i < 26; i++) {
+            if (map[i] == -1) {
+                map[i] = z++;
+            }
+        }
+        final List<Character> list = new ArrayList<>();
+        for (char c: str.toCharArray()) {
+            list.add(c);
+        }
+        return list.stream()
+                   .sorted(Comparator.comparingInt(a -> map[a - 'a']))
+                   .map(String::valueOf)
+                   .collect(Collectors.joining(" "));
     }
 }
