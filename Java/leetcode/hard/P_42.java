@@ -6,19 +6,19 @@ import java.util.Deque;
 public class P_42 {
 
     public int trapStack(int[] height) {
-        final Deque<Integer> stack = new ArrayDeque<>();
-        int water = 0;
+        final Deque<Integer> dq = new ArrayDeque<>();
+        int res = 0;
         for (int i = 0; i < height.length; i++) {
-            while (!stack.isEmpty() && height[i] > height[stack.getFirst()]) {
-                final int prev = stack.removeFirst();
-                if (!stack.isEmpty()) {
-                    final int minHeight = Math.min(height[stack.getFirst()], height[i]);
-                    water += (minHeight - height[prev]) * (i - stack.getFirst() - 1);
+            while (!dq.isEmpty() && height[i] > height[dq.getFirst()]) {
+                final int prev = dq.removeFirst();
+                if (!dq.isEmpty()) {
+                    final int minH = Math.min(height[dq.getFirst()], height[i]);
+                    res += (minH - height[prev]) * (i - dq.getFirst() - 1);
                 }
             }
-            stack.addFirst(i);
+            dq.addFirst(i);
         }
-        return water;
+        return res;
     }
 
     public static int trap(int[] height) {

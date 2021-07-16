@@ -26,7 +26,7 @@ public class P_4 {
         final Deque<Tree> dq = new ArrayDeque<>();
         build(expression, dq);
         final int[] res = dfs(dq.removeFirst());
-        return Math.abs(res[0] - res[1]);
+        return res[0] + res[1];
     }
 
     private static int[] dfs(Tree node) {
