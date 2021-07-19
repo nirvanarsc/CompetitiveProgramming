@@ -16,7 +16,7 @@ public final class WordCountEngine {
     private static final Pattern SPACES = Pattern.compile("\\s+");
     public static final String[][] STRINGS = new String[0][];
 
-    static String[][] wordCountEngine(String document) {
+    private static String[][] wordCountEngine(String document) {
         if (document.isEmpty()) {
             return STRINGS;
         }
@@ -46,6 +46,4 @@ public final class WordCountEngine {
             System.out.println(Arrays.toString(r));
         }
     }
-
-    private WordCountEngine() {}
 }

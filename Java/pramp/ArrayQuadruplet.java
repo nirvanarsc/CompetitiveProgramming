@@ -6,7 +6,7 @@ public final class ArrayQuadruplet {
 
     public static final int[] EMPTY_ARRAY = new int[0];
 
-    static int[] findArrayQuadruplet(int[] arr, int s) {
+    private static int[] findArrayQuadruplet(int[] arr, int s) {
         Arrays.sort(arr);
         for (int i = 0; i < arr.length; i++) {
             final int[] ints = threeSum(arr, s - arr[i], i);
@@ -17,7 +17,7 @@ public final class ArrayQuadruplet {
         return EMPTY_ARRAY;
     }
 
-    static int[] twoSum(int[] arr, int s, int ignoreIdx1, int ignoreIdx2) {
+    private static int[] twoSum(int[] arr, int s, int ignoreIdx1, int ignoreIdx2) {
         int start = 0;
         int end = arr.length - 1;
         while (start < end) {
@@ -41,7 +41,7 @@ public final class ArrayQuadruplet {
         return EMPTY_ARRAY;
     }
 
-    static int[] threeSum(int[] arr, int s, int ignoreIdx) {
+    private static int[] threeSum(int[] arr, int s, int ignoreIdx) {
         for (int i = 0; i < arr.length; i++) {
             if (i == ignoreIdx) { continue; }
             final int[] ints = twoSum(arr, s - arr[i], ignoreIdx, i);
@@ -52,7 +52,7 @@ public final class ArrayQuadruplet {
         return EMPTY_ARRAY;
     }
 
-    static int[] fourSum(int[] arr, int s) {
+    private static int[] fourSum(int[] arr, int s) {
         if (arr.length < 4) {
             return EMPTY_ARRAY;
         }
@@ -83,6 +83,4 @@ public final class ArrayQuadruplet {
         System.out.println(Arrays.toString(findArrayQuadruplet(new int[] { 4, 4, 4, 2 }, 16)));
         System.out.println(Arrays.toString(fourSum(new int[] { 2, 7, 4, 0, 9, 5, 1, 3 }, 20)));
     }
-
-    private ArrayQuadruplet() {}
 }
