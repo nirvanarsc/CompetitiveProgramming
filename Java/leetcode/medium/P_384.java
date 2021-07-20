@@ -2,37 +2,38 @@ package leetcode.medium;
 
 import java.util.Random;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass", "unused" })
 public class P_384 {
 
-    static class Solution {
-
+    class Solution {
         int[] original;
+        int n;
         Random r;
 
-        Solution(int[] nums) {
+        public Solution(int[] nums) {
             original = nums;
+            n = nums.length;
             r = new Random();
         }
 
+        /** Resets the array to its original configuration and return it. */
         public int[] reset() {
             return original;
         }
 
+        /** Returns a random shuffling of the array. */
         public int[] shuffle() {
-            final int[] res = original.clone();
-            final int n = res.length;
+            final int[] clone = original.clone();
             for (int i = 0; i < n; i++) {
-                final int swapIdx = i + r.nextInt(n - i);
-                swap(res, i, swapIdx);
+                swap(clone, i, i + r.nextInt(n - i));
             }
-            return res;
+            return clone;
         }
 
-        private static void swap(int[] res, int i, int swapIdx) {
-            final int t = res[i];
-            res[i] = res[swapIdx];
-            res[swapIdx] = t;
+        private void swap(int[] arr, int i, int j) {
+            final int t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
         }
     }
 }
