@@ -6,8 +6,8 @@ import utils.DataStructures.TreeNode;
 public class P_814 {
 
     public TreeNode pruneTree(TreeNode root) {
-        dfs(root);
-        return root;
+        final boolean res = dfs(root);
+        return res ? root : null;
     }
 
     public boolean dfs(TreeNode root) {
