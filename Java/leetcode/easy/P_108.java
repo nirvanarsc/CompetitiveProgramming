@@ -2,6 +2,7 @@ package leetcode.easy;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("ReturnOfNull")
 public class P_108 {
 
     public TreeNode sortedArrayToBST(int[] nums) {

@@ -5,7 +5,7 @@ import java.util.List;
 
 import utils.DataStructures.TreeNode;
 
-@SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
+@SuppressWarnings("ReturnOfNull")
 public class P_1382 {
 
     public TreeNode sortedArrayToBST(List<Integer> nums, int start, int end) {
