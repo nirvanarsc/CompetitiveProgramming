@@ -4,18 +4,37 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final StringBuilder sb = new StringBuilder();
         final int t = fs.nextInt();
+        outer:
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final int[] arr = fs.nextIntArray(n);
+            final Set<Integer> seen = new HashSet<>();
+            for (int mask = 0; mask < (1 << n); mask++) {
+                int curr = 0;
+                for (int i = 0; i < n; i++) {
+                    if ((mask & (1 << i)) != 0) {
+                        curr += arr[i];
+                    }
+                }
+                if (!seen.add(curr)) {
+                    sb.append("YES").append('\n');
+                    continue outer;
+                }
+            }
+            sb.append("NO").append('\n');
         }
+        System.out.println(sb);
     }
 
     static final class Utils {

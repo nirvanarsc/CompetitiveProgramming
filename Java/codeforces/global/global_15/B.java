@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 
 public final class B {
@@ -17,52 +16,38 @@ public final class B {
             final int n = fs.nextInt();
             final int[][] g = new int[n][5];
             for (int i = 0; i < n; i++) {
-                g[i] = new int[] { fs.nextInt(), fs.nextInt(), fs.nextInt(), fs.nextInt(), fs.nextInt(), i };
+                g[i] = new int[] { fs.nextInt(), fs.nextInt(), fs.nextInt(), fs.nextInt(), fs.nextInt() };
             }
-            Arrays.sort(g, Comparator.comparingInt(a -> a[0]));
-            if (f(g, n)) {
-                sb.append(g[0][5] + 1).append('\n');
-                continue;
+            int res = 0;
+            for (int i = 1; i < n; i++) {
+                if (isLessThan(g[res], g[i])) {
+                    res = i;
+                }
             }
-            Arrays.sort(g, Comparator.comparingInt(a -> a[1]));
-            if (f(g, n)) {
-                sb.append(g[0][5] + 1).append('\n');
-                continue;
+            boolean ok = true;
+            for (int i = 0; i < n; i++) {
+                if (i != res && isLessThan(g[res], g[i])) {
+                    ok = false;
+                    break;
+                }
             }
-            Arrays.sort(g, Comparator.comparingInt(a -> a[2]));
-            if (f(g, n)) {
-                sb.append(g[0][5] + 1).append('\n');
-                continue;
+            if (ok) {
+                sb.append(res + 1).append('\n');
+            } else {
+                sb.append(-1).append('\n');
             }
-            Arrays.sort(g, Comparator.comparingInt(a -> a[3]));
-            if (f(g, n)) {
-                sb.append(g[0][5] + 1).append('\n');
-                continue;
-            }
-            Arrays.sort(g, Comparator.comparingInt(a -> a[4]));
-            if (f(g, n)) {
-                sb.append(g[0][5] + 1).append('\n');
-                continue;
-            }
-            sb.append(-1).append('\n');
         }
         System.out.println(sb);
     }
 
-    private static boolean f(int[][] g, int n) {
-        int count = 0;
-        for (int j = 1; j < n; j++) {
-            int l = 0;
-            for (int k = 0; k < 5; k++) {
-                if (g[0][k] < g[j][k]) {
-                    l++;
-                }
-            }
-            if (l >= 3) {
-                count++;
+    private static boolean isLessThan(int[] best, int[] curr) {
+        int l = 0;
+        for (int k = 0; k < 5; k++) {
+            if (best[k] > curr[k]) {
+                l++;
             }
         }
-        return count == n - 1;
+        return l >= 3;
     }
 
     static final class Utils {

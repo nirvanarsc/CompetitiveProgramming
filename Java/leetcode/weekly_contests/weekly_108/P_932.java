@@ -1,20 +1,29 @@
 package leetcode.weekly_contests.weekly_108;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_932 {
 
-    public int[] beautifulArray(int N) {
-        List<Integer> res = new ArrayList<>(Collections.singleton(1));
-        while (res.size() < N) {
-            final List<Integer> tmp = new ArrayList<>();
-            for (int i : res) { if (i * 2 - 1 <= N) { tmp.add(i * 2 - 1); } }
-            for (int i : res) { if (i * 2 <= N) { tmp.add(i * 2); } }
-            res = tmp;
+    public int[] beautifulArray(int n) {
+        int[] res = new int[n];
+        res[0] = 1;
+        int len = 1;
+        while (len < n) {
+            final int[] next = new int[n];
+            int idx = 0;
+            for (int i = 0; i < len; i++) {
+                final int add = res[i] * 2 - 1;
+                if (add <= n) {
+                    next[idx++] = add;
+                }
+            }
+            for (int i = 0; i < len; i++) {
+                final int add = res[i] * 2;
+                if (add <= n) {
+                    next[idx++] = add;
+                }
+            }
+            res = next;
+            len = idx;
         }
-        return res.stream().mapToInt(Integer::intValue).toArray();
+        return res;
     }
 }

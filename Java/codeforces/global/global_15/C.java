@@ -3,7 +3,9 @@ package codeforces.global.global_15;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -14,8 +16,45 @@ public final class C {
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final int k = fs.nextInt();
+            final List<int[]> chords = new ArrayList<>();
+            final boolean[] used = new boolean[2 * n];
+            for (int i = 0; i < k; i++) {
+                int l = fs.nextInt() - 1;
+                int r = fs.nextInt() - 1;
+                if (l > r) {
+                    final int temp = l;
+                    l = r;
+                    r = temp;
+                }
+                chords.add(new int[] { l, r });
+                used[l] = used[r] = true;
+            }
+            final List<Integer> unused = new ArrayList<>();
+            for (int i = 0; i < used.length; i++) {
+                if (!used[i]) {
+                    unused.add(i);
+                }
+            }
+            for (int i = 0; i < n - k; i++) {
+                chords.add(new int[] { unused.get(i), unused.get(i + n - k) });
+            }
+            int res = 0;
+            for (int i = 0; i < chords.size(); i++) {
+                for (int j = i + 1; j < chords.size(); j++) {
+                    res += f(chords.get(i), chords.get(j));
+                }
+            }
+            System.out.println(res);
         }
+    }
+
+    private static int f(int[] c, int[] d) {
+        if (c[0] > d[0]) {
+            //noinspection TailRecursion
+            return f(d, c);
+        }
+        return d[0] < c[1] && c[1] < d[1] ? 1 : 0;
     }
 
     static final class Utils {
