@@ -5,41 +5,44 @@ import java.util.Map;
 
 public class P_677 {
 
-    static class MapSum {
-        static class Trie {
-            Map<Character, Trie> children = new HashMap<>();
-            int value;
+    @SuppressWarnings({ "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
+    class MapSum {
+
+        class Trie {
+            Trie[] children = new Trie[26];
+            int sum;
         }
 
         Trie root;
-        Map<String, Integer> map;
+        Map<String, Integer> prev;
 
-        MapSum() {
+        public MapSum() {
             root = new Trie();
-            map = new HashMap<>();
+            prev = new HashMap<>();
         }
 
         public void insert(String key, int val) {
-            final int delta = val - map.getOrDefault(key, 0);
-            map.put(key, val);
-            Trie cur = root;
-            cur.value += delta;
+            Trie iter = root;
+            final int delta = val - prev.getOrDefault(key, 0);
+            prev.put(key, val);
             for (char c : key.toCharArray()) {
-                cur.children.putIfAbsent(c, new Trie());
-                cur = cur.children.get(c);
-                cur.value += delta;
+                if (iter.children[c - 'a'] == null) {
+                    iter.children[c - 'a'] = new Trie();
+                }
+                iter = iter.children[c - 'a'];
+                iter.sum += delta;
             }
         }
 
         public int sum(String prefix) {
-            Trie cur = root;
+            Trie iter = root;
             for (char c : prefix.toCharArray()) {
-                cur = cur.children.get(c);
-                if (cur == null) {
+                iter = iter.children[c - 'a'];
+                if (iter == null) {
                     return 0;
                 }
             }
-            return cur.value;
+            return iter.sum;
         }
     }
 }
