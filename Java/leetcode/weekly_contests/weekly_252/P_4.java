@@ -8,7 +8,7 @@ public class P_4 {
     static int[][] dp;
 
     public int countSpecialSubsequences(int[] nums) {
-        int n = nums.length;
+        final int n = nums.length;
         seen = new boolean[n][4];
         dp = new int[n][4];
         return dfs(nums, 0, 0);
