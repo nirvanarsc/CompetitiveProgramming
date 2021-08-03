@@ -11,37 +11,22 @@ public class P_4 {
         final int n = nums.length;
         seen = new boolean[n][4];
         dp = new int[n][4];
-        return dfs(nums, 0, 0);
+        return dfs(nums, 0, -1);
     }
 
-    private static int dfs(int[] nums, int idx, int tar) {
+    private static int dfs(int[] nums, int idx, int prev) {
         if (idx == nums.length) {
-            return (tar == 3) ? 1 : 0;
+            return (prev == 2) ? 1 : 0;
         }
-        if (seen[idx][tar]) {
-            return dp[idx][tar];
+        if (seen[idx][prev + 1]) {
+            return dp[idx][prev + 1];
         }
         int res = 0;
-        if (nums[idx] == 0) {
-            if (tar == 0) {
-                res = (res + dfs(nums, idx + 1, 1)) % MOD;
-                res = (res + dfs(nums, idx + 1, 0)) % MOD;
-            }
-            res = (res + dfs(nums, idx + 1, 1)) % MOD;
-            res = (res + dfs(nums, idx + 1, 0)) % MOD;
-        } else if (nums[idx] == 1) {
-            if (tar == 1) {
-                res = (res + dfs(nums, idx + 1, 2)) % MOD;
-                res = (res + dfs(nums, idx + 1, 1)) % MOD;
-            }
-        } else {
-            if (tar == 2) {
-                res = (res + dfs(nums, idx + 1, 3)) % MOD;
-            } else if (tar == 3) {
-                res = (res + 1 + dfs(nums, idx + 1, 3)) % MOD;
-            }
+        if (prev + 1 == nums[idx] || prev == nums[idx]) {
+            res = (res + dfs(nums, idx + 1, nums[idx])) % MOD;
         }
-        seen[idx][tar] = true;
-        return dp[idx][tar] = res;
+        res = (res + dfs(nums, idx + 1, prev)) % MOD;
+        seen[idx][prev + 1] = true;
+        return dp[idx][prev + 1] = res;
     }
 }

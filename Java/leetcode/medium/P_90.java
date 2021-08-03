@@ -26,21 +26,18 @@ public class P_90 {
     }
 
     public List<List<Integer>> subsetsWithDupSet(int[] nums) {
-        final List<List<Integer>> res = new ArrayList<>();
+        final Set<List<Integer>> res = new HashSet<>();
         Arrays.sort(nums);
-        recurse(res, new ArrayList<>(), nums, 0);
-        return res;
-    }
-
-    private static void recurse(List<List<Integer>> res, List<Integer> curr, int[] nums, int start) {
-        res.add(new ArrayList<>(curr));
-        final Set<Integer> seen = new HashSet<>();
-        for (int i = start; i < nums.length; i++) {
-            if (seen.add(nums[i])) {
-                curr.add(nums[i]);
-                recurse(res, curr, nums, i + 1);
-                curr.remove(curr.size() - 1);
+        final int n = nums.length;
+        for (int mask = 0; mask < 1 << n; mask++) {
+            final List<Integer> curr = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    curr.add(nums[i]);
+                }
             }
+            res.add(curr);
         }
+        return new ArrayList<>(res);
     }
 }
