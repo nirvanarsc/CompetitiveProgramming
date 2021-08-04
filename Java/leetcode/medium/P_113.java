@@ -5,29 +5,34 @@ import java.util.List;
 
 import utils.DataStructures.TreeNode;
 
-@SuppressWarnings("ConstantConditions")
 public class P_113 {
 
-    public List<List<Integer>> pathSum(TreeNode root, int sum) {
-        final List<List<Integer>> res = new ArrayList<>();
-        dfs(root, sum, new int[] { 0 }, new ArrayList<>(), res);
+    static List<List<Integer>> res;
+    static List<Integer> path;
+    static int[] curr;
+
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        res = new ArrayList<>();
+        path = new ArrayList<>();
+        curr = new int[] { targetSum };
+        dfs(root);
         return res;
     }
 
-    private static void dfs(TreeNode node, int sum, int[] curr, List<Integer> path, List<List<Integer>> res) {
+    private static void dfs(TreeNode node) {
         if (node == null) {
             return;
         }
+        curr[0] -= node.val;
         path.add(node.val);
-        curr[0] += node.val;
-        dfs(node.left, sum, curr, path, res);
         if (node.left == null && node.right == null) {
-            if (curr[0] == sum) {
+            if (curr[0] == 0) {
                 res.add(new ArrayList<>(path));
             }
         }
-        dfs(node.right, sum, curr, path, res);
-        curr[0] -= node.val;
+        dfs(node.left);
+        dfs(node.right);
+        curr[0] += node.val;
         path.remove(path.size() - 1);
     }
 }
