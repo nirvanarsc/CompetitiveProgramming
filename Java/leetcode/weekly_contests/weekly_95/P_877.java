@@ -1,10 +1,9 @@
 package leetcode.weekly_contests.weekly_95;
 
-import java.util.Arrays;
-
 public class P_877 {
 
     static int[][] dp;
+    static boolean[][] seen;
 
     public boolean stoneGame(int[] nums) {
         final int n = nums.length;
@@ -12,9 +11,7 @@ public class P_877 {
             return true;
         }
         dp = new int[n][n];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
+        seen = new boolean[n][n];
         int sum = 0;
         for (int num : nums) {
             sum += num;
@@ -26,14 +23,15 @@ public class P_877 {
         if (start > end) {
             return 0;
         }
-        if (dp[start][end] != -1) {
+        if (seen[start][end]) {
             return dp[start][end];
         }
         int res = 0;
-        res = Math.max(res, nums[start] - dfs(nums, start + 2, end));
-        res = Math.max(res, nums[start] - dfs(nums, start + 1, end - 1));
-        res = Math.max(res, nums[end] - dfs(nums, start + 1, end - 1));
-        res = Math.max(res, nums[end] - dfs(nums, start, end - 2));
+        res = Math.max(res, nums[start] + dfs(nums, start + 2, end));
+        res = Math.max(res, nums[start] + dfs(nums, start + 1, end - 1));
+        res = Math.max(res, nums[end] + dfs(nums, start + 1, end - 1));
+        res = Math.max(res, nums[end] + dfs(nums, start, end - 2));
+        seen[start][end] = true;
         return dp[start][end] = res;
     }
 
