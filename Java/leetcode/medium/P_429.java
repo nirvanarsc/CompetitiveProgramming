@@ -8,26 +8,26 @@ import java.util.List;
 public class P_429 {
 
     private static class Node {
-        public int val;
-        public List<Node> children;
+        int val;
+        List<Node> children;
     }
 
     public List<List<Integer>> levelOrder(Node root) {
         final List<List<Integer>> res = new ArrayList<>();
-        final Deque<Node> q = new ArrayDeque<>();
+        final Deque<Node> dq = new ArrayDeque<>();
         if (root != null) {
-            q.offerLast(root);
+            dq.offerLast(root);
         }
-        while (!q.isEmpty()) {
-            final List<Integer> currLevel = new ArrayList<>();
-            for (int size = q.size(); size > 0; size--) {
-                final Node curr = q.removeFirst();
-                currLevel.add(curr.val);
+        while (!dq.isEmpty()) {
+            final List<Integer> level = new ArrayList<>();
+            for (int size = dq.size(); size > 0; size--) {
+                final Node curr = dq.removeFirst();
+                level.add(curr.val);
                 for (Node next : curr.children) {
-                    q.offerLast(next);
+                    dq.offerLast(next);
                 }
             }
-            res.add(currLevel);
+            res.add(level);
         }
         return res;
     }
