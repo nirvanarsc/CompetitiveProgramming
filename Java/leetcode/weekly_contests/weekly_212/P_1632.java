@@ -113,11 +113,11 @@ public class P_1632 {
         final int y = item[2];
         int rank = (int) -2e9;
         if (minRow.containsKey(x)) {
-            final int increase = matrix[minRow.get(x)[1]][minRow.get(x)[2]] != val ? 0 : 1;
+            final int increase = matrix[minRow.get(x)[1]][minRow.get(x)[2]] == val ? 0 : 1;
             rank = Math.max(rank, minRow.get(x)[0] + increase);
         }
         if (minCol.containsKey(y)) {
-            final int increase = matrix[minCol.get(y)[1]][minCol.get(y)[2]] != val ? 0 : 1;
+            final int increase = matrix[minCol.get(y)[1]][minCol.get(y)[2]] == val ? 0 : 1;
             rank = Math.max(rank, minCol.get(y)[0] + increase);
         }
         if (rank == (int) -2e9) {
