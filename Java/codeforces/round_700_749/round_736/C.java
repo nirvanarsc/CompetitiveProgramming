@@ -11,11 +11,38 @@ public final class C {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final StringBuilder sb = new StringBuilder();
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        int res = n;
+        final int[] degree = new int[n];
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            if (degree[Math.min(u, v)]++ == 0) {
+                res--;
+            }
         }
+        final int q = fs.nextInt();
+        for (int i = 0; i < q; i++) {
+            final int type = fs.nextInt();
+            if (type == 1) {
+                final int u = fs.nextInt() - 1;
+                final int v = fs.nextInt() - 1;
+                if (degree[Math.min(u, v)]++ == 0) {
+                    res--;
+                }
+            } else if (type == 2) {
+                final int u = fs.nextInt() - 1;
+                final int v = fs.nextInt() - 1;
+                if (--degree[Math.min(u, v)] == 0) {
+                    res++;
+                }
+            } else {
+                sb.append(res).append('\n');
+            }
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {

@@ -1,66 +1,55 @@
 package leetcode.hard;
 
-import java.util.Arrays;
+public class P_132 {
 
-public final class P_132 {
+    static boolean[][] isPalindrome;
+    static boolean[] seen;
+    static int[] dp;
 
-    public static int minCut(String s) {
-        final int len = s.length();
-        final boolean[][] isPalindrome = new boolean[len][len];
-        final int[] dp = new int[len];
-        Arrays.fill(dp, Integer.MAX_VALUE);
-
-        for (int i = 0; i < len; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (s.charAt(j) == s.charAt(i) && (i - j <= 2 || isPalindrome[j + 1][i - 1])) {
-                    isPalindrome[j][i] = true;
-                }
+    public int minCut(String s) {
+        final int n = s.length();
+        isPalindrome = new boolean[n][n];
+        seen = new boolean[n];
+        dp = new int[n];
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i <= j; i++) {
+                isPalindrome[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || isPalindrome[i + 1][j - 1]);
             }
         }
-
-        return recurse(0, s, dp, isPalindrome) - 1;
+        return dfs(s.toCharArray(), 0) - 1;
     }
 
-    private static int recurse(int start, String s, int[] dp, boolean[][] isPalindrome) {
-        if (start == s.length()) {
+    private static int dfs(char[] w, int idx) {
+        if (idx == w.length) {
             return 0;
         }
-        if (dp[start] != Integer.MAX_VALUE) {
-            return dp[start];
+        if (seen[idx]) {
+            return dp[idx];
         }
-
-        int res = Integer.MAX_VALUE;
-        for (int i = start + 1; i <= s.length(); i++) {
-            if (isPalindrome[start][i - 1]) {
-                res = Math.min(res, 1 + recurse(i, s, dp, isPalindrome));
+        int res = (int) 1e9;
+        for (int i = idx; i < w.length; i++) {
+            if (isPalindrome[idx][i]) {
+                res = Math.min(res, 1 + dfs(w, i + 1));
             }
         }
-
-        return dp[start] = res;
+        seen[idx] = true;
+        return dp[idx] = res;
     }
 
-    public static int minCut2(String s) {
-        final int len = s.length();
-        final int[] cut = new int[len];
-        final boolean[][] isPalindrome = new boolean[len][len];
-
-        for (int col = 0; col < len; col++) {
-            int min = col;
-            for (int row = 0; row <= col; row++) {
-                if (s.charAt(row) == s.charAt(col) && (col - row <= 2 || isPalindrome[row + 1][col - 1])) {
-                    isPalindrome[row][col] = true;
-                    min = row == 0 ? 0 : Math.min(min, cut[row - 1] + 1);
+    public static int minCutTopDown(String s) {
+        final int n = s.length();
+        final int[] dp = new int[n];
+        final boolean[][] isPalindrome = new boolean[n][n];
+        for (int j = 0; j < n; j++) {
+            int curr = j;
+            for (int i = 0; i <= j; i++) {
+                isPalindrome[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || isPalindrome[i + 1][j - 1]);
+                if (isPalindrome[i][j]) {
+                    curr = i == 0 ? 0 : Math.min(curr, dp[i - 1] + 1);
                 }
             }
-            cut[col] = min;
+            dp[j] = curr;
         }
-
-        return cut[len - 1];
+        return dp[n - 1];
     }
-
-    public static void main(String[] args) {
-        System.out.println(minCut2("abcbad"));
-    }
-
-    private P_132() {}
 }

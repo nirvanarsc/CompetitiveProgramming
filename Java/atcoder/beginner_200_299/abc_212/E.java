@@ -3,7 +3,12 @@ package atcoder.beginner_200_299.abc_212;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -11,48 +16,38 @@ public final class E {
 
     private static final int MOD = 998244353;
 
-    static boolean[][] g;
-    static int len;
-
-    static boolean[][] seen;
-    static long[][] dp;
-
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
         final int k = fs.nextInt();
-        g = new boolean[n][n];
-        len = n;
-        for (int i = 0; i < n; i++) {
-            g[i][i] = true;
-        }
+        final Map<Integer, List<Integer>> g = new HashMap<>();
         for (int i = 0; i < m; i++) {
             final int u = fs.nextInt() - 1;
             final int v = fs.nextInt() - 1;
-            g[u][v] = true;
-            g[v][u] = true;
+            g.computeIfAbsent(u, val -> new ArrayList<>()).add(v);
+            g.computeIfAbsent(v, val -> new ArrayList<>()).add(u);
         }
-        seen = new boolean[n][k + 1];
-        dp = new long[n][k + 1];
-        System.out.println(dfs(0, k));
-    }
-
-    private static long dfs(int u, int k) {
-        if (k == 0) {
-            return u == 0 ? 1 : 0;
+        for (int i = 0; i < n; i++) {
+            g.computeIfAbsent(i, val -> new ArrayList<>()).add(i);
         }
-        if (seen[u][k]) {
-            return dp[u][k];
-        }
-        long res = 0;
-        for (int i = 0; i < len; i++) {
-            if (!g[u][i]) {
-                res = (res + dfs(i, k - 1)) % MOD;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        for (int i = 0; i < k; i++) {
+            final int[] next = new int[n];
+            int total = 0;
+            for (int u = 0; u < n; u++) {
+                total = (total + dp[u]) % MOD;
             }
+            for (int u = 0; u < n; u++) {
+                next[u] = total;
+                for (int v : g.getOrDefault(u, Collections.emptyList())) {
+                    next[u] = (next[u] - dp[v] + MOD) % MOD;
+                }
+            }
+            dp = next;
         }
-        seen[u][k] = true;
-        return dp[u][k] = res;
+        System.out.println(dp[0]);
     }
 
     static final class Utils {
