@@ -1,34 +1,19 @@
 package leetcode.weekly_contests.weekly_107;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_926 {
 
-    public int minFlipsMonoIncrOptimized(String S) {
-        int zeroes = 0, ones = 0;
-        for (char c : S.toCharArray()) {
-            if (c == '1') {
-                ++ones;
-            } else {
-                ++zeroes;
-            }
-            zeroes = Math.min(ones, zeroes);
-        }
-        return zeroes;
-    }
-
-    public int minFlipsMonoIncr(String S) {
-        final int n = S.length();
-        final int[] prefixOne = new int[n + 1];
-        final int[] prefixZero = new int[n + 1];
+    public int minFlipsMonoIncr(String s) {
+        final int n = s.length();
+        final int[] z = new int[n + 1];
+        final int[] o = new int[n + 1];
         for (int i = 1; i <= n; i++) {
-            prefixOne[i] = prefixOne[i - 1] + (S.charAt(i - 1) == '1' ? 1 : 0);
-            prefixZero[i] = prefixZero[i - 1] + (S.charAt(i - 1) == '0' ? 1 : 0);
+            final boolean one = s.charAt(i - 1) == '1';
+            z[i] = z[i - 1] + (!one ? 1 : 0);
+            o[i] = o[i - 1] + (one ? 1 : 0);
         }
-        int res = prefixZero[n];
-        for (int i = 1; i <= n; i++) {
-            final int lOne = prefixOne[i];
-            final int rZero = prefixZero[n] - prefixZero[i];
-            res = Math.min(res, lOne + rZero);
+        int res = (int) 1e9;
+        for (int i = 0; i <= n; i++) {
+            res = Math.min(res, o[i] + z[n] - z[i]);
         }
         return res;
     }
