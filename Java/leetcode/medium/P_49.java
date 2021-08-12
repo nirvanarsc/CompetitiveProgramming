@@ -10,11 +10,10 @@ public class P_49 {
 
     public List<List<String>> groupAnagrams(String[] strs) {
         final Map<String, List<String>> map = new HashMap<>();
-        for (String s : strs) {
-            final char[] chars = s.toCharArray();
-            Arrays.sort(chars);
-            final String sorted = new String(chars);
-            map.computeIfAbsent(sorted, v -> new ArrayList<>()).add(s);
+        for (String word : strs) {
+            final char[] sorted = word.toCharArray();
+            Arrays.sort(sorted);
+            map.computeIfAbsent(new String(sorted), val -> new ArrayList<>()).add(word);
         }
         return new ArrayList<>(map.values());
     }
