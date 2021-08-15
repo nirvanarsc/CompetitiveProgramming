@@ -7,8 +7,8 @@ public class P_546 {
 
     public int removeBoxes(int[] boxes) {
         final int n = boxes.length;
-        dp = new int[n][n][n + 1];
-        seen = new boolean[n][n][n + 1];
+        dp = new int[n][n][n];
+        seen = new boolean[n][n][n];
         return dfs(boxes, 0, n - 1, 0);
     }
 
