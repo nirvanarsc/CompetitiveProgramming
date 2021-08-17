@@ -1,60 +1,25 @@
 package leetcode.biweekly_contests.biweekly_26;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 import utils.DataStructures.TreeNode;
 
 public class P_1448 {
 
-    static class MaxStack {
-        Deque<Integer> stack;
-        Deque<Integer> maxStack;
-
-        MaxStack() {
-            stack = new ArrayDeque<>();
-            maxStack = new ArrayDeque<>();
-        }
-
-        public void push(int x) {
-            if (maxStack.isEmpty() || x >= maxStack.getFirst()) {
-                maxStack.addFirst(x);
-            }
-            stack.push(x);
-        }
-
-        public int pop() {
-            if (maxStack.getFirst().equals(stack.getFirst())) {
-                maxStack.removeFirst();
-            }
-            return stack.removeFirst();
-        }
-
-        public int peek() {
-            return stack.getFirst();
-        }
-
-        public int peekMax() {
-            return maxStack.getFirst();
-        }
-    }
+    static int res;
 
     public int goodNodes(TreeNode root) {
-        final int[] res = { 0 };
-        dfs(root, res, new MaxStack());
-        return res[0];
+        res = 0;
+        dfs(root, root.val);
+        return res;
     }
 
-    private static void dfs(TreeNode node, int[] res, MaxStack path) {
+    private static void dfs(TreeNode node, int max) {
         if (node == null) {
             return;
         }
-        path.push(node.val);
-        if (node.val == path.peekMax()) {
-            res[0]++;
+        if (node.val >= max) {
+            res++;
         }
-        dfs(node.left, res, path);
-        dfs(node.right, res, path);
-        path.pop();
+        dfs(node.left, Math.max(max, node.val));
+        dfs(node.right, Math.max(max, node.val));
     }
 }

@@ -1,45 +1,40 @@
 package leetcode.easy;
 
 import java.util.ArrayDeque;
-import java.util.Comparator;
 import java.util.Deque;
-import java.util.PriorityQueue;
 
+@SuppressWarnings("unused")
 public class P_716 {
 
     static class MaxStack {
-
         Deque<Integer> stack;
-        PriorityQueue<Integer> pqMax;
+        Deque<Integer> maxStack;
 
         MaxStack() {
             stack = new ArrayDeque<>();
-            pqMax = new PriorityQueue<>(Comparator.reverseOrder());
+            maxStack = new ArrayDeque<>();
         }
 
         public void push(int x) {
-            stack.addFirst(x);
-            pqMax.add(x);
+            if (maxStack.isEmpty() || x >= maxStack.getFirst()) {
+                maxStack.addFirst(x);
+            }
+            stack.push(x);
         }
 
         public int pop() {
-            final int deleteE = stack.removeFirst();
-            pqMax.remove(deleteE);
-            return deleteE;
+            if (maxStack.getFirst().equals(stack.getFirst())) {
+                maxStack.removeFirst();
+            }
+            return stack.removeFirst();
         }
 
-        public int top() {
+        public int peek() {
             return stack.getFirst();
         }
 
         public int peekMax() {
-            return pqMax.element();
-        }
-
-        public int popMax() {
-            final int deleteE = pqMax.remove();
-            stack.removeFirstOccurrence(deleteE);
-            return deleteE;
+            return maxStack.getFirst();
         }
     }
 }
