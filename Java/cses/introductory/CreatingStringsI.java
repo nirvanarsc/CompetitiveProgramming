@@ -25,7 +25,7 @@ public final class CreatingStringsI {
         }
     }
 
-    public static boolean nextPermutation(char[] nums) {
+    private static boolean nextPermutation(char[] nums) {
         int idx = nums.length - 1, swapIdx = nums.length - 1;
 
         while (idx != 0 && nums[idx - 1] >= nums[idx]) {
