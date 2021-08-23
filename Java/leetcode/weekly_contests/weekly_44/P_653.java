@@ -11,7 +11,7 @@ public class P_653 {
 
     Set<Integer> set = new HashSet<>();
 
-    public boolean findTarget(TreeNode root, int k) {
+    public boolean findTargetSet(TreeNode root, int k) {
         if (root == null) {
             return false;
         }
@@ -22,29 +22,33 @@ public class P_653 {
         return findTarget(root.left, k) || findTarget(root.right, k);
     }
 
-    public boolean findTargetList(TreeNode root, int k) {
-        final List<Integer> list = new ArrayList<>();
-        inOrder(root, list);
+    static List<Integer> list;
+
+    public boolean findTarget(TreeNode root, int k) {
+        list = new ArrayList<>();
+        dfs(root);
         int lo = 0;
         int hi = list.size() - 1;
         while (lo < hi) {
-            if (list.get(lo) + list.get(hi) > k) {
-                hi--;
-            } else if (list.get(lo) + list.get(hi) < k) {
+            final int curr = list.get(lo) + list.get(hi);
+            if (curr == k) {
+                return true;
+            }
+            if (curr < k) {
                 lo++;
             } else {
-                return true;
+                hi--;
             }
         }
         return false;
     }
 
-    private static void inOrder(TreeNode node, List<Integer> l) {
+    private static void dfs(TreeNode node) {
         if (node == null) {
             return;
         }
-        inOrder(node.left, l);
-        l.add(node.val);
-        inOrder(node.right, l);
+        dfs(node.left);
+        list.add(node.val);
+        dfs(node.right);
     }
 }

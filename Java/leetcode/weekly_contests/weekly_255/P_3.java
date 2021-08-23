@@ -7,8 +7,8 @@ public class P_3 {
 
     public int minimizeTheDifference(int[][] mat, int target) {
         final int n = mat.length;
-        seen = new boolean[3005][n];
-        dp = new int[3005][n];
+        seen = new boolean[70 * n + 1][n];
+        dp = new int[70 * n + 1][n];
         return dfs(mat, target, 0, 0);
     }
 
@@ -21,9 +21,7 @@ public class P_3 {
         }
         int res = (int) 1e9;
         for (int i = 0; i < mat[row].length; i++) {
-            if (sum + mat[row][i] < 3005) {
-                res = Math.min(res, dfs(mat, target, sum + mat[row][i], row + 1));
-            }
+            res = Math.min(res, dfs(mat, target, sum + mat[row][i], row + 1));
         }
         seen[sum][row] = true;
         return dp[sum][row] = res;
