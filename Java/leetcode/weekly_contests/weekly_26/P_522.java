@@ -1,33 +1,34 @@
 package leetcode.weekly_contests.weekly_26;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 public class P_522 {
 
     public int findLUSlength(String[] strs) {
-        Arrays.sort(strs, Comparator.comparingInt(String::length));
-        for (int i = strs.length - 1; i >= 0; i--) {
-            int count = 0;
-            for (String str : strs) {
-                if (!isSubSequence(strs[i], str)) {
-                    count++;
+        final int n = strs.length;
+        int res = -1;
+        for (int i = 0; i < n; i++) {
+            boolean ok = true;
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    if (isSubsequence(strs[i], strs[j])) {
+                        ok = false;
+                        break;
+                    }
                 }
             }
-            if (count == strs.length - 1) {
-                return strs[i].length();
+            if (ok) {
+                res = Math.max(res, strs[i].length());
             }
         }
-        return -1;
+        return res;
     }
 
-    private static boolean isSubSequence(String s1, String s2) {
-        int idx = 0;
-        for (char ch : s2.toCharArray()) {
-            if (idx < s1.length() && ch == s1.charAt(idx)) {
-                idx++;
+    public boolean isSubsequence(String s, String t) {
+        int i = 0;
+        for (int j = 0; j < t.length(); j++) {
+            if (i < s.length() && t.charAt(j) == s.charAt(i)) {
+                i++;
             }
         }
-        return idx == s1.length();
+        return i == s.length();
     }
 }
