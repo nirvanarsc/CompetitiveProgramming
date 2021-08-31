@@ -3,18 +3,16 @@ package leetcode.medium;
 public class P_153 {
 
     public int findMin(int[] nums) {
-        int low = 0;
-        int high = nums.length - 1;
-
-        while (low < high) {
-            final int mid = low + high >>> 1;
-            if (nums[mid] > nums[high]) {
-                low = mid + 1;
+        int lo = 0;
+        int hi = nums.length - 1;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (nums[mid] > nums[hi]) {
+                lo = mid + 1;
             } else {
-                high = mid;
+                hi = mid;
             }
         }
-
-        return nums[low];
+        return nums[lo];
     }
 }
