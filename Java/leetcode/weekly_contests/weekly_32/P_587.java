@@ -2,6 +2,7 @@ package leetcode.weekly_contests.weekly_32;
 
 import java.util.Arrays;
 
+@SuppressWarnings("ForLoopReplaceableByForEach")
 public class P_587 {
 
     // Monotone Chain
@@ -11,15 +12,14 @@ public class P_587 {
         final int n = points.length;
         final int[][] hull = new int[2 * n][];
         int k = 0;
-
-        for (int[] point : points) {
-            while (k >= 2 && orientation(hull[k - 2], hull[k - 1], point) > 0) {
+        for (int i = 0; i < n; i++) {
+            while (k > 1 && orientation(hull[k - 2], hull[k - 1], points[i]) > 0) {
                 k--;
             }
-            hull[k++] = point;
+            hull[k++] = points[i];
         }
         for (int i = n - 1; i >= 0; i--) {
-            while (k >= 2 && orientation(hull[k - 2], hull[k - 1], points[i]) > 0) {
+            while (k > 1 && orientation(hull[k - 2], hull[k - 1], points[i]) > 0) {
                 k--;
             }
             hull[k++] = points[i];
@@ -47,28 +47,31 @@ public class P_587 {
 
     // Graham Scan
     public int[][] outerTreesGS(int[][] points) {
-        if (points.length <= 1) { return points; }
+        if (points.length < 2) {
+            return points;
+        }
+        final int n = points.length;
         final int[] bm = bottomLeft(points);
-        Arrays.sort(points, (p, q) -> {
-            final int oLeft = orientation(bm, p, q);
-            final int oRight = orientation(bm, q, p);
-            return oLeft == oRight ? Integer.compare(distance(bm, p), distance(bm, q))
+        Arrays.sort(points, (l, r) -> {
+            final int oLeft = orientation(bm, l, r);
+            final int oRight = orientation(bm, r, l);
+            return oLeft == oRight ? Integer.compare(distance(bm, l), distance(bm, r))
                                    : Integer.compare(oLeft, oRight);
         });
-        int i = points.length - 1;
-        while (i >= 0 && orientation(bm, points[points.length - 1], points[i]) == 0) {
+        int i = n - 1;
+        while (i >= 0 && orientation(bm, points[n - 1], points[i]) == 0) {
             i--;
         }
-        for (int l = i + 1, h = points.length - 1; l < h; l++, h--) {
+        for (int l = i + 1, h = n - 1; l < h; l++, h--) {
             final int[] temp = points[l];
             points[l] = points[h];
             points[h] = temp;
         }
-        final int[][] hull = new int[2 * points.length][];
+        final int[][] hull = new int[2 * n][];
         hull[0] = points[0];
         hull[1] = points[1];
         int k = 1;
-        for (int j = 2; j < points.length; j++) {
+        for (int j = 2; j < n; j++) {
             int[] top = hull[k--];
             while (orientation(hull[k], top, points[j]) > 0) {
                 top = hull[k--];
