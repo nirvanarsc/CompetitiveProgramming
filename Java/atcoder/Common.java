@@ -123,7 +123,6 @@ public final class Common {
             combination = IntStream.range(0, k).toArray();
         }
 
-        @SuppressWarnings("ConstantConditions")
         public int[] next() {
             final int[] res = combination.clone();
             combination = nextCombination(combination, n, k);

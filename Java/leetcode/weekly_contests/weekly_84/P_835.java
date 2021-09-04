@@ -1,42 +1,58 @@
 package leetcode.weekly_contests.weekly_84;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+@SuppressWarnings("MethodParameterNamingConvention")
 public class P_835 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int[] sumOfDistancesInTree(int N, int[][] edges) {
-        final Map<Integer, Set<Integer>> g = new HashMap<>();
-        final int[] res = new int[N];
-        final int[] count = new int[N];
-        for (int[] e : edges) {
-            g.computeIfAbsent(e[0], v -> new HashSet<>()).add(e[1]);
-            g.computeIfAbsent(e[1], v -> new HashSet<>()).add(e[0]);
+    public int largestOverlapMap(int[][] A, int[][] B) {
+        int res = 0;
+        final int N = A.length;
+        final List<int[]> listA = new ArrayList<>();
+        final List<int[]> listB = new ArrayList<>();
+        final Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (A[i][j] == 1) {
+                    listA.add(new int[] { i, j });
+                }
+                if (B[i][j] == 1) {
+                    listB.add(new int[] { i, j });
+                }
+            }
         }
-        dfs(0, -1, count, res, g);
-        dfs2(0, -1, count, res, g);
+        for (int[] a : listA) {
+            for (int[] b : listB) {
+                final String key = (a[0] - b[0]) + "," + (a[1] - b[1]);
+                res = Math.max(res, map.merge(key, 1, Integer::sum));
+            }
+        }
         return res;
     }
 
-    public void dfs(int root, int prev, int[] count, int[] res, Map<Integer, Set<Integer>> g) {
-        for (int i : g.getOrDefault(root, Collections.emptySet())) {
-            if (i == prev) { continue; }
-            dfs(i, root, count, res, g);
-            count[root] += count[i];
-            res[root] += res[i] + count[i];
+    public static int largestOverlap(int[][] A, int[][] B) {
+        int res = 0;
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < A[i].length; j++) {
+                res = Math.max(res, f(A, B, i, j));
+                res = Math.max(res, f(B, A, i, j));
+            }
         }
-        count[root]++;
+        return res;
     }
 
-    public void dfs2(int root, int prev, int[] count, int[] res, Map<Integer, Set<Integer>> g) {
-        for (int i : g.getOrDefault(root, Collections.emptySet())) {
-            if (i == prev) { continue; }
-            res[i] = res[root] - count[i] + count.length - count[i];
-            dfs2(i, root, count, res, g);
+    private static int f(int[][] A, int[][] B, int i, int j) {
+        int res = 0;
+        for (int k = i; k < A.length; k++) {
+            for (int l = j; l < A[k].length; l++) {
+                if (A[k][l] == 1 && B[k - i][l - j] == 1) {
+                    res++;
+                }
+            }
         }
+        return res;
     }
 }
