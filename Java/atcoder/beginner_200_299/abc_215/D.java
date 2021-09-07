@@ -11,8 +11,52 @@ public final class D {
 
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
+        final StringBuilder sb = new StringBuilder();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final int m = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final boolean[] primes = sieveOfEratosthenes();
+        final boolean[] banned = new boolean[(int) (1e5 + 5)];
+        for (int num : arr) {
+            for (int p = 1; (long) p * p <= num; p++) {
+                if (num % p == 0) {
+                    banned[p] = primes[p];
+                    banned[num / p] = primes[num / p];
+                }
+            }
+        }
+        int count = 0;
+        for (int num = 1; num <= m; num++) {
+            boolean ok = true;
+            for (int p = 1; (long) p * p <= num; p++) {
+                if (num % p == 0 && (banned[p] || banned[num / p])) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                count++;
+                sb.append(num).append('\n');
+            }
+        }
+        System.out.println(count);
+        System.out.println(sb);
+    }
+
+    private static boolean[] sieveOfEratosthenes() {
+        final int n = (int) 1e5;
+        final boolean[] prime = new boolean[n + 5];
+        Arrays.fill(prime, true);
+        prime[0] = false;
+        prime[1] = false;
+        for (int p = 2; p * p <= n; p++) {
+            if (prime[p]) {
+                for (int i = p * p; i <= n; i += p) {
+                    prime[i] = false;
+                }
+            }
+        }
+        return prime;
     }
 
     static final class Utils {
