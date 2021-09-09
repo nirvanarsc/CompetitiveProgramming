@@ -1,30 +1,45 @@
 package leetcode.weekly_contests.weekly_67;
 
-import java.util.Arrays;
-
 public class P_764 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int orderOfLargestPlusSign(int N, int[][] mines) {
-        final int[][] grid = new int[N][N];
-        for (int i = 0; i < N; i++) {
-            Arrays.fill(grid[i], N);
-        }
+    public int orderOfLargestPlusSign(int n, int[][] mines) {
+        final boolean[][] g = new boolean[n][n];
         for (int[] m : mines) {
-            grid[m[0]][m[1]] = 0;
+            g[m[0]][m[1]] = true;
         }
-        for (int i = 0; i < N; i++) {
-            for (int j = 0, k = N - 1, l = 0, r = 0, u = 0, d = 0; j < N; j++, k--) {
-                grid[i][j] = Math.min(grid[i][j], l = grid[i][j] == 0 ? 0 : l + 1);
-                grid[i][k] = Math.min(grid[i][k], r = grid[i][k] == 0 ? 0 : r + 1);
-                grid[j][i] = Math.min(grid[j][i], u = grid[j][i] == 0 ? 0 : u + 1);
-                grid[k][i] = Math.min(grid[k][i], d = grid[k][i] == 0 ? 0 : d + 1);
+        final int[][][] dp = new int[n][n][4];
+        for (int i = 0; i < n; i++) {
+            int curr = 0;
+            for (int j = 0; j < n; j++) {
+                curr = g[i][j] ? 0 : curr + 1;
+                dp[i][j][0] = curr;
+            }
+            curr = 0;
+            for (int j = n - 1; j >= 0; j--) {
+                curr = g[i][j] ? 0 : curr + 1;
+                dp[i][j][1] = curr;
+            }
+        }
+        for (int j = 0; j < n; j++) {
+            int curr = 0;
+            for (int i = 0; i < n; i++) {
+                curr = g[i][j] ? 0 : curr + 1;
+                dp[i][j][2] = curr;
+            }
+            curr = 0;
+            for (int i = n - 1; i >= 0; i--) {
+                curr = g[i][j] ? 0 : curr + 1;
+                dp[i][j][3] = curr;
             }
         }
         int res = 0;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                res = Math.max(res, grid[i][j]);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int curr = (int) 1e9;
+                for (int k = 0; k < 4; k++) {
+                    curr = Math.min(curr, dp[i][j][k]);
+                }
+                res = Math.max(res, curr);
             }
         }
         return res;
