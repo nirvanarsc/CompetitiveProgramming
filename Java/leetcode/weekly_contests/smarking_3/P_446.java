@@ -6,18 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_446 {
 
-    public int numberOfArithmeticSlices(int[] A) {
+    public int numberOfArithmeticSlices(int[] nums) {
         final Map<Long, List<Integer>> map = new HashMap<>();
-        final int n = A.length;
+        final int n = nums.length;
         final int[][] dp = new int[n][n];
         int res = 0;
         for (int i = 0; i < n; i++) {
-            map.computeIfAbsent((long) A[i], v -> new ArrayList<>()).add(i);
+            map.computeIfAbsent((long) nums[i], v -> new ArrayList<>()).add(i);
             for (int j = 0; j < i; j++) {
-                final long target = 2 * (long) A[j] - A[i];
+                final long target = 2 * (long) nums[j] - nums[i];
                 for (int k : map.getOrDefault(target, Collections.emptyList())) {
                     if (k < j) {
                         dp[i][j] += dp[j][k] + 1;
@@ -29,13 +28,14 @@ public class P_446 {
         return res;
     }
 
-    public int numberOfArithmeticSlicesConcise(int[] A) {
-        int res = 0;
+    public int numberOfArithmeticSlicesConcise(int[] nums) {
         final Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-        for (int i = 0; i < A.length; i++) {
+        final int length = nums.length;
+        int res = 0;
+        for (int i = 0; i < length; i++) {
             map.put(i, new HashMap<>());
             for (int j = 0; j < i; j++) {
-                final long diff = (long) A[i] - A[j];
+                final long diff = (long) nums[i] - nums[j];
                 if (diff <= Integer.MIN_VALUE || diff > Integer.MAX_VALUE) {
                     continue;
                 }
