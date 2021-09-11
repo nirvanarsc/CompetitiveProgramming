@@ -1,4 +1,4 @@
-package cses;
+package codeforces.binary_search.part1;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,15 +6,39 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class A {
+public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final StringBuilder sb = new StringBuilder();
+        final int n = fs.nextInt();
+        final int k = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        for (int i = 0; i < k; i++) {
+            final int t = fs.nextInt();
+            final int idx = upperBound(arr, t);
+            if (arr[idx] > t) {
+                sb.append(idx);
+            } else {
+                sb.append(idx + 1);
+            }
+            sb.append('\n');
         }
+        System.out.println(sb);
+    }
+
+    private static int upperBound(int[] arr, int target) {
+        int lo = 0;
+        int hi = arr.length - 1;
+        while (lo < hi) {
+            final int mid = lo + hi + 1 >>> 1;
+            if (arr[mid] > target) {
+                hi = mid - 1;
+            } else {
+                lo = mid;
+            }
+        }
+        return lo;
     }
 
     static final class Utils {
@@ -58,36 +82,6 @@ public final class A {
         public static void shuffleSort(long[] arr) {
             Shuffler.shuffle(arr);
             Arrays.sort(arr);
-        }
-
-        private static int[][] packG(int[][] edges, int n) {
-            final int[][] g = new int[n][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = edge[1];
-            }
-            return g;
-        }
-
-        private static int[][][] packGW(int[][] edges, int n) {
-            final int[][][] g = new int[n][][];
-            final int[] size = new int[n];
-            for (int[] edge : edges) {
-                ++size[edge[0]];
-            }
-            for (int i = 0; i < n; i++) {
-                g[i] = new int[size[i]][2];
-            }
-            for (int[] edge : edges) {
-                g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
-            }
-            return g;
         }
 
         private Utils() {}

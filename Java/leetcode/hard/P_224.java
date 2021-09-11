@@ -1,18 +1,17 @@
 package leetcode.hard;
 
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.LinkedList;
 
 public class P_224 {
 
     public int calculateImproved(String s) {
-        final Deque<Integer> stack = new LinkedList<>(Collections.singletonList(1));
+        final Deque<Integer> stack = new ArrayDeque<>(Collections.singletonList(1));
         final char[] chars = s.toCharArray();
         int result = 0;
         int sign = 1;
         int num = 0;
-
         for (char c : chars) {
             if (c >= '0' && c <= '9') {
                 num = num * 10 + (c - '0');
@@ -31,14 +30,14 @@ public class P_224 {
     }
 
     public int calculate(String s) {
-        final Deque<Deque<Integer>> terms = new LinkedList<>(Collections.singletonList(new LinkedList<>()));
-        final Deque<Deque<Character>> signs = new LinkedList<>(Collections.singletonList(new LinkedList<>()));
+        final Deque<Deque<Integer>> terms = new ArrayDeque<>(Collections.singletonList(new ArrayDeque<>()));
+        final Deque<Deque<Character>> signs = new ArrayDeque<>(Collections.singletonList(new ArrayDeque<>()));
         final char[] chars = s.toCharArray();
         int idx = 0;
         while (idx < chars.length) {
             if (chars[idx] == '(') {
-                terms.addFirst(new LinkedList<>());
-                signs.addFirst(new LinkedList<>());
+                terms.addFirst(new ArrayDeque<>());
+                signs.addFirst(new ArrayDeque<>());
             } else if (Character.isDigit(chars[idx])) {
                 int num = chars[idx] - '0';
                 while (++idx < chars.length && Character.isDigit(chars[idx])) {
