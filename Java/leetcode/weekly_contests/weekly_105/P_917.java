@@ -1,12 +1,11 @@
 package leetcode.weekly_contests.weekly_105;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_917 {
 
-    public String reverseOnlyLetters(String S) {
+    public String reverseOnlyLetters(String s) {
         int i = 0;
-        int j = S.length() - 1;
-        final char[] res = S.toCharArray();
+        int j = s.length() - 1;
+        final char[] res = s.toCharArray();
         while (i < j) {
             if (!isLetter(res[i])) {
                 i++;
