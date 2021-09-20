@@ -1,15 +1,14 @@
 package leetcode.weekly_contests.weekly_165;
 
-public final class P_1275 {
+public class P_1275 {
 
-    public static String tictactoe(int[][] moves) {
+    public String tictactoe(int[][] moves) {
         final int[][] matrix = new int[3][3];
-        boolean A = true;
+        boolean turn = true;
         for (int[] move : moves) {
-            matrix[move[0]][move[1]] = A ? 1 : -1;
-            A = !A;
+            matrix[move[0]][move[1]] = turn ? 1 : -1;
+            turn ^= true;
         }
-
         final String checkRow = checkRowCol(matrix, true);
         if (!checkRow.isEmpty()) {
             return checkRow;
@@ -46,18 +45,4 @@ public final class P_1275 {
         }
         return "";
     }
-
-    public static void main(String[] args) {
-        final int[][] moves1 = { { 0, 0 }, { 2, 0 }, { 1, 1 }, { 2, 1 }, { 2, 2 } };
-        final int[][] moves2 = { { 0, 0 }, { 1, 1 }, { 0, 1 }, { 0, 2 }, { 1, 0 }, { 2, 0 } };
-        final int[][] moves3 =
-                { { 0, 0 }, { 1, 1 }, { 2, 0 }, { 1, 0 }, { 1, 2 }, { 2, 1 }, { 0, 1 }, { 0, 2 }, { 2, 2 } };
-        final int[][] moves4 = { { 0, 0 }, { 1, 1 }, };
-        System.out.println(tictactoe(moves1));
-        System.out.println(tictactoe(moves2));
-        System.out.println(tictactoe(moves3));
-        System.out.println(tictactoe(moves4));
-    }
-
-    private P_1275() {}
 }
