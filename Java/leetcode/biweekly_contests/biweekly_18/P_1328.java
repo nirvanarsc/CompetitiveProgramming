@@ -4,13 +4,14 @@ public class P_1328 {
 
     public String breakPalindrome(String palindrome) {
         final char[] chars = palindrome.toCharArray();
-        for (int i = 0; i < palindrome.length() / 2; i++) {
+        final int n = palindrome.length();
+        for (int i = 0; i < n / 2; i++) {
             if (palindrome.charAt(i) != 'a') {
                 chars[i] = 'a';
                 return new String(chars);
             }
         }
-        chars[palindrome.length() - 1] = 'b';
-        return palindrome.length() == 1 ? "" : new String(chars);
+        chars[n - 1] = 'b';
+        return n == 1 ? "" : new String(chars);
     }
 }
