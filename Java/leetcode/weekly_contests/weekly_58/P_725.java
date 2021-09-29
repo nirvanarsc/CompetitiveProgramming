@@ -6,30 +6,27 @@ import utils.DataStructures.ListNode;
 
 public class P_725 {
 
-    @SuppressWarnings("ConstantConditions")
-    public ListNode[] splitListToParts(ListNode root, int k) {
-        final int[] sizes = new int[k];
-        final int l = getLength(root);
+    public ListNode[] splitListToParts(ListNode head, int k) {
+        final int[] size = new int[k];
+        final int l = getLength(head);
         final int d = l / k;
         final int diff = l - d * k;
-        Arrays.fill(sizes, d);
+        Arrays.fill(size, d);
         for (int i = 0; i < diff; i++) {
-            sizes[i]++;
+            size[i]++;
         }
         final ListNode[] res = new ListNode[k];
-        ListNode iter = root;
-        for (int i = 0; i < k; i++) {
-            if (sizes[i] == 0) {
-                break;
-            }
-            final ListNode head = iter;
-            while (sizes[i]-- > 1) {
+        ListNode iter = head;
+        for (int i = 0; i < k && size[i] > 0; i++) {
+            final ListNode curr = iter;
+            for (int j = 1; j < size[i]; j++) {
                 iter = iter.next;
             }
-            final ListNode t = iter.next;
+            final ListNode temp = iter.next;
+            //noinspection ConstantConditions
             iter.next = null;
-            iter = t;
-            res[i] = head;
+            iter = temp;
+            res[i] = curr;
         }
         return res;
     }
