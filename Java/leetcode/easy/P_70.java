@@ -15,23 +15,25 @@ public final class P_70 {
         return b;
     }
 
+    static boolean[] seen;
+    static int[] dp;
+    static int max;
+
     public int climbStairs(int n) {
-        return climbStairs(0, n, new Integer[n]);
+        max = n;
+        seen = new boolean[n];
+        dp = new int[n];
+        return dfs(0);
     }
 
-    private static int climbStairs(int start, int n, Integer[] dp) {
-        if (start == n) {
-            return 1;
+    private static int dfs(int curr) {
+        if (curr >= max) {
+            return curr == max ? 1 : 0;
         }
-        if (start > n) {
-            return 0;
+        if (seen[curr]) {
+            return dp[curr];
         }
-        if (dp[start] != null) {
-            return dp[start];
-        }
-
-        final int climbOne = climbStairs(start + 1, n, dp);
-        final int climbTwo = climbStairs(start + 2, n, dp);
-        return dp[start] = climbOne + climbTwo;
+        seen[curr] = true;
+        return dp[curr] = dfs(curr + 1) + dfs(curr + 2);
     }
 }
