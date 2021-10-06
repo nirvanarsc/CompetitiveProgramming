@@ -12,7 +12,7 @@ public class P_442 {
             if (nums[abs - 1] < 0) {
                 res.add(abs);
             }
-            nums[abs - 1] *= -1;
+            nums[abs - 1] = -nums[abs - 1];
         }
         return res;
     }
