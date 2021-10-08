@@ -1,18 +1,18 @@
 package leetcode.medium;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass", "unused" })
 public class P_208 {
 
-    static class Trie {
+    class Trie {
 
-        static class TrieNode {
+        class TrieNode {
             TrieNode[] children = new TrieNode[26];
             boolean isWord;
         }
 
         TrieNode root;
 
-        Trie() {
+        public Trie() {
             root = new TrieNode();
         }
 
