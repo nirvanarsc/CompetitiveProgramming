@@ -1,22 +1,27 @@
 package leetcode.hard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class P_212 {
+
+    private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
     static class Trie {
         Trie[] children = new Trie[26];
         String word;
     }
 
-    char[][] board;
-    List<String> res = new ArrayList<>();
+    static char[][] g;
+    static List<String> res;
+    static int n;
+    static int m;
 
     public List<String> findWords(char[][] board, String[] words) {
-        this.board = board;
+        g = board;
+        res = new ArrayList<>();
+        n = board.length;
+        m = board[0].length;
         final Trie root = new Trie();
         for (String word : words) {
             Trie iter = root;
@@ -28,70 +33,28 @@ public class P_212 {
             }
             iter.word = word;
         }
-        for (int row = 0; row < board.length; ++row) {
-            for (int col = 0; col < board[row].length; ++col) {
-                dfs(row, col, root);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dfs(i, j, root);
             }
         }
         return res;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void dfs(int row, int col, Trie curr) {
+    private static void dfs(int row, int col, Trie curr) {
         if (curr != null && curr.word != null) {
             res.add(curr.word);
+            //noinspection ConstantConditions
             curr.word = null;
         }
-        if (curr == null
-            || row < 0
-            || row == board.length
-            || col < 0
-            || col == board[0].length
-            || board[row][col] == '#') {
+        if (curr == null || row < 0 || row == n || col < 0 || col == m || g[row][col] == '#') {
             return;
         }
-        final char letter = board[row][col];
-        board[row][col] = '#';
+        final char letter = g[row][col];
+        g[row][col] = '#';
         for (int[] dir : DIRS) {
             dfs(row + dir[0], col + dir[1], curr.children[letter - 'a']);
         }
-        board[row][col] = letter;
-    }
-
-    public List<String> findWordsBF(char[][] board, String[] words) {
-        return Arrays.stream(words)
-                     .filter(w -> exist(board, w))
-                     .collect(Collectors.toList());
-    }
-
-    private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-
-    public boolean exist(char[][] board, String word) {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (dfs(board, i, j, word, 0)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean dfs(char[][] board, int i, int j, String word, int index) {
-        if (index == word.length()) {
-            return true;
-        }
-        if (i < 0 || i == board.length || j < 0 || j == board[0].length || board[i][j] != word.charAt(index)) {
-            return false;
-        }
-        final char t = board[i][j];
-        board[i][j] = '#';
-        for (int[] dir : DIRS) {
-            if (dfs(board, i + dir[0], j + dir[1], word, index + 1)) {
-                return true;
-            }
-        }
-        board[i][j] = t;
-        return false;
+        g[row][col] = letter;
     }
 }
