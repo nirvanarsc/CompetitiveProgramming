@@ -21,11 +21,10 @@ public class P_201 {
 
     public int rangeBitwiseAnd(int left, int right) {
         int res = 0;
-        for (int i = Integer.SIZE - 1; i >= 0; i--) {
-            if ((left & (1 << i)) != (right & (1 << i))) {
-                break;
+        for (int shift = 31; shift >= 0 && (left & (1 << shift)) == (right & (1 << shift)); shift--) {
+            if ((left & (1 << shift)) != 0) {
+                res |= 1 << shift;
             }
-            res |= left & (1 << i);
         }
         return res;
     }
