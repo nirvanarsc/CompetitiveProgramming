@@ -1,29 +1,22 @@
 package leetcode.easy;
 
-import java.util.Random;
-
 public class P_374 {
 
-    static class GuessGame {
-        int i = new Random().nextInt(Integer.MAX_VALUE);
-
-        int guess(int num) {
-            return Integer.compare(num, i);
-        }
+    private static int guess(int n) {
+        return (int) (n * Math.random());
     }
 
-    public static class Solution extends GuessGame {
-        public int guessNumber(int n) {
-            int lo = 1, hi = n;
-            while (lo < hi) {
-                final int mid = lo + hi >>> 1;
-                if (guess(mid) == 1) {
-                    lo = mid + 1;
-                } else {
-                    hi = mid;
-                }
+    public int guessNumber(int n) {
+        int lo = 1;
+        int hi = n;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (guess(mid) > 0) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
             }
-            return lo;
         }
+        return lo;
     }
 }
