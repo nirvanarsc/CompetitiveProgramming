@@ -28,7 +28,8 @@ public class P_1008 {
     static int idx;
 
     public TreeNode bstFromPreorder(int[] preorder) {
-        return dfs(preorder, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        idx = 0;
+        return dfs(preorder, 0, (int) 1e9);
     }
 
     private static TreeNode dfs(int[] preorder, int lo, int hi) {
