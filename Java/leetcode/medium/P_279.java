@@ -52,34 +52,48 @@ public class P_279 {
         return dp[n];
     }
 
-    public static int numSquares(int n) {
-        return dfs(n, new Integer[n + 1]);
+    static boolean[] seen;
+    static int[] dp;
+    static int[] squares;
+
+    public int numSquares(int n) {
+        seen = new boolean[n + 1];
+        dp = new int[n + 1];
+        squares = new int[100];
+        for (int i = 0; i < 100; i++) {
+            squares[i] = (i + 1) * (i + 1);
+        }
+        return dfs(n);
     }
 
-    private static int dfs(int n, Integer[] dp) {
+    private static int dfs(int n) {
         if (n == 0) {
             return 0;
         }
-        if (dp[n] != null) {
+        if (seen[n]) {
             return dp[n];
         }
-        int res = Integer.MAX_VALUE;
-        for (int i = 1; i * i <= n; i++) {
-            res = Math.min(res, 1 + dfs(n - (i * i), dp));
+        int res = (int) 1e9;
+        for (int sq : squares) {
+            if (sq > n) {
+                break;
+            }
+            res = Math.min(res, 1 + dfs(n - sq));
         }
+        seen[n] = true;
         return dp[n] = res;
     }
 
     public int numSquaresBFS(int n) {
         final Deque<Integer> queue = new ArrayDeque<>(Collections.singleton(n));
-        final List<Integer> sqruares = new ArrayList<>();
+        final List<Integer> squares = new ArrayList<>();
         for (int i = 1; i * i <= n; ++i) {
-            sqruares.add(i * i);
+            squares.add(i * i);
         }
         for (int level = 1; !queue.isEmpty(); level++) {
             for (int size = queue.size(); size > 0; size--) {
                 final Integer curr = queue.removeFirst();
-                for (Integer square : sqruares) {
+                for (Integer square : squares) {
                     if (curr.equals(square)) {
                         return level;
                     } else if (curr < square) {
