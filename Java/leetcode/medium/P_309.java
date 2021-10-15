@@ -2,7 +2,7 @@ package leetcode.medium;
 
 public class P_309 {
 
-    public int maxProfit(int[] prices) {
+    public int maxProfitBottomUp(int[] prices) {
         int sell = Integer.MIN_VALUE;
         int hold = Integer.MIN_VALUE;
         int reset = 0;
@@ -15,21 +15,31 @@ public class P_309 {
         return Math.max(sell, reset);
     }
 
-    public int maxProfitTopDown(int[] prices) {
-        return dfs(prices, 0, new Integer[prices.length]);
+    static boolean[][] seen;
+    static int[][] dp;
+
+    public int maxProfit(int[] prices) {
+        final int n = prices.length;
+        seen = new boolean[n][3];
+        dp = new int[n][3];
+        return dfs(prices, 0, 0);
     }
 
-    private static int dfs(int[] prices, int start, Integer[] dp) {
-        if (start >= prices.length) {
+    private static int dfs(int[] arr, int idx, int status) {
+        if (idx == arr.length) {
             return 0;
         }
-        if (dp[start] != null) {
-            return dp[start];
+        if (seen[idx][status]) {
+            return dp[idx][status];
         }
-        int res = dfs(prices, start + 1, dp);
-        for (int i = start + 1; i < prices.length; i++) {
-            res = Math.max(res, prices[i] - prices[start] + dfs(prices, i + 2, dp));
+        int res = 0;
+        res = Math.max(res, dfs(arr, idx + 1, status == 2 ? 0 : status));
+        if (status == 0) {
+            res = Math.max(res, -arr[idx] + dfs(arr, idx + 1, 1));
+        } else if (status == 1) {
+            res = Math.max(res, arr[idx] + dfs(arr, idx + 1, 2));
         }
-        return dp[start] = res;
+        seen[idx][status] = true;
+        return dp[idx][status] = res;
     }
 }
