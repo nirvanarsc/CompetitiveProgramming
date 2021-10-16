@@ -18,34 +18,30 @@ public class P_123 {
 
     static boolean[][][] seen;
     static int[][][] dp;
+    static int n;
 
     public int maxProfit(int[] prices) {
-        return maxProfit(2, prices);
+        n = prices.length;
+        seen = new boolean[n][2][3];
+        dp = new int[n][2][3];
+        return dfs(prices, 0, 0, 2);
     }
 
-    public int maxProfit(int k, int[] prices) {
-        final int n = prices.length;
-        seen = new boolean[n][2][k + 1];
-        dp = new int[n][2][k + 1];
-        return dfs(prices, 0, 0, k);
-    }
-
-    private static int dfs(int[] arr, int idx, int hasStock, int k) {
-        if (idx == arr.length || k == 0) {
-            return hasStock == 0 ? 0 : (int) -1e9;
+    private static int dfs(int[] arr, int idx, int status, int k) {
+        if (idx == n || k == 0) {
+            return 0;
         }
-        if (seen[idx][hasStock][k]) {
-            return dp[idx][hasStock][k];
+        if (seen[idx][status][k]) {
+            return dp[idx][status][k];
         }
-        int res = (int) -1e9;
-        if (hasStock == 0) {
-            res = Math.max(res, dfs(arr, idx + 1, 0, k));
+        int res = 0;
+        res = Math.max(res, dfs(arr, idx + 1, status, k));
+        if (status == 0) {
             res = Math.max(res, -arr[idx] + dfs(arr, idx + 1, 1, k));
-        } else {
-            res = Math.max(res, dfs(arr, idx + 1, 1, k));
+        } else if (status == 1) {
             res = Math.max(res, arr[idx] + dfs(arr, idx + 1, 0, k - 1));
         }
-        seen[idx][hasStock][k] = true;
-        return dp[idx][hasStock][k] = res;
+        seen[idx][status][k] = true;
+        return dp[idx][status][k] = res;
     }
 }
