@@ -9,18 +9,18 @@ import utils.DataStructures.TreeNode;
 public class P_437 {
 
     public int pathSum(TreeNode root, int sum) {
-        return helper(root, 0, sum, new HashMap<>(Collections.singletonMap(0, 1)));
+        return dfs(root, 0, sum, new HashMap<>(Collections.singletonMap(0, 1)));
     }
 
-    public int helper(TreeNode root, int currSum, int target, Map<Integer, Integer> preSum) {
+    public int dfs(TreeNode root, int currSum, int target, Map<Integer, Integer> preSum) {
         if (root == null) {
             return 0;
         }
         currSum += root.val;
         int res = preSum.getOrDefault(currSum - target, 0);
         preSum.merge(currSum, 1, Integer::sum);
-        res += helper(root.left, currSum, target, preSum);
-        res += helper(root.right, currSum, target, preSum);
+        res += dfs(root.left, currSum, target, preSum);
+        res += dfs(root.right, currSum, target, preSum);
         preSum.merge(currSum, -1, Integer::sum);
         return res;
     }
