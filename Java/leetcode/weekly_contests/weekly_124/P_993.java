@@ -4,8 +4,7 @@ import utils.DataStructures.TreeNode;
 
 public class P_993 {
 
-    static int[] d;
-    static int[] p;
+    static int[] d, p;
     static int l, r;
 
     public boolean isCousins(TreeNode root, int x, int y) {

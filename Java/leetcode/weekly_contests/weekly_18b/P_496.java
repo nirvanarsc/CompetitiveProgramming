@@ -1,25 +1,28 @@
 package leetcode.weekly_contests.weekly_18b;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
-
 public class P_496 {
 
     public int[] nextGreaterElement(int[] nums1, int[] nums2) {
-        final Map<Integer, Integer> map = new HashMap<>();
-        final Deque<Integer> stack = new ArrayDeque<>();
-        for (int i = nums2.length - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && stack.peekFirst() < nums2[i]) {
-                stack.removeFirst();
+        final int n = nums1.length;
+        final int m = nums2.length;
+        final int[] idx = new int[(int) (1e4 + 5)];
+        final int[] stack = new int[m];
+        final int[] next = new int[m];
+        int sIdx = 0;
+        for (int i = 0; i < m; i++) {
+            idx[nums2[i]] = i;
+        }
+        for (int i = m - 1; i >= 0; i--) {
+            while (sIdx > 0 && stack[sIdx - 1] < nums2[i]) {
+                sIdx--;
             }
-            map.put(nums2[i], stack.isEmpty() ? -1 : stack.getFirst());
-            stack.addFirst(nums2[i]);
+            next[i] = sIdx == 0 ? -1 : stack[sIdx - 1];
+            stack[sIdx++] = nums2[i];
         }
-        for (int i = 0; i < nums1.length; i++) {
-            nums1[i] = map.get(nums1[i]);
+        final int[] res = new int[n];
+        for (int i = 0; i < n; i++) {
+            res[i] = next[idx[nums1[i]]];
         }
-        return nums1;
+        return res;
     }
 }
