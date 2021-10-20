@@ -1,58 +1,31 @@
 package leetcode.medium;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class P_151 {
+public class P_151 {
 
-    private static final Pattern COMPILE = Pattern.compile("\\s+");
-
-    public static String reverseWords(String s) {
-        s = COMPILE.matcher(s.trim()).replaceAll(" ");
-
-        final char[] chars = s.toCharArray();
-        reverseWords(chars);
-        return new String(chars);
-    }
-
-    public static void reverseWords(char[] input) {
-        final int end = input.length - 1;
-        int prev = 0;
-
-        reverse(input, 0, end);
-
-        for (int i = 0; i <= end; i++) {
-            if (i == end && input[i] != ' ') {
-                reverse(input, prev, end);
-            } else if (input[i] == ' ') {
-                reverse(input, prev, i - 1);
-                prev = i + 1;
+    public String reverseWords(String s) {
+        final List<String> list = new ArrayList<>();
+        final char[] w = s.toCharArray();
+        final int n = w.length;
+        for (int i = 0; i < n; i++) {
+            if (w[i] != ' ') {
+                int j = i;
+                while (j < n && w[j] != ' ') {
+                    j++;
+                }
+                list.add(s.substring(i, j));
+                i = j - 1;
             }
         }
-    }
-
-    private static void reverse(char[] input, int from, int to) {
-        while (from < to) {
-            final char temp = input[from];
-            input[from] = input[to];
-            input[to] = temp;
-            from++;
-            to--;
+        final StringBuilder sb = new StringBuilder();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            sb.append(list.get(i));
+            if (i > 0) {
+                sb.append(' ');
+            }
         }
+        return sb.toString();
     }
-
-    public static String reverseWords2(String s) {
-        final String[] arr = COMPILE.split(s.trim());
-        Collections.reverse(Arrays.asList(arr));
-        return String.join(" ", arr);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(reverseWords("the sky is blue"));
-        System.out.println(reverseWords("  hello world!  "));
-        System.out.println(reverseWords("a good   example"));
-    }
-
-    private P_151() {}
 }
