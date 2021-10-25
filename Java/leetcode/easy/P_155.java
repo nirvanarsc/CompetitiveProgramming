@@ -1,35 +1,35 @@
 package leetcode.easy;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass", "unused" })
 public class P_155 {
 
-    static class MinStack {
+    class MinStack {
 
-        Deque<Integer> stack;
-        Deque<Integer> min;
+        Deque<Integer> dq, min;
 
-        MinStack() {
-            stack = new LinkedList<>();
-            min = new LinkedList<>();
+        public MinStack() {
+            dq = new ArrayDeque<>();
+            min = new ArrayDeque<>();
         }
 
-        public void push(int x) {
-            if (min.isEmpty() || min.peekFirst() >= x) {
-                min.addFirst(x);
+        public void push(int val) {
+            if (min.isEmpty() || min.peekFirst() >= val) {
+                min.addFirst(val);
             }
-            stack.addFirst(x);
+            dq.addFirst(val);
         }
 
         public void pop() {
-            if (min.element().equals(stack.removeFirst())) {
+            if (min.element().equals(dq.removeFirst())) {
                 min.removeFirst();
             }
         }
 
         public int top() {
-            return stack.element();
+            return dq.element();
         }
 
         public int getMin() {
