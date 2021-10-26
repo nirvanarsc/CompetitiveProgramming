@@ -1,4 +1,4 @@
-package atcoder.sample;
+package atcoder.beginner_200_299.abc_216;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,14 +6,20 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class C {
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final String str = fs.next();
+        final int dot = str.indexOf('.');
+        final int x = Integer.parseInt(str.substring(0, dot));
+        final int y = Integer.parseInt(str.substring(dot + 1));
+        if (0 <= y && y <= 2) {
+            System.out.println(x + "-");
+        } else if (3 <= y && y <= 6) {
+            System.out.println(x);
+        } else if (7 <= y && y <= 9) {
+            System.out.println(x + "+");
         }
     }
 

@@ -1,20 +1,26 @@
-package atcoder.sample;
+package atcoder.beginner_200_299.abc_216;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
-public final class C {
+public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final Set<String> set = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            if (!set.add(fs.next() + ',' + fs.next())) {
+                System.out.println("Yes");
+                return;
+            }
         }
+        System.out.println("No");
     }
 
     static final class Utils {

@@ -1,4 +1,4 @@
-package atcoder.sample;
+package atcoder.beginner_200_299.abc_216;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -10,11 +10,23 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final long n = fs.nextLong();
+        final StringBuilder sb = new StringBuilder();
+        sb.append('A');
+        int first = -1;
+        for (int i = Long.SIZE - 1; i >= 0; i--) {
+            if ((n & (1L << i)) != 0) {
+                first = i;
+                break;
+            }
         }
+        for (int i = first - 1; i >= 0; i--) {
+            sb.append('B');
+            if ((n & (1L << i)) != 0) {
+                sb.append('A');
+            }
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {

@@ -1,4 +1,4 @@
-package atcoder.sample;
+package atcoder.beginner_200_299.abc_216;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class C {
+public final class F {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();

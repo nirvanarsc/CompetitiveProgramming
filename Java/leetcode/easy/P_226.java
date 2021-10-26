@@ -9,13 +9,16 @@ import utils.DataStructures.TreeNode;
 public class P_226 {
 
     public TreeNode invertTree(TreeNode root) {
-        if (root == null) {
+        return dfs(root);
+    }
+
+    private static TreeNode dfs(TreeNode node) {
+        if (node == null) {
             return null;
         }
-        final TreeNode temp = root.left;
-        root.left = invertTree(root.right);
-        root.right = invertTree(temp);
-        return root;
+        final TreeNode l = dfs(node.left);
+        final TreeNode r = dfs(node.right);
+        return new TreeNode(node.val, r, l);
     }
 
     public TreeNode invertTreeIterative(TreeNode root) {
