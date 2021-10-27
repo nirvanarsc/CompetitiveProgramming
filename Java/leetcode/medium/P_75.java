@@ -1,13 +1,13 @@
 package leetcode.medium;
 
-import java.util.Arrays;
+public class P_75 {
 
-public final class P_75 {
-
-    public static void sortColors(int[] nums) {
+    public void sortColors(int[] nums) {
         final int pivot = 1;
-        int smaller = 0, equal = 0, higher = nums.length - 1;
-
+        final int n = nums.length;
+        int smaller = 0;
+        int equal = 0;
+        int higher = n - 1;
         while (equal <= higher) {
             if (nums[equal] < pivot) {
                 swap(nums, smaller, equal);
@@ -27,13 +27,4 @@ public final class P_75 {
         nums[i] = nums[j];
         nums[j] = t;
     }
-
-    public static void main(String[] args) {
-        final int[] ints = { 2, 1, 2, 1, 2, 1, 0, 1, 2, 1, 2, 0 };
-        System.out.println(Arrays.toString(ints));
-        sortColors(ints);
-        System.out.println(Arrays.toString(ints));
-    }
-
-    private P_75() {}
 }
