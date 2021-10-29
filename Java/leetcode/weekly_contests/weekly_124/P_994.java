@@ -8,36 +8,44 @@ public class P_994 {
     private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
     public int orangesRotting(int[][] grid) {
-        final Deque<int[]> q = new ArrayDeque<>();
         final int n = grid.length;
         final int m = grid[0].length;
-        int fresh = 0;
+        final int[][] d = new int[n][m];
+        final Deque<int[]> dq = new ArrayDeque<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (grid[i][j] == 1) { fresh++; }
-                if (grid[i][j] == 2) { q.offerLast(new int[] { i, j }); }
+                d[i][j] = (int) 1e9;
+                if (grid[i][j] == 2) {
+                    dq.offerLast(new int[] { i, j });
+                }
             }
         }
-        if (fresh == 0) { return 0; }
-        final boolean[][] visited = new boolean[n][m];
-        int level = -1;
-        while (!q.isEmpty()) {
-            for (int k = q.size(); k > 0; k--) {
-                final int[] ints = q.removeFirst();
-                visited[ints[0]][ints[1]] = true;
+        for (int level = 0; !dq.isEmpty(); level++) {
+            for (int size = dq.size(); size > 0; size--) {
+                final int[] curr = dq.removeFirst();
+                final int u = curr[0];
+                final int v = curr[1];
+                if (d[u][v] < level || grid[u][v] == 0) {
+                    continue;
+                }
+                d[u][v] = level;
                 for (int[] dir : DIRS) {
-                    final int newX = ints[0] + dir[0];
-                    final int newY = ints[1] + dir[1];
-                    if (newX >= 0 && newX < n && newY >= 0 && newY < m
-                        && !visited[newX][newY] && grid[newX][newY] == 1) {
-                        visited[newX][newY] = true;
-                        q.offerLast(new int[] { newX, newY });
-                        fresh--;
+                    final int nx = u + dir[0];
+                    final int ny = v + dir[1];
+                    if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+                        dq.offerLast(new int[] { nx, ny });
                     }
                 }
             }
-            level++;
         }
-        return fresh == 0 ? level : -1;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    res = Math.max(res, d[i][j]);
+                }
+            }
+        }
+        return res == (int) 1e9 ? -1 : res;
     }
 }

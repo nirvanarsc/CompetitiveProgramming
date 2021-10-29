@@ -9,10 +9,11 @@ public class P_15 {
     public List<List<Integer>> threeSum(int[] nums) {
         Arrays.sort(nums);
         final List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length - 2; i++) {
+        final int n = nums.length;
+        for (int i = 0; i < n - 2; i++) {
             if (i > 0 && nums[i - 1] == nums[i]) { continue; }
             int start = i + 1;
-            int end = nums.length - 1;
+            int end = n - 1;
             final int target = -nums[i];
             while (start < end) {
                 if (nums[start] + nums[end] < target) {
