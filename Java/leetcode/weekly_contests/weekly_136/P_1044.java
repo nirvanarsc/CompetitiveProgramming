@@ -81,7 +81,7 @@ public class P_1044 {
         return lcp;
     }
 
-    public String longestDupSubstring(String S) {
+    public String longestDupSubstringSA(String S) {
         final int[] suffixArr = buildSuffixArray(S, S.length());
         final int[] lcp = kasai(S, suffixArr);
 
@@ -146,43 +146,50 @@ public class P_1044 {
         return S.substring(maxStart, maxStart + maxLength);
     }
 
-    private static final long MOD = 792606555396977L;
-    private static final int SIZE = 26;
+    private static final long MOD = 1L << 39;
+    private static final int BASE = 100003;
 
-    public static int search(int mid, long[] diff, int[] nums, String S) {
-        final Set<Long> seen = new HashSet<>();
-        long hash = 0;
-        for (int i = 0; i < nums.length; i++) {
-            hash = (hash * SIZE + nums[i]) % MOD;
-            if (i >= mid) {
-                hash = Math.floorMod(hash - Math.floorMod(nums[i - mid] * diff[mid], MOD), MOD);
+    static long[] hash;
+    static long[] pow;
+    static int n;
+
+    public String longestDupSubstring(String s) {
+        final char[] w = s.toCharArray();
+        n = s.length();
+        hash = new long[n + 1];
+        pow = new long[n + 1];
+        pow[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            pow[i] = pow[i - 1] * BASE % MOD;
+            hash[i] = (hash[i - 1] * BASE + (w[i - 1] - 'a' + 1)) % MOD;
+        }
+        int lo = 0;
+        int hi = n - 1;
+        int start = -1;
+        while (lo < hi) {
+            final int mid = (lo + hi + 1) >>> 1;
+            final int idx = f(mid - 1);
+            if (idx != -1) {
+                lo = mid;
+                start = idx;
+            } else {
+                hi = mid - 1;
             }
-            if (i >= mid - 1 && !seen.add(hash)) {
-                return i;
+        }
+        return start == -1 ? "" : s.substring(start, start + lo);
+    }
+
+    private static int f(int mid) {
+        final Set<Long> seen = new HashSet<>();
+        for (int i = mid; i < n; i++) {
+            if (!seen.add(getHash(i - mid, i))) {
+                return i - mid;
             }
         }
         return -1;
     }
 
-    public String longestDupSubstringRabinKarp(String S) {
-        final int n = S.length();
-        final int[] nums = new int[n];
-        final long[] diff = new long[n];
-        for (int i = 0; i < n; ++i) {
-            diff[i] = i == 0 ? 1 : (diff[i - 1] * SIZE) % MOD;
-            nums[i] = S.charAt(i) - 'a';
-        }
-        int lo = 0, hi = n, finalEnd = -1;
-        while (lo < hi) {
-            final int mid = (1 + lo + hi) >>> 1;
-            final int end = search(mid, diff, nums, S);
-            if (end != -1) {
-                finalEnd = end;
-                lo = mid;
-            } else {
-                hi = mid - 1;
-            }
-        }
-        return S.substring(finalEnd - lo + 1, finalEnd + 1);
+    private static long getHash(int l, int r) {
+        return (hash[r + 1] - (hash[l] * pow[r - l + 1]) % MOD + MOD) % MOD;
     }
 }
