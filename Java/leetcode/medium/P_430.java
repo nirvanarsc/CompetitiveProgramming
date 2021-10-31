@@ -1,5 +1,6 @@
 package leetcode.medium;
 
+@SuppressWarnings("ConstantConditions")
 public class P_430 {
 
     private static class Node {
@@ -9,15 +10,15 @@ public class P_430 {
         public Node child;
     }
 
-    Node prev;
+    static Node prev;
 
     public Node flatten(Node head) {
+        prev = null;
         dfs(head);
         return head;
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void dfs(Node curr) {
+    private static void dfs(Node curr) {
         if (curr == null) {
             return;
         }
