@@ -4,45 +4,61 @@ public class P_980 {
 
     private static final int[][] DIRS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
+    static int n;
+    static int m;
+    static int total;
+    static int[][] g;
+    static int[][] idx;
+    static boolean[][][] seen;
+    static int[][][] dp;
+
     public int uniquePathsIII(int[][] grid) {
-        final int n = grid.length;
-        final int m = grid[0].length;
-        final int[] res = { 0 };
-        final int[] empty = { 1 };
-        int sx = 0, sy = 0, ex = 0, ey = 0;
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) {
-                if (grid[i][j] == 0) {
-                    empty[0]++;
-                } else if (grid[i][j] == 1) {
+        n = grid.length;
+        m = grid[0].length;
+        total = 0;
+        g = grid;
+        idx = new int[n][m];
+        int sx = -1;
+        int sy = -1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
                     sx = i;
                     sy = j;
-                } else if (grid[i][j] == 2) {
-                    ex = i;
-                    ey = j;
+                } else if (grid[i][j] == 0) {
+                    idx[i][j] = total++;
                 }
             }
         }
-        dfs(grid, sx, sy, ex, ey, empty, res);
-        return res[0];
+        seen = new boolean[n][m][1 << total];
+        dp = new int[n][m][1 << total];
+        return dfs(sx, sy, 0);
     }
 
-    public void dfs(int[][] grid, int x, int y, int ex, int ey, int[] empty, int[] res) {
-        if (x < 0 || x >= grid.length || y < 0 || y >= grid[0].length || grid[x][y] < 0) {
-            return;
+    private static int dfs(int x, int y, int mask) {
+        if (g[x][y] == 2) {
+            return mask == (1 << total) - 1 ? 1 : 0;
         }
-        if (x == ex && y == ey) {
-            if (empty[0] == 0) {
-                res[0]++;
-            }
-            return;
+        if (g[x][y] == -1) {
+            return 0;
         }
-        empty[0]--;
-        grid[x][y] = -1;
+        if (seen[x][y][mask]) {
+            return dp[x][y][mask];
+        }
+        int res = 0;
         for (int[] dir : DIRS) {
-            dfs(grid, x + dir[0], y + dir[1], ex, ey, empty, res);
+            final int nx = x + dir[0];
+            final int ny = y + dir[1];
+            if (0 <= nx && nx < n && 0 <= ny && ny < m) {
+                if (g[nx][ny] == 2) {
+                    res += dfs(nx, ny, mask);
+                }
+                if (g[nx][ny] == 0 && (mask & (1 << idx[nx][ny])) == 0) {
+                    res += dfs(nx, ny, mask | (1 << idx[nx][ny]));
+                }
+            }
         }
-        grid[x][y] = 0;
-        empty[0]++;
+        seen[x][y][mask] = true;
+        return dp[x][y][mask] = res;
     }
 }
