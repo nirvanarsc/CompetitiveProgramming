@@ -2,16 +2,15 @@ package leetcode.weekly_contests.smarking_2;
 
 public class P_441 {
 
-    // upperBound
     public int arrangeCoins(int n) {
         long lo = 0;
-        long hi = n;
+        long hi = (long) 1e5;
         while (lo < hi) {
-            final long mid = (1 + lo + hi) >>> 1;
-            if (mid * (mid + 1) / 2 <= n) {
-                lo = mid;
-            } else {
+            final long mid = lo + hi + 1 >>> 1;
+            if (((mid * (mid + 1)) / 2) > n) {
                 hi = mid - 1;
+            } else {
+                lo = mid;
             }
         }
         return (int) lo;
