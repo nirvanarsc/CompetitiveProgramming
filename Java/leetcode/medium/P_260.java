@@ -3,21 +3,21 @@ package leetcode.medium;
 public final class P_260 {
 
     public int[] singleNumber(int[] nums) {
-        int targetXor = 0, first = 0, second = 0;
+        int xor = 0;
         for (int num : nums) {
-            targetXor ^= num;
+            xor ^= num;
         }
-
-        final int i = Integer.lowestOneBit(targetXor);
-
-        for (int num : nums) {
-            if ((num & i) != 0) {
-                first ^= num;
-            } else {
-                second ^= num;
+        int L = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((xor & (1 << i)) != 0) {
+                for (int num : nums) {
+                    if ((num & (1 << i)) != 0) {
+                        L ^= num;
+                    }
+                }
+                break;
             }
         }
-
-        return new int[] { first, second };
+        return new int[] { L, xor ^ L };
     }
 }
