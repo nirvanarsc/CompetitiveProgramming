@@ -14,7 +14,7 @@ public final class P_96 {
         return dp[n];
     }
 
-    public int numTrees(int n) {
+    public int numTreesTopDown(int n) {
         return dfs(1, n, new Integer[n + 1][n + 1]);
     }
 
@@ -33,11 +33,38 @@ public final class P_96 {
     }
 
     // https://en.wikipedia.org/wiki/Catalan_number
+    // 2n choose n / (n + 1)
     public int numTreesCatalan(int n) {
         long C = 1;
         for (int i = 0; i < n; ++i) {
             C = C * 2 * (2 * i + 1) / (i + 2);
         }
         return (int) C;
+    }
+
+    static boolean init;
+    static long[][] dp;
+
+    public int numTrees(int n) {
+        if (!init) {
+            init = true;
+            dp = f();
+        }
+        return (int) (dp[2 * n][n] / (n + 1));
+    }
+
+    private static long[][] f() {
+        final int n = 40;
+        final long[][] dp = new long[n + 1][n + 1];
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (j == 0 || j == i) {
+                    dp[i][j] = 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+                }
+            }
+        }
+        return dp;
     }
 }
