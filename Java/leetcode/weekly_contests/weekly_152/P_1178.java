@@ -9,33 +9,30 @@ import java.util.Map;
 public class P_1178 {
 
     public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
-        final List<Integer> res = new ArrayList<>();
-        final Map<Integer, Integer> counts = new HashMap<>();
+        final Map<Integer, Integer> freq = new HashMap<>();
         for (String w : words) {
-            final int mask = getMask(w);
-            counts.merge(mask, 1, Integer::sum);
+            int mask = 0;
+            for (char c : w.toCharArray()) {
+                mask |= 1 << (c - 'a');
+            }
+            freq.merge(mask, 1, Integer::sum);
         }
+        final List<Integer> res = new ArrayList<>(puzzles.length);
         for (String p : puzzles) {
-            final int mask = getMask(p);
-            final int first = 1 << (p.charAt(0) - 'a');
+            int mask = 0;
+            for (char c : p.toCharArray()) {
+                mask |= 1 << (c - 'a');
+            }
             int curr = 0;
-            // https://cp-algorithms.com/algebra/all-submasks.html
             for (int subMask = mask; subMask > 0; subMask = (subMask - 1) & mask) {
-                if ((subMask & first) != 0) {
-                    curr += counts.getOrDefault(subMask, 0);
+                final Integer inc = freq.get(subMask);
+                if (inc != null && (subMask & (1 << p.charAt(0) - 'a')) != 0) {
+                    curr += inc;
                 }
             }
             res.add(curr);
         }
         return res;
-    }
-
-    private static int getMask(String w) {
-        int mask = 0;
-        for (char c : w.toCharArray()) {
-            mask |= 1 << (c - 'a');
-        }
-        return mask;
     }
 
     static class TrieNode {
