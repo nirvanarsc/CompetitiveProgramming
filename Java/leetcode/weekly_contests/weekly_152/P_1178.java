@@ -8,6 +8,24 @@ import java.util.Map;
 
 public class P_1178 {
 
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            int j = i;
+            while (j < (n - 1) && prices[j] >= prices[j + 1]) {
+                j++;
+            }
+            int buy = prices[j];
+            while (j < (n - 1) && prices[j] <= prices[j + 1]) {
+                j++;
+            }
+            res += prices[j] - buy;
+            i = j;
+        }
+        return res;
+    }
+
     public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
         final Map<Integer, Integer> freq = new HashMap<>();
         for (String w : words) {
