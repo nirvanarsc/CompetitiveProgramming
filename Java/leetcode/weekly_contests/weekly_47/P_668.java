@@ -7,7 +7,7 @@ public class P_668 {
         int hi = m * n;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (count(mid, m, n) < k) {
+            if (f(m, n, mid) < k) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -16,29 +16,11 @@ public class P_668 {
         return lo;
     }
 
-    private static int count(int mid, int m, int n) {
-        int count = 0;
+    private static int f(int m, int n, int mid) {
+        int res = 0;
         for (int i = 1; i <= m; i++) {
-            count += Math.min(mid / i, n);
+            res += Math.min(mid / i, n);
         }
-        return count;
-    }
-
-    private static int countBS(int mid, int m, int n) {
-        int count = 0;
-        for (int i = 1; i <= m; i++) {
-            int lo = 1;
-            int hi = n;
-            while (lo <= hi) {
-                final int middle = lo + hi >>> 1;
-                if (i * middle <= mid) {
-                    lo = middle + 1;
-                } else {
-                    hi = middle - 1;
-                }
-            }
-            count += lo > n ? n : lo - 1;
-        }
-        return count;
+        return res;
     }
 }

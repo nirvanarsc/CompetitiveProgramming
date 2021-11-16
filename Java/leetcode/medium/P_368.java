@@ -2,36 +2,41 @@ package leetcode.medium;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class P_368 {
 
-    static Map<Integer, List<Integer>> dp;
+    static int maxSize;
+    static int n;
+    static int[] dp;
 
     public List<Integer> largestDivisibleSubset(int[] nums) {
-        dp = new HashMap<>();
+        maxSize = 1;
+        n = nums.length;
+        dp = new int[n];
         Arrays.sort(nums);
-        return dfs(nums, 0);
-    }
-
-    private static List<Integer> dfs(int[] nums, int idx) {
-        if (dp.containsKey(idx)) {
-            return dp.get(idx);
-        }
-        List<Integer> res = new ArrayList<>();
-        final int div = idx == 0 ? 1 : nums[idx - 1];
-        for (int k = idx; k < nums.length; k++) {
-            if (nums[k] % div == 0) {
-                final List<Integer> next = new ArrayList<>(dfs(nums, k + 1));
-                next.add(nums[k]);
-                if (next.size() > res.size()) {
-                    res = next;
+        Arrays.fill(dp, 1);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] % nums[j] == 0) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                    maxSize = Math.max(maxSize, dp[i]);
                 }
             }
         }
-        dp.put(idx, res);
+        return constructResult(nums);
+    }
+
+    private static List<Integer> constructResult(int[] nums) {
+        int prev = -1;
+        final List<Integer> res = new ArrayList<>();
+        for (int i = n - 1; i >= 0; i--) {
+            if (dp[i] == maxSize && (prev == -1 || prev % nums[i] == 0)) {
+                res.add(nums[i]);
+                prev = nums[i];
+                maxSize--;
+            }
+        }
         return res;
     }
 }
