@@ -28,25 +28,27 @@ public class P_106 {
         return root;
     }
 
-    int idx;
+    static int idx;
+    static Map<Integer, Integer> inMap;
 
     public TreeNode buildTree(int[] inorder, int[] postorder) {
-        final Map<Integer, Integer> inMap = new HashMap<>();
-        for (int i = 0; i < postorder.length; i++) {
+        final int n = inorder.length;
+        inMap = new HashMap<>();
+        idx = n - 1;
+        for (int i = 0; i < n; i++) {
             inMap.put(inorder[i], i);
         }
-        idx = postorder.length - 1;
-        return dfs(postorder, inMap, 0, postorder.length - 1);
+        return dfs(postorder, 0, n - 1);
     }
 
-    private TreeNode dfs(int[] postorder, Map<Integer, Integer> inMap, int start, int end) {
+    private static TreeNode dfs(int[] postorder, int start, int end) {
         if (start > end) {
             return null;
         }
         final TreeNode root = new TreeNode(postorder[idx--]);
         final int newEnd = inMap.get(root.val);
-        root.right = dfs(postorder, inMap, newEnd + 1, end);
-        root.left = dfs(postorder, inMap, start, newEnd - 1);
+        root.right = dfs(postorder, newEnd + 1, end);
+        root.left = dfs(postorder, start, newEnd - 1);
         return root;
     }
 }
