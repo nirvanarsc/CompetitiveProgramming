@@ -1,9 +1,5 @@
 package leetcode.weekly_contests.weekly_113;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_952 {
 
     private static final class UnionFind {
@@ -40,9 +36,11 @@ public class P_952 {
             if (size[rootP] > size[rootQ]) {
                 parent[rootQ] = rootP;
                 size[rootP] += size[rootQ];
+                size[rootQ] = 0;
             } else {
                 parent[rootP] = rootQ;
                 size[rootQ] += size[rootP];
+                size[rootP] = 0;
             }
             count--;
         }
@@ -52,28 +50,20 @@ public class P_952 {
         public int[] size() { return size; }
     }
 
-    public int largestComponentSize(int[] A) {
-        final Map<Integer, Integer> indices = new HashMap<>();
-        final UnionFind uf = new UnionFind(A.length);
-        for (int i = 0; i < A.length; i++) {
-            final int limit = A[i];
-            for (int p = 2; p * p <= limit; p++) {
-                if (A[i] % p == 0) {
-                    uf.union(i, indices.getOrDefault(p, i));
-                    indices.put(p, i);
-                    while (A[i] % p == 0) {
-                        A[i] /= p;
-                    }
+    public int largestComponentSize(int[] nums) {
+        final UnionFind uf = new UnionFind((int) (1e5 + 5));
+        for (int num : nums) {
+            for (int p = 2; p * p <= num; p++) {
+                if (num % p == 0) {
+                    uf.union(p, num);
+                    uf.union(num / p, num);
                 }
             }
-            if (A[i] > 1) {
-                uf.union(i, indices.getOrDefault(A[i], i));
-                indices.put(A[i], i);
-            }
         }
+        final int[] freq = new int[(int) (1e5 + 5)];
         int res = 0;
-        for (int size : uf.size()) {
-            res = Math.max(res, size);
+        for (int num : nums) {
+            res = Math.max(res, ++freq[uf.find(num)]);
         }
         return res;
     }
