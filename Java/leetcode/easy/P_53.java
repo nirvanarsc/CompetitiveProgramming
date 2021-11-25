@@ -15,7 +15,7 @@ public class P_53 {
         return max < 0 ? max : maxSum;
     }
 
-    public int maxSubArray(int[] nums) {
+    public int maxSubArrayKadane(int[] nums) {
         int curr = nums[0];
         int res = nums[0];
         for (int i = 1; i < nums.length; ++i) {
@@ -25,31 +25,34 @@ public class P_53 {
         return res;
     }
 
-    public int maxSubArrayDFS(int[] nums) {
-        final int[][] dp = new int[nums.length][3];
-        for (int[] row : dp) {
-            Arrays.fill(row, -1);
-        }
-        return dfs(nums, 0, 0, dp);
+    static int[][] dp;
+    static boolean[][] seen;
+
+    public int maxSubArray(int[] nums) {
+        final int n = nums.length;
+        dp = new int[n][3];
+        seen = new boolean[n][3];
+        return dfs(nums, 0, 0);
     }
 
-    private static int dfs(int[] nums, int idx, int status, int[][] dp) {
+    private static int dfs(int[] nums, int idx, int status) {
         if (idx == nums.length) {
             return status != 0 ? 0 : (int) -1e9;
         }
-        if (dp[idx][status] != -1) {
+        if (seen[idx][status]) {
             return dp[idx][status];
         }
         int res = (int) -1e9;
         if (status == 0) {
-            res = Math.max(res, dfs(nums, idx + 1, 0, dp));
-            res = Math.max(res, nums[idx] + dfs(nums, idx + 1, 1, dp));
+            res = Math.max(res, dfs(nums, idx + 1, 0));
+            res = Math.max(res, nums[idx] + dfs(nums, idx + 1, 1));
         } else if (status == 1) {
-            res = Math.max(res, nums[idx] + dfs(nums, idx + 1, 1, dp));
-            res = Math.max(res, dfs(nums, idx + 1, 2, dp));
+            res = Math.max(res, nums[idx] + dfs(nums, idx + 1, 1));
+            res = Math.max(res, dfs(nums, idx + 1, 2));
         } else {
-            res = Math.max(res, dfs(nums, idx + 1, 2, dp));
+            res = Math.max(res, dfs(nums, idx + 1, 2));
         }
+        seen[idx][status] = true;
         return dp[idx][status] = res;
     }
 
