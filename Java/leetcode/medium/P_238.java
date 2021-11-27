@@ -3,19 +3,19 @@ package leetcode.medium;
 public class P_238 {
 
     public int[] productExceptSelf(int[] nums) {
-        final int[] helper = new int[nums.length];
-        int prod = helper[0] = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            helper[i] = prod;
-            prod *= nums[i];
+        final int n = nums.length;
+        final int[] res = new int[n];
+        int curr = res[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            res[i] = curr;
+            curr *= nums[i];
         }
-        prod = nums[nums.length - 1];
-        for (int i = nums.length - 2; i >= 1; i--) {
-            helper[i] *= prod;
-            prod *= nums[i];
+        curr = nums[n - 1];
+        for (int i = n - 2; i >= 1; i--) {
+            res[i] *= curr;
+            curr *= nums[i];
         }
-        helper[0] = prod;
-
-        return helper;
+        res[0] = curr;
+        return res;
     }
 }
