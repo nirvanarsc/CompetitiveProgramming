@@ -11,21 +11,22 @@ public class P_85 {
             return 0;
         }
         int res = 0;
-        final int[] currRow = new int[matrix[0].length];
+        final int m = matrix[0].length;
+        final int[] curr = new int[m];
         for (char[] row : matrix) {
-            for (int i = 0; i < matrix[0].length; i++) {
-                if (row[i] == '1') {
-                    currRow[i]++;
+            for (int j = 0; j < m; j++) {
+                if (row[j] == '0') {
+                    curr[j] = 0;
                 } else {
-                    currRow[i] = 0;
+                    curr[j]++;
                 }
             }
-            res = Math.max(res, largestRectangleArea(currRow));
+            res = Math.max(res, largestRectangleArea(curr));
         }
         return res;
     }
 
-    public static int largestRectangleArea(int[] heights) {
+    public int largestRectangleArea(int[] heights) {
         final Deque<Integer> stack = new ArrayDeque<>(Collections.singleton(-1));
         int res = 0;
         for (int i = 0; i <= heights.length; i++) {
