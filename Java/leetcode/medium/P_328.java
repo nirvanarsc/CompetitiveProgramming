@@ -2,29 +2,27 @@ package leetcode.medium;
 
 import utils.DataStructures.ListNode;
 
-@SuppressWarnings("ConstantConditions")
 public class P_328 {
 
     public ListNode oddEvenList(ListNode head) {
-        final ListNode odds = new ListNode(-1);
-        ListNode oddsIter = odds;
-        ListNode iter = head;
-        while (iter != null) {
-            if (iter.next == null) {
-                iter.next = odds.next;
-                break;
+        final ListNode odd = new ListNode(-1);
+        final ListNode even = new ListNode(-1);
+        ListNode oddIter = odd;
+        ListNode evenIter = even;
+        for (int i = 1; head != null; i++) {
+            if (i % 2 != 0) {
+                oddIter.next = head;
+                oddIter = oddIter.next;
+            } else {
+                evenIter.next = head;
+                evenIter = evenIter.next;
             }
-            final ListNode oddNode = iter.next;
-            iter.next = iter.next.next;
-            oddNode.next = null;
-            oddsIter.next = oddNode;
-            oddsIter = oddsIter.next;
-            if (iter.next == null) {
-                iter.next = odds.next;
-                break;
-            }
-            iter = iter.next;
+            final ListNode temp = head.next;
+            //noinspection ConstantConditions
+            head.next = null;
+            head = temp;
         }
-        return head;
+        oddIter.next = even.next;
+        return odd.next;
     }
 }
