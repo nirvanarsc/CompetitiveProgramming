@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused" })
 public class P_1032 {
 
     static class Trie {
@@ -16,7 +16,7 @@ public class P_1032 {
         }
     }
 
-    static class StreamChecker {
+    class StreamChecker {
         Trie root;
         Deque<Trie> queue = new ArrayDeque<>();
 
@@ -38,7 +38,7 @@ public class P_1032 {
             return res;
         }
 
-        private static Trie buildTrie(String[] words) {
+        private Trie buildTrie(String[] words) {
             final Trie root = new Trie();
             for (String w : words) {
                 Trie curr = root;
@@ -54,7 +54,7 @@ public class P_1032 {
         }
     }
 
-    static class StreamCheckerReverse {
+    class StreamCheckerReverse {
         private final Trie root;
         private final StringBuilder sb;
 
@@ -67,7 +67,7 @@ public class P_1032 {
             }
         }
 
-        private static void insertReversedWordToTrie(String word, Trie root) {
+        private void insertReversedWordToTrie(String word, Trie root) {
             Trie curr = root;
             for (int i = word.length() - 1; i >= 0; i--) {
                 final char c = word.charAt(i);
