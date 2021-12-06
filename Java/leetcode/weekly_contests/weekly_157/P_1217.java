@@ -3,14 +3,10 @@ package leetcode.weekly_contests.weekly_157;
 public class P_1217 {
 
     public int minCostToMoveChips(int[] position) {
-        int odd = 0, even = 0;
-        for (int num : position) {
-            if (num % 2 == 0) {
-                even++;
-            } else {
-                odd++;
-            }
+        final int[] f = new int[2];
+        for (int pos : position) {
+            f[pos % 2]++;
         }
-        return Math.min(odd, even);
+        return Math.min(f[0], f[1]);
     }
 }
