@@ -4,17 +4,21 @@ import utils.DataStructures.TreeNode;
 
 public class P_563 {
 
+    static int res;
+
     public int findTilt(TreeNode root) {
-        return dfs(root)[1];
+        res = 0;
+        dfs(root);
+        return res;
     }
 
-    private static int[] dfs(TreeNode node) {
+    private static int dfs(TreeNode node) {
         if (node == null) {
-            return new int[] { 0, 0 };
+            return 0;
         }
-        final int[] ll = dfs(node.left);
-        final int[] rr = dfs(node.right);
-        final int sum = ll[0] + rr[0] + node.val;
-        return new int[] { sum, ll[1] + rr[1] + Math.abs(ll[0] - rr[0]) };
+        final int l = dfs(node.left);
+        final int r = dfs(node.right);
+        res += Math.abs(l - r);
+        return l + r + node.val;
     }
 }
