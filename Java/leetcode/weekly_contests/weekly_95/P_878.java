@@ -4,14 +4,15 @@ public class P_878 {
 
     private static final int MOD = (int) (1e9 + 7);
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int nthMagicalNumber(int N, int A, int B) {
-        long lo = 2, hi = (long) 1e14;
-        final int gcd = gcd(A, B);
-        final int lcm = A * B / gcd;
+    public int nthMagicalNumber(int n, int a, int b) {
+        long lo = 0;
+        long hi = (long) 1e18;
+        final int gcd = gcd(a, b);
+        final int lcm = a * b / gcd;
         while (lo < hi) {
             final long mid = lo + hi >>> 1;
-            if (mid / A + mid / B - mid / lcm < N) {
+            final long curr = (mid / a + mid / b) - mid / lcm;
+            if (curr < n) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -20,7 +21,7 @@ public class P_878 {
         return (int) (lo % MOD);
     }
 
-    public int gcd(int a, int b) {
+    private static int gcd(int a, int b) {
         return b == 0 ? a : gcd(b, a % b);
     }
 }
