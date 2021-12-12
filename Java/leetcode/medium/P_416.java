@@ -10,17 +10,16 @@ public class P_416 {
         if (sum % 2 != 0) {
             return false;
         }
-        final int target = sum / 2;
-        final boolean[] dp = new boolean[target + 1];
+        final boolean[] dp = new boolean[sum + 1];
         dp[0] = true;
         for (int num : nums) {
-            for (int s = target; s >= 0; s--) {
-                if (num <= s) {
-                    dp[s] |= dp[s - num];
+            for (int j = sum; j >= 0; j--) {
+                if (num + j <= sum) {
+                    dp[num + j] |= dp[j];
                 }
             }
         }
-        return dp[target];
+        return dp[sum / 2];
     }
 
     public boolean canPartitionTopDown(int[] nums) {
