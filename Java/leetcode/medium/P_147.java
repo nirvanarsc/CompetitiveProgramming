@@ -1,36 +1,34 @@
 package leetcode.medium;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import utils.DataStructures.ListNode;
 
-@SuppressWarnings({ "ConstantConditions", "ReturnOfNull" })
+@SuppressWarnings("ConstantConditions")
 public class P_147 {
 
     public ListNode insertionSortList(ListNode head) {
-        if (head == null) {
-            return null;
+        final Map<Integer, Deque<ListNode>> map = new HashMap<>();
+        final List<Integer> list = new ArrayList<>();
+        for (ListNode iter = head; iter != null; iter = iter.next) {
+            map.computeIfAbsent(iter.val, val -> new ArrayDeque<>()).addFirst(iter);
+            list.add(iter.val);
         }
+        list.sort(Comparator.naturalOrder());
         final ListNode res = new ListNode(-1);
-        ListNode rem = head.next;
-        head.next = null;
-        res.next = head;
-        while (rem != null) {
-            final ListNode next = rem.next;
-            rem.next = null;
-            insert(res, rem);
-            rem = next;
-        }
-        return res.next;
-    }
-
-    private static void insert(ListNode res, ListNode node) {
-        ListNode prev = res;
-        ListNode iter = res.next;
-        while (iter != null && iter.val < node.val) {
-            prev = prev.next;
+        ListNode iter = res;
+        for (int num : list) {
+            final ListNode pop = map.get(num).removeFirst();
+            iter.next = pop;
+            pop.next = null;
             iter = iter.next;
         }
-        final ListNode temp = prev.next;
-        prev.next = node;
-        node.next = temp;
+        return res.next;
     }
 }
