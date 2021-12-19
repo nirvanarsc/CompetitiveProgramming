@@ -17,8 +17,7 @@ public class P_394 {
                 int num = 0;
                 int j = i;
                 while (j < n && Character.isDigit(chars[j])) {
-                    num *= 10;
-                    num += chars[j] - '0';
+                    num = num * 10 + chars[j] - '0';
                     j++;
                 }
                 i = j - 1;
