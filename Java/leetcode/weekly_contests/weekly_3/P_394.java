@@ -22,9 +22,9 @@ public class P_394 {
                 }
                 i = j - 1;
                 count.addFirst(num);
-            } else if(chars[i] == '['){
+            } else if (chars[i] == '[') {
                 strings.addFirst(new StringBuilder());
-            } else if(chars[i] == ']') {
+            } else if (chars[i] == ']') {
                 final StringBuilder first = strings.removeFirst();
                 final StringBuilder second = strings.getFirst();
                 final int k = count.removeFirst();

@@ -8,13 +8,14 @@ public class P_1200 {
 
     public List<List<Integer>> minimumAbsDifference(int[] arr) {
         Arrays.sort(arr);
+        final int n = arr.length;
         final List<List<Integer>> res = new ArrayList<>();
-        int diff = Integer.MAX_VALUE;
-        for (int i = 0; i < arr.length - 1; i++) {
-            diff = Math.min(diff, Math.abs(arr[i] - arr[i + 1]));
+        int min = (int) 1e9;
+        for (int i = 0; i < (n - 1); i++) {
+            min = Math.min(min, arr[i + 1] - arr[i]);
         }
-        for (int i = 0; i < arr.length - 1; i++) {
-            if (Math.abs(arr[i] - arr[i + 1]) == diff) {
+        for (int i = 0; i < (n - 1); i++) {
+            if (arr[i + 1] - arr[i] == min) {
                 res.add(Arrays.asList(arr[i], arr[i + 1]));
             }
         }
