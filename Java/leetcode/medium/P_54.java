@@ -9,12 +9,9 @@ public class P_54 {
 
     public List<Integer> spiralOrder(int[][] matrix) {
         final List<Integer> res = new ArrayList<>();
-        if (matrix.length == 0) {
-            return res;
-        }
-        final int m = matrix.length;
-        final int n = matrix[0].length;
-        final int[] range = { n, m - 1 };
+        final int n = matrix.length;
+        final int m = matrix[0].length;
+        final int[] range = { m, n - 1 };
         int dir = 0, row = 0, col = -1;
         while (range[dir % 2] != 0) {
             for (int i = 0; i < range[dir % 2]; i++) {
