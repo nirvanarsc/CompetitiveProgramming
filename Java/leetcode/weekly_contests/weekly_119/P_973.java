@@ -4,23 +4,26 @@ import java.util.PriorityQueue;
 
 public class P_973 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int[][] kClosest(int[][] points, int K) {
-        final int[][] res = new int[K][2];
-        final PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Double.compare(dist(b), dist(a)));
-        for (int[] p : points) {
-            pq.offer(p);
-            if (pq.size() > K) {
-                pq.poll();
+    public int[][] kClosest(int[][] points, int k) {
+        final int[] origin = new int[2];
+        final PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(d(origin, b),
+                                                                                      d(origin, a)));
+        for (int[] point : points) {
+            pq.offer(point);
+            if (pq.size() > k) {
+                pq.remove();
             }
         }
-        for (int i = 0; i < K; i++) {
-            res[i] = pq.poll();
+        final int[][] res = new int[k][2];
+        for (int i = 0; i < k; i++) {
+            res[i] = pq.remove();
         }
         return res;
     }
 
-    private static double dist(int[] b) {
-        return b[0] * b[0] + b[1] * b[1];
+    private static int d(int[] l, int[] r) {
+        final int dx = l[0] - r[0];
+        final int dy = l[1] - r[1];
+        return dx * dx + dy * dy;
     }
 }
