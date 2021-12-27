@@ -15,4 +15,16 @@ public class P_476 {
     public static int findComplement3(int num) {
         return ~num & (Integer.highestOneBit(num) - 1);
     }
+
+    public int findComplement4(int num) {
+        int msb = 0;
+        for (int i = 31; i >= 0; i--) {
+            if ((num & (1 << i)) != 0) {
+                msb = i;
+                break;
+            }
+        }
+        final int mask = (1 << (msb + 1)) - 1;
+        return mask & ~num;
+    }
 }
