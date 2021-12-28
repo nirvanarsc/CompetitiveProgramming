@@ -2,14 +2,15 @@ package leetcode.weekly_contests.weekly_95;
 
 import utils.DataStructures.ListNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_876 {
 
     public ListNode middleNode(ListNode head) {
-        ListNode fast = head;
         ListNode slow = head;
+        ListNode fast = head;
         while (fast != null && fast.next != null) {
-            fast = fast.next.next;
             slow = slow.next;
+            fast = fast.next.next;
         }
         return slow;
     }
