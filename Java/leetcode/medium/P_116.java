@@ -5,6 +5,7 @@ import java.util.Deque;
 
 import utils.DataStructures.Node;
 
+@SuppressWarnings("ConstantConditions")
 public class P_116 {
 
     public Node connect(Node root) {
