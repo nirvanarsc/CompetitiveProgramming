@@ -12,17 +12,21 @@ public class P_1026 {
         if (node == null) {
             return new int[] { (int) 1e9, (int) -1e9, 0 };
         }
-        final int[] left = dfs(node.left);
-        final int[] right = dfs(node.right);
-        final int min = Math.min(left[0], right[0]);
-        final int max = Math.max(left[1], right[1]);
-        int res = Math.max(left[2], right[2]);
-        if (min != (int) 1e9) {
-            res = Math.max(res, Math.abs(node.val - min));
-        }
-        if (max != (int) -1e9) {
-            res = Math.max(res, Math.abs(node.val - max));
-        }
-        return new int[] { Math.min(min, node.val), Math.max(max, node.val), res };
+        final int[] l = dfs(node.left);
+        final int[] r = dfs(node.right);
+        int min = (int) 1e9;
+        int max = (int) -1e9;
+        int res = 0;
+        min = Math.min(min, l[0]);
+        min = Math.min(min, r[0]);
+        min = Math.min(min, node.val);
+        max = Math.max(max, l[1]);
+        max = Math.max(max, r[1]);
+        max = Math.max(max, node.val);
+        res = Math.max(res, l[2]);
+        res = Math.max(res, r[2]);
+        res = Math.max(res, node.val - min);
+        res = Math.max(res, max - node.val);
+        return new int[] { min, max, res };
     }
 }
