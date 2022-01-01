@@ -9,24 +9,22 @@ public class P_1026 {
     }
 
     private static int[] dfs(TreeNode node) {
+        final int[] res = { (int) 1e9, (int) -1e9, 0 };
         if (node == null) {
-            return new int[] { (int) 1e9, (int) -1e9, 0 };
+            return res;
         }
         final int[] l = dfs(node.left);
         final int[] r = dfs(node.right);
-        int min = (int) 1e9;
-        int max = (int) -1e9;
-        int res = 0;
-        min = Math.min(min, l[0]);
-        min = Math.min(min, r[0]);
-        min = Math.min(min, node.val);
-        max = Math.max(max, l[1]);
-        max = Math.max(max, r[1]);
-        max = Math.max(max, node.val);
-        res = Math.max(res, l[2]);
-        res = Math.max(res, r[2]);
-        res = Math.max(res, node.val - min);
-        res = Math.max(res, max - node.val);
-        return new int[] { min, max, res };
+        res[0] = Math.min(res[0], l[0]);
+        res[0] = Math.min(res[0], r[0]);
+        res[0] = Math.min(res[0], node.val);
+        res[1] = Math.max(res[1], l[1]);
+        res[1] = Math.max(res[1], r[1]);
+        res[1] = Math.max(res[1], node.val);
+        res[2] = Math.max(res[2], l[2]);
+        res[2] = Math.max(res[2], r[2]);
+        res[2] = Math.max(res[2], node.val - res[0]);
+        res[2] = Math.max(res[2], res[1] - node.val);
+        return res;
     }
 }
