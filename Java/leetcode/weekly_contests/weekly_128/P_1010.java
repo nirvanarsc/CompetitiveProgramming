@@ -3,6 +3,17 @@ package leetcode.weekly_contests.weekly_128;
 public class P_1010 {
 
     public int numPairsDivisibleBy60(int[] time) {
+        final int[] r = new int[60];
+        int res = 0;
+        for (int num : time) {
+            num %= 60;
+            res += r[(60 - num) % 60];
+            r[num]++;
+        }
+        return res;
+    }
+
+    public int numPairsDivisibleBy60Old(int[] time) {
         final int[] rem = new int[60];
         for (int t : time) {
             rem[t % 60]++;
