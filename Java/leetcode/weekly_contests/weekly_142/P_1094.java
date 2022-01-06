@@ -1,39 +1,24 @@
 package leetcode.weekly_contests.weekly_142;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class P_1094 {
 
-    private static class Point {
-        int point;
-        int capacity;
-        boolean isStart;
-
-        Point(int point, int capacity, boolean isStart) {
-            this.point = point;
-            this.capacity = capacity;
-            this.isStart = isStart;
-        }
-    }
-
     public boolean carPooling(int[][] trips, int capacity) {
-        final List<Point> points = new ArrayList<>();
-        for (int[] trip : trips) {
-            points.add(new Point(trip[1], trip[0], true));
-            points.add(new Point(trip[2], trip[0], false));
+        final int n = trips.length;
+        final int[][] sorted = new int[2 * n][3];
+        for (int i = 0; i < n; i++) {
+            final int p = trips[i][0];
+            final int from = trips[i][1];
+            final int to = trips[i][2];
+            sorted[2 * i] = new int[] { from, 1, p };
+            sorted[2 * i + 1] = new int[] { to, -1, p };
         }
-        points.sort((a, b) -> a.point == b.point ? Boolean.compare(a.isStart, b.isStart)
-                                                 : Integer.compare(a.point, b.point));
-        int currCap = capacity;
-        for (Point p : points) {
-            if (p.isStart) {
-                if (currCap < p.capacity) {
-                    return false;
-                }
-                currCap -= p.capacity;
-            } else {
-                currCap += p.capacity;
+        Arrays.sort(sorted, (a, b) -> a[0] == b[0] ? Integer.compare(a[1], b[1]) : Integer.compare(a[0], b[0]));
+        for (int[] curr : sorted) {
+            capacity -= curr[1] * curr[2];
+            if (capacity < 0) {
+                return false;
             }
         }
         return true;
