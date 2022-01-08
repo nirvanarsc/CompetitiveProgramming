@@ -2,35 +2,38 @@ package leetcode.biweekly_contests.biweekly_27;
 
 public class P_1463 {
 
-    private static final int[] DIRS = { -1, 0, 1 };
+    static int n;
+    static int m;
+    static int[][][] dp;
+    static boolean[][][] seen;
 
     public int cherryPickup(int[][] grid) {
-        final int n = grid.length;
-        final int m = grid[0].length;
-        return dfs(grid, 0, 0, m - 1, new Integer[n][m][m]);
+        n = grid.length;
+        m = grid[0].length;
+        dp = new int[n][m][m];
+        seen = new boolean[n][m][m];
+        return dfs(grid, 0, 0, m - 1);
     }
 
-    private static int dfs(int[][] grid, int row, int r1, int r2, Integer[][][] dp) {
-        if (row == grid.length) {
+    private static int dfs(int[][] g, int r, int c1, int c2) {
+        if (r == n) {
             return 0;
         }
-        if (dp[row][r1][r2] != null) {
-            return dp[row][r1][r2];
-        }
-        int curr = grid[row][r1] + grid[row][r2];
-        if (r1 == r2) {
-            curr -= grid[row][r1];
+        if (seen[r][c1][c2]) {
+            return dp[r][c1][c2];
         }
         int res = 0;
-        for (int d1 : DIRS) {
-            for (int d2 : DIRS) {
-                final int nr1 = r1 + d1;
-                final int nr2 = r2 + d2;
-                if (nr1 >= 0 && nr1 < grid[0].length && nr2 >= 0 && nr2 < grid[0].length) {
-                    res = Math.max(res, curr + dfs(grid, row + 1, nr1, nr2, dp));
+        final int t = c1 == c2 ? g[r][c1] : g[r][c1] + g[r][c2];
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                final int nc1 = c1 + i;
+                final int nc2 = c2 + j;
+                if (0 <= nc1 && nc1 < m && 0 <= nc2 && nc2 < m) {
+                    res = Math.max(res, t + dfs(g, r + 1, nc1, nc2));
                 }
             }
         }
-        return dp[row][r1][r2] = res;
+        seen[r][c1][c2] = true;
+        return dp[r][c1][c2] = res;
     }
 }
