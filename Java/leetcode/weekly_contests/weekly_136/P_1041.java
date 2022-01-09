@@ -2,21 +2,23 @@ package leetcode.weekly_contests.weekly_136;
 
 public class P_1041 {
 
+    private static final int[][] DIRS = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+    static int curr;
+
     public boolean isRobotBounded(String instructions) {
-        int x = 0, y = 0, dir = 0;
-        for (int i = 0; i < instructions.length() * 4; i++) {
-            final char c = instructions.charAt(i % instructions.length());
-            if (c == 'G') {
-                switch (dir) {
-                    case 0: y += 1;break;
-                    case 1: x += 1;break;
-                    case 2: y -= 1;break;
-                    case 3: x -= 1;break;
+        curr = 0;
+        int x = 0;
+        int y = 0;
+        for (int i = 0; i < 4; i++) {
+            for (char c : instructions.toCharArray()) {
+                if (c == 'G') {
+                    x += DIRS[curr][0];
+                    y += DIRS[curr][1];
+                } else if (c == 'L') {
+                    curr = (curr + 1) % 4;
+                } else {
+                    curr = (curr + 3) % 4;
                 }
-            } else if (c == 'L') {
-                dir = (4 + dir - 1) % 4;
-            } else {
-                dir = (dir + 1) % 4;
             }
         }
         return x == 0 && y == 0;
