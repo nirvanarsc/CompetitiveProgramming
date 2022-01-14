@@ -3,27 +3,28 @@ package leetcode.medium;
 public class P_8 {
 
     public int myAtoi(String str) {
-        int j = 0;
-        while (j < str.length() && str.charAt(j) == ' ') {
-            j++;
+        final int n = str.length();
+        final char[] w = str.toCharArray();
+        int i = 0;
+        while (i < n && w[i] == ' ') {
+            i++;
         }
-        if (j == str.length()
-            || (str.charAt(j) != '-' && str.charAt(j) != '+' && !Character.isDigit(str.charAt(j)))) {
+        if (i == n || (w[i] != '-' && w[i] != '+' && !Character.isDigit(w[i]))) {
             return 0;
         }
         boolean sign = true;
-        if (str.charAt(j) == '-' || str.charAt(j) == '+') {
-            sign = str.charAt(j) == '+';
-            j++;
+        if (w[i] == '-' || w[i] == '+') {
+            sign = w[i] == '+';
+            i++;
         }
         int res = 0;
-        while (j < str.length() && Character.isDigit(str.charAt(j))) {
-            final int curr = Character.getNumericValue(str.charAt(j));
+        while (i < n && Character.isDigit(w[i])) {
+            final int curr = Character.getNumericValue(w[i]);
             if (res > Integer.MAX_VALUE / 10 || res == Integer.MAX_VALUE / 10 && curr > 7) {
                 return sign ? Integer.MAX_VALUE : Integer.MIN_VALUE;
             }
             res = res * 10 + curr;
-            j++;
+            i++;
         }
         return sign ? res : -res;
     }
