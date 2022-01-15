@@ -13,17 +13,18 @@ public class P_1345 {
 
     public int minJumps(int[] arr) {
         final Map<Integer, List<Integer>> map = new HashMap<>();
-        for (int i = 0; i < arr.length; i++) {
+        final int n = arr.length;
+        for (int i = 0; i < n; i++) {
             map.computeIfAbsent(arr[i], val -> new ArrayList<>()).add(i);
         }
         final Deque<Integer> q = new ArrayDeque<>();
         q.offerLast(0);
         final Set<Integer> skips = new HashSet<>();
-        final boolean[] visited = new boolean[arr.length];
+        final boolean[] visited = new boolean[n];
         for (int level = 0; !q.isEmpty(); level++) {
             for (int size = q.size(); size > 0; size--) {
                 final int curr = q.removeFirst();
-                if (curr == arr.length - 1) {
+                if (curr == n - 1) {
                     return level;
                 }
                 if (!visited[curr + 1]) {
