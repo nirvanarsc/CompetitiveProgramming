@@ -1,73 +1,46 @@
-package atcoder.beginner_200_299.abc_220;
+package atcoder.beginner_200_299.abc_221;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeMap;
 
-public final class F {
-
-    static int n;
-    static int[][] g;
-    static int[] size;
-    static long[] res;
+public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        n = fs.nextInt();
-        final int[][] edges = new int[n - 1][2];
-        for (int i = 0; i < (n - 1); i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
-        }
-        g = packG(edges, n);
-        size = new int[n];
-        res = new long[n];
-        dfs(0, -1, 0);
-        dfs2(0, -1);
-        final StringBuilder sb = new StringBuilder();
+        final int n = fs.nextInt();
+        final TreeMap<Integer, Integer> tm = new TreeMap<>();
+        final Map<Integer, Integer> map = new HashMap<>(n);
         for (int i = 0; i < n; i++) {
-            sb.append(res[i]);
-            sb.append('\n');
+            final int u = fs.nextInt();
+            final int v = fs.nextInt();
+            tm.merge(u, 1, Integer::sum);
+            tm.merge(u + v, -1, Integer::sum);
+        }
+        int prev = 0;
+        int op = 0;
+        for (Entry<Integer, Integer> e : tm.entrySet()) {
+            final int k = e.getKey();
+            final int v = e.getValue();
+            if (v == 0) {
+                continue;
+            }
+            map.merge(op, k - prev, Integer::sum);
+            op += v;
+            prev = k;
+        }
+        final StringBuilder sb = new StringBuilder(n);
+        for (int i = 0; i < n; i++) {
+            sb.append(map.getOrDefault(i + 1, 0));
+            sb.append(' ');
         }
         System.out.println(sb);
-    }
-
-    private static void dfs(int u, int v, int d) {
-        res[0] += d;
-        size[u] = 1;
-        for (int next : g[u]) {
-            if (next != v) {
-                dfs(next, u, d + 1);
-                size[u] += size[next];
-            }
-        }
-    }
-
-    private static void dfs2(int u, int v) {
-        for (int next : g[u]) {
-            if (next != v) {
-                res[next] = res[u] + n - (2L * size[next]);
-                dfs2(next, u);
-            }
-        }
-    }
-
-    private static int[][] packG(int[][] edges, int n) {
-        final int[][] g = new int[n][];
-        final int[] size = new int[n];
-        for (int[] edge : edges) {
-            ++size[edge[0]];
-            ++size[edge[1]];
-        }
-        for (int i = 0; i < n; i++) {
-            g[i] = new int[size[i]];
-        }
-        for (int[] edge : edges) {
-            g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
-        }
-        return g;
     }
 
     static final class Utils {

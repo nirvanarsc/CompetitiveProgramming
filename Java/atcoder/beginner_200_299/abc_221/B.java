@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_220;
+package atcoder.beginner_200_299.abc_221;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,68 +6,44 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class F {
-
-    static int n;
-    static int[][] g;
-    static int[] size;
-    static long[] res;
+public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        n = fs.nextInt();
-        final int[][] edges = new int[n - 1][2];
-        for (int i = 0; i < (n - 1); i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
-        }
-        g = packG(edges, n);
-        size = new int[n];
-        res = new long[n];
-        dfs(0, -1, 0);
-        dfs2(0, -1);
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            sb.append(res[i]);
-            sb.append('\n');
-        }
-        System.out.println(sb);
-    }
-
-    private static void dfs(int u, int v, int d) {
-        res[0] += d;
-        size[u] = 1;
-        for (int next : g[u]) {
-            if (next != v) {
-                dfs(next, u, d + 1);
-                size[u] += size[next];
-            }
-        }
-    }
-
-    private static void dfs2(int u, int v) {
-        for (int next : g[u]) {
-            if (next != v) {
-                res[next] = res[u] + n - (2L * size[next]);
-                dfs2(next, u);
-            }
-        }
-    }
-
-    private static int[][] packG(int[][] edges, int n) {
-        final int[][] g = new int[n][];
-        final int[] size = new int[n];
-        for (int[] edge : edges) {
-            ++size[edge[0]];
-            ++size[edge[1]];
+        final char[] w1 = fs.next().toCharArray();
+        final char[] w2 = fs.next().toCharArray();
+        final int n = w1.length;
+        if (Arrays.equals(w1, w2)) {
+            System.out.println("Yes");
+            return;
         }
         for (int i = 0; i < n; i++) {
-            g[i] = new int[size[i]];
+            if (w1[i] != w2[i]) {
+                if (i > 0) {
+                    swap(w1, i - 1, i);
+                    if (Arrays.equals(w1, w2)) {
+                        System.out.println("Yes");
+                        return;
+                    }
+                    swap(w1, i - 1, i);
+                }
+                if (i < (n - 1)) {
+                    swap(w1, i + 1, i);
+                    if (Arrays.equals(w1, w2)) {
+                        System.out.println("Yes");
+                        return;
+                    }
+                    swap(w1, i + 1, i);
+                }
+            }
         }
-        for (int[] edge : edges) {
-            g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
-        }
-        return g;
+        System.out.println("No");
+    }
+
+    private static void swap(char[] w, int i, int j) {
+        final char t = w[i];
+        w[i] = w[j];
+        w[j] = t;
     }
 
     static final class Utils {

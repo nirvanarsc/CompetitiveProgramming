@@ -2,7 +2,7 @@ package leetcode.medium;
 
 import utils.DataStructures.ListNode;
 
-@SuppressWarnings("ReturnOfNull")
+@SuppressWarnings({ "ReturnOfNull", "ConstantConditions" })
 public class P_142 {
 
     public ListNode detectCycle(ListNode head) {
@@ -15,11 +15,9 @@ public class P_142 {
             slow = slow.next;
             fast = fast.next.next;
         } while (slow != fast && fast != null && fast.next != null);
-
         if (fast != slow) {
             return null;
         }
-
         fast = head;
         while (fast != slow) {
             slow = slow.next;

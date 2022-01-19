@@ -1,73 +1,67 @@
-package atcoder.beginner_200_299.abc_220;
+package atcoder.beginner_200_299.abc_221;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
-public final class F {
-
-    static int n;
-    static int[][] g;
-    static int[] size;
-    static long[] res;
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        n = fs.nextInt();
-        final int[][] edges = new int[n - 1][2];
-        for (int i = 0; i < (n - 1); i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        int n = fs.nextInt();
+        List<Integer> list = new ArrayList<>();
+        while (n > 0) {
+            list.add(n % 10);
+            n /= 10;
         }
-        g = packG(edges, n);
-        size = new int[n];
-        res = new long[n];
-        dfs(0, -1, 0);
-        dfs2(0, -1);
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            sb.append(res[i]);
-            sb.append('\n');
+        list.sort(Comparator.naturalOrder());
+        long res = 0;
+        while (!list.isEmpty()) {
+            for (int i = 1; i < list.size(); i++) {
+                if (list.get(0) == 0 || list.get(i) == 0) {
+                    continue;
+                }
+                long l = 0;
+                long r = 0;
+                for (int j = 0; j < i; j++) {
+                    l = l * 10 + list.get(j);
+                }
+                for (int j = i; j < list.size(); j++) {
+                    r = r * 10 + list.get(j);
+                }
+                res = Math.max(res, l * r);
+            }
+            list = nextPermutation(list);
         }
-        System.out.println(sb);
+        System.out.println(res);
     }
 
-    private static void dfs(int u, int v, int d) {
-        res[0] += d;
-        size[u] = 1;
-        for (int next : g[u]) {
-            if (next != v) {
-                dfs(next, u, d + 1);
-                size[u] += size[next];
+    private static List<Integer> nextPermutation(List<Integer> perm) {
+        int swapIdx = -1;
+        final int n = perm.size();
+        for (int i = n - 1; i >= 1; i--) {
+            if (perm.get(i - 1) < perm.get(i)) {
+                swapIdx = i - 1;
+                break;
             }
         }
-    }
-
-    private static void dfs2(int u, int v) {
-        for (int next : g[u]) {
-            if (next != v) {
-                res[next] = res[u] + n - (2L * size[next]);
-                dfs2(next, u);
+        if (swapIdx == -1) {
+            return Collections.emptyList();
+        }
+        for (int i = n - 1; i >= 1; i--) {
+            if (perm.get(i) > perm.get(swapIdx)) {
+                Collections.swap(perm, swapIdx, i);
+                break;
             }
         }
-    }
-
-    private static int[][] packG(int[][] edges, int n) {
-        final int[][] g = new int[n][];
-        final int[] size = new int[n];
-        for (int[] edge : edges) {
-            ++size[edge[0]];
-            ++size[edge[1]];
-        }
-        for (int i = 0; i < n; i++) {
-            g[i] = new int[size[i]];
-        }
-        for (int[] edge : edges) {
-            g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
-        }
-        return g;
+        Collections.reverse(perm.subList(swapIdx + 1, perm.size()));
+        return perm;
     }
 
     static final class Utils {
