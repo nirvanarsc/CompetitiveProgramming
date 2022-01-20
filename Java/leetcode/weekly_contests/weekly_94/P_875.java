@@ -2,18 +2,13 @@ package leetcode.weekly_contests.weekly_94;
 
 public class P_875 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int minEatingSpeed(int[] piles, int H) {
-        int max = Integer.MIN_VALUE;
-        for (int p : piles) {
-            max = Math.max(p, max);
-        }
-
-        int lo = 1, hi = max;
+    public int minEatingSpeed(int[] piles, int h) {
+        int lo = 1;
+        int hi = (int) 1e9;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
             final int curr = getMid(piles, mid);
-            if (curr > H) {
+            if (curr > h) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -25,8 +20,7 @@ public class P_875 {
     private static int getMid(int[] piles, int mid) {
         int res = 0;
         for (int p : piles) {
-            res += p / mid;
-            res += p % mid == 0 ? 0 : 1;
+            res += (p + mid - 1) / mid;
         }
         return res;
     }

@@ -4,17 +4,107 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class E {
 
+    private static final class BIT {
+        private final int n;
+        private final long[] data;
+
+        private BIT(int n) {
+            this.n = n;
+            data = new long[n + 1];
+        }
+
+        public void add(int idx, long val) {
+            for (int i = idx + 1; i <= n; i += lsb(i)) {
+                data[i] = (data[i] + val) % MOD;
+            }
+        }
+
+        public long sum(int l, int r) {
+            return sum(r) - sum(l - 1);
+        }
+
+        private long sum(int idx) {
+            long res = 0;
+            for (int i = idx + 1; i > 0; i -= lsb(i)) {
+                res = (res + data[i]) % MOD;
+            }
+            return res;
+        }
+
+        private static int lsb(int i) {
+            return i & -i;  // zeroes all the bits except the least significant one
+        }
+
+        // get k-th element
+        public int getKth(int k) {
+            int lo = 0;
+            int hi = n;
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (k > sum(mid)) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+            return lo;
+        }
+    }
+
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final int[] sorted = arr.clone();
+        Utils.shuffleSort(sorted);
+        final Map<Integer, Integer> map = new HashMap<>();
+        int idx = 0;
+        for (int num : sorted) {
+            final Integer curr = map.get(num);
+            if (curr == null) {
+                map.put(num, idx++);
+            }
         }
+        final BIT bit = new BIT(idx);
+        final long[] p = new long[n];
+        p[0] = 1;
+        for (int i = 1; i < n; i++) {
+            p[i] = (p[i - 1] * 2L) % MOD;
+        }
+        long res = 0;
+        final long inv = modPow(2, MOD - 2);
+        long invP = 1;
+        for (int i = 0; i < n; i++) {
+            final int cIdx = map.get(arr[i]);
+            if (i > 0) {
+                final long count = bit.sum(0, cIdx);
+                final long add = (count * p[i - 1]) % MOD;
+                res = (res + add) % MOD;
+            }
+            bit.add(cIdx, invP);
+            invP = (invP * inv) % MOD;
+        }
+        System.out.println(res);
+    }
+
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {
