@@ -3,19 +3,18 @@ package leetcode.medium;
 public class P_134 {
 
     public int canCompleteCircuit(int[] gas, int[] cost) {
-        int totalGas = 0;
-        int totalCost = 0;
+        int sum = 0;
         int curr = 0;
         int res = 0;
-        for (int i = 0; i < gas.length; i++) {
-            totalGas += gas[i];
-            totalCost += cost[i];
+        final int n = gas.length;
+        for (int i = 0; i < n; i++) {
+            sum += gas[i] - cost[i];
             curr += gas[i] - cost[i];
             if (curr < 0) {
                 res = i + 1;
                 curr = 0;
             }
         }
-        return (totalGas < totalCost) ? -1 : res;
+        return sum < 0 ? -1 : res;
     }
 }
