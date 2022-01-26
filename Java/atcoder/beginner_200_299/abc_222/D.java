@@ -18,24 +18,20 @@ public final class D {
         final int n = fs.nextInt();
         final int[] a = fs.nextIntArray(n);
         final int[] b = fs.nextIntArray(n);
-        seen = new boolean[n][3001];
-        dp = new int[n][3001];
-        System.out.println(dfs(a, b, 0, 0));
-    }
-
-    private static int dfs(int[] a, int[] b, int idx, int prev) {
-        if (idx == a.length) {
-            return 1;
+        seen = new boolean[n + 1][3001];
+        dp = new int[n + 1][3001];
+        dp[0][0] = 1;
+        for (int i = 0; i <= n; i++) {
+            for (int prev = 0; prev < 3000; prev++) {
+                dp[i][prev + 1] = (dp[i][prev + 1] + dp[i][prev]) % MOD;
+            }
+            if (i < n) {
+                for (int next = a[i]; next <= b[i]; next++) {
+                    dp[i + 1][next] = (dp[i + 1][next] + dp[i][next]) % MOD;
+                }
+            }
         }
-        if (seen[idx][prev]) {
-            return dp[idx][prev];
-        }
-        int res = 0;
-        for (int next = Math.max(a[idx], prev); next <= b[idx]; next++) {
-            res = (res + dfs(a, b, idx + 1, next)) % MOD;
-        }
-        seen[idx][prev] = true;
-        return dp[idx][prev] = res;
+        System.out.println(dp[n][3000]);
     }
 
     static final class Utils {
