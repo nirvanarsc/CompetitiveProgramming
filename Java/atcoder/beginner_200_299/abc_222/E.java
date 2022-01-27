@@ -3,17 +3,100 @@ package atcoder.beginner_200_299.abc_222;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public final class E {
 
+    private static final int MOD = 998244353;
+
+    static List<List<int[]>> g;
+    static int[] count;
+    static boolean[][] seen;
+    static int[][] dp;
+    static boolean ok;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int k = fs.nextInt();
+        final int[] arr = fs.nextIntArray(m);
+        g = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            g.add(new ArrayList<>());
+        }
+        for (int i = 0; i < (n - 1); i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(new int[] { v, i });
+            g.get(v).add(new int[] { u, i });
+        }
+        count = new int[n - 1];
+        for (int i = 1; i < m; i++) {
+            ok = false;
+            dfs(arr[i - 1] - 1, -1, arr[i] - 1);
+        }
+        int t = 0;
+        for (int i = 0; i < (n - 1); i++) {
+            t += count[i];
+        }
+        if ((t - k) % 2 != 0 || t < k) {
+            System.out.println(0);
+            return;
+        }
+        final int tar = (t - k) / 2;
+        int zeroes = 0;
+        final List<Integer> f = new ArrayList<>();
+        for (int num : count) {
+            if (num > 0) {
+                f.add(num);
+            } else {
+                zeroes++;
+            }
+        }
+        seen = new boolean[f.size()][tar + 1];
+        dp = new int[f.size()][tar + 1];
+        final int curr = dfs2(0, f, tar);
+        long p = 1;
+        for (int i = 0; i < zeroes; i++) {
+            p = (p * 2L) % MOD;
+        }
+        System.out.println((p * curr) % MOD);
+    }
+
+    private static int dfs2(int idx, List<Integer> list, int tar) {
+        if (idx == list.size()) {
+            return tar == 0 ? 1 : 0;
+        }
+        if (seen[idx][tar]) {
+            return dp[idx][tar];
+        }
+        int res = 0;
+        if (list.get(idx) <= tar) {
+            res = (res + dfs2(idx + 1, list, tar - list.get(idx))) % MOD;
+        }
+        res = (res + dfs2(idx + 1, list, tar)) % MOD;
+        seen[idx][tar] = true;
+        return dp[idx][tar] = res;
+    }
+
+    private static void dfs(int u, int p, int t) {
+        if (u == t) {
+            ok = true;
+            return;
+        }
+        for (int[] v : g.get(u)) {
+            if (v[0] != p) {
+                count[v[1]]++;
+                dfs(v[0], u, t);
+                if (ok) {
+                    break;
+                }
+                count[v[1]]--;
+            }
         }
     }
 
