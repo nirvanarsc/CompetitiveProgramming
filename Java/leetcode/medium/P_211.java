@@ -1,18 +1,18 @@
 package leetcode.medium;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass" })
 public class P_211 {
 
-    static class WordDictionary {
+    class WordDictionary {
 
-        static class Trie {
+        class Trie {
             Trie[] children = new Trie[26];
             boolean isWord;
         }
 
         Trie root;
 
-        WordDictionary() {
+        public WordDictionary() {
             root = new Trie();
         }
 
@@ -28,21 +28,22 @@ public class P_211 {
         }
 
         public boolean search(String word) {
-            return dfs(word, 0, root);
+            return dfs(word.toCharArray(), 0, root);
         }
 
-        private static boolean dfs(String word, int index, Trie iter) {
+        private boolean dfs(char[] w, int idx, Trie iter) {
             if (iter == null) { return false; }
-            if (index == word.length()) { return iter.isWord; }
-            boolean res = false;
-            if (word.charAt(index) == '.') {
+            if (idx == w.length) { return iter.isWord; }
+            if (w[idx] == '.') {
                 for (Trie child : iter.children) {
-                    res |= dfs(word, index + 1, child);
+                    if (dfs(w, idx + 1, child)) {
+                        return true;
+                    }
                 }
-            } else {
-                res = dfs(word, index + 1, iter.children[word.charAt(index) - 'a']);
+                return false;
             }
-            return res;
+            //noinspection TailRecursion
+            return dfs(w, idx + 1, iter.children[w[idx] - 'a']);
         }
     }
 }
