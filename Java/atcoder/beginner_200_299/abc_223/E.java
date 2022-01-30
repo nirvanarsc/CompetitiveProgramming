@@ -10,11 +10,71 @@ public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final long x = fs.nextInt();
+        final long y = fs.nextInt();
+        final long[] arr = fs.nextLongArray(3);
+        final int[][] dirs = { { 0, 1, 2 }, { 1, 0, 2 }, { 2, 0, 1 } };
+        // 1 up 2 down
+        for (int[] dir : dirs) {
+            final long dx = x - (arr[dir[0]] + y - 1) / y;
+            if (dx < 1) {
+                continue;
+            }
+            final long dy = y - (arr[dir[1]] + dx - 1) / dx;
+            if (dy < 1) {
+                continue;
+            }
+            if (dy * dx >= arr[dir[2]]) {
+                System.out.println("Yes");
+                return;
+            }
         }
+        // 3 up
+        for (int[] dir : dirs) {
+            final long dx1 = x - (arr[dir[0]] + y - 1) / y;
+            if (dx1 < 1) {
+                continue;
+            }
+            final long dx2 = dx1 - (arr[dir[1]] + y - 1) / y;
+            if (dx2 < 1) {
+                continue;
+            }
+            if (y * dx2 >= arr[dir[2]]) {
+                System.out.println("Yes");
+                return;
+            }
+        }
+        // 1 down 2 up
+        for (int[] dir : dirs) {
+            final long dy = y - (arr[dir[0]] + x - 1) / x;
+            if (dy < 1) {
+                continue;
+            }
+            final long dx = x - (arr[dir[1]] + dy - 1) / dy;
+            if (dx < 1) {
+                continue;
+            }
+            if (dy * dx >= arr[dir[2]]) {
+                System.out.println("Yes");
+                return;
+            }
+        }
+        // 3 down
+        for (int[] dir : dirs) {
+            final long dy1 = y - (arr[dir[0]] + x - 1) / x;
+            if (dy1 < 1) {
+                continue;
+            }
+            final long dy2 = dy1 - (arr[dir[1]] + x - 1) / x;
+            if (dy2 < 1) {
+                continue;
+            }
+            if (x * dy2 >= arr[dir[2]]) {
+                System.out.println("Yes");
+                return;
+            }
+        }
+        System.out.println("No");
     }
 
     static final class Utils {

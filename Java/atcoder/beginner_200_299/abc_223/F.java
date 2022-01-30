@@ -8,13 +8,90 @@ import java.util.Random;
 
 public final class F {
 
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int[] curr = new int[2];
+
+        SegTree(int leftMost, int rightMost, int[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                curr[0] = curr[1] = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
+            }
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            curr = combine(left.curr, right.curr);
+        }
+
+        private static int[] combine(int[] l, int[] r) {
+            final int sum = l[0] + r[0];
+            final int d = Math.min(l[1], l[0] + r[1]);
+            return new int[] { sum, d };
+        }
+
+        private int[] query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return new int[] { 0, (int) 1e9 };
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return curr;
+            }
+            return combine(left.query(l, r), right.query(l, r));
+        }
+
+        private void update(int idx, int val) {
+            if (leftMost == rightMost) {
+                curr[0] = curr[1] = val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int q = fs.nextInt();
+        final int[] arr = new int[n];
+        final char[] w = fs.next().toCharArray();
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            arr[i] = w[i] == '(' ? 1 : -1;
         }
+        final SegTree st = new SegTree(0, n - 1, arr);
+        for (int i = 0; i < q; i++) {
+            final int t = fs.nextInt();
+            final int l = fs.nextInt() - 1;
+            final int r = fs.nextInt() - 1;
+            if (t == 1) {
+                final int ll = arr[l];
+                final int rr = arr[r];
+                arr[l] = rr;
+                arr[r] = ll;
+                st.update(l, arr[l]);
+                st.update(r, arr[r]);
+            } else {
+                final int[] curr = st.query(l, r);
+                sb.append(curr[0] == 0 && curr[1] == 0 ? "Yes\n" : "No\n");
+            }
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {
