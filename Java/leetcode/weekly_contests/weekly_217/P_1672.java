@@ -4,9 +4,9 @@ public class P_1672 {
 
     public int maximumWealth(int[][] accounts) {
         int res = 0;
-        for (int[] row: accounts) {
+        for (int[] row : accounts) {
             int curr = 0;
-            for (int num: row) {
+            for (int num : row) {
                 curr += num;
             }
             res = Math.max(res, curr);
