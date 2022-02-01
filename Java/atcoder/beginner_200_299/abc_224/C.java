@@ -10,11 +10,25 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final long[][] arr = new long[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new long[] { fs.nextLong(), fs.nextLong() };
         }
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    final long[] d = new long[3];
+                    // 1/2 * (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)
+                    if ((arr[j][0] - arr[i][0]) * (arr[k][1] - arr[i][1])
+                        - (arr[k][0] - arr[i][0]) * (arr[j][1] - arr[i][1]) != 0) {
+                        res++;
+                    }
+                }
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
