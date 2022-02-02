@@ -3,18 +3,67 @@ package atcoder.beginner_200_299.abc_224;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int m = fs.nextInt();
+        final int[] target = new int[9];
+        for (int i = 0; i < 9; i++) {
+            target[i] = i;
         }
+        target[8] = -1;
+        final List<List<Integer>> g = new ArrayList<>(9);
+        for (int i = 0; i < 9; i++) {
+            g.add(new ArrayList<>());
+        }
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(v);
+            g.get(v).add(u);
+        }
+        final int[] start = new int[9];
+        Arrays.fill(start, -1);
+        for (int i = 0; i < 8; i++) {
+            start[fs.nextInt() - 1] = i;
+        }
+        final Deque<int[]> dq = new ArrayDeque<>();
+        dq.offerLast(start);
+        final Set<String> seen = new HashSet<>();
+        for (int level = 0; !dq.isEmpty(); level++) {
+            for (int size = dq.size(); size > 0; size--) {
+                final int[] curr = dq.removeFirst();
+                final String hash = Arrays.toString(curr);
+                if (!seen.add(hash)) {
+                    continue;
+                }
+                if (Arrays.equals(target, curr)) {
+                    System.out.println(level);
+                    return;
+                }
+                for (int i = 0; i < 9; i++) {
+                    if (curr[i] == -1) {
+                        for (int v : g.get(i)) {
+                            final int[] next = curr.clone();
+                            next[v] = -1;
+                            next[i] = curr[v];
+                            dq.offerLast(next);
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println(-1);
     }
 
     static final class Utils {

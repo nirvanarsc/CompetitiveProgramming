@@ -19,7 +19,6 @@ public final class C {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 for (int k = j + 1; k < n; k++) {
-                    final long[] d = new long[3];
                     // 1/2 * (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1)
                     if ((arr[j][0] - arr[i][0]) * (arr[k][1] - arr[i][1])
                         - (arr[k][0] - arr[i][0]) * (arr[j][1] - arr[i][1]) != 0) {
