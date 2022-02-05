@@ -5,9 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -19,23 +17,23 @@ public final class E {
         final int w = fs.nextInt();
         final int n = fs.nextInt();
         final TreeMap<Integer, List<int[]>> map = new TreeMap<>();
+        final int[] maxr = new int[h];
+        final int[] maxc = new int[w];
+        final int[] res = new int[n];
         for (int i = 0; i < n; i++) {
-            final int r = fs.nextInt();
-            final int c = fs.nextInt();
+            final int r = fs.nextInt() - 1;
+            final int c = fs.nextInt() - 1;
             final int a = fs.nextInt();
             map.computeIfAbsent(-a, val -> new ArrayList<>()).add(new int[] { r, c, i });
         }
-        final int[] res = new int[n];
-        final Map<Integer, Integer> maxr = new HashMap<>();
-        final Map<Integer, Integer> maxc = new HashMap<>();
         for (List<int[]> vals : map.values()) {
             for (int[] p : vals) {
-                res[p[2]] = Math.max(maxr.getOrDefault(p[0], 0), maxc.getOrDefault(p[1], 0));
+                res[p[2]] = Math.max(maxr[p[0]], maxc[p[1]]);
             }
             for (int[] p : vals) {
                 final int curr = res[p[2]];
-                maxr.merge(p[0], curr + 1, Math::max);
-                maxc.merge(p[1], curr + 1, Math::max);
+                maxr[p[0]] = Math.max(maxr[p[0]], curr + 1);
+                maxc[p[1]] = Math.max(maxc[p[1]], curr + 1);
             }
         }
         final StringBuilder sb = new StringBuilder();

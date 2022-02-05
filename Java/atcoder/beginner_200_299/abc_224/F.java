@@ -8,13 +8,35 @@ import java.util.Random;
 
 public final class F {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final char[] w = fs.next().toCharArray();
+        final int n = w.length;
+        long res = 0;
+        long c = 1;
+        final long inv2 = modPow(2, MOD - 2);
+        for (int i = n - 1; i >= 0; i--) {
+            res = (res + (c * (w[i] - '0'))) % MOD;
+            c = ((c * 10 + 1) * inv2) % MOD;
         }
+        for (int i = 0; i < n - 1; i++) {
+            res = (res * 2) % MOD;
+        }
+        System.out.println(res);
+    }
+
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {
