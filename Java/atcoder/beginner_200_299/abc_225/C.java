@@ -10,11 +10,32 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int[][] g = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            g[i] = fs.nextIntArray(m);
         }
+        final int r = g[0][0] % 7 == 0 ? 7 : g[0][0] % 7;
+        if (r + m - 1 > 7) {
+            System.out.println("No");
+            return;
+        }
+        for (int i = 1; i < m; i++) {
+            if (g[0][i] != g[0][i - 1] + 1) {
+                System.out.println("No");
+                return;
+            }
+        }
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (g[i][j] != g[i - 1][j] + 7) {
+                    System.out.println("No");
+                    return;
+                }
+            }
+        }
+        System.out.println("Yes");
     }
 
     static final class Utils {

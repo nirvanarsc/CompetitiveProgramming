@@ -10,11 +10,16 @@ public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final char[] w = fs.next().toCharArray();
+        int uniq = 0;
+        final int[] f = { 0, 6, 2, 1 };
+        final int[] map = new int[26];
+        for (char c : w) {
+            if (map[c - 'a']++ == 0) {
+                uniq++;
+            }
         }
+        System.out.println(f[1] / f[uniq]);
     }
 
     static final class Utils {

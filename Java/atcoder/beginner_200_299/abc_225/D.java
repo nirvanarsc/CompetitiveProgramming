@@ -6,15 +6,61 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
+@SuppressWarnings("ConstantConditions")
 public final class D {
+
+    private static class ListNode {
+        int val;
+        ListNode next;
+        ListNode prev;
+
+        ListNode(int val) {
+            this.val = val;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int q = fs.nextInt();
+        final ListNode[] arr = new ListNode[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new ListNode(i + 1);
         }
+        final StringBuilder res = new StringBuilder();
+        for (int i = 0; i < q; i++) {
+            final int t = fs.nextInt();
+            if (t == 1) {
+                final int l = fs.nextInt() - 1;
+                final int r = fs.nextInt() - 1;
+                arr[l].next = arr[r];
+                arr[r].prev = arr[l];
+            } else if (t == 2) {
+                final int l = fs.nextInt() - 1;
+                final int r = fs.nextInt() - 1;
+                arr[l].next = null;
+                arr[r].prev = null;
+            } else {
+                final int u = fs.nextInt() - 1;
+                int size = 0;
+                final StringBuilder sb = new StringBuilder();
+                ListNode l = arr[u];
+                while (l.prev != null) {
+                    l = l.prev;
+                }
+                while (l != null) {
+                    sb.append(l.val);
+                    sb.append(' ');
+                    size++;
+                    l = l.next;
+                }
+                res.append(size);
+                res.append(' ');
+                res.append(sb);
+                res.append('\n');
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
