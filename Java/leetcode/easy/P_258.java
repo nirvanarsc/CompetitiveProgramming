@@ -2,17 +2,20 @@ package leetcode.easy;
 
 public class P_258 {
 
-    @SuppressWarnings("TailRecursion")
     public int addDigits(int num) {
-        if (num < 10) {
-            return num;
+        while (num > 9) {
+            num = f(num);
         }
+        return num;
+    }
+
+    private static int f(int num) {
         int res = 0;
         while (num > 0) {
             res += num % 10;
             num /= 10;
         }
-        return addDigits(res);
+        return res;
     }
 
     // https://en.wikipedia.org/wiki/Digital_root

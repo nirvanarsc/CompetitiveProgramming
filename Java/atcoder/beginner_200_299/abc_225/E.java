@@ -4,17 +4,82 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.TreeSet;
 
 public final class E {
 
+    private static class Frac implements Comparable<Frac> {
+        long a, b;
+
+        Frac(long a, long b) {
+            if (b < 0) {
+                a *= -1;
+                b *= -1;
+            }
+            final long g = gcd(a, b);
+            this.a = a / g;
+            this.b = b / g;
+        }
+
+        private static long gcd(long a, long b) {
+            return b == 0 ? a : gcd(b, a % b);
+        }
+
+        @Override
+        public int compareTo(Frac o) {
+            return Long.compare(a * o.b, o.a * b);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof Frac)) { return false; }
+            return compareTo((Frac) o) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(a, b);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final Frac[] lf = new Frac[n];
+        final Frac[] rf = new Frac[n];
+        final TreeSet<Frac> ts = new TreeSet<>();
+        final Map<Frac, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            final int x = fs.nextInt();
+            final int y = fs.nextInt();
+            lf[i] = new Frac(x - 1, y);
+            rf[i] = new Frac(x, y - 1);
+            ts.add(lf[i]);
+            ts.add(rf[i]);
         }
+        int idx = 0;
+        for (Frac f : ts) {
+            map.put(f, idx++);
+        }
+        final int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new int[] { map.get(lf[i]), map.get(rf[i]) };
+        }
+        Arrays.sort(arr, Comparator.comparingInt(a -> a[1]));
+        int max = -1;
+        int res = 0;
+        for (int[] curr : arr) {
+            if (curr[0] >= max) {
+                max = curr[1];
+                res++;
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
