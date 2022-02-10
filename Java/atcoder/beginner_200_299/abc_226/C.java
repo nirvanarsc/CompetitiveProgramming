@@ -3,18 +3,37 @@ package atcoder.beginner_200_299.abc_226;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Random;
 
 public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] t = new int[n];
+        final int[][] moves = new int[n][];
+        for (int i = 0; i < n; i++) {
+            t[i] = fs.nextInt();
+            moves[i] = fs.nextIntArray(fs.nextInt());
         }
+        long res = 0;
+        final boolean[] seen = new boolean[n];
+        final Deque<Integer> dq = new ArrayDeque<>();
+        dq.offerLast(n - 1);
+        while (!dq.isEmpty()) {
+            final int u = dq.removeFirst();
+            if (!seen[u]) {
+                seen[u] = true;
+                res += t[u];
+                for (int v : moves[u]) {
+                    dq.offerLast(v - 1);
+                }
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

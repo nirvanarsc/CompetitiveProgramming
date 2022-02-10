@@ -8,13 +8,88 @@ import java.util.Random;
 
 public final class E {
 
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+                size[rootQ] = 0;
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+                size[rootP] = 0;
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
+
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final UnionFind uf = new UnionFind(n);
+        final int[] e = new int[n];
+        final int[][] edges = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            uf.union(u, v);
+            edges[i] = new int[] { u, v };
         }
+        for (int i = 0; i < m; i++) {
+            e[uf.find(edges[i][0])]++;
+        }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            if (i == uf.find(i)) {
+                if (e[i] == uf.size[i]) {
+                    if (res == 0) {
+                        res = 2;
+                    } else {
+                        res = (res * 2) % MOD;
+                    }
+                } else {
+                    System.out.println(0);
+                    return;
+                }
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

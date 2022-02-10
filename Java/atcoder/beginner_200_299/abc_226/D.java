@@ -4,17 +4,35 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public final class D {
 
+    private static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[][] p = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            p[i] = new int[] { fs.nextInt(), fs.nextInt() };
         }
+        final Set<String> seen = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    final int dx = p[j][0] - p[i][0];
+                    final int dy = p[j][1] - p[i][1];
+                    final int g = gcd(Math.abs(dx), Math.abs(dy));
+                    seen.add(dx / g + "," + dy / g);
+                }
+            }
+        }
+        System.out.println(seen.size());
     }
 
     static final class Utils {
