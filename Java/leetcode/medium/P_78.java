@@ -7,11 +7,12 @@ public final class P_78 {
 
     public static List<List<Integer>> subsetsBitwise(int[] nums) {
         final List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < 1 << nums.length; i++) {
+        final int n = nums.length;
+        for (int mask = 0; mask < 1 << n; mask++) {
             final List<Integer> curr = new ArrayList<>();
-            for (int idx = 0; (1 << idx) <= i; idx++) {
-                if ((i & (1 << idx)) != 0) {
-                    curr.add(nums[idx]);
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    curr.add(nums[i]);
                 }
             }
             res.add(curr);
