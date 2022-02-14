@@ -4,17 +4,42 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int k = fs.nextInt();
+        final int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = new int[] { fs.nextInt() + fs.nextInt() + fs.nextInt(), i };
         }
+        Arrays.sort(arr, Comparator.comparingInt(a -> a[0]));
+        final boolean[] res = new boolean[n];
+        for (int[] p : arr) {
+            res[p[1]] = n - upperBound(arr, n, p[0] + 300) <= k;
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(res[i] ? "Yes\n" : "No\n");
+        }
+        System.out.println(sb);
+    }
+
+    private static int upperBound(int[][] arr, int n, int target) {
+        int lo = 0, hi = n - 1;
+        while (lo < hi) {
+            final int mid = lo + hi + 1 >>> 1;
+            if (arr[mid][0] > target) {
+                hi = mid - 1;
+            } else {
+                lo = mid;
+            }
+        }
+        return lo;
     }
 
     static final class Utils {

@@ -8,13 +8,44 @@ import java.util.Random;
 
 public final class E {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int p = phi(MOD);
+        final long n = fs.nextLong();
+        final long k = fs.nextLong();
+        final long m = fs.nextLong();
+        System.out.println(modpow(m, modpow(k, n, p), MOD));
+    }
+
+    // https://cp-algorithms.com/algebra/phi-function.html
+    private static int phi(int n) {
+        int result = n;
+        for (int p = 2; p * p <= n; p++) {
+            if (n % p == 0) {
+                while (n % p == 0) {
+                    n /= p;
+                }
+                result -= result / p;
+            }
         }
+        if (n > 1) {
+            result -= result / n;
+        }
+        return result;
+    }
+
+    private static long modpow(long a, long n, int mod) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                res = (res * a) % mod;
+            }
+            a = (a * a) % mod;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {

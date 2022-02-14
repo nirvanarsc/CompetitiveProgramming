@@ -4,17 +4,39 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeSet;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int q = fs.nextInt();
+        final int n = 1 << 20;
+        final TreeSet<Integer> ts = new TreeSet<>();
+        for (int i = 0; i < n; i++) {
+            ts.add(i);
         }
+        final StringBuilder sb = new StringBuilder();
+        final Map<Integer, Long> map = new HashMap<>();
+        for (int i = 0; i < q; i++) {
+            final int t = fs.nextInt();
+            final long v = fs.nextLong();
+            final int x = (int) (v % n);
+            if (t == 1) {
+                Integer c = ts.ceiling(x);
+                if (c == null) {
+                    c = ts.first();
+                }
+                map.put(c, v);
+                ts.remove(c);
+            } else {
+                sb.append(map.getOrDefault(x, -1L)).append('\n');
+            }
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {
