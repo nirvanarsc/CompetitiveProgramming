@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_228;
+package atcoder.beginner_200_299.abc_229;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,50 +6,23 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
-
-    private static final int MOD = 998244353;
+public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int p = phi(MOD);
-        final long n = fs.nextLong();
-        final long k = fs.nextLong();
-        final long m = fs.nextLong();
-        if (m % MOD == 0) {
-            System.out.println(0);
-            return;
-        }
-        System.out.println(modpow(m % MOD, modpow(k % p, n, p), MOD));
-    }
-
-    // https://cp-algorithms.com/algebra/phi-function.html
-    private static int phi(int n) {
-        int result = n;
-        for (int p = 2; p * p <= n; p++) {
-            if (n % p == 0) {
-                while (n % p == 0) {
-                    n /= p;
-                }
-                result -= result / p;
+        final char[] w = fs.next().toCharArray();
+        final int n = w.length;
+        int k = fs.nextInt();
+        int res = 0;
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            k -= w[i] == '.' ? 1 : 0;
+            while (k < 0) {
+                k += w[j++] == '.' ? 1 : 0;
             }
+            res = Math.max(res, i - j + 1);
         }
-        if (n > 1) {
-            result -= result / n;
-        }
-        return result;
-    }
-
-    private static long modpow(long a, long n, int mod) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = (res * a) % mod;
-            }
-            a = (a * a) % mod;
-            n /= 2;
-        }
-        return res;
+        System.out.println(res);
     }
 
     static final class Utils {

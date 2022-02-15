@@ -1,55 +1,101 @@
-package atcoder.beginner_200_299.abc_228;
+package atcoder.beginner_200_299.abc_229;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public final class E {
 
-    private static final int MOD = 998244353;
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+                size[rootQ] = 0;
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+                size[rootP] = 0;
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int p = phi(MOD);
-        final long n = fs.nextLong();
-        final long k = fs.nextLong();
-        final long m = fs.nextLong();
-        if (m % MOD == 0) {
-            System.out.println(0);
-            return;
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<List<Integer>> g = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            g.add(new ArrayList<>());
         }
-        System.out.println(modpow(m % MOD, modpow(k % p, n, p), MOD));
-    }
-
-    // https://cp-algorithms.com/algebra/phi-function.html
-    private static int phi(int n) {
-        int result = n;
-        for (int p = 2; p * p <= n; p++) {
-            if (n % p == 0) {
-                while (n % p == 0) {
-                    n /= p;
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g.get(u).add(v);
+            g.get(v).add(u);
+        }
+        final int[] res = new int[n];
+        final boolean[] alive = new boolean[n];
+        final UnionFind uf = new UnionFind(n);
+        int cc = 0;
+        for (int u = n - 1; u >= 0; u--) {
+            cc++;
+            for (int v : g.get(u)) {
+                if (alive[v]) {
+                    if (uf.find(u) != uf.find(v)) {
+                        uf.union(u, v);
+                        cc--;
+                    }
                 }
-                result -= result / p;
+            }
+            alive[u] = true;
+            if (u > 0) {
+                res[u - 1] = cc;
             }
         }
-        if (n > 1) {
-            result -= result / n;
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(res[i]).append('\n');
         }
-        return result;
-    }
-
-    private static long modpow(long a, long n, int mod) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = (res * a) % mod;
-            }
-            a = (a * a) % mod;
-            n /= 2;
-        }
-        return res;
+        System.out.println(sb);
     }
 
     static final class Utils {

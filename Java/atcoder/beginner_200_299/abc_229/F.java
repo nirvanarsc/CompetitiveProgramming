@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_228;
+package atcoder.beginner_200_299.abc_229;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,50 +6,47 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
+public final class F {
 
-    private static final int MOD = 998244353;
+    static boolean[][][] seen;
+    static long[][][] dp;
+    static int n;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int p = phi(MOD);
-        final long n = fs.nextLong();
-        final long k = fs.nextLong();
-        final long m = fs.nextLong();
-        if (m % MOD == 0) {
-            System.out.println(0);
-            return;
+        n = fs.nextInt();
+        final int[] a = fs.nextIntArray(n);
+        final int[] b = fs.nextIntArray(n);
+        long s = 0;
+        for (int num : a) {
+            s += num;
         }
-        System.out.println(modpow(m % MOD, modpow(k % p, n, p), MOD));
+        for (int num : b) {
+            s += num;
+        }
+        seen = new boolean[n][2][2];
+        dp = new long[n][2][2];
+        System.out.println(s - Math.max(a[0] + dfs(a, b, 1, 1, 1),
+                                        dfs(a, b, 1, 0, 0)));
     }
 
-    // https://cp-algorithms.com/algebra/phi-function.html
-    private static int phi(int n) {
-        int result = n;
-        for (int p = 2; p * p <= n; p++) {
-            if (n % p == 0) {
-                while (n % p == 0) {
-                    n /= p;
-                }
-                result -= result / p;
-            }
+    private static long dfs(int[] a, int[] b, int idx, int prev, int s) {
+        if (idx == a.length) {
+            return s == prev ? 0 : b[idx - 1];
         }
-        if (n > 1) {
-            result -= result / n;
+        if (seen[idx][prev][s]) {
+            return dp[idx][prev][s];
         }
-        return result;
-    }
-
-    private static long modpow(long a, long n, int mod) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = (res * a) % mod;
-            }
-            a = (a * a) % mod;
-            n /= 2;
+        long res = 0;
+        if (prev == 0) {
+            res = Math.max(res, a[idx] + b[idx - 1] + dfs(a, b, idx + 1, 1, s));
+            res = Math.max(res, dfs(a, b, idx + 1, 0, s));
+        } else {
+            res = Math.max(res, a[idx] + dfs(a, b, idx + 1, 1, s));
+            res = Math.max(res, b[idx - 1] + dfs(a, b, idx + 1, 0, s));
         }
-        return res;
+        seen[idx][prev][s] = true;
+        return dp[idx][prev][s] = res;
     }
 
     static final class Utils {

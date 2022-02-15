@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_228;
+package atcoder.beginner_200_299.abc_229;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,50 +6,20 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
-
-    private static final int MOD = 998244353;
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int p = phi(MOD);
-        final long n = fs.nextLong();
-        final long k = fs.nextLong();
-        final long m = fs.nextLong();
-        if (m % MOD == 0) {
-            System.out.println(0);
-            return;
+        final char[][] g = new char[2][2];
+        g[0] = fs.next().toCharArray();
+        g[1] = fs.next().toCharArray();
+        if (g[0][0] == '#' && g[1][1] == '#' && g[0][1] == '.' && g[1][0] == '.') {
+            System.out.println("No");
+        } else if (g[0][1] == '#' && g[1][0] == '#' && g[0][0] == '.' && g[1][1] == '.') {
+            System.out.println("No");
+        } else {
+            System.out.println("Yes");
         }
-        System.out.println(modpow(m % MOD, modpow(k % p, n, p), MOD));
-    }
-
-    // https://cp-algorithms.com/algebra/phi-function.html
-    private static int phi(int n) {
-        int result = n;
-        for (int p = 2; p * p <= n; p++) {
-            if (n % p == 0) {
-                while (n % p == 0) {
-                    n /= p;
-                }
-                result -= result / p;
-            }
-        }
-        if (n > 1) {
-            result -= result / n;
-        }
-        return result;
-    }
-
-    private static long modpow(long a, long n, int mod) {
-        long res = 1;
-        while (n > 0) {
-            if (n % 2 == 1) {
-                res = (res * a) % mod;
-            }
-            a = (a * a) % mod;
-            n /= 2;
-        }
-        return res;
     }
 
     static final class Utils {
@@ -128,7 +98,7 @@ public final class E {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();
