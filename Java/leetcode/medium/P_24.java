@@ -2,6 +2,7 @@ package leetcode.medium;
 
 import utils.DataStructures.ListNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_24 {
 
     public ListNode swapPairs(ListNode head) {
