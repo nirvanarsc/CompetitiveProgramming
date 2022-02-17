@@ -15,27 +15,15 @@ public final class E {
         long prev = n;
         long i;
         for (i = 1; i * i <= n; i++) {
-            long p = n / i;
-            res += n / i;
-            //   System.out.println((prev - p) * (i - 1) + " " + (prev - p) + " " + (i - 1));
-            if (i * i == n) {
-                res += i - 1;
-                break;
-            }
+            final long p = n / i;
+            res += p;
             res += (prev - p) * (i - 1);
             prev = p;
-
         }
-        if(i * i != n)
-//        res += (prev - n / i) * (i - 1);
-        //res += (n - i + 1);
-//        long r2 = 0;
-//        for (int j = 1; j <= n; j++) {
-//            System.out.print(n / j + " (" + j + ") ");
-//            r2 += n/ j;
-//        }
-//        System.out.println();
-//        System.out.println(res + " " + r2);
+        final long sqrt = i - 1;
+        if (sqrt <= n - sqrt * sqrt) {
+            res += (prev - n / i) * sqrt;
+        }
         System.out.println(res);
     }
 

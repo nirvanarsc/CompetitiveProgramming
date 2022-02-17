@@ -4,14 +4,32 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class F {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        System.out.println(6878320947841l - 6878321457898l);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final long[] s = new long[n];
+        s[0] = arr[0];
+        for (int i = 1; i < n; i++) {
+            s[i] = s[i - 1] + arr[i];
+        }
+        final Map<Long, Integer> p = new HashMap<>();
+        final long[] dp = new long[n + 1];
+        dp[1] = 1;
+        for (int i = 0; i < n - 1; i++) {
+            final long curr = (dp[i + 1] - dp[p.getOrDefault(s[i], 0)] + MOD) % MOD;
+            dp[i + 2] = (dp[i + 1] + curr) % MOD;
+            p.put(s[i], i + 1);
+        }
+        System.out.println(dp[n]);
     }
 
     static final class Utils {
