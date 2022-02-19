@@ -8,25 +8,78 @@ import java.util.Random;
 
 public final class D {
 
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+                size[rootQ] = 0;
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+                size[rootP] = 0;
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
         final int[] f = new int[n];
+        final UnionFind uf = new UnionFind(n);
         for (int i = 0; i < m; i++) {
-            f[fs.nextInt() - 1]++;
-            f[fs.nextInt() - 1]++;
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            if (uf.find(u) == uf.find(v)) {
+                System.out.println("No");
+                return;
+            }
+            f[u]++;
+            f[v]++;
+            uf.union(u, v);
         }
-        int count2 = 0;
         for (int i = 0; i < n; i++) {
             if (f[i] > 2) {
                 System.out.println("No");
                 return;
-            } else if (f[i] == 2) {
-                count2++;
             }
         }
-        System.out.println(count2 > (n - 2) ? "No" : "Yes");
+        System.out.println("Yes");
     }
 
     static final class Utils {
