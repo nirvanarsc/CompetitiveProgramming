@@ -8,13 +8,44 @@ import java.util.Random;
 
 public final class E {
 
+    static boolean[][] seen;
+    static long[][] dp;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        long x = fs.nextLong();
+        final long[] arr = fs.nextLongArray(n);
+        final long[] r = new long[n];
+        final long[] d = new long[n - 1];
+        for (int i = 0; i < n - 1; i++) {
+            d[i] = arr[i + 1] / arr[i];
         }
+        for (int i = n - 1; i >= 0; i--) {
+            r[i] = x / arr[i];
+            x %= arr[i];
+        }
+        seen = new boolean[n][2];
+        dp = new long[n][2];
+        System.out.println(dfs(r, d, 0, 0));
+    }
+
+    private static long dfs(long[] arr, long[] d, int idx, int carry) {
+        if (idx == arr.length) {
+            return 0;
+        }
+        if (idx == arr.length - 1) {
+            return Math.abs(arr[idx] + carry);
+        }
+        if (seen[idx][carry]) {
+            return dp[idx][carry];
+        }
+        long res = (long) 1e18;
+        for (int nc = 0; nc < 2; nc++) {
+            res = Math.min(res, Math.abs(arr[idx] + carry - nc * d[idx]) + dfs(arr, d, idx + 1, nc));
+        }
+        seen[idx][carry] = true;
+        return dp[idx][carry] = res;
     }
 
     static final class Utils {
