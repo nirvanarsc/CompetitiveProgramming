@@ -4,17 +4,91 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class F {
 
+    private static final class BIT {
+        private final int n;
+        private final long[] data;
+
+        private BIT(int n) {
+            this.n = n;
+            data = new long[n + 1];
+        }
+
+        public void add(int idx, long val) {
+            for (int i = idx + 1; i <= n; i += lsb(i)) {
+                data[i] += val;
+            }
+        }
+
+        public long sum(int l, int r) {
+            return sum(r) - sum(l - 1);
+        }
+
+        private long sum(int idx) {
+            long res = 0;
+            for (int i = idx + 1; i > 0; i -= lsb(i)) {
+                res += data[i];
+            }
+            return res;
+        }
+
+        private static int lsb(int i) {
+            return i & -i;  // zeroes all the bits except the least significant one
+        }
+
+        // get k-th element
+        public int getKth(int k) {
+            int lo = 0;
+            int hi = n;
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (k > sum(mid)) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+            return lo;
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[][] arr = new int[n][2];
+        final int[] a = fs.nextIntArray(n);
+        final int[] b = fs.nextIntArray(n);
+        final Map<Integer, Integer> bMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            arr[i] = new int[] { a[i], b[i] };
         }
+        Utils.shuffleSort(b);
+        int m = 0;
+        for (int num : b) {
+            final Integer curr = bMap.get(num);
+            if (curr == null) {
+                bMap.put(num, m++);
+            }
+        }
+        final BIT bit = new BIT(m);
+        Arrays.sort(arr, (p, q) -> p[0] == q[0] ? Integer.compare(q[1], p[1]) : Integer.compare(p[0], q[0]));
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            final int idx = bMap.get(arr[i][1]);
+            int j = i;
+            while (j < n && arr[i][0] == arr[j][0] && arr[i][1] == arr[j][1]) {
+                j++;
+            }
+            bit.add(idx, j - i);
+            res += bit.sum(idx, m - 1) * (j - i);
+            i = j - 1;
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
