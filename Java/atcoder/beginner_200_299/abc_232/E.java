@@ -8,13 +8,52 @@ import java.util.Random;
 
 public final class E {
 
+    private static final int MOD = 998244353;
+
+    static long h;
+    static long w;
+    static long[][][] dp;
+    static boolean[][][] seen;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        h = fs.nextInt();
+        w = fs.nextInt();
+        final int k = fs.nextInt();
+        final int x1 = fs.nextInt();
+        final int y1 = fs.nextInt();
+        final int x2 = fs.nextInt();
+        final int y2 = fs.nextInt();
+        dp = new long[k + 1][2][2];
+        seen = new boolean[k + 1][2][2];
+        System.out.println(dfs(k, x1 == x2 ? 1 : 0, y1 == y2 ? 1 : 0));
+    }
+
+    private static long dfs(int k, int l, int r) {
+        if (k == 0) {
+            return l == 1 && r == 1 ? 1 : 0;
         }
+        if (seen[k][l][r]) {
+            return dp[k][l][r];
+        }
+        long res = 0;
+        long add;
+        if (l == 1) {
+            add = ((h - 1) * dfs(k - 1, 0, r)) % MOD;
+        } else {
+            add = ((h - 2) * dfs(k - 1, 0, r)) % MOD;
+            res = (res + dfs(k - 1, 1, r)) % MOD;
+        }
+        res = (res + add) % MOD;
+        if (r == 1) {
+            add = ((w - 1) * dfs(k - 1, l, 0)) % MOD;
+        } else {
+            add = ((w - 2) * dfs(k - 1, l, 0)) % MOD;
+            res = (res + dfs(k - 1, l, 1)) % MOD;
+        }
+        res = (res + add) % MOD;
+        seen[k][l][r] = true;
+        return dp[k][l][r] = res;
     }
 
     static final class Utils {

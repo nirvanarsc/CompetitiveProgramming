@@ -8,13 +8,46 @@ import java.util.Random;
 
 public final class F {
 
+    static int[] a;
+    static int[] b;
+    static long x;
+    static long y;
+    static int n;
+    static long[][] dp;
+    static boolean[][] seen;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        n = fs.nextInt();
+        x = fs.nextInt();
+        y = fs.nextLong();
+        a = fs.nextIntArray(n);
+        b = fs.nextIntArray(n);
+        dp = new long[n][1 << n];
+        seen = new boolean[n][1 << n];
+        System.out.println(dfs(0, 0));
+    }
+
+    private static long dfs(int idx, int mask) {
+        if (idx == n) {
+            return 0;
         }
+        if (seen[idx][mask]) {
+            return dp[idx][mask];
+        }
+        long res = (long) 9e18;
+        int inv = idx;
+        for (int i = 0; i < n; i++) {
+            if ((mask & (1 << i)) == 0) {
+                res = Math.min(res, x * Math.abs(a[i] - b[idx])
+                                    + y * inv
+                                    + dfs(idx + 1, mask | (1 << i)));
+            } else {
+                inv--;
+            }
+        }
+        seen[idx][mask] = true;
+        return dp[idx][mask] = res;
     }
 
     static final class Utils {

@@ -20,15 +20,14 @@ public class P_133 {
     }
 
     public Node cloneGraph(Node node) {
-        if (node == null) {
-            return node;
-        }
         final Map<Node, Node> clone = new HashMap<>();
         final boolean[] seen = new boolean[101];
         final Deque<Node> q = new ArrayDeque<>();
-        q.offerLast(node);
-        seen[node.val] = true;
-        clone.put(node, new Node(node.val));
+        if (node != null) {
+            q.offerLast(node);
+            seen[node.val] = true;
+            clone.put(node, new Node(node.val));
+        }
         while (!q.isEmpty()) {
             final Node curr = q.removeFirst();
             for (Node next : curr.neighbors) {
