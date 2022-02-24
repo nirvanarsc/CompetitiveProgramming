@@ -4,13 +4,12 @@ public class P_1304 {
 
     public int[] sumZero(int n) {
         final int[] res = new int[n];
-        int k = 0;
-        for (int i = -1 * (n / 2); i <= n / 2; i++) {
-            if (n % 2 == 0 && i == 0) {
-                continue;
-            }
-            res[k++] = i;
+        int sum = 0;
+        for (int i = 0; i < (n - 1); i++) {
+            res[i] = i + 1;
+            sum += i + 1;
         }
+        res[n - 1] = -sum;
         return res;
     }
 }
