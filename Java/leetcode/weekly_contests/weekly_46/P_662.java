@@ -1,7 +1,6 @@
 package leetcode.weekly_contests.weekly_46;
 
 import java.util.ArrayDeque;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +20,20 @@ public class P_662 {
     }
 
     public int widthOfBinaryTree(TreeNode root) {
-        int res = 1;
-        final Deque<Pair> q = new ArrayDeque<>(Collections.singleton(new Pair(root, 0)));
-        while (!q.isEmpty()) {
-            if (q.size() >= 2) {
-                res = Math.max(res, q.getLast().d - q.getFirst().d + 1);
-            }
-            for (int size = q.size(); size > 0; size--) {
-                final Pair curr = q.removeFirst();
-                if (curr.node.left != null) {
-                    q.offerLast(new Pair(curr.node.left, (curr.d << 1) + 1));
+        int res = 0;
+        final Deque<Pair> dq = new ArrayDeque<>();
+        dq.offerLast(new Pair(root, 0));
+        while (!dq.isEmpty()) {
+            res = Math.max(res, dq.getLast().d - dq.getFirst().d + 1);
+            for (int size = dq.size(); size > 0; size--) {
+                final Pair curr = dq.removeFirst();
+                final TreeNode u = curr.node;
+                final int d = curr.d;
+                if (u.left != null) {
+                    dq.offerLast(new Pair(u.left, 2 * d + 1));
                 }
-                if (curr.node.right != null) {
-                    q.offerLast(new Pair(curr.node.right, (curr.d << 1) + 2));
+                if (u.right != null) {
+                    dq.offerLast(new Pair(u.right, 2 * d + 2));
                 }
             }
         }

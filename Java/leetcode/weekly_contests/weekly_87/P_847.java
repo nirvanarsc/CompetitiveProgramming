@@ -5,36 +5,27 @@ import java.util.Deque;
 
 public class P_847 {
 
-    static class Tuple {
-        int bitMask;
-        int curr;
-        int cost;
-
-        Tuple(int bit, int n, int c) {
-            bitMask = bit;
-            curr = n;
-            cost = c;
-        }
-    }
-
     public int shortestPathLength(int[][] graph) {
-        final int N = graph.length;
-        final Deque<Tuple> queue = new ArrayDeque<>();
-        final boolean[][] visited = new boolean[graph.length][1 << graph.length];
-        for (int i = 0; i < N; i++) {
-            visited[i][1 << i] = true;
-            queue.add(new Tuple(1 << i, i, 0));
+        final int n = graph.length;
+        final Deque<int[]> dq = new ArrayDeque<>();
+        final boolean[][] seen = new boolean[n][1 << n];
+        for (int i = 0; i < n; i++) {
+            seen[i][1 << i] = true;
+            dq.add(new int[] { i, 1 << i, 0 });
         }
-        while (!queue.isEmpty()) {
-            final Tuple curr = queue.remove();
-            if (curr.bitMask == (1 << N) - 1) {
-                return curr.cost;
+        while (!dq.isEmpty()) {
+            final int[] curr = dq.removeFirst();
+            final int u = curr[0];
+            final int mask = curr[1];
+            final int c = curr[2];
+            if (mask == (1 << n) - 1) {
+                return c;
             }
-            for (int v : graph[curr.curr]) {
-                final int bitMask = curr.bitMask | 1 << v;
-                if (!visited[v][bitMask]) {
-                    queue.add(new Tuple(bitMask, v, curr.cost + 1));
-                    visited[v][bitMask] = true;
+            for (int v : graph[u]) {
+                final int nextMask = mask | 1 << v;
+                if (!seen[v][nextMask]) {
+                    seen[v][nextMask] = true;
+                    dq.add(new int[] { v, nextMask, c + 1 });
                 }
             }
         }
