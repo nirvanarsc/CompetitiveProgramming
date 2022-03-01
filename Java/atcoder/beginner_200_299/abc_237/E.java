@@ -1,76 +1,73 @@
-package atcoder.beginner_200_299.abc_236;
+package atcoder.beginner_200_299.abc_237;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public final class E {
 
+    static int n;
+    static int[][] edges;
+    static int[][] g;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        System.out.printf("%.4f\n", getAverage(n, arr));
-        System.out.println(getMedian(n, arr));
-    }
-
-    private static int getMedian(int n, int[] arr) {
-        int lo = 0;
-        int hi = (int) 1e9;
-        while (lo < hi) {
-            final int mid = lo + hi + 1 >>> 1;
-            final int[] curr = new int[n];
-            int count = 0;
-            for (int i = 0; i < n; i++) {
-                curr[i] = arr[i] >= mid ? 1 : 0;
-                count += curr[i];
+        n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int[] h = fs.nextIntArray(n);
+        edges = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        }
+        g = packG();
+        final long[] d = new long[n];
+        Arrays.fill(d, (long) 1e18);
+        final PriorityQueue<long[]> dq = new PriorityQueue<>(Comparator.comparingLong(a -> a[1]));
+        dq.offer(new long[] { 0, 0 });
+        d[0] = 0;
+        while (!dq.isEmpty()) {
+            final long[] curr = dq.remove();
+            final int u = (int) curr[0];
+            final long dd = curr[1];
+            if (d[u] < dd) {
+                continue;
             }
-            for (int i = 0; i < n; i++) {
-                if (curr[i] == 0) {
-                    int j = i;
-                    while (j < n && curr[j] == 0) {
-                        j++;
-                    }
-                    count -= (j - i) / 2;
-                    i = j - 1;
+            for (int v : g[u]) {
+                final long add = Math.max(0, h[v] - h[u]);
+                if (d[v] > d[u] + add) {
+                    d[v] = d[u] + add;
+                    dq.offer(new long[] { v, d[v] });
                 }
             }
-            if (count > 0) {
-                lo = mid;
-            } else {
-                hi = mid - 1;
-            }
         }
-        return lo;
+        long max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, h[0] - h[i] - d[i]);
+        }
+        System.out.println(max);
     }
 
-    private static double getAverage(int n, int[] arr) {
-        double lo = 0;
-        double hi = 1e9;
-        while ((hi - lo) > 1e-3) {
-            final double mid = (lo + hi) / 2;
-            final double[][] dp = new double[n + 1][2];
-            for (int i = 0; i <= n; i++) {
-                for (int j = 0; j < 2; j++) {
-                    dp[i][j] = -1e18;
-                }
-            }
-            // 0 can skip
-            // 1 have to take
-            dp[0][0] = dp[0][1] = 0;
-            for (int i = 0; i < n; i++) {
-                dp[i + 1][1] = Math.max(dp[i + 1][1], dp[i][0]);
-                dp[i + 1][0] = Math.max(dp[i + 1][0], Math.max(dp[i][0], dp[i][1]) + arr[i] - mid);
-            }
-            if (Math.max(dp[n][0], dp[n][1]) >= 0) {
-                lo = mid;
-            } else {
-                hi = mid;
-            }
+    private static int[][] packG() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+            ++size[edge[1]];
         }
-        return lo;
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+            g[edge[1]][--size[edge[1]]] = edge[0];
+        }
+        return g;
     }
 
     static final class Utils {

@@ -4,17 +4,42 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 public final class F {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] base = new int[n];
+        final int[][] arr = new int[(1 << n) - 1][2];
+        for (int i = 0; i < (1 << n) - 1; i++) {
+            arr[i] = new int[] { fs.nextInt(), i + 1 };
         }
+        int rank = 0;
+        long res = 0;
+        Arrays.sort(arr, Comparator.comparingInt(a -> a[0]));
+        for (int i = 0; i < (1 << n) - 1 && rank < n; i++) {
+            int next = arr[i][1];
+            for (int j = 0; j < n; j++) {
+                if ((next & (1 << j)) != 0) {
+                    next ^= base[j];
+                }
+            }
+            if (next == 0) {
+                continue;
+            }
+            res += arr[i][0];
+            rank++;
+            for (int j = 0; j < n; j++) {
+                if ((next & (1 << j)) != 0) {
+                    base[j] = next;
+                    break;
+                }
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

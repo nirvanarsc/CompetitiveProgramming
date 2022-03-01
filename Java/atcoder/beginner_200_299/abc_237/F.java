@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_236;
+package atcoder.beginner_200_299.abc_237;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,71 +6,44 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
+public final class F {
+
+    private static final int MOD = 998244353;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final int[] arr = fs.nextIntArray(n);
-        System.out.printf("%.4f\n", getAverage(n, arr));
-        System.out.println(getMedian(n, arr));
-    }
-
-    private static int getMedian(int n, int[] arr) {
-        int lo = 0;
-        int hi = (int) 1e9;
-        while (lo < hi) {
-            final int mid = lo + hi + 1 >>> 1;
-            final int[] curr = new int[n];
-            int count = 0;
-            for (int i = 0; i < n; i++) {
-                curr[i] = arr[i] >= mid ? 1 : 0;
-                count += curr[i];
-            }
-            for (int i = 0; i < n; i++) {
-                if (curr[i] == 0) {
-                    int j = i;
-                    while (j < n && curr[j] == 0) {
-                        j++;
+        final int m = fs.nextInt();
+        final int[][][][] dp = new int[n + 1][m + 1][m + 1][m + 1];
+        dp[0][m][m][m] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= m; j++) {
+                for (int k = 0; k <= m; k++) {
+                    for (int l = 0; l <= m; l++) {
+                        final int curr = dp[i][j][k][l];
+                        if (curr == 0) { continue; }
+                        for (int x = 0; x < m; x++) {
+                            if (x <= j) {
+                                dp[i + 1][x][k][l] = (dp[i + 1][x][k][l] + curr) % MOD;
+                            } else if (x <= k) {
+                                dp[i + 1][j][x][l] = (dp[i + 1][j][x][l] + curr) % MOD;
+                            } else if (x <= l) {
+                                dp[i + 1][j][k][x] = (dp[i + 1][j][k][x] + curr) % MOD;
+                            }
+                        }
                     }
-                    count -= (j - i) / 2;
-                    i = j - 1;
                 }
             }
-            if (count > 0) {
-                lo = mid;
-            } else {
-                hi = mid - 1;
-            }
         }
-        return lo;
-    }
-
-    private static double getAverage(int n, int[] arr) {
-        double lo = 0;
-        double hi = 1e9;
-        while ((hi - lo) > 1e-3) {
-            final double mid = (lo + hi) / 2;
-            final double[][] dp = new double[n + 1][2];
-            for (int i = 0; i <= n; i++) {
-                for (int j = 0; j < 2; j++) {
-                    dp[i][j] = -1e18;
+        int res = 0;
+        for (int j = 0; j < m; j++) {
+            for (int k = 0; k < m; k++) {
+                for (int l = 0; l < m; l++) {
+                    res = (res + dp[n][j][k][l]) % MOD;
                 }
             }
-            // 0 can skip
-            // 1 have to take
-            dp[0][0] = dp[0][1] = 0;
-            for (int i = 0; i < n; i++) {
-                dp[i + 1][1] = Math.max(dp[i + 1][1], dp[i][0]);
-                dp[i + 1][0] = Math.max(dp[i + 1][0], Math.max(dp[i][0], dp[i][1]) + arr[i] - mid);
-            }
-            if (Math.max(dp[n][0], dp[n][1]) >= 0) {
-                lo = mid;
-            } else {
-                hi = mid;
-            }
         }
-        return lo;
+        System.out.println(res);
     }
 
     static final class Utils {
