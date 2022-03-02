@@ -3,13 +3,15 @@ package leetcode.weekly_contests.weekly_3;
 public class P_392 {
 
     public boolean isSubsequence(String s, String t) {
+        final int n = s.length();
+        final int m = t.length();
         int i = 0;
-        for (int j = 0; j < t.length(); j++) {
-            if (i < s.length() && t.charAt(j) == s.charAt(i)) {
+        for (int j = 0; j < m; j++) {
+            if (i < n && t.charAt(j) == s.charAt(i)) {
                 i++;
             }
         }
-        return i == s.length();
+        return i == n;
     }
 
     public boolean isSubsequenceIndexOf(String s, String t) {
