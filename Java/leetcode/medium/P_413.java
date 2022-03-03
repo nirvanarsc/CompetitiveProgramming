@@ -15,17 +15,21 @@ public class P_413 {
         return sum;
     }
 
-    public int numberOfArithmeticSlices(int[] A) {
-        final int n = A.length;
+    public int numberOfArithmeticSlices(int[] nums) {
+        final int n = nums.length;
+        final int[] arr = new int[n - 1];
+        for (int i = 0; i < (n - 1); i++) {
+            arr[i] = nums[i + 1] - nums[i];
+        }
         int res = 0;
-        for (int i = 0; i < n - 1; i++) {
-            int j = i + 1;
-            while (j < n && A[j] - A[j - 1] == A[i + 1] - A[i]) {
+        for (int i = 0; i < (n - 1); i++) {
+            int j = i;
+            while (j < (n - 1) && arr[j] == arr[i]) {
                 j++;
             }
-            final int curr = j - i - 1;
-            res += (curr * (curr - 1)) / 2;
-            i = j - 2;
+            final int l = j - i;
+            res += (l * (l - 1)) / 2;
+            i = j - 1;
         }
         return res;
     }
