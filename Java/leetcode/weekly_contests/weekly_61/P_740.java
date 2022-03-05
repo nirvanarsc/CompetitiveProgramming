@@ -8,12 +8,13 @@ import java.util.Map;
 public class P_740 {
 
     public int deleteAndEarnBottomUp(int[] nums) {
-        final int[] count = new int[10001];
-        for (int n : nums) {
-            count[n] += n;
+        final int n = (int) (1e4 + 5);
+        final int[] count = new int[n];
+        for (int num : nums) {
+            count[num] += num;
         }
-        final int[] dp = new int[10003];
-        for (int i = 10000; i >= 0; i--) {
+        final int[] dp = new int[n];
+        for (int i = n - 3; i >= 0; i--) {
             dp[i] = Math.max(count[i] + dp[i + 2], dp[i + 1]);
         }
         return dp[0];
