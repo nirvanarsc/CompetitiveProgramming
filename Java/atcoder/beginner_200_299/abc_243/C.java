@@ -1,41 +1,46 @@
-package atcoder.beginner_200_299.abc_240;
+package atcoder.beginner_200_299.abc_243;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
-public final class D {
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final Deque<int[]> dq = new ArrayDeque<>();
-        final StringBuilder sb = new StringBuilder();
-        int res = 0;
+        final Map<Integer, List<int[]>> g = new HashMap<>();
+        final int[][] p = new int[n][2];
         for (int i = 0; i < n; i++) {
-            final int u = fs.nextInt();
-            res++;
-            if (dq.isEmpty() || dq.getFirst()[0] != u) {
-                dq.addFirst(new int[] { u, 1 });
-            } else {
-                dq.getFirst()[1]++;
-                if (dq.getFirst()[1] == dq.getFirst()[0]) {
-                    res -= dq.removeFirst()[1];
+            p[i] = new int[] { fs.nextInt(), fs.nextInt() };
+        }
+        final char[] w = fs.next().toCharArray();
+        for (int i = 0; i < n; i++) {
+            g.computeIfAbsent(p[i][1], val -> new ArrayList<>()).add(
+                    new int[] { p[i][0], w[i] == 'L' ? -1 : 1 });
+        }
+        for (List<int[]> v : g.values()) {
+            v.sort(Comparator.comparingInt(a -> a[0]));
+            final int m = v.size();
+            for (int i = 0; i < (m - 1); i++) {
+                if (v.get(i)[1] == 1 && v.get(i + 1)[1] == -1) {
+                    System.out.println("Yes");
+                    return;
                 }
             }
-            sb.append(res).append('\n');
         }
-        System.out.println(sb);
+        System.out.println("No");
     }
 
     static final class Utils {
-
         private static class Shuffler {
-
             private static void shuffle(int[] x) {
                 final Random r = new Random();
 
@@ -77,12 +82,10 @@ public final class D {
             Arrays.sort(arr);
         }
 
-        private Utils() {
-        }
+        private Utils() {}
     }
 
     static class FastReader {
-
         private static final int BUFFER_SIZE = 1 << 16;
         private final DataInputStream din;
         private final byte[] buffer;
@@ -112,7 +115,7 @@ public final class D {
             return new String(buf, 0, cnt);
         }
 
-        public int readSign() throws IOException {
+        public int nextSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();
@@ -120,15 +123,12 @@ public final class D {
             return '+' == c ? 0 : 1;
         }
 
-        private static boolean isSpaceChar(int c) {
-            return !(c >= 33 && c <= 126);
-        }
+        private static boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
 
         private int skip() throws IOException {
             int b;
             //noinspection StatementWithEmptyBody
-            while ((b = read()) != -1 && isSpaceChar(b)) {
-            }
+            while ((b = read()) != -1 && isSpaceChar(b)) {}
             return b;
         }
 
@@ -153,16 +153,12 @@ public final class D {
                 c = read();
             }
             final boolean neg = c == '-';
-            if (neg) {
-                c = read();
-            }
+            if (neg) { c = read(); }
             do {
                 ret = ret * 10 + c - '0';
             } while ((c = read()) >= '0' && c <= '9');
 
-            if (neg) {
-                return -ret;
-            }
+            if (neg) { return -ret; }
             return ret;
         }
 
@@ -177,20 +173,14 @@ public final class D {
         public long nextLong() throws IOException {
             long ret = 0;
             byte c = read();
-            while (c <= ' ') {
-                c = read();
-            }
+            while (c <= ' ') { c = read(); }
             final boolean neg = c == '-';
-            if (neg) {
-                c = read();
-            }
+            if (neg) { c = read(); }
             do {
                 ret = ret * 10 + c - '0';
             }
             while ((c = read()) >= '0' && c <= '9');
-            if (neg) {
-                return -ret;
-            }
+            if (neg) { return -ret; }
             return ret;
         }
 
@@ -205,13 +195,9 @@ public final class D {
         public double nextDouble() throws IOException {
             double ret = 0, div = 1;
             byte c = read();
-            while (c <= ' ') {
-                c = read();
-            }
+            while (c <= ' ') { c = read(); }
             final boolean neg = c == '-';
-            if (neg) {
-                c = read();
-            }
+            if (neg) { c = read(); }
 
             do {
                 ret = ret * 10 + c - '0';
@@ -224,23 +210,17 @@ public final class D {
                 }
             }
 
-            if (neg) {
-                return -ret;
-            }
+            if (neg) { return -ret; }
             return ret;
         }
 
         private void fillBuffer() throws IOException {
             bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-            if (bytesRead == -1) {
-                buffer[0] = -1;
-            }
+            if (bytesRead == -1) { buffer[0] = -1; }
         }
 
         private byte read() throws IOException {
-            if (bufferPointer == bytesRead) {
-                fillBuffer();
-            }
+            if (bufferPointer == bytesRead) { fillBuffer(); }
             return buffer[bufferPointer++];
         }
 
