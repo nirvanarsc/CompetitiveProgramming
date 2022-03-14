@@ -20,7 +20,8 @@ public class P_71 {
         }
         final StringBuilder res = new StringBuilder();
         for (String dir : dq) {
-            res.append('/' + dir);
+            res.append('/');
+            res.append(dir);
         }
         return (res.length() == 0) ? "/" : res.toString();
     }
