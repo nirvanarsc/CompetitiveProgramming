@@ -11,7 +11,6 @@ public class P_1249 {
         final boolean[] banned = new boolean[n];
         final int[] stack = new int[n];
         int stackIdx = 0;
-        int count = 0;
         for (int i = 0; i < n; i++) {
             if (w[i] == '(') {
                 stack[stackIdx++] = i;
@@ -20,23 +19,20 @@ public class P_1249 {
                     stackIdx--;
                 } else {
                     banned[i] = true;
-                    count++;
                 }
             }
         }
         for (int i = 0; i < stackIdx; i++) {
             banned[stack[i]] = true;
-            count++;
         }
-        final char[] res = new char[n - count];
-        int idx = 0;
+        final StringBuilder res = new StringBuilder();
         for (int i = 0; i < n; i++) {
             if (banned[i]) {
                 continue;
             }
-            res[idx++] = w[i];
+            res.append(w[i]);
         }
-        return new String(res);
+        return res.toString();
     }
 
     public String minRemoveToMakeValid(String s) {

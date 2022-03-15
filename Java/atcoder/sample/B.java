@@ -93,7 +93,7 @@ public final class B {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();

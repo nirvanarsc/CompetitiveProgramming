@@ -8,12 +8,43 @@ import java.util.Random;
 
 public final class G {
 
+    private static long sqrt(long n) {
+        long lo = 0;
+        long hi = (long) (3e9 + 5);
+        while (lo < hi) {
+            final long mid = lo + hi + 1 >>> 1;
+            if (mid * mid > n) {
+                hi = mid - 1;
+            } else {
+                lo = mid;
+            }
+        }
+        return lo;
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
+        final int n = (int) 6e4;
+        final long[] dp = new long[n + 5];
+        dp[1] = 1;
+        for (int i = 2; i < dp.length; i++) {
+            for (int j = 0; j * j <= i; j++) {
+                dp[i] += dp[j];
+            }
+        }
         for (int test = 0; test < t; test++) {
-            final long n = fs.nextLong();
-
+            final long x = sqrt(fs.nextLong());
+            long res = 0;
+            for (int i = 1; i <= n; i++) {
+                final long y = (long) i * i;
+                if (y <= x) {
+                    res += (x - y + 1) * dp[i];
+                } else {
+                    break;
+                }
+            }
+            System.out.println(res);
         }
     }
 
@@ -93,7 +124,7 @@ public final class G {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();
@@ -101,12 +132,15 @@ public final class G {
             return '+' == c ? 0 : 1;
         }
 
-        private static boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
+        private static boolean isSpaceChar(int c) {
+            return !(c >= 33 && c <= 126);
+        }
 
         private int skip() throws IOException {
             int b;
             //noinspection StatementWithEmptyBody
-            while ((b = read()) != -1 && isSpaceChar(b)) {}
+            while ((b = read()) != -1 && isSpaceChar(b)) {
+            }
             return b;
         }
 
@@ -131,12 +165,16 @@ public final class G {
                 c = read();
             }
             final boolean neg = c == '-';
-            if (neg) { c = read(); }
+            if (neg) {
+                c = read();
+            }
             do {
                 ret = ret * 10 + c - '0';
             } while ((c = read()) >= '0' && c <= '9');
 
-            if (neg) { return -ret; }
+            if (neg) {
+                return -ret;
+            }
             return ret;
         }
 
@@ -151,14 +189,20 @@ public final class G {
         public long nextLong() throws IOException {
             long ret = 0;
             byte c = read();
-            while (c <= ' ') { c = read(); }
+            while (c <= ' ') {
+                c = read();
+            }
             final boolean neg = c == '-';
-            if (neg) { c = read(); }
+            if (neg) {
+                c = read();
+            }
             do {
                 ret = ret * 10 + c - '0';
             }
             while ((c = read()) >= '0' && c <= '9');
-            if (neg) { return -ret; }
+            if (neg) {
+                return -ret;
+            }
             return ret;
         }
 
@@ -173,9 +217,13 @@ public final class G {
         public double nextDouble() throws IOException {
             double ret = 0, div = 1;
             byte c = read();
-            while (c <= ' ') { c = read(); }
+            while (c <= ' ') {
+                c = read();
+            }
             final boolean neg = c == '-';
-            if (neg) { c = read(); }
+            if (neg) {
+                c = read();
+            }
 
             do {
                 ret = ret * 10 + c - '0';
@@ -188,17 +236,23 @@ public final class G {
                 }
             }
 
-            if (neg) { return -ret; }
+            if (neg) {
+                return -ret;
+            }
             return ret;
         }
 
         private void fillBuffer() throws IOException {
             bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
-            if (bytesRead == -1) { buffer[0] = -1; }
+            if (bytesRead == -1) {
+                buffer[0] = -1;
+            }
         }
 
         private byte read() throws IOException {
-            if (bufferPointer == bytesRead) { fillBuffer(); }
+            if (bufferPointer == bytesRead) {
+                fillBuffer();
+            }
             return buffer[bufferPointer++];
         }
 
