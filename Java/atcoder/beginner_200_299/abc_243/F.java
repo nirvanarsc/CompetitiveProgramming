@@ -8,13 +8,70 @@ import java.util.Random;
 
 public final class F {
 
+    private static final int MOD = 998244353;
+
+    static long[] f;
+    static int n;
+    static int m;
+    static int kk;
+    static long[] arr;
+    static long sum;
+    static boolean[][][] seen;
+    static long[][][] dp;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        n = fs.nextInt();
+        m = fs.nextInt();
+        kk = fs.nextInt();
+        arr = fs.nextLongArray(n);
+        sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
         }
+        f = new long[55];
+        f[0] = 1;
+        for (int i = 1; i <= 54; i++) {
+            f[i] = (f[i - 1] * i) % MOD;
+        }
+        seen = new boolean[n][m + 1][kk + 1];
+        dp = new long[n][m + 1][kk + 1];
+        System.out.println((dfs(0, 0, 0) * f[kk]) % MOD);
+    }
+
+    private static long dfs(int i, int j, int k) {
+        if (i == n) {
+            return j == m && k == kk ? 1 : 0;
+        }
+        if (seen[i][j][k]) {
+            return dp[i][j][k];
+        }
+        long res = dfs(i + 1, j, k);
+        if (j < m) {
+            for (int d = 1; d <= kk - k - (m - j - 1); d++) {
+                long up = modPow(arr[i], d);
+                long down = modPow(sum, d);
+                down = (down * f[d]) % MOD;
+                down = modPow(down, MOD - 2);
+                up = (up * down) % MOD;
+                up = (up * dfs(i + 1, j + 1, k + d)) % MOD;
+                res = (res + up) % MOD;
+            }
+        }
+        seen[i][j][k] = true;
+        return dp[i][j][k] = res;
+    }
+
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = res * a % MOD;
+            }
+            a = a * a % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {
