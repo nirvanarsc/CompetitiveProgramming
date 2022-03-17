@@ -6,21 +6,24 @@ import java.util.Deque;
 @SuppressWarnings("MethodParameterNamingConvention")
 public class P_856 {
 
-    public int scoreOfParentheses(String S) {
-        int res = 0, open = 0;
-        for (int i = 0; i < S.length(); ++i) {
-            if (S.charAt(i) == '(') { open++; } else { open--; }
-            if (S.charAt(i) == ')' && S.charAt(i - 1) == '(') {
+    public int scoreOfParentheses(String s) {
+        final char[] w = s.toCharArray();
+        final int n = w.length;
+        int res = 0;
+        int open = 0;
+        for (int i = 0; i < n; i++) {
+            open += w[i] == '(' ? 1 : -1;
+            if (w[i] == ')' && w[i - 1] == '(') {
                 res += 1 << open;
             }
         }
         return res;
     }
 
-    public int scoreOfParenthesesStack(String S) {
+    public int scoreOfParenthesesStack(String s) {
         final Deque<Integer> stack = new ArrayDeque<>();
         int cur = 0;
-        for (char c : S.toCharArray()) {
+        for (char c : s.toCharArray()) {
             if (c == '(') {
                 stack.addFirst(cur);
                 cur = 0;
@@ -31,8 +34,8 @@ public class P_856 {
         return cur;
     }
 
-    public int scoreOfParenthesesDFS(String S) {
-        return dfs(S.toCharArray(), 0, S.length() - 1);
+    public int scoreOfParenthesesDFS(String s) {
+        return dfs(s.toCharArray(), 0, s.length() - 1);
     }
 
     private static int dfs(char[] s, int from, int to) {
