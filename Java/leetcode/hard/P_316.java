@@ -1,25 +1,41 @@
 package leetcode.hard;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class P_316 {
 
-    public String removeDuplicateLetters(String text) {
-        final int[] stack = new int[26];
-        final int[] last = new int[26];
-        final char[] chars = text.toCharArray();
+    public String removeDuplicateLetters(String s) {
+        final Deque<Integer> dq = new ArrayDeque<>();
+        final int[] lastIdx = new int[26];
+        final int n = s.length();
+        final char[] w = s.toCharArray();
         int mask = 0;
-        for (int i = 0; i < text.length(); i++) {
-            last[text.charAt(i) - 'a'] = i;
+        int last = 0;
+        for (int i = 0; i < n; i++) {
+            lastIdx[w[i] - 'a'] = i;
         }
-        int j = 0;
-        for (int i = 0; i < chars.length; i++) {
-            if ((mask & (1 << (chars[i] - 'a'))) == 0) {
-                mask |= 1 << (chars[i] - 'a');
-                while (j > 0 && stack[j - 1] > chars[i] && i < last[stack[j - 1] - 'a']) {
-                    mask ^= 1 << (stack[--j] - 'a');
-                }
-                stack[j++] = chars[i];
+        for (int i = 0; i < n; i++) {
+            while (!dq.isEmpty() && dq.getFirst() > w[i] - 'a' &&
+                   !isSet(last, dq.getFirst()) && !isSet(mask, w[i] - 'a')) {
+                mask ^= 1 << dq.removeFirst();
+            }
+            if (!isSet(mask, w[i] - 'a')) {
+                mask ^= 1 << w[i] - 'a';
+                dq.addFirst(w[i] - 'a');
+            }
+            if (lastIdx[w[i] - 'a'] == i) {
+                last ^= 1 << w[i] - 'a';
             }
         }
-        return new String(stack, 0, j);
+        final char[] res = new char[dq.size()];
+        for (int i = 0; !dq.isEmpty(); i++) {
+            res[i] = (char) (dq.removeLast() + 'a');
+        }
+        return new String(res);
+    }
+
+    private static boolean isSet(int mask, int idx) {
+        return (mask & (1 << idx)) != 0;
     }
 }
