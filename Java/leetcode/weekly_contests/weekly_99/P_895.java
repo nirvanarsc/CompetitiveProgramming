@@ -5,22 +5,23 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass" })
 public class P_895 {
 
-    static class FreqStack {
+    class FreqStack {
         Map<Integer, Integer> freq;
         Map<Integer, Deque<Integer>> stack;
         int maxFreq;
 
-        FreqStack() {
+        public FreqStack() {
             freq = new HashMap<>();
             stack = new HashMap<>();
         }
 
         public void push(int x) {
-            stack.computeIfAbsent(freq.getOrDefault(x, 0) + 1, v -> new ArrayDeque<>()).addFirst(x);
-            maxFreq = Math.max(maxFreq, freq.merge(x, 1, Integer::sum));
+            final int k = freq.merge(x, 1, Integer::sum);
+            stack.computeIfAbsent(k, v -> new ArrayDeque<>()).addFirst(x);
+            maxFreq = Math.max(maxFreq, k);
         }
 
         public int pop() {
