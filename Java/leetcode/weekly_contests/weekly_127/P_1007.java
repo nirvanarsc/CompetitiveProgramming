@@ -1,32 +1,28 @@
 package leetcode.weekly_contests.weekly_127;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_1007 {
 
-    public int minDominoRotations(int[] A, int[] B) {
-        final int l = A[0];
-        final int r = B[0];
-        final int max = (int) 1e9;
-        final int costLU = getCost(A, B, l);
-        final int costLD = getCost(B, A, l);
-        final int costRU = getCost(A, B, r);
-        final int costRD = getCost(B, A, r);
-        final int res = Math.min(Math.min(costLD, costLU), Math.min(costRD, costRU));
-        return res == max ? -1 : res;
+    public int minDominoRotations(int[] tops, int[] bottoms) {
+        int res = (int) 1e9;
+        for (int t = 1; t <= 6; t++) {
+            res = Math.min(res, f(tops, bottoms, t));
+            res = Math.min(res, f(bottoms, tops, t));
+        }
+        return res == (int) 1e9 ? -1 : res;
     }
 
-    private static int getCost(int[] up, int[] down, int target) {
-        int cost = 0;
-        for (int i = 0; i < up.length; i++) {
-            if (up[i] == target) {
+    private static int f(int[] l, int[] r, int t) {
+        final int n = l.length;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (l[i] == t) {
                 continue;
-            } else if (down[i] == target) {
-                cost += 1;
+            } else if (r[i] == t) {
+                res++;
             } else {
-                cost = (int) 1e9;
-                break;
+                return (int) 1e9;
             }
         }
-        return cost;
+        return res;
     }
 }
