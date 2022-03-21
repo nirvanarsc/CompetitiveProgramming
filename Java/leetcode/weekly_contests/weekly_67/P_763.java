@@ -5,20 +5,21 @@ import java.util.List;
 
 public class P_763 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public List<Integer> partitionLabels(String S) {
-        final int[] endIdx = new int[26];
-        for (int i = 0; i < S.length(); i++) {
-            endIdx[S.charAt(i) - 'a'] = i;
+    public List<Integer> partitionLabels(String s) {
+        final char[] w = s.toCharArray();
+        final int n = w.length;
+        final int[] last = new int[26];
+        for (int i = 0; i < n; i++) {
+            last[w[i] - 'a'] = i;
         }
         final List<Integer> res = new ArrayList<>();
-        int prev = -1, curr = -1;
-        for (int i = 0; i < S.length(); i++) {
-            curr = Math.max(curr, endIdx[S.charAt(i) - 'a']);
-            if (curr == i) {
+        int prev = -1;
+        int currMax = 0;
+        for (int i = 0; i < n; i++) {
+            currMax = Math.max(currMax, last[w[i] - 'a']);
+            if (currMax == i) {
                 res.add(i - prev);
                 prev = i;
-                curr = -1;
             }
         }
         return res;
