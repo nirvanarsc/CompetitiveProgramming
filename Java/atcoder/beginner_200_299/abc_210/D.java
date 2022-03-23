@@ -11,7 +11,46 @@ public final class D {
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final int m = fs.nextInt();
+        final long c = fs.nextLong();
+        final int[][] g = new int[n][m];
+        final int[][] revg = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            g[i] = fs.nextIntArray(m);
+            revg[i] = new int[m];
+            for (int j = 0; j < m; j++) {
+                revg[i][j] = g[i][m - 1 - j];
+            }
+        }
+        System.out.println(Math.min(f(n, m, c, g), f(n, m, c, revg)));
+    }
+
+    private static long f(int n, int m, long c, int[][] g) {
+        final long[][] gg = new long[n][m];
+        long res = (long) 1e18;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                gg[i][j] = g[i][j] - c * (i + j);
+                if (i > 0) {
+                    gg[i][j] = Math.min(gg[i][j], gg[i - 1][j]);
+                }
+                if (j > 0) {
+                    gg[i][j] = Math.min(gg[i][j], gg[i][j - 1]);
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                final long u = g[i][j] + c * (i + j);
+                if (i > 0) {
+                    res = Math.min(res, u + gg[i - 1][j]);
+                }
+                if (j > 0) {
+                    res = Math.min(res, u + gg[i][j - 1]);
+                }
+            }
+        }
+        return res;
     }
 
     static final class Utils {

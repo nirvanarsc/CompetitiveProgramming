@@ -1,14 +1,11 @@
 package atcoder.beginner_200_299.abc_210;
 
-import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Random;
-import java.util.StringTokenizer;
 
 public final class E {
 
@@ -16,19 +13,19 @@ public final class E {
         return b == 0 ? a : gcd(b, a % b);
     }
 
-    public static void main(String[] args) {
-        final FastScanner fs = new FastScanner();
+    public static void main(String[] args) throws IOException {
+        final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int m = fs.nextInt();
-        final List<int[]> pp = new ArrayList<>(m);
+        final int[][] arr = new int[m][2];
         for (int i = 0; i < m; i++) {
-            pp.add(new int[] { fs.nextInt(), fs.nextInt() });
+            arr[i] = new int[] { fs.nextInt(), fs.nextInt() };
         }
-        pp.sort(Comparator.comparingInt(a -> a[1]));
+        Arrays.sort(arr, Comparator.comparingInt(a -> a[1]));
         long res = 0;
         long rem = n - 1;
         int prev = n;
-        for (int[] p : pp) {
+        for (int[] p : arr) {
             if (rem == 0) {
                 break;
             }
@@ -36,7 +33,7 @@ public final class E {
             if (gcd == 1) {
                 res += rem * p[1];
                 rem = 0;
-            } else if (gcd != prev) {
+            } else if (gcd < prev) {
                 final long take = prev - gcd;
                 res += take * p[1];
                 rem -= take;
@@ -92,40 +89,147 @@ public final class E {
         private Utils() {}
     }
 
-    static class FastScanner {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer("");
+    static class FastReader {
+        private static final int BUFFER_SIZE = 1 << 16;
+        private final DataInputStream din;
+        private final byte[] buffer;
+        private int bufferPointer, bytesRead;
 
-        private String next() {
-            while (!st.hasMoreTokens()) {
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    //noinspection CallToPrintStackTrace
-                    e.printStackTrace();
+        FastReader() {
+            din = new DataInputStream(System.in);
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        FastReader(String file_name) throws IOException {
+            din = new DataInputStream(new FileInputStream(file_name));
+            buffer = new byte[BUFFER_SIZE];
+            bufferPointer = bytesRead = 0;
+        }
+
+        public String readLine() throws IOException {
+            final byte[] buf = new byte[1024]; // line length
+            int cnt = 0, c;
+            while ((c = read()) != -1) {
+                if (c == '\n') {
+                    break;
+                }
+                buf[cnt++] = (byte) c;
+            }
+            return new String(buf, 0, cnt);
+        }
+
+        public int readSign() throws IOException {
+            byte c = read();
+            while ('+' != c && '-' != c) {
+                c = read();
+            }
+            return '+' == c ? 0 : 1;
+        }
+
+        private static boolean isSpaceChar(int c) { return !(c >= 33 && c <= 126); }
+
+        private int skip() throws IOException {
+            int b;
+            //noinspection StatementWithEmptyBody
+            while ((b = read()) != -1 && isSpaceChar(b)) {}
+            return b;
+        }
+
+        public char nc() throws IOException {
+            return (char) skip();
+        }
+
+        public String next() throws IOException {
+            int b = skip();
+            final StringBuilder sb = new StringBuilder();
+            while (!isSpaceChar(b)) { // when nextLine, (isSpaceChar(b) && b != ' ')
+                sb.appendCodePoint(b);
+                b = read();
+            }
+            return sb.toString();
+        }
+
+        public int nextInt() throws IOException {
+            int ret = 0;
+            byte c = read();
+            while (c <= ' ') {
+                c = read();
+            }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+            do {
+                ret = ret * 10 + c - '0';
+            } while ((c = read()) >= '0' && c <= '9');
+
+            if (neg) { return -ret; }
+            return ret;
+        }
+
+        public int[] nextIntArray(int n) throws IOException {
+            final int[] res = new int[n];
+            for (int i = 0; i < n; i++) {
+                res[i] = nextInt();
+            }
+            return res;
+        }
+
+        public long nextLong() throws IOException {
+            long ret = 0;
+            byte c = read();
+            while (c <= ' ') { c = read(); }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+            if (neg) { return -ret; }
+            return ret;
+        }
+
+        public long[] nextLongArray(int n) throws IOException {
+            final long[] res = new long[n];
+            for (int i = 0; i < n; i++) {
+                res[i] = nextLong();
+            }
+            return res;
+        }
+
+        public double nextDouble() throws IOException {
+            double ret = 0, div = 1;
+            byte c = read();
+            while (c <= ' ') { c = read(); }
+            final boolean neg = c == '-';
+            if (neg) { c = read(); }
+
+            do {
+                ret = ret * 10 + c - '0';
+            }
+            while ((c = read()) >= '0' && c <= '9');
+
+            if (c == '.') {
+                while ((c = read()) >= '0' && c <= '9') {
+                    ret += (c - '0') / (div *= 10);
                 }
             }
-            return st.nextToken();
+
+            if (neg) { return -ret; }
+            return ret;
         }
 
-        int nextInt() {
-            return Integer.parseInt(next());
+        private void fillBuffer() throws IOException {
+            bytesRead = din.read(buffer, bufferPointer = 0, BUFFER_SIZE);
+            if (bytesRead == -1) { buffer[0] = -1; }
         }
 
-        long nextLong() {
-            return Long.parseLong(next());
+        private byte read() throws IOException {
+            if (bufferPointer == bytesRead) { fillBuffer(); }
+            return buffer[bufferPointer++];
         }
 
-        int[] nextIntArray(int n) {
-            final int[] a = new int[n];
-            for (int i = 0; i < n; i++) { a[i] = nextInt(); }
-            return a;
-        }
-
-        long[] nextLongArray(int n) {
-            final long[] a = new long[n];
-            for (int i = 0; i < n; i++) { a[i] = nextLong(); }
-            return a;
+        public void close() throws IOException {
+            din.close();
         }
     }
 }
