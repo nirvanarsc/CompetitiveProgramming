@@ -5,16 +5,17 @@ import java.util.Arrays;
 public class P_881 {
 
     public int numRescueBoats(int[] people, int limit) {
+        final int n = people.length;
         Arrays.sort(people);
-        int lo = 0;
-        int hi = people.length - 1;
-        int res = 0;
-        while (lo <= hi) {
-            if (people[lo] + people[hi] <= limit) {
-                lo++;
+        int res = n;
+        int l = 0;
+        int r = n - 1;
+        while (l < r) {
+            if (people[l] + people[r] <= limit) {
+                res--;
+                l++;
             }
-            hi--;
-            res++;
+            r--;
         }
         return res;
     }
