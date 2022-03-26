@@ -1,84 +1,31 @@
-package atcoder.beginner_200_299.abc_244;
+package atcoder.beginner_200_299.abc_245;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.Random;
 
-public final class F {
-
-    static int n;
-    static int[][] g;
-    static int[][] edges;
+public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        n = fs.nextInt();
+        final int n = fs.nextInt();
         final int m = fs.nextInt();
-        edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
-        }
-        g = packG();
-        final int[][] d = bfs();
-        int res = 0;
-        for (int mask = 1; mask < (1 << n); mask++) {
-            int curr = (int) 1e9;
-            for (int i = 0; i < n; i++) {
-                curr = Math.min(curr, d[i][mask]);
-            }
-            res += curr;
-        }
-        System.out.println(res);
-    }
-
-    private static int[][] bfs() {
-        final Deque<int[]> dq = new ArrayDeque<>();
-        final int[][] d = new int[n][1 << n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(d[i], (int) 1e9);
-        }
-        for (int i = 0; i < n; i++) {
-            d[i][1 << i] = 1;
-            dq.offerLast(new int[] { i, 1 << i });
-        }
-        for (int level = 1; !dq.isEmpty(); level++) {
-            for (int size = dq.size(); size > 0; size--) {
-                final int[] pop = dq.remove();
-                final int u = pop[0];
-                final int m = pop[1];
-                if (d[u][m] < level) {
-                    continue;
-                }
-                for (int v : g[u]) {
-                    if (d[v][m ^ (1 << v)] > d[u][m] + 1) {
-                        d[v][m ^ (1 << v)] = d[u][m] + 1;
-                        dq.offerLast(new int[] { v, m ^ (1 << v) });
-                    }
-                }
+        final int[] a = fs.nextIntArray(n + 1);
+        final int[] b = new int[m + 1];
+        final int[] c = fs.nextIntArray(n + m + 1);
+        for (int i = m; i >= 0; i--) {
+            b[i] = c[i + n] / a[n];
+            for (int j = 0; j <= n; j++) {
+                c[i + j] -= b[i] * a[j];
             }
         }
-        return d;
-    }
-
-    private static int[][] packG() {
-        final int[][] g = new int[n][];
-        final int[] size = new int[n];
-        for (int[] edge : edges) {
-            ++size[edge[0]];
-            ++size[edge[1]];
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= m; i++) {
+            sb.append(b[i]).append(' ');
         }
-        for (int i = 0; i < n; i++) {
-            g[i] = new int[size[i]];
-        }
-        for (int[] edge : edges) {
-            g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
-        }
-        return g;
+        System.out.println(sb);
     }
 
     static final class Utils {

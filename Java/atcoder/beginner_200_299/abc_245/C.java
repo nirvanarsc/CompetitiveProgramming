@@ -1,84 +1,55 @@
-package atcoder.beginner_200_299.abc_244;
+package atcoder.beginner_200_299.abc_245;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.Random;
 
-public final class F {
+public final class C {
 
-    static int n;
-    static int[][] g;
-    static int[][] edges;
+    static boolean[][] seen;
+    static int[][] dp;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        n = fs.nextInt();
-        final int m = fs.nextInt();
-        edges = new int[m][2];
-        for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+        final int n = fs.nextInt();
+        final int k = fs.nextInt();
+        final int[] a = fs.nextIntArray(n);
+        final int[] b = fs.nextIntArray(n);
+        seen = new boolean[n][2];
+        dp = new int[n][2];
+        System.out.println(dfs(0, 0, k, a, b) == 1 ? "Yes" : "No");
+    }
+
+    private static int dfs(int idx, int prev, int k, int[] a, int[] b) {
+        if (idx == a.length) {
+            return 1;
         }
-        g = packG();
-        final int[][] d = bfs();
+        if (seen[idx][prev]) {
+            return dp[idx][prev];
+        }
         int res = 0;
-        for (int mask = 1; mask < (1 << n); mask++) {
-            int curr = (int) 1e9;
-            for (int i = 0; i < n; i++) {
-                curr = Math.min(curr, d[i][mask]);
+        if (idx == 0) {
+            res = Math.max(res, dfs(1, 0, k, a, b));
+            res = Math.max(res, dfs(1, 1, k, a, b));
+        } else if (prev == 0) {
+            if (Math.abs(a[idx] - a[idx - 1]) <= k) {
+                res = Math.max(res, dfs(idx + 1, 0, k, a, b));
             }
-            res += curr;
-        }
-        System.out.println(res);
-    }
-
-    private static int[][] bfs() {
-        final Deque<int[]> dq = new ArrayDeque<>();
-        final int[][] d = new int[n][1 << n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(d[i], (int) 1e9);
-        }
-        for (int i = 0; i < n; i++) {
-            d[i][1 << i] = 1;
-            dq.offerLast(new int[] { i, 1 << i });
-        }
-        for (int level = 1; !dq.isEmpty(); level++) {
-            for (int size = dq.size(); size > 0; size--) {
-                final int[] pop = dq.remove();
-                final int u = pop[0];
-                final int m = pop[1];
-                if (d[u][m] < level) {
-                    continue;
-                }
-                for (int v : g[u]) {
-                    if (d[v][m ^ (1 << v)] > d[u][m] + 1) {
-                        d[v][m ^ (1 << v)] = d[u][m] + 1;
-                        dq.offerLast(new int[] { v, m ^ (1 << v) });
-                    }
-                }
+            if (Math.abs(b[idx] - a[idx - 1]) <= k) {
+                res = Math.max(res, dfs(idx + 1, 1, k, a, b));
+            }
+        } else {
+            if (Math.abs(a[idx] - b[idx - 1]) <= k) {
+                res = Math.max(res, dfs(idx + 1, 0, k, a, b));
+            }
+            if (Math.abs(b[idx] - b[idx - 1]) <= k) {
+                res = Math.max(res, dfs(idx + 1, 1, k, a, b));
             }
         }
-        return d;
-    }
-
-    private static int[][] packG() {
-        final int[][] g = new int[n][];
-        final int[] size = new int[n];
-        for (int[] edge : edges) {
-            ++size[edge[0]];
-            ++size[edge[1]];
-        }
-        for (int i = 0; i < n; i++) {
-            g[i] = new int[size[i]];
-        }
-        for (int[] edge : edges) {
-            g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
-        }
-        return g;
+        seen[idx][prev] = true;
+        return dp[idx][prev] = res;
     }
 
     static final class Utils {

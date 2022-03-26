@@ -1,18 +1,19 @@
-package atcoder.beginner_200_299.abc_244;
+package atcoder.beginner_200_299.abc_245;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
+import java.util.List;
 import java.util.Random;
 
 public final class F {
 
     static int n;
-    static int[][] g;
     static int[][] edges;
+    static int[][] g1;
+    static int[][] g2;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
@@ -20,65 +21,109 @@ public final class F {
         final int m = fs.nextInt();
         edges = new int[m][2];
         for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            edges[i] = new int[] { u, v };
         }
-        g = packG();
-        final int[][] d = bfs();
-        int res = 0;
-        for (int mask = 1; mask < (1 << n); mask++) {
-            int curr = (int) 1e9;
-            for (int i = 0; i < n; i++) {
-                curr = Math.min(curr, d[i][mask]);
+        g1 = packG1();
+        g2 = packG2();
+        final List<Integer> topSort = new ArrayList<>(n);
+        boolean[] seen = new boolean[n];
+        final int[] scc = new int[n];
+        for (int i = 0; i < n; i++) {
+            dfs1(i, seen, topSort);
+        }
+        seen = new boolean[n];
+        int cc = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            final int u = topSort.get(i);
+            if (!seen[u]) {
+                dfs2(u, seen, scc, cc);
+                cc++;
             }
-            res += curr;
+        }
+        final List<List<Integer>> revSCCg = new ArrayList<>(cc);
+        for (int i = 0; i < cc; i++) {
+            revSCCg.add(new ArrayList<>());
+        }
+        final int[] total = new int[cc];
+        for (int i = 0; i < n; i++) {
+            total[scc[i]]++;
+        }
+        for (int i = 0; i < n; i++) {
+            for (int v : g2[i]) {
+                if (scc[v] == scc[i]) {
+                    continue;
+                }
+                revSCCg.get(scc[v]).add(scc[i]);
+            }
+        }
+        final int[] dp = new int[cc];
+        for (int i = cc - 1; i >= 0; i--) {
+            dp[i] = total[i] > 1 ? 1 : 0;
+            for (int j : revSCCg.get(i)) {
+                dp[i] = Math.max(dp[i], dp[j]);
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < cc; i++) {
+            if (dp[i] == 1) {
+                res += total[i];
+            }
         }
         System.out.println(res);
     }
 
-    private static int[][] bfs() {
-        final Deque<int[]> dq = new ArrayDeque<>();
-        final int[][] d = new int[n][1 << n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(d[i], (int) 1e9);
-        }
-        for (int i = 0; i < n; i++) {
-            d[i][1 << i] = 1;
-            dq.offerLast(new int[] { i, 1 << i });
-        }
-        for (int level = 1; !dq.isEmpty(); level++) {
-            for (int size = dq.size(); size > 0; size--) {
-                final int[] pop = dq.remove();
-                final int u = pop[0];
-                final int m = pop[1];
-                if (d[u][m] < level) {
-                    continue;
-                }
-                for (int v : g[u]) {
-                    if (d[v][m ^ (1 << v)] > d[u][m] + 1) {
-                        d[v][m ^ (1 << v)] = d[u][m] + 1;
-                        dq.offerLast(new int[] { v, m ^ (1 << v) });
-                    }
-                }
-            }
-        }
-        return d;
-    }
-
-    private static int[][] packG() {
+    private static int[][] packG1() {
         final int[][] g = new int[n][];
         final int[] size = new int[n];
         for (int[] edge : edges) {
             ++size[edge[0]];
-            ++size[edge[1]];
         }
         for (int i = 0; i < n; i++) {
             g[i] = new int[size[i]];
         }
         for (int[] edge : edges) {
             g[edge[0]][--size[edge[0]]] = edge[1];
+        }
+        return g;
+    }
+
+    private static int[][] packG2() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[1]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
             g[edge[1]][--size[edge[1]]] = edge[0];
         }
         return g;
+    }
+
+    private static void dfs1(int u, boolean[] seen, List<Integer> topSort) {
+        if (seen[u]) {
+            return;
+        }
+        seen[u] = true;
+        for (int v : g1[u]) {
+            dfs1(v, seen, topSort);
+        }
+        topSort.add(u);
+    }
+
+    private static void dfs2(int u, boolean[] seen, int[] scc, int cc) {
+        if (seen[u]) {
+            return;
+        }
+        seen[u] = true;
+        for (int v : g2[u]) {
+            dfs2(v, seen, scc, cc);
+        }
+        scc[u] = cc;
     }
 
     static final class Utils {
