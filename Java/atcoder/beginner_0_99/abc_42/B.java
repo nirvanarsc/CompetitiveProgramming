@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_245;
+package atcoder.beginner_0_99.abc_42;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -11,16 +11,17 @@ public final class B {
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final boolean[] seen = new boolean[2005];
+        final int l = fs.nextInt();
+        final String[] arr = new String[n];
         for (int i = 0; i < n; i++) {
-            seen[fs.nextInt()] = true;
+            arr[i] = fs.next();
         }
-        for (int i = 0; i < seen.length; i++) {
-            if (!seen[i]) {
-                System.out.println(i);
-                return;
-            }
+        Arrays.sort(arr);
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(arr[i]);
         }
+        System.out.println(sb);
     }
 
     static final class Utils {

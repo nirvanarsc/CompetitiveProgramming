@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_245;
+package atcoder.regular_0_99.arc_58;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,21 +6,40 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class B {
+public final class E {
+
+    private static final int MOD = (int) (1e9 + 7);
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final boolean[] seen = new boolean[2005];
+        final int x = fs.nextInt();
+        final int y = fs.nextInt();
+        final int z = fs.nextInt();
+        final int[][] dp = new int[43][1 << 18];
+        final int m1 = 1 << 17;
+        final int m2 = 1 << 18;
+        final int zz = (1 << (17 - x)) + (1 << (17 - x - y)) + (1 << (17 - x - y - z));
+        dp[0][m1] = 1;
         for (int i = 0; i < n; i++) {
-            seen[fs.nextInt()] = true;
-        }
-        for (int i = 0; i < seen.length; i++) {
-            if (!seen[i]) {
-                System.out.println(i);
-                return;
+            for (int mask = 0; mask < m2; mask++) {
+                for (int k = 1; k <= 10; k++) {
+                    final int nmask = mask >> k | m1;
+                    if ((nmask & zz) == zz) {
+                        continue;
+                    }
+                    dp[i + 1][nmask] = (dp[i + 1][nmask] + dp[i][mask]) % MOD;
+                }
             }
         }
+        long res = 1;
+        for (int i = 0; i < n; i++) {
+            res = (res * 10) % MOD;
+        }
+        for (int i = 0; i < m2; i++) {
+            res = (res - dp[n][i] + MOD) % MOD;
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_245;
+package atcoder.beginner_0_99.abc_55;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,21 +6,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class B {
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final boolean[] seen = new boolean[2005];
-        for (int i = 0; i < n; i++) {
-            seen[fs.nextInt()] = true;
-        }
-        for (int i = 0; i < seen.length; i++) {
-            if (!seen[i]) {
-                System.out.println(i);
-                return;
-            }
-        }
+        final long n = fs.nextLong();
+        long m = fs.nextLong();
+        final long take = Math.min(n * 2, m);
+        m -= take;
+        System.out.println((take / 2) + (m / 4));
     }
 
     static final class Utils {

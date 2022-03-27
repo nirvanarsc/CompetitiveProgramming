@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_245;
+package atcoder.beginner_0_99.abc_42;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,21 +6,76 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class B {
+public final class D {
+
+    private static final int MOD = (int) (1e9 + 7);
+
+    private static class Combinations {
+        long[] factorial;
+        long[] facInverse;
+        long[] inverse;
+
+        Combinations(int n) {
+            final int MAX = n + 2;
+            factorial = new long[MAX];
+            facInverse = new long[MAX];
+            inverse = new long[MAX];
+            factorial[0] = factorial[1] = 1;
+            facInverse[0] = facInverse[1] = 1;
+            inverse[1] = 1;
+            for (int i = 2; i < MAX; i++) {
+                factorial[i] = factorial[i - 1] * i % MOD;
+                final long inv = inverse[i] = MOD - inverse[MOD % i] * (MOD / i) % MOD;
+                facInverse[i] = facInverse[i - 1] * inv % MOD;
+            }
+        }
+
+        long nck(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
+        }
+
+        // combinations with repetition
+        long ncr(int n, int k) {
+            return nck(n + k - 1, k);
+        }
+
+        // permutations with repetition
+        long npk(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * facInverse[n - k] % MOD;
+        }
+
+        long modPow(long a, long n) {
+            long res = 1;
+            while (n > 0) {
+                if (n % 2 != 0) {
+                    res = res * a % MOD;
+                }
+                a = a * a % MOD;
+                n /= 2;
+            }
+            return res;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final boolean[] seen = new boolean[2005];
-        for (int i = 0; i < n; i++) {
-            seen[fs.nextInt()] = true;
+        final int m = fs.nextInt();
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final Combinations comb = new Combinations((int) (2e5 + 5));
+        long res = 0;
+        for (int i = 0; i < (m - b); i++) {
+            final long l = comb.nck(n - a + b - 1 + i, n - a - 1);
+            final long r = comb.nck(m - b + a - 2 - i, a - 1);
+            final long add = (l * r) % MOD;
+            res = (res + add) % MOD;
         }
-        for (int i = 0; i < seen.length; i++) {
-            if (!seen[i]) {
-                System.out.println(i);
-                return;
-            }
-        }
+        System.out.println(res);
     }
 
     static final class Utils {

@@ -10,10 +10,10 @@ public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        int a = fs.nextInt();
-        int b = fs.nextInt();
-        int c = fs.nextInt();
-        int d = fs.nextInt();
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int c = fs.nextInt();
+        final int d = fs.nextInt();
         if (a == c) {
             if (b <= d) {
                 System.out.println("Takahashi");
