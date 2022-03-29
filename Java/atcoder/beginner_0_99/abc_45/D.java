@@ -1,53 +1,54 @@
-package atcoder.beginner_0_99.abc_44;
+package atcoder.beginner_0_99.abc_45;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final long n = fs.nextLong();
-        final long s = fs.nextLong();
-        for (int b = 2; (long) b * b <= n; b++) {
-            if (f(n, b) == s) {
-                System.out.println(b);
-                return;
+        final int h = fs.nextInt();
+        final int w = fs.nextInt();
+        final int n = fs.nextInt();
+        final int[][] arr = new int[n][2];
+        final Set<Long> have = new HashSet<>();
+        final Set<Long> seen = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            arr[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
+            have.add(((long) arr[i][0] * w) + arr[i][1]);
+        }
+        final long[] res = new long[10];
+        res[0] = (long) (h - 2) * (w - 2);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    final int r = arr[i][0] - j;
+                    final int c = arr[i][1] - k;
+                    if (r >= 0 && c >= 0 && r + 2 < h && c + 2 < w) {
+                        final long key = ((long) r * w) + c;
+                        if (seen.add(key)) {
+                            int curr = 0;
+                            for (int l = 0; l < 3; l++) {
+                                for (int m = 0; m < 3; m++) {
+                                    final long u = ((long) (r + l) * w) + (c + m);
+                                    curr += have.contains(u) ? 1 : 0;
+                                }
+                            }
+                            res[0]--;
+                            res[curr]++;
+                        }
+                    }
+                }
             }
         }
-        final long d = n - s;
-        if (d < 0) {
-            System.out.println(-1);
-            return;
+        for (int i = 0; i < 10; i++) {
+            System.out.println(res[i]);
         }
-        if (d == 0) {
-            System.out.println(n + 1);
-            return;
-        }
-        long res = (long) 1e18;
-        for (int p = 1; (long) p * p <= d; p++) {
-            if (d % p == 0) {
-                if (f(n, p + 1) == s) {
-                    res = Math.min(res, p + 1);
-                }
-                if (f(n, (d / p) + 1) == s) {
-                    res = Math.min(res, (d / p) + 1);
-                }
-            }
-        }
-        System.out.println(res == (long) 1e18 ? -1 : res);
-    }
-
-    private static long f(long n, long b) {
-        long res = 0;
-        while (n > 0) {
-            res += n % b;
-            n /= b;
-        }
-        return res;
     }
 
     static final class Utils {

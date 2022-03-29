@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_44;
+package atcoder.beginner_0_99.abc_45;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,48 +6,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class D {
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final long n = fs.nextLong();
-        final long s = fs.nextLong();
-        for (int b = 2; (long) b * b <= n; b++) {
-            if (f(n, b) == s) {
-                System.out.println(b);
-                return;
-            }
-        }
-        final long d = n - s;
-        if (d < 0) {
-            System.out.println(-1);
-            return;
-        }
-        if (d == 0) {
-            System.out.println(n + 1);
-            return;
-        }
-        long res = (long) 1e18;
-        for (int p = 1; (long) p * p <= d; p++) {
-            if (d % p == 0) {
-                if (f(n, p + 1) == s) {
-                    res = Math.min(res, p + 1);
-                }
-                if (f(n, (d / p) + 1) == s) {
-                    res = Math.min(res, (d / p) + 1);
-                }
-            }
-        }
-        System.out.println(res == (long) 1e18 ? -1 : res);
-    }
-
-    private static long f(long n, long b) {
-        long res = 0;
-        while (n > 0) {
-            res += n % b;
-            n /= b;
-        }
-        return res;
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int h = fs.nextInt() / 2;
+        System.out.println((a + b) * h);
     }
 
     static final class Utils {
