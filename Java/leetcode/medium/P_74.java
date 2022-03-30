@@ -4,9 +4,6 @@ public class P_74 {
 
     // O(log n * m)
     public boolean searchMatrixBS(int[][] matrix, int target) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return false;
-        }
         final int n = matrix.length;
         final int m = matrix[0].length;
         int lo = 0;
@@ -24,9 +21,6 @@ public class P_74 {
 
     // O(n + m)
     public boolean searchMatrix(int[][] matrix, int target) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return false;
-        }
         final int n = matrix.length;
         final int m = matrix[0].length;
         int i = 0;
