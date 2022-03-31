@@ -3,10 +3,11 @@ package leetcode.weekly_contests.weekly_7;
 public class P_410 {
 
     public int splitArray(int[] nums, int m) {
-        int lo = 0, hi = (int) 1e9;
+        int lo = 0;
+        int hi = (int) 1e9;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            if (!f(nums, mid, m)) {
+            if (!f(nums, m, mid)) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -15,23 +16,19 @@ public class P_410 {
         return lo;
     }
 
-    private static boolean f(int[] nums, int mid, int m) {
-        int count = 0;
+    private static boolean f(int[] nums, int m, int mid) {
         int sum = 0;
         for (int num : nums) {
             if (num > mid) {
                 return false;
             }
             if (sum + num > mid) {
+                m--;
                 sum = num;
-                count++;
             } else {
                 sum += num;
             }
         }
-        if (sum > 0) {
-            count++;
-        }
-        return count <= m;
+        return m > 0;
     }
 }
