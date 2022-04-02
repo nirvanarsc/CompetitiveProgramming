@@ -34,6 +34,7 @@ public class P_1044 {
         for (int k = 4; k < 2 * n; k *= 2) {
             int rank = 0;
             int prev_rank = sa[0].rank[0];
+            sa[0].rank[0] = rank;
             ind[sa[0].index] = 0;
             for (int i = 1; i < n; i++) {
                 if (sa[i].rank[0] == prev_rank && sa[i].rank[1] == sa[i - 1].rank[1]) {
