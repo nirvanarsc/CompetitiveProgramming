@@ -14,7 +14,7 @@ public final class E {
         final int m = fs.nextInt();
         final int[][] edges = new int[m][3];
         for (int i = 0; i < m; i++) {
-            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1, fs.nextInt(), i };
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1, fs.nextInt() };
         }
         final long[][] gg = new long[n][n];
         for (int i = 0; i < n; i++) {

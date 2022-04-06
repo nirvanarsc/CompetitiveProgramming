@@ -10,11 +10,23 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int sx = fs.nextInt();
+        final int sy = fs.nextInt();
+        final int tx = fs.nextInt();
+        final int ty = fs.nextInt();
+        final StringBuilder l = new StringBuilder();
+        final StringBuilder r = new StringBuilder();
+        for (int i = 0; i < ty - sy; i++) {
+            l.append('U');
+            r.append('D');
         }
+        for (int i = 0; i < tx - sx; i++) {
+            l.append('R');
+            r.append('L');
+        }
+        final String ll = l.toString();
+        final String rr = r.toString();
+        System.out.println(ll + rr + ("LU" + ll + "RD") + ("RD" + rr + "LU"));
     }
 
     static final class Utils {

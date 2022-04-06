@@ -6,7 +6,7 @@ public class P_923 {
 
     private static final int MOD = (int) (1e9 + 7);
 
-    public int threeSumMulti(int[] arr, int target) {
+    public int threeSumMultiSort(int[] arr, int target) {
         Arrays.sort(arr);
         final int[] f = new int[105];
         final int n = arr.length;
@@ -52,5 +52,25 @@ public class P_923 {
 
     private static long nC2(long n) {
         return (n * (n - 1)) / 2;
+    }
+
+    public int threeSumMulti(int[] arr, int target) {
+        final int[] l = new int[305];
+        final int[] r = new int[305];
+        for (int num : arr) {
+            r[num]++;
+        }
+        int res = 0;
+        for (int num : arr) {
+            r[num]--;
+            final int comp = target - num;
+            if (comp >= 0) {
+                for (int j = 0; j <= comp; j++) {
+                    res = (res + l[j] * r[comp - j]) % MOD;
+                }
+            }
+            l[num]++;
+        }
+        return res;
     }
 }

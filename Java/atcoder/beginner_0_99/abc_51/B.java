@@ -12,16 +12,20 @@ public final class B {
         final FastReader fs = new FastReader();
         final int k = fs.nextInt();
         final int s = fs.nextInt();
+        System.out.println(f(k, s));
+    }
+
+    private static int f(int k, int s) {
         int res = 0;
         for (int a = 0; a <= k; a++) {
-            if (s - a > 2 * k) {
+            if (s - a < 0 || s - a > 2 * k) {
                 continue;
             }
             final int l = Math.max(0, s - a - k);
             final int r = Math.max(0, s - a - l);
             res += Math.max(0, r - l + 1);
         }
-        System.out.println(res);
+        return res;
     }
 
     static final class Utils {

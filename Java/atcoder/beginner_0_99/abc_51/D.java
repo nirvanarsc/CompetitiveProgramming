@@ -10,11 +10,50 @@ public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int[][] edges = new int[m][3];
+        for (int i = 0; i < m; i++) {
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1, fs.nextInt() };
         }
+        final long[][] gg = new long[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                gg[i][j] = (long) 1e18;
+            }
+        }
+        for (int[] e : edges) {
+            final int u = e[0];
+            final int v = e[1];
+            gg[u][v] = e[2];
+            gg[v][u] = e[2];
+        }
+        final long[][] fw = floydWarshall(gg, n);
+        int res = 0;
+        for (int[] e : edges) {
+            int ok = 0;
+            for (int i = 0; i < n; i++) {
+                if (fw[e[0]][i] + fw[i][e[1]] < e[2]) {
+                    ok = 1;
+                    break;
+                }
+            }
+            res += ok;
+        }
+        System.out.println(res);
+    }
+
+    // Floyd-Warshall O(n^3)
+    private static long[][] floydWarshall(long[][] graph, int n) {
+        final long[][] dist = graph.clone();
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+        return dist;
     }
 
     static final class Utils {
