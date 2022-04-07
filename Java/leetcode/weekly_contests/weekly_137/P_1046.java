@@ -10,13 +10,14 @@ public class P_1046 {
         for (int stone : stones) {
             pq.add(stone);
         }
-        while (pq.size() >= 2) {
-            final Integer first = pq.remove();
-            final Integer second = pq.remove();
-            if (!first.equals(second)) {
-                pq.add(first - second);
+        pq.add(0);
+        while (pq.size() > 1) {
+            final int u = pq.remove();
+            final int v = pq.remove();
+            if (u > v) {
+                pq.add(u - v);
             }
         }
-        return pq.isEmpty() ? 0 : pq.remove();
+        return pq.element();
     }
 }
