@@ -10,11 +10,50 @@ public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int l = fs.nextInt();
+        final int r = fs.nextInt();
+        final int[][] arr = new int[n][3];
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextIntArray(3);
         }
+        final int max = (n * 10) + 5;
+        final int[][][] dp = new int[n + 1][max][max];
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j < max; j++) {
+                for (int k = 0; k < max; k++) {
+                    dp[i][j][k] = (int) 1e9;
+                }
+            }
+        }
+        dp[0][0][0] = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < max; j++) {
+                for (int k = 0; k < max; k++) {
+                    if (j + arr[i][0] < max && k + arr[i][1] < max) {
+                        dp[i + 1][j + arr[i][0]][k + arr[i][1]] =
+                                Math.min(dp[i + 1][j + arr[i][0]][k + arr[i][1]], dp[i][j][k] + arr[i][2]);
+                        dp[i + 1][j][k] = Math.min(dp[i + 1][j][k], dp[i][j][k]);
+                    }
+                }
+            }
+        }
+        int res = (int) 1e9;
+        for (int j = 1; j < max; j++) {
+            for (int k = 1; k < max; k++) {
+                final int gcd = gcd(j, k);
+                final int dj = j / gcd;
+                final int dk = k / gcd;
+                if (dj == l && dk == r) {
+                    res = Math.min(res, dp[n][j][k]);
+                }
+            }
+        }
+        System.out.println(res == (int) 1e9 ? -1 : res);
+    }
+
+    private static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
     }
 
     static final class Utils {

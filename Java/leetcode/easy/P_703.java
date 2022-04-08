@@ -2,30 +2,31 @@ package leetcode.easy;
 
 import java.util.PriorityQueue;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass" })
 public class P_703 {
 
-    static class KthLargest {
+    class KthLargest {
         PriorityQueue<Integer> pq;
         int k;
 
-        KthLargest(int k, int[] nums) {
+        public KthLargest(int k, int[] nums) {
             pq = new PriorityQueue<>();
             this.k = k;
             for (int num : nums) {
-                pq.add(num);
-                if (pq.size() > k) {
-                    pq.remove();
-                }
+                pqAdd(num);
             }
         }
 
         public int add(int val) {
+            pqAdd(val);
+            return pq.element();
+        }
+
+        private void pqAdd(int val) {
             pq.add(val);
             if (pq.size() > k) {
                 pq.remove();
             }
-            return pq.element();
         }
     }
 }
