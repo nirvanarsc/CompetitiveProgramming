@@ -16,18 +16,15 @@ public class P_347 {
         final Map<Integer, Integer> frequencyMap = new HashMap<>();
         final PriorityQueue<Map.Entry<Integer, Integer>> min =
                 new PriorityQueue<>(k, Map.Entry.comparingByValue());
-
         for (int num : nums) {
             frequencyMap.merge(num, 1, Integer::sum);
         }
-
         for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
             min.add(entry);
             if (min.size() > k) {
                 min.remove();
             }
         }
-
         return min.stream().mapToInt(Map.Entry::getKey).toArray();
     }
 
