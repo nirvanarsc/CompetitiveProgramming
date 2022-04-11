@@ -30,10 +30,11 @@ public class P_4 {
                 if ((long) idx * mid - pre[idx] > rem) {
                     hi = mid - 1;
                 } else {
-                    res = Math.max(res, (i > 0 ? ((long) mid * partial) : 0) + (long) full * (n - i));
                     lo = mid;
                 }
             }
+            lo = i == 0 ? 0 : lo;
+            res = Math.max(res, (long) lo * partial + (long) full * (n - i));
         }
         return res;
     }
