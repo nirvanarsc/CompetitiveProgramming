@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_58;
+package atcoder.beginner_0_99.abc_59;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -8,37 +8,11 @@ import java.util.Random;
 
 public final class D {
 
-    private static final int MOD = (int) (1e9 + 7);
-
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[] x = fs.nextIntArray(n);
-        final int[] y = fs.nextIntArray(m);
-        System.out.println((f(x, n) * f(y, m)) % MOD);
-    }
-
-    private static long f(int[] arr, int n) {
-        n--;
-        final int[] d = new int[n];
-        for (int i = 0; i < n; i++) {
-            d[i] = arr[i + 1] - arr[i];
-        }
-        final long[] c = new long[n];
-        int i = 0;
-        int j = n - 1;
-        while (i <= j) {
-            c[i] = c[j] = ((long) (n - i) * (i + 1)) % MOD;
-            i++;
-            j--;
-        }
-        long res = 0;
-        for (int k = 0; k < n; k++) {
-            final long add = (c[k] * d[k]) % MOD;
-            res = (res + add) % MOD;
-        }
-        return res;
+        final long x = fs.nextLong();
+        final long y = fs.nextLong();
+        System.out.println(Math.abs(x - y) < 2 ? "Brown" : "Alice");
     }
 
     static final class Utils {

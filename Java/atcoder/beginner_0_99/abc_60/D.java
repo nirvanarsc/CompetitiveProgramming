@@ -1,43 +1,45 @@
-package atcoder.beginner_0_99.abc_58;
+package atcoder.beginner_0_99.abc_60;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class D {
 
-    private static final int MOD = (int) (1e9 + 7);
+    static int n;
+    static int m;
+    static Map<String, Integer> dp;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int[] x = fs.nextIntArray(n);
-        final int[] y = fs.nextIntArray(m);
-        System.out.println((f(x, n) * f(y, m)) % MOD);
+        n = fs.nextInt();
+        m = fs.nextInt();
+        final int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextIntArray(2);
+        }
+        dp = new HashMap<>();
+        System.out.println(dfs(arr, 0, m));
     }
 
-    private static long f(int[] arr, int n) {
-        n--;
-        final int[] d = new int[n];
-        for (int i = 0; i < n; i++) {
-            d[i] = arr[i + 1] - arr[i];
+    private static int dfs(int[][] arr, int idx, int w) {
+        if (idx == n) {
+            return 0;
         }
-        final long[] c = new long[n];
-        int i = 0;
-        int j = n - 1;
-        while (i <= j) {
-            c[i] = c[j] = ((long) (n - i) * (i + 1)) % MOD;
-            i++;
-            j--;
+        final String key = idx + "," + w;
+        final Integer v = dp.get(key);
+        if (v != null) {
+            return v;
         }
-        long res = 0;
-        for (int k = 0; k < n; k++) {
-            final long add = (c[k] * d[k]) % MOD;
-            res = (res + add) % MOD;
+        int res = dfs(arr, idx + 1, w);
+        if (w >= arr[idx][0]) {
+            res = Math.max(res, arr[idx][1] + dfs(arr, idx + 1, w - arr[idx][0]));
         }
+        dp.put(key, res);
         return res;
     }
 
