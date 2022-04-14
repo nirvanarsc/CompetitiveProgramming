@@ -4,16 +4,27 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final long k = fs.nextLong();
+        final int[][] arr = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextIntArray(2);
+        }
+        Arrays.sort(arr, Comparator.comparingInt(a -> a[0]));
+        long curr = 0;
+        for (int i = 0; i < n; i++) {
+            curr += arr[i][1];
+            if (curr >= k) {
+                System.out.println(arr[i][0]);
+                return;
+            }
         }
     }
 
