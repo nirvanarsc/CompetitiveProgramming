@@ -3,18 +3,59 @@ package atcoder.beginner_0_99.abc_61;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<int[]> edges = new ArrayList<>(m);
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            // Mark negative to find negative cycles
+            final int w = -fs.nextInt();
+            edges.add(new int[] { u, v, w });
         }
+        final long[] dist = bellmanFord(edges, 0, n);
+        System.out.println(dist[n - 1] == (long) -1e18 ? "inf" : -dist[n - 1]);
+    }
+
+    // Bellman-Ford O (V*E) == O(V^3)
+    private static long[] bellmanFord(List<int[]> e, int start, int n) {
+        final long[] dist = new long[n];
+        Arrays.fill(dist, (long) 1e18);
+        dist[start] = 0;
+        for (int i = 0; i < n - 1; i++) {
+            for (int[] edge : e) {
+                final int from = edge[0];
+                final int to = edge[1];
+                final int cost = edge[2];
+                if (dist[from] == (long) 1e18) {
+                    continue;
+                }
+                dist[to] = Math.min(dist[to], dist[from] + cost);
+            }
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int[] edge : e) {
+                final int from = edge[0];
+                final int to = edge[1];
+                final int cost = edge[2];
+                if (dist[from] == (long) 1e18) {
+                    continue;
+                }
+                if (dist[from] + cost < dist[to]) {
+                    dist[to] = (long) -1e18;
+                }
+            }
+        }
+        return dist;
     }
 
     static final class Utils {
