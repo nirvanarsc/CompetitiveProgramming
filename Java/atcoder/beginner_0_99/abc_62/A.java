@@ -10,11 +10,17 @@ public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
-        }
+        int m1 = 0b101011010101;
+        int m2 = 0b10100101000;
+        int m3 = 0b10;
+        int x = fs.nextInt();
+        int y = fs.nextInt();
+        System.out.println(f(m1, x, y) || f(m2, x, y) || f(m3, x, y) ? "Yes" : "No");
+
+    }
+
+    private static boolean f(int mask, int x, int y) {
+        return (mask & (1 << x)) != 0 && (mask & (1 << y)) != 0;
     }
 
     static final class Utils {
