@@ -1,7 +1,7 @@
 package leetcode.medium;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 import utils.DataStructures.TreeNode;
 
@@ -11,7 +11,7 @@ public class P_230 {
         Deque<TreeNode> stack;
 
         BSTIterator(TreeNode root) {
-            stack = new LinkedList<>();
+            stack = new ArrayDeque<>();
             traverseLeft(root);
         }
 

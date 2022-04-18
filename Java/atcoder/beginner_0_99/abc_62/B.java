@@ -10,11 +10,29 @@ public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int h = fs.nextInt();
+        final int w = fs.nextInt();
+        final String[] g = new String[h];
+        for (int i = 0; i < h; i++) {
+            g[i] = fs.next();
         }
+        final StringBuilder sb = new StringBuilder();
+        final StringBuilder f = new StringBuilder();
+        //noinspection StringRepeatCanBeUsed
+        for (int i = 0; i < w + 2; i++) {
+            f.append('#');
+        }
+        for (int i = 0; i < h + 2; i++) {
+            if (i == 0 || i == h + 1) {
+                sb.append(f);
+            } else {
+                sb.append('#');
+                sb.append(g[i - 1]);
+                sb.append('#');
+            }
+            sb.append('\n');
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {

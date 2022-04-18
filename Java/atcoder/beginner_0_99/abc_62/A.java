@@ -10,13 +10,12 @@ public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        int m1 = 0b101011010101;
-        int m2 = 0b10100101000;
-        int m3 = 0b10;
-        int x = fs.nextInt();
-        int y = fs.nextInt();
+        final int m1 = 0b1010110101010;
+        final int m2 = 0b0101001010000;
+        final int m3 = 0b0000000000100;
+        final int x = fs.nextInt();
+        final int y = fs.nextInt();
         System.out.println(f(m1, x, y) || f(m2, x, y) || f(m3, x, y) ? "Yes" : "No");
-
     }
 
     private static boolean f(int mask, int x, int y) {

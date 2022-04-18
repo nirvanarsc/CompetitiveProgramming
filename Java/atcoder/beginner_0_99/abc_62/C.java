@@ -10,11 +10,44 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        long res = (long) 9e18;
+        for (long i = 1; i < n; i++) {
+            final long p = i * m;
+            final long q1 = (n - i) * (m / 2);
+            final long r1 = (n - i) * ((m + 1) / 2);
+            final long q2 = ((n - i) / 2) * m;
+            final long r2 = ((n - i + 1) / 2) * m;
+            res = Math.min(res, max(p, q1, r1) - min(p, q1, r1));
+            res = Math.min(res, max(p, q2, r2) - min(p, q2, r2));
         }
+        for (long i = 1; i < m; i++) {
+            final long p = i * n;
+            final long q1 = (m - i) * (n / 2);
+            final long r1 = (m - i) * ((n + 1) / 2);
+            final long q2 = ((m - i) / 2) * n;
+            final long r2 = ((m - i + 1) / 2) * n;
+            res = Math.min(res, max(p, q1, r1) - min(p, q1, r1));
+            res = Math.min(res, max(p, q2, r2) - min(p, q2, r2));
+        }
+        System.out.println(res);
+    }
+
+    private static long max(long a, long b, long c) {
+        long res = 0;
+        res = Math.max(res, a);
+        res = Math.max(res, b);
+        res = Math.max(res, c);
+        return res;
+    }
+
+    private static long min(long a, long b, long c) {
+        long res = (long) 9e18;
+        res = Math.min(res, a);
+        res = Math.min(res, b);
+        res = Math.min(res, c);
+        return res;
     }
 
     static final class Utils {
