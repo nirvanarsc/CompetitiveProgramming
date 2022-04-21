@@ -5,15 +5,54 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.TreeMap;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(3 * n);
+        final TreeMap<Integer, Integer> l = new TreeMap<>();
+        final TreeMap<Integer, Integer> r = new TreeMap<>();
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            res += arr[i];
+            l.merge(arr[i], 1, Integer::sum);
+        }
+        for (int i = 2 * n; i < 3 * n; i++) {
+            res -= arr[i];
+            r.merge(arr[i], 1, Integer::sum);
+        }
+        final long[] p1 = new long[n + 1];
+        final long[] p2 = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            final int[] keys = { l.firstKey(), r.lastKey() };
+            final int lll = arr[n + i - 1] - keys[0];
+            final int rrr = keys[1] - arr[2 * n - i];
+            p1[i] = p1[i - 1] + lll;
+            p2[i] = p2[i - 1] + rrr;
+            dec(l, keys[0]);
+            dec(r, keys[1]);
+            l.merge(arr[n + i - 1], 1, Integer::sum);
+            r.merge(arr[2 * n - i], 1, Integer::sum);
+        }
+        final long[] m1 = new long[n + 1];
+        final long[] m2 = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            m1[i] = Math.max(m1[i - 1], p1[i]);
+            m2[i] = Math.max(m2[i - 1], p2[i]);
+        }
+        long best = 0;
+        for (int i = 0; i <= n; i++) {
+            best = Math.max(best, m1[i] + m2[n - i]);
+        }
+        System.out.println(res + best);
+    }
+
+    private static void dec(TreeMap<Integer, Integer> tm, int key) {
+        if (tm.merge(key, -1, Integer::sum) == 0) {
+            tm.remove(key);
         }
     }
 
