@@ -10,11 +10,18 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        int diff = 0;
+        int mask = 0;
+        for (int i = 0; i < n; i++) {
+            final int z = fs.nextInt() / 400;
+            if (z > 7) {
+                diff++;
+            } else {
+                mask |= 1 << z;
+            }
         }
+        System.out.println(Integer.bitCount(mask) + " " + Math.min(n, Integer.bitCount(mask) + diff));
     }
 
     static final class Utils {

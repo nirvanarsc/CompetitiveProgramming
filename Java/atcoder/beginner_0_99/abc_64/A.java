@@ -10,11 +10,8 @@ public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
-        }
+        final int n = 100 * fs.nextInt() + 10 * fs.nextInt() + fs.nextInt();
+        System.out.println(n % 4 == 0 ? "YES" : "NO");
     }
 
     static final class Utils {

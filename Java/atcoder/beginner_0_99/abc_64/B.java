@@ -10,11 +10,15 @@ public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        int max = 0;
+        int min = 1000;
+        for (int i = 0; i < n; i++) {
+            final int u = fs.nextInt();
+            max = Math.max(max, u);
+            min = Math.min(min, u);
         }
+        System.out.println(max - min);
     }
 
     static final class Utils {
