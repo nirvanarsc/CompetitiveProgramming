@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_200_299.abc_249;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,22 +6,40 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class C {
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        int diff = 0;
-        int mask = 0;
-        for (int i = 0; i < n; i++) {
-            final int u = fs.nextInt() / 400;
-            if (u > 7) {
-                diff++;
-            } else {
-                mask |= 1 << u;
-            }
+        final int a = fs.nextInt();
+        final int b = fs.nextInt();
+        final int c = fs.nextInt();
+        final int d = fs.nextInt();
+        final int e = fs.nextInt();
+        final int f = fs.nextInt();
+        final int x = fs.nextInt();
+        int l = 0;
+        int r = 0;
+        int i = 0;
+        while (i < x) {
+            final int take = Math.min(a, x - i);
+            l += take * b;
+            i += take;
+            i += c;
         }
-        System.out.println(Math.max(1, Integer.bitCount(mask)) + " " + (Integer.bitCount(mask) + diff));
+        i = 0;
+        while (i < x) {
+            final int take = Math.min(d, x - i);
+            r += take * e;
+            i += take;
+            i += f;
+        }
+        if (l == r) {
+            System.out.println("Draw");
+        } else if (l > r) {
+            System.out.println("Takahashi");
+        } else {
+            System.out.println("Aoki");
+        }
     }
 
     static final class Utils {

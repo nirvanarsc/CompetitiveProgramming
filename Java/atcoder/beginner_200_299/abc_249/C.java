@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_200_299.abc_249;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -11,17 +11,36 @@ public final class C {
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        int diff = 0;
-        int mask = 0;
+        final int k = fs.nextInt();
+        final char[][] g = new char[n][];
         for (int i = 0; i < n; i++) {
-            final int u = fs.nextInt() / 400;
-            if (u > 7) {
-                diff++;
-            } else {
-                mask |= 1 << u;
-            }
+            g[i] = fs.next().toCharArray();
         }
-        System.out.println(Math.max(1, Integer.bitCount(mask)) + " " + (Integer.bitCount(mask) + diff));
+        int res = 0;
+        for (int mask = 0; mask < (1 << n); mask++) {
+            final int[] f = new int[26];
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    int m = 0;
+                    for (char c : g[i]) {
+                        m |= 1 << (c - 'a');
+                    }
+                    for (int j = 0; j < 26; j++) {
+                        if ((m & (1 << j)) != 0) {
+                            f[j]++;
+                        }
+                    }
+                }
+            }
+            int c = 0;
+            for (int i = 0; i < 26; i++) {
+                if (f[i] == k) {
+                    c++;
+                }
+            }
+            res = Math.max(res, c);
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

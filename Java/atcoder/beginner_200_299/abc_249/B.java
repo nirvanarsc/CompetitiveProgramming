@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_200_299.abc_249;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,22 +6,32 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class C {
+public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        int diff = 0;
-        int mask = 0;
-        for (int i = 0; i < n; i++) {
-            final int u = fs.nextInt() / 400;
-            if (u > 7) {
-                diff++;
+        final char[] w = fs.next().toCharArray();
+        long mask = 0;
+        int upper = 0;
+        int lower = 0;
+        for (char c : w) {
+            if (Character.isUpperCase(c)) {
+                upper = 1;
+                if ((mask & (1L << (c - 'A' + 26))) != 0) {
+                    System.out.println("No");
+                    return;
+                }
+                mask |= 1L << (c - 'A' + 26);
             } else {
-                mask |= 1 << u;
+                lower = 1;
+                if ((mask & (1L << (c - 'a'))) != 0) {
+                    System.out.println("No");
+                    return;
+                }
+                mask |= 1L << (c - 'a');
             }
         }
-        System.out.println(Math.max(1, Integer.bitCount(mask)) + " " + (Integer.bitCount(mask) + diff));
+        System.out.println((upper == 1 && lower == 1) ? "Yes" : "No");
     }
 
     static final class Utils {
