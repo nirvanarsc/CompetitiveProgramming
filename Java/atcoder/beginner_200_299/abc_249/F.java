@@ -3,18 +3,110 @@ package atcoder.beginner_200_299.abc_249;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public final class F {
 
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        long sum;
+        int count;
+
+        SegTree(int leftMost, int rightMost, int[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                sum = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
+            }
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = left.sum + right.sum;
+            count = left.count + right.count;
+        }
+
+        private long query(int k) {
+            if (leftMost == rightMost) {
+                return k > 0 ? sum : 0;
+            }
+            if (left.count <= k) {
+                return left.sum + right.query(k - left.count);
+            }
+            //noinspection TailRecursion
+            return left.query(k);
+        }
+
+        private void update(int idx, long val) {
+            if (leftMost == rightMost) {
+                sum += val;
+                count += 1;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt() + 1;
+        final int k = fs.nextInt();
+        final List<Integer> list = new ArrayList<>();
+        final int[][] arr = new int[n][2];
+        arr[0] = new int[] { 1, 0 };
+        for (int i = 1; i < n; i++) {
+            arr[i] = fs.nextIntArray(2);
+            if (arr[i][0] == 2 && arr[i][1] < 0) {
+                list.add(arr[i][1]);
+            }
         }
+        list.sort(Comparator.naturalOrder());
+        final Map<Integer, Deque<Integer>> map = new HashMap<>();
+        int m = list.size();
+        for (int i = 0; i < m; i++) {
+            map.computeIfAbsent(list.get(i), val -> new ArrayDeque<>()).addFirst(i);
+        }
+        if (m == 0) {
+            m++;
+        }
+        final SegTree st = new SegTree(0, m - 1, new int[m]);
+        long res = (long) -9e18;
+        long curr = 0;
+        int skip = 0;
+        for (int i = n - 1; i >= 0 && skip <= k; i--) {
+            if (arr[i][0] == 1) {
+                res = Math.max(res, arr[i][1] + curr - st.query(k - skip));
+                skip++;
+            } else {
+                curr += arr[i][1];
+                if (arr[i][1] < 0) {
+                    st.update(map.get(arr[i][1]).removeFirst(), arr[i][1]);
+                }
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

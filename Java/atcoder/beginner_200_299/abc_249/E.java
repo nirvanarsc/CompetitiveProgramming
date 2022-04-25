@@ -8,13 +8,45 @@ import java.util.Random;
 
 public final class E {
 
+    static int n;
+    static int p;
+    static int[][] dp;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        n = fs.nextInt();
+        p = fs.nextInt();
+        dp = new int[n + 1][n];
+        dp[0][0] = 1;
+        for (int idx = 0; idx < n; idx++) {
+            for (int len = 0; len < n; len++) {
+                final long mul = idx == 0 ? 26L : 25L;
+                final int add = (int) ((mul * dp[idx][len]) % p);
+                for (int k = 1; k <= n - idx; k++) {
+                    if (len + f(k) < n) {
+                        dp[idx + k][len + f(k)] = (dp[idx + k][len + f(k)] + add) % p;
+                    }
+                }
+            }
         }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            res = (res + dp[n][i]) % p;
+        }
+        System.out.println(res);
+    }
+
+    private static int f(int n) {
+        if (n >= 1000) {
+            return 5;
+        }
+        if (n >= 100) {
+            return 4;
+        }
+        if (n >= 10) {
+            return 3;
+        }
+        return 2;
     }
 
     static final class Utils {
