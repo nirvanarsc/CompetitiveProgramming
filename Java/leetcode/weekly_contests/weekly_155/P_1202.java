@@ -7,12 +7,12 @@ import java.util.TreeMap;
 
 public class P_1202 {
 
-    static class UnionFind {
+    private static final class UnionFind {
         private final int[] parent;
         private final int[] size;
         private int count;
 
-        UnionFind(int n) {
+        private UnionFind(int n) {
             parent = new int[n];
             size = new int[n];
             count = n;
@@ -41,14 +41,18 @@ public class P_1202 {
             if (size[rootP] > size[rootQ]) {
                 parent[rootQ] = rootP;
                 size[rootP] += size[rootQ];
+                size[rootQ] = 0;
             } else {
                 parent[rootP] = rootQ;
                 size[rootQ] += size[rootP];
+                size[rootP] = 0;
             }
             count--;
         }
 
         public int count() { return count; }
+
+        public int[] size() { return size; }
     }
 
     public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
@@ -60,17 +64,16 @@ public class P_1202 {
             uf.union(l.get(0), l.get(1));
         }
         for (int i = 0; i < n; i++) {
-            map.putIfAbsent(uf.find(i), new TreeMap<>());
-            map.get(uf.find(i)).merge(s.charAt(i), 1, Integer::sum);
+            map.computeIfAbsent(uf.find(i), val -> new TreeMap<>()).merge(s.charAt(i), 1, Integer::sum);
         }
         for (int i = 0; i < n; i++) {
-            final Map.Entry<Character, Integer> first = map.get(uf.find(i)).firstEntry();
-            if (first.getValue() == 1) {
-                map.get(uf.find(i)).remove(first.getKey());
-            } else {
-                map.get(uf.find(i)).put(first.getKey(), first.getValue() - 1);
+            final TreeMap<Character, Integer> curr = map.get(uf.find(i));
+            final char key = curr.firstKey();
+            final int dec = curr.merge(key, -1, Integer::sum);
+            if (dec == 0) {
+                curr.remove(key);
             }
-            res[i] = first.getKey();
+            res[i] = key;
         }
         return new String(res);
     }
