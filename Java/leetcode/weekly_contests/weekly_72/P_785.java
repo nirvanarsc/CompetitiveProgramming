@@ -2,11 +2,16 @@ package leetcode.weekly_contests.weekly_72;
 
 public class P_785 {
 
+    static int[][] g;
+    static int[] colors;
+
     public boolean isBipartite(int[][] graph) {
-        final int[] colors = new int[graph.length];
-        for (int i = 0; i < graph.length; i++) {
+        final int n = graph.length;
+        g = graph;
+        colors = new int[n];
+        for (int i = 0; i < n; i++) {
             if (colors[i] == 0) {
-                if (!dfs(i, graph, colors, 1)) {
+                if (!dfs(i, 1)) {
                     return false;
                 }
             }
@@ -14,13 +19,13 @@ public class P_785 {
         return true;
     }
 
-    private static boolean dfs(int u, int[][] g, int[] colors, int c) {
+    private static boolean dfs(int u, int c) {
         if (colors[u] != 0) {
             return colors[u] == c;
         }
         colors[u] = c;
-        for (int n : g[u]) {
-            if (!dfs(n, g, colors, c ^ 3)) {
+        for (int v : g[u]) {
+            if (!dfs(v, c ^ 3)) {
                 return false;
             }
         }
