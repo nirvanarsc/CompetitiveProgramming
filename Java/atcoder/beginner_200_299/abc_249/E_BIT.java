@@ -6,35 +6,88 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
+public final class E_BIT {
+
+    private static final class BIT {
+        private final int n;
+        private final long[] data;
+        private final int mod;
+
+        private BIT(int n, int mod) {
+            this.n = n;
+            this.mod = mod;
+            data = new long[n + 1];
+        }
+
+        public void add(int idx, long val) {
+            for (int i = idx + 1; i <= n; i += lsb(i)) {
+                data[i] = (data[i] + val) % mod;
+            }
+        }
+
+        public long sum(int l, int r) {
+            return sum(r) - sum(l - 1);
+        }
+
+        private long sum(int idx) {
+            long res = 0;
+            for (int i = idx + 1; i > 0; i -= lsb(i)) {
+                res = (res + data[i]) % mod;
+            }
+            return res;
+        }
+
+        private static int lsb(int i) {
+            return i & -i;  // zeroes all the bits except the least significant one
+        }
+
+        // get k-th element
+        public int getKth(int k) {
+            int lo = 0;
+            int hi = n;
+            while (lo < hi) {
+                final int mid = lo + hi >>> 1;
+                if (k > sum(mid)) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
+            }
+            return lo;
+        }
+    }
 
     static int n;
     static int p;
-    static int[][] dp;
+    static BIT[] dp;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         n = fs.nextInt();
         p = fs.nextInt();
-        dp = new int[n][n + 1];
-        dp[0][0] = 1;
+        dp = new BIT[n + 1];
+        for (int i = 0; i < dp.length; i++) {
+            dp[i] = new BIT(n + 1, p);
+        }
+        dp[0].add(0, 1);
+        dp[0].add(1, p - 1);
         for (int idx = 0; idx < n; idx++) {
             for (int len = 0; len < n; len++) {
                 final long mul = idx == 0 ? 26L : 25L;
-                final int add = (int) ((mul * dp[len][idx]) % p);
+                final long add = (mul * dp[len].sum(idx)) % p;
                 if (add == 0) {
                     continue;
                 }
-                for (int k = 1; k <= n - idx; k++) {
-                    if (len + f(k) < n) {
-                        dp[len + f(k)][idx + k] = (dp[len + f(k)][idx + k] + add) % p;
-                    }
+                for (int l = 1, r = 10; len + f(l) < n && idx + l <= n; l *= 10, r *= 10) {
+                    r = Math.min(r, n - idx + 2);
+                    dp[len + f(l)].add(idx + l, add);
+                    dp[len + f(l)].add(idx + r, p - add);
                 }
             }
         }
         long res = 0;
-        for (int i = 0; i < n; i++) {
-            res = (res + dp[i][n]) % p;
+        for (int i = 1; i <= n; i++) {
+            res = (res + dp[i].sum(n)) % p;
         }
         System.out.println(res);
     }
