@@ -21,20 +21,23 @@ public class P_581 {
 
     public int findUnsortedSubarray(int[] nums) {
         final int n = nums.length;
-        int i = -1;
-        int j = -2;
-        int min = nums[n - 1];
-        int max = nums[0];
-        for (int k = 1; k < n; k++) {
-            max = Math.max(max, nums[k]);
-            min = Math.min(min, nums[n - 1 - k]);
-            if (nums[k] < max) {
-                j = k;
+        final int[] stack = new int[n];
+        int sIdx = 0;
+        int l = n;
+        int r = 0;
+        for (int i = 0; i < n; i++) {
+            while (sIdx > 0 && nums[stack[sIdx - 1]] > nums[i]) {
+                l = Math.min(l, stack[--sIdx]);
             }
-            if (nums[n - 1 - k] > min) {
-                i = n - 1 - k;
-            }
+            stack[sIdx++] = i;
         }
-        return j - i + 1;
+        sIdx = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            while (sIdx > 0 && nums[stack[sIdx - 1]] < nums[i]) {
+                r = Math.max(r, stack[--sIdx]);
+            }
+            stack[sIdx++] = i;
+        }
+        return Math.max(0, r - l + 1);
     }
 }
