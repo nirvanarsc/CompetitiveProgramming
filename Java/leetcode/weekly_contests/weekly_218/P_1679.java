@@ -1,6 +1,7 @@
 package leetcode.weekly_contests.weekly_218;
 
 import java.util.Arrays;
+import java.util.TreeMap;
 
 public class P_1679 {
 
@@ -22,5 +23,19 @@ public class P_1679 {
             }
         }
         return res;
+    }
+
+    public int maxOperationsTm(int[] nums, int k) {
+        final TreeMap<Integer, Integer> tm = new TreeMap<>();
+        for (int num : nums) {
+            tm.merge(num, 1, Integer::sum);
+        }
+        int res = 0;
+        for (int num : nums) {
+            if (tm.merge(k - num, -1, Integer::sum) >= 0) {
+                res++;
+            }
+        }
+        return res / 2;
     }
 }
