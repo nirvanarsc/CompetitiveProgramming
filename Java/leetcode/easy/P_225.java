@@ -3,34 +3,31 @@ package leetcode.easy;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass" })
 public class P_225 {
 
-    static class MyStack {
+    class MyStack {
 
-        Deque<Integer> q1;
+        Deque<Integer> dq;
 
-        MyStack() {
-            q1 = new ArrayDeque<>();
+        public MyStack() {
+            dq = new ArrayDeque<>();
         }
 
         public void push(int x) {
-            q1.offerLast(x);
-            for (int size = q1.size(); size > 1; size--) {
-                q1.offerLast(q1.removeFirst());
-            }
+            dq.addFirst(x);
         }
 
         public int pop() {
-            return q1.removeFirst();
+            return dq.removeFirst();
         }
 
         public int top() {
-            return q1.getFirst();
+            return dq.getFirst();
         }
 
         public boolean empty() {
-            return q1.isEmpty();
+            return dq.isEmpty();
         }
     }
 }
