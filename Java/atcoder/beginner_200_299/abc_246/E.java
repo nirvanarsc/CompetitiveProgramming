@@ -3,18 +3,63 @@ package atcoder.beginner_200_299.abc_246;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Random;
 
 public final class E {
 
+    private static final int[][] DIRS = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int sx = fs.nextInt() - 1;
+        final int sy = fs.nextInt() - 1;
+        final int tx = fs.nextInt() - 1;
+        final int ty = fs.nextInt() - 1;
+        if ((sx + sy) % 2 != (tx + ty) % 2) {
+            System.out.println(-1);
+            return;
         }
+        final char[][] g = new char[n][n];
+        final int[][] d = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            g[i] = fs.next().toCharArray();
+            Arrays.fill(d[i], (int) 1e9);
+        }
+        final Deque<int[]> dq = new ArrayDeque<>();
+        d[sx][sy] = 0;
+        dq.offerLast(new int[] { sx, sy });
+        for (int level = 0; !dq.isEmpty(); level++) {
+            for (int size = dq.size(); size > 0; size--) {
+                final int[] pop = dq.removeFirst();
+                final int x = pop[0];
+                final int y = pop[1];
+                if (d[x][y] < level) {
+                    continue;
+                }
+                for (int[] dir : DIRS) {
+                    for (int k = 1; true; k++) {
+                        final int nx = x + k * dir[0];
+                        final int ny = y + k * dir[1];
+                        if (nx < 0 || nx >= n || ny < 0 || ny >= n) {
+                            break;
+                        }
+                        if (g[nx][ny] == '#') {
+                            break;
+                        }
+                        if (d[nx][ny] < level + 1) {
+                            break;
+                        }
+                        d[nx][ny] = level + 1;
+                        dq.offerLast(new int[] { nx, ny });
+                    }
+                }
+            }
+        }
+        System.out.println(d[tx][ty] == (int) 1e9 ? -1 : d[tx][ty]);
     }
 
     static final class Utils {

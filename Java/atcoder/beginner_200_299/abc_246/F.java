@@ -8,13 +8,53 @@ import java.util.Random;
 
 public final class F {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int l = fs.nextInt();
+        final char[][] g = new char[n][];
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            g[i] = fs.next().toCharArray();
+
         }
+        for (int mask = 1; mask < 1 << n; mask++) {
+            final int[] curr = new int[26];
+            final int uniq = Integer.bitCount(mask);
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    for (char c : g[i]) {
+                        curr[c - 'a']++;
+                    }
+                }
+            }
+            int add = 0;
+            for (int i = 0; i < 26; i++) {
+                if (curr[i] == uniq) {
+                    add++;
+                }
+            }
+            if (uniq % 2 == 0) {
+                res = (res - modPow(add, l) + MOD) % MOD;
+            } else {
+                res = (res + modPow(add, l)) % MOD;
+            }
+        }
+        System.out.println(res);
+    }
+
+    private static long modPow(long a, long n) {
+        long res = 1;
+        while (n > 0) {
+            if (n % 2 != 0) {
+                res = (res * a) % MOD;
+            }
+            a = (a * a) % MOD;
+            n /= 2;
+        }
+        return res;
     }
 
     static final class Utils {
