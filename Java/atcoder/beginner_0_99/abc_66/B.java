@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_0_99.abc_66;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,30 +6,23 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class D {
+public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
         final char[] w = fs.next().toCharArray();
-        int open = 0;
-        int add = 0;
-        for (char c : w) {
-            open += c == '(' ? 1 : -1;
-            if (open < 0) {
-                add++;
-                open = 0;
+        final int n = w.length;
+        for (int i = 0; i < n; i += 2) {
+            final int l = n - i - 2;
+            boolean ok = true;
+            for (int j = 0; j < l / 2; j++) {
+                ok &= w[j] == w[j + (l / 2)];
+            }
+            if (ok) {
+                System.out.println(l);
+                return;
             }
         }
-        final char[] res = new char[n + add + open];
-        for (int i = 0; i < add; i++) {
-            res[i] = '(';
-        }
-        System.arraycopy(w, 0, res, add, n);
-        for (int i = n + add; i < n + add + open; i++) {
-            res[i] = ')';
-        }
-        System.out.println(res);
     }
 
     static final class Utils {

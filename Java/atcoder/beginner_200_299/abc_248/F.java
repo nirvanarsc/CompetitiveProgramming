@@ -8,17 +8,37 @@ import java.util.Random;
 
 public final class F {
 
+    private static final int[][] DIRS =
+            { { 0, 1, 2, 3, 4 }, { 0, 1, 2, 3, 4 }, { 0, 1, 2, 3, 4 }, { 2, 3, 4 }, { 0, 1, 2, 3, 4 } };
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int[] f = new int[10];
-        for (char c : fs.next().toCharArray()) {
-            f[c - '0']++;
-        }
-        for (int i = 0; i < 10; i++) {
-            if (f[i] == 0) {
-                System.out.println(i);
+        final int n = fs.nextInt() - 1;
+        final int mod = fs.nextInt();
+        final int[][][] dp = new int[n + 1][n + 1][5];
+        dp[0][0][0] = 1;
+        final StringBuilder sb = new StringBuilder();
+        for (int idx = 0; idx < n; idx++) {
+            for (int skip = 0; skip < n; skip++) {
+                for (int mask = 0; mask < 5; mask++) {
+                    if (dp[idx][skip][mask] == 0) {
+                        continue;
+                    }
+                    for (int nextM : DIRS[mask]) {
+                        dp[idx + 1][skip + (nextM > 0 ? 1 : 0)][nextM] =
+                                (dp[idx + 1][skip + (nextM > 0 ? 1 : 0)][nextM] + dp[idx][skip][mask]) % mod;
+                    }
+                }
             }
         }
+        for (int i = 1; i <= n; i++) {
+            int res = 0;
+            for (int j = 0; j < 5; j++) {
+                res = (res + dp[n][i][j]) % mod;
+            }
+            sb.append(res).append('\n');
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {

@@ -1,33 +1,91 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_0_99.abc_65;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 public final class D {
 
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+                size[rootQ] = 0;
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+                size[rootP] = 0;
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final char[] w = fs.next().toCharArray();
-        int open = 0;
-        int add = 0;
-        for (char c : w) {
-            open += c == '(' ? 1 : -1;
-            if (open < 0) {
-                add++;
-                open = 0;
+        final int[][] byX = new int[n][2];
+        final int[][] byY = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            final int u = fs.nextInt();
+            final int v = fs.nextInt();
+            byX[i] = new int[] { u, i };
+            byY[i] = new int[] { v, i };
+        }
+        Arrays.sort(byX, Comparator.comparingInt(a -> a[0]));
+        Arrays.sort(byY, Comparator.comparingInt(a -> a[0]));
+        final int[][] edges = new int[2 * (n - 1)][3];
+        int idx = 0;
+        for (int i = 1; i < n; i++) {
+            edges[idx++] = new int[] { byX[i][0] - byX[i - 1][0], byX[i - 1][1], byX[i][1] };
+            edges[idx++] = new int[] { byY[i][0] - byY[i - 1][0], byY[i - 1][1], byY[i][1] };
+        }
+        Arrays.sort(edges, Comparator.comparingInt(a -> a[0]));
+        final UnionFind uf = new UnionFind(n);
+        long res = 0;
+        for (int[] edge : edges) {
+            final int u = edge[1];
+            final int v = edge[2];
+            if (uf.find(u) != uf.find(v)) {
+                uf.union(u, v);
+                res += edge[0];
             }
-        }
-        final char[] res = new char[n + add + open];
-        for (int i = 0; i < add; i++) {
-            res[i] = '(';
-        }
-        System.arraycopy(w, 0, res, add, n);
-        for (int i = n + add; i < n + add + open; i++) {
-            res[i] = ')';
         }
         System.out.println(res);
     }

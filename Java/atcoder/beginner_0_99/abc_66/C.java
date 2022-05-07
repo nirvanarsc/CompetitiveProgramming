@@ -1,35 +1,39 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_0_99.abc_66;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Random;
 
-public final class D {
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final char[] w = fs.next().toCharArray();
-        int open = 0;
-        int add = 0;
-        for (char c : w) {
-            open += c == '(' ? 1 : -1;
-            if (open < 0) {
-                add++;
-                open = 0;
+        final Deque<Integer> dq = new ArrayDeque<>();
+        boolean turn = true;
+        for (int i = 0; i < n; i++) {
+            if (turn) {
+                dq.addLast(fs.nextInt());
+            } else {
+                dq.addFirst(fs.nextInt());
+            }
+            turn ^= true;
+        }
+        final StringBuilder sb = new StringBuilder();
+        if (turn) {
+            while (!dq.isEmpty()) {
+                sb.append(dq.removeFirst()).append(' ');
+            }
+        } else {
+            while (!dq.isEmpty()) {
+                sb.append(dq.removeLast()).append(' ');
             }
         }
-        final char[] res = new char[n + add + open];
-        for (int i = 0; i < add; i++) {
-            res[i] = '(';
-        }
-        System.arraycopy(w, 0, res, add, n);
-        for (int i = n + add; i < n + add + open; i++) {
-            res[i] = ')';
-        }
-        System.out.println(res);
+        System.out.println(sb);
     }
 
     static final class Utils {

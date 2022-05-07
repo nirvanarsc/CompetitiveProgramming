@@ -1,4 +1,4 @@
-package atcoder.beginner_0_99.abc_64;
+package atcoder.beginner_0_99.abc_66;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -8,28 +8,85 @@ import java.util.Random;
 
 public final class D {
 
+    private static final int MOD = (int) (1e9 + 7);
+
+    private static class Combinations {
+        long[] factorial;
+        long[] facInverse;
+        long[] inverse;
+
+        Combinations(int n) {
+            final int MAX = n + 2;
+            factorial = new long[MAX];
+            facInverse = new long[MAX];
+            inverse = new long[MAX];
+            factorial[0] = factorial[1] = 1;
+            facInverse[0] = facInverse[1] = 1;
+            inverse[1] = 1;
+            for (int i = 2; i < MAX; i++) {
+                factorial[i] = factorial[i - 1] * i % MOD;
+                final long inv = inverse[i] = MOD - inverse[MOD % i] * (MOD / i) % MOD;
+                facInverse[i] = facInverse[i - 1] * inv % MOD;
+            }
+        }
+
+        long nck(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
+        }
+
+        // combinations with repetition
+        long ncr(int n, int k) {
+            return nck(n + k - 1, k);
+        }
+
+        // permutations with repetition
+        long npk(int n, int k) {
+            if (n < k) { return 0; }
+            if (n < 0 || k < 0) { return 0; }
+            return factorial[n] * facInverse[n - k] % MOD;
+        }
+
+        long modPow(long a, long n) {
+            long res = 1;
+            while (n > 0) {
+                if (n % 2 != 0) {
+                    res = res * a % MOD;
+                }
+                a = a * a % MOD;
+                n /= 2;
+            }
+            return res;
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final char[] w = fs.next().toCharArray();
-        int open = 0;
-        int add = 0;
-        for (char c : w) {
-            open += c == '(' ? 1 : -1;
-            if (open < 0) {
-                add++;
-                open = 0;
+        final int[] arr = fs.nextIntArray(n + 1);
+        final int[] seen = new int[n + 5];
+        Arrays.fill(seen, -1);
+        int v = -1;
+        for (int i = 0; i < n + 1; i++) {
+            if (seen[arr[i]] == -1) {
+                seen[arr[i]] = i;
+            } else {
+                v = n - i + seen[arr[i]];
+                break;
             }
         }
-        final char[] res = new char[n + add + open];
-        for (int i = 0; i < add; i++) {
-            res[i] = '(';
+        final Combinations comb = new Combinations(n + 5);
+        final long[] res = new long[n + 1];
+        for (int i = 0; i <= n; i++) {
+            res[i] = comb.nck(n + 1, i + 1);
         }
-        System.arraycopy(w, 0, res, add, n);
-        for (int i = n + add; i < n + add + open; i++) {
-            res[i] = ')';
+        for (int i = 0; i <= v; i++) {
+            res[i] = (res[i] - comb.nck(v, i) + MOD) % MOD;
         }
-        System.out.println(res);
+        for (int i = 0; i <= n; i++) {
+            System.out.println(res[i]);
+        }
     }
 
     static final class Utils {
