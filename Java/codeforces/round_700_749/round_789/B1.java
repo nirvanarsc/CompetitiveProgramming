@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public final class B {
+public final class B1 {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();

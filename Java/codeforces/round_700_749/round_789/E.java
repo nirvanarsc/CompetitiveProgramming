@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-public final class D {
+public final class E {
 
     private static final class UnionFind {
         private final int[] parent;
