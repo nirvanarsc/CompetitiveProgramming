@@ -5,24 +5,26 @@ import java.util.List;
 
 public class P_216 {
 
+    static List<List<Integer>> res;
+    static List<Integer> curr;
+
     public List<List<Integer>> combinationSum3(int k, int n) {
-        final List<List<Integer>> res = new ArrayList<>();
-        final int[] nums = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        dfs(nums, 0, n, k, new ArrayList<>(), res);
+        res = new ArrayList<>();
+        curr = new ArrayList<>();
+        dfs(1, n, k);
         return res;
     }
 
-    private static void dfs(int[] nums, int idx, int target, int k, List<Integer> curr,
-                            List<List<Integer>> res) {
+    private static void dfs(int idx, int target, int k) {
         if (k == 0) {
             if (target == 0) {
                 res.add(new ArrayList<>(curr));
             }
             return;
         }
-        for (int i = idx; i < nums.length && nums[i] <= target; i++) {
-            curr.add(nums[i]);
-            dfs(nums, i + 1, target - nums[i], k - 1, curr, res);
+        for (int num = idx; num < 10 && num <= target; num++) {
+            curr.add(num);
+            dfs(num + 1, target - num, k - 1);
             curr.remove(curr.size() - 1);
         }
     }

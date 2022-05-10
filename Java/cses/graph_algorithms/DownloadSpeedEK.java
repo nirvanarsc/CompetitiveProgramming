@@ -10,12 +10,17 @@ import java.util.Random;
 
 public final class DownloadSpeedEK {
 
+    static long res;
+    static int n;
+    static long[][] g;
+    static int[][] adj;
+
     // Ford Fulkerson + Edmond Karp (O m^2 n)
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
+        n = fs.nextInt();
         final int m = fs.nextInt();
-        final long[][] g = new long[n][n];
+        g = new long[n][n];
         final int[][] edges = new int[m][2];
         for (int i = 0; i < m; i++) {
             final int u = fs.nextInt() - 1;
@@ -24,45 +29,48 @@ public final class DownloadSpeedEK {
             g[u][v] += w;
             edges[i] = new int[] { u, v };
         }
-        final int[][] adj = Utils.packG(edges, n);
-        long res = 0;
+        adj = Utils.packG(edges, n);
+        res = 0;
         while (true) {
-            final Deque<long[]> q = new ArrayDeque<>();
-            q.offerLast(new long[] { 0, (long) 1e18 });
-            final int[] prev = new int[n];
-            Arrays.fill(prev, -1);
-            boolean ok = false;
-            outer:
-            while (!q.isEmpty()) {
-                for (int size = q.size(); size > 0; size--) {
-                    final long[] curr = q.removeFirst();
-                    final int u = (int) curr[0];
-                    if (u == n - 1) {
-                        final long min = curr[1];
-                        int p = u;
-                        while (p != -1) {
-                            if (prev[p] != -1) {
-                                g[prev[p]][p] -= min;
-                            }
-                            p = prev[p];
-                        }
-                        res += min;
-                        ok = true;
-                        break outer;
-                    }
-                    for (int v : adj[u]) {
-                        if (prev[v] == -1 && g[u][v] > 0) {
-                            prev[v] = u;
-                            q.offerLast(new long[] { v, Math.min(g[u][v], curr[1]) });
-                        }
-                    }
-                }
-            }
-            if (!ok) {
+            if (!bfs()) {
                 break;
             }
         }
         System.out.println(res);
+    }
+
+    private static boolean bfs() {
+        final Deque<long[]> q = new ArrayDeque<>();
+        q.offerLast(new long[] { 0, (long) 1e18 });
+        final int[] prev = new int[n];
+        Arrays.fill(prev, -2);
+        prev[0] = -1;
+        while (!q.isEmpty()) {
+            for (int size = q.size(); size > 0; size--) {
+                final long[] curr = q.removeFirst();
+                final int u = (int) curr[0];
+                if (u == n - 1) {
+                    final long min = curr[1];
+                    int p = u;
+                    while (p != -1) {
+                        if (prev[p] != -1) {
+                            g[prev[p]][p] -= min;
+                            g[p][prev[p]] += min;
+                        }
+                        p = prev[p];
+                    }
+                    res += min;
+                    return true;
+                }
+                for (int v : adj[u]) {
+                    if (prev[v] == -2 && g[u][v] > 0) {
+                        prev[v] = u;
+                        q.offerLast(new long[] { v, Math.min(g[u][v], curr[1]) });
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     static final class Utils {
@@ -113,12 +121,14 @@ public final class DownloadSpeedEK {
             final int[] size = new int[n];
             for (int[] edge : edges) {
                 ++size[edge[0]];
+                ++size[edge[1]];
             }
             for (int i = 0; i < n; i++) {
                 g[i] = new int[size[i]];
             }
             for (int[] edge : edges) {
                 g[edge[0]][--size[edge[0]]] = edge[1];
+                g[edge[1]][--size[edge[1]]] = edge[0];
             }
             return g;
         }

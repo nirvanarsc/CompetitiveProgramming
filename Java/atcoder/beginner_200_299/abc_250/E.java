@@ -4,7 +4,9 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -15,22 +17,27 @@ public final class E {
         final int n = fs.nextInt();
         final int[] a = fs.nextIntArray(n);
         final int[] b = fs.nextIntArray(n);
-        final int[] lMin = new int[n + 1];
-        final int[] lMax = new int[n + 1];
-        final int[] lCount = new int[n + 1];
         final int[] rMin = new int[n + 1];
+        final int[] lMax = new int[n + 1];
         final int[] rMax = new int[n + 1];
+        final int[] lCount = new int[n + 1];
         final int[] rCount = new int[n + 1];
-        lMin[0] = rMin[0] = (int) 1e9;
+        rMin[0] = (int) 1e9;
+        int curr = 1;
+        final Map<Integer, Integer> idx = new HashMap<>();
+        for (int num : a) {
+            if (!idx.containsKey(num)) {
+                idx.put(num, curr++);
+            }
+        }
         final Set<Integer> ll = new HashSet<>();
         final Set<Integer> rr = new HashSet<>();
         for (int i = 1; i <= n; i++) {
             ll.add(a[i - 1]);
             rr.add(b[i - 1]);
-            lMin[i] = Math.min(lMin[i - 1], a[i - 1]);
-            rMin[i] = Math.min(rMin[i - 1], b[i - 1]);
-            lMax[i] = Math.max(lMax[i - 1], a[i - 1]);
-            rMax[i] = Math.max(rMax[i - 1], b[i - 1]);
+            rMin[i] = Math.min(rMin[i - 1], idx.getOrDefault(b[i - 1], (int) 1e9));
+            rMax[i] = Math.max(rMax[i - 1], idx.getOrDefault(b[i - 1], 0));
+            lMax[i] = Math.max(lMax[i - 1], idx.get(a[i - 1]));
             lCount[i] = ll.size();
             rCount[i] = rr.size();
         }
@@ -39,7 +46,7 @@ public final class E {
         for (int i = 0; i < q; i++) {
             final int u = fs.nextInt();
             final int v = fs.nextInt();
-            if (lMin[u] == rMin[v] && lMax[u] == rMax[v] && lCount[u] == rCount[v]) {
+            if (rMin[v] == 1 && lMax[u] == rMax[v] && lCount[u] == rCount[v]) {
                 sb.append("Yes\n");
             } else {
                 sb.append("No\n");

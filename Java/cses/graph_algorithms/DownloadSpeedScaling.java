@@ -20,6 +20,7 @@ public final class DownloadSpeedScaling {
             final int v = fs.nextInt() - 1;
             final int w = fs.nextInt();
             g[u][v] += w;
+            g[v][u] -= w;
             edges[i] = new int[] { u, v };
         }
         final int[][] adj = Utils.packG(edges, n);
@@ -42,10 +43,12 @@ public final class DownloadSpeedScaling {
         for (int v : adj[u]) {
             if (g[u][v] >= t) {
                 g[u][v] -= t;
+                g[v][u] += t;
                 if (dfs(v, n, t, g, adj)) {
                     return true;
                 }
                 g[u][v] += t;
+                g[v][u] -= t;
             }
         }
         return false;
@@ -99,12 +102,14 @@ public final class DownloadSpeedScaling {
             final int[] size = new int[n];
             for (int[] edge : edges) {
                 ++size[edge[0]];
+                ++size[edge[1]];
             }
             for (int i = 0; i < n; i++) {
                 g[i] = new int[size[i]];
             }
             for (int[] edge : edges) {
                 g[edge[0]][--size[edge[0]]] = edge[1];
+                g[edge[1]][--size[edge[1]]] = edge[0];
             }
             return g;
         }
