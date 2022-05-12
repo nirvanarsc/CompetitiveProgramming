@@ -1,116 +1,17 @@
-package codeforces.round_700_749.round_789;
+package atcoder.beginner_0_99.abc_68;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
-public final class E {
-
-    private static final class UnionFind {
-        private final int[] parent;
-        private final int[] size;
-        private int count;
-
-        private UnionFind(int n) {
-            parent = new int[n];
-            size = new int[n];
-            count = n;
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-                size[i] = 1;
-            }
-        }
-
-        public int find(int p) {
-            // path compression
-            while (p != parent[p]) {
-                parent[p] = parent[parent[p]];
-                p = parent[p];
-            }
-            return p;
-        }
-
-        public void union(int p, int q) {
-            final int rootP = find(p);
-            final int rootQ = find(q);
-            if (rootP == rootQ) {
-                return;
-            }
-            // union by size
-            if (size[rootP] > size[rootQ]) {
-                parent[rootQ] = rootP;
-                size[rootP] += size[rootQ];
-                size[rootQ] = 0;
-            } else {
-                parent[rootP] = rootQ;
-                size[rootQ] += size[rootP];
-                size[rootP] = 0;
-            }
-            count--;
-        }
-
-        public int count() { return count; }
-
-        public int[] size() { return size; }
-    }
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            final int[] top = new int[n];
-            final int[] bot = new int[n];
-            final int[] map = new int[n];
-            final UnionFind uf = new UnionFind(n);
-            for (int i = 0; i < n; i++) {
-                top[i] = fs.nextInt() - 1;
-                map[top[i]] = i;
-            }
-            for (int i = 0; i < n; i++) {
-                bot[i] = fs.nextInt() - 1;
-            }
-            for (int i = 0; i < n; i++) {
-                uf.union(top[i], bot[i]);
-            }
-            int max = n;
-            int min = 1;
-            long res = 0;
-            final int[] vals = new int[n];
-            for (int i = 0; i < n; i++) {
-                if (uf.find(i) == i) {
-                    final List<Integer> cycle = getCycle(top, bot, map, map[i]);
-                    final int m = cycle.size() - cycle.size() % 2;
-                    for (int j = 0; j < m; j++) {
-                        if (j % 2 == 0) {
-                            vals[cycle.get(j)] = max--;
-                        } else {
-                            vals[cycle.get(j)] = min++;
-                        }
-                    }
-                    for (int j = 0; j < m; j++) {
-                        final int v = (j + 1) % m;
-                        res += Math.abs(vals[cycle.get(j)] - vals[cycle.get(v)]);
-                    }
-                }
-            }
-            System.out.println(res);
-        }
-    }
-
-    private static List<Integer> getCycle(int[] top, int[] bot, int[] map, int root) {
-        final List<Integer> cycle = new ArrayList<>();
-        cycle.add(top[root]);
-        int u = map[bot[root]];
-        while (u != root) {
-            cycle.add(top[u]);
-            u = map[bot[u]];
-        }
-        return cycle;
+        final int n = fs.nextInt();
+        System.out.println("ABC" + n);
     }
 
     static final class Utils {
@@ -189,7 +90,7 @@ public final class E {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();
