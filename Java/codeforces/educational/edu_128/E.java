@@ -3,44 +3,143 @@ package codeforces.educational.edu_128;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.TreeSet;
 
-public final class B {
+public final class E {
+
+    private static final class UnionFind {
+        private final int[] parent;
+        private final int[] size;
+        private int count;
+
+        private UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            count = n;
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int find(int p) {
+            // path compression
+            while (p != parent[p]) {
+                parent[p] = parent[parent[p]];
+                p = parent[p];
+            }
+            return p;
+        }
+
+        public void union(int p, int q) {
+            final int rootP = find(p);
+            final int rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+            // union by size
+            if (size[rootP] > size[rootQ]) {
+                parent[rootQ] = rootP;
+                size[rootP] += size[rootQ];
+                size[rootQ] = 0;
+            } else {
+                parent[rootP] = rootQ;
+                size[rootQ] += size[rootP];
+                size[rootP] = 0;
+            }
+            count--;
+        }
+
+        public int count() { return count; }
+
+        public int[] size() { return size; }
+    }
+
+    private static final int[][] DIRS = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            final int m = fs.nextInt();
-            final char[][] g = new char[n][m];
-            for (int i = 0; i < n; i++) {
+            final char[][] g = new char[2][n];
+            TreeSet<Integer>[] ts = new TreeSet[2];
+            for (int i = 0; i < 2; i++) {
+                ts[i] = new TreeSet<>();
                 g[i] = fs.next().toCharArray();
             }
-            int x = -1;
-            int y = -1;
-            outer1:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R') {
-                        x = i;
-                        y = j;
-                        break outer1;
+            int res = 0;
+            for (int i = 1; i < n - 1; i++) {
+                if (g[0][i - 1] == '*' && g[1][i - 1] == '.'
+                    && g[0][i] == '.' && g[1][i] == '*'
+                    && g[0][i + 1] == '*' && g[1][i + 1] == '.') {
+                    g[0][i] = '*';
+                    g[1][i] = '.';
+                    res++;
+                }
+                if (g[0][i - 1] == '.' && g[1][i - 1] == '*'
+                    && g[0][i] == '*' && g[1][i] == '.'
+                    && g[0][i + 1] == '.' && g[1][i + 1] == '*') {
+                    g[0][i] = '.';
+                    g[1][i] = '*';
+                    res++;
+                }
+            }
+            UnionFind uf = new UnionFind(2 * n);
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (g[i][j] == '*') {
+                        ts[i].add(j);
+                        for (int[] dir : DIRS) {
+                            int nx = i + dir[0];
+                            int ny = j + dir[1];
+                            if (0 <= nx && nx < 2 && 0 <= ny && ny < n) {
+                                if (g[nx][ny] == '*') {
+                                    uf.union(i * n + j, nx * n + ny);
+                                }
+                            }
+                        }
                     }
                 }
             }
-            boolean ok = true;
-            outer2:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R' && (i < x || j < y)) {
-                        ok = false;
-                        break outer2;
+            int[] cc = new int[2 * n];
+            Arrays.fill(cc, (int) 1e9);
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (g[i][j] == '*') {
+                        int r = uf.find(i * n + j);
+                        for (int k = 0; k < 2; k++) {
+                            Integer h = ts[k].higher(j);
+                            if (h != null) {
+                                if (uf.find(k * n + h) != r) {
+                                    cc[r] = Math.min(cc[r], h - j + Math.abs(i - k));
+                                }
+                            }
+                        }
                     }
                 }
             }
-            System.out.println(ok ? "YES" : "NO");
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (g[i][j] == '*') {
+                        int r = i * n + j;
+                        if (uf.find(r) == r) {
+                            if (cc[r] != (int) 1e9) {
+                                res += cc[r];
+                            }
+                            res += uf.size()[r] - 1;
+                        }
+                    }
+                }
+            }
+
+
+
+            System.out.println(res);
         }
     }
 

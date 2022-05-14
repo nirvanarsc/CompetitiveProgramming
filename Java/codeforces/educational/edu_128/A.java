@@ -12,8 +12,16 @@ public final class A {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+            final int l1 = fs.nextInt();
+            final int r1 = fs.nextInt();
+            final int l2 = fs.nextInt();
+            final int r2 = fs.nextInt();
+            final int same = Math.max(l1, l2);
+            if (same <= Math.min(r1, r2)) {
+                System.out.println(same);
+            } else {
+                System.out.println(l1 + l2);
+            }
         }
     }
 

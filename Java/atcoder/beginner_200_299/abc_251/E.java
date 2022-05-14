@@ -1,4 +1,4 @@
-package codeforces.educational.edu_128;
+package atcoder.beginner_200_299.abc_251;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,42 +6,39 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class B {
+public final class E {
+
+    static boolean[][] seen;
+    static long[][] dp;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            final int m = fs.nextInt();
-            final char[][] g = new char[n][m];
-            for (int i = 0; i < n; i++) {
-                g[i] = fs.next().toCharArray();
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        seen = new boolean[n][4];
+        dp = new long[n][4];
+        System.out.println(Math.min(arr[0] + dfs(arr, 1, 0), dfs(arr, 1, 3)));
+    }
+
+    private static long dfs(int[] arr, int idx, int mask) {
+        final int mustC = mask & 1;
+        final int mustL = mask & 2;
+        if (idx == arr.length - 1) {
+            if (mustC != 0 || mustL != 0) {
+                return arr[idx];
             }
-            int x = -1;
-            int y = -1;
-            outer1:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R') {
-                        x = i;
-                        y = j;
-                        break outer1;
-                    }
-                }
-            }
-            boolean ok = true;
-            outer2:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R' && (i < x || j < y)) {
-                        ok = false;
-                        break outer2;
-                    }
-                }
-            }
-            System.out.println(ok ? "YES" : "NO");
+            return 0;
         }
+        if (seen[idx][mask]) {
+            return dp[idx][mask];
+        }
+        long res = (long) 9e18;
+        res = Math.min(res, arr[idx] + dfs(arr, idx + 1, mustL));
+        if (mustC == 0) {
+            res = Math.min(res, dfs(arr, idx + 1, mustL | 1));
+        }
+        seen[idx][mask] = true;
+        return dp[idx][mask] = res;
     }
 
     static final class Utils {
@@ -120,7 +117,7 @@ public final class B {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();

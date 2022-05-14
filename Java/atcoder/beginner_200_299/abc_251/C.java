@@ -1,47 +1,31 @@
-package codeforces.educational.edu_128;
+package atcoder.beginner_200_299.abc_251;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.Set;
 
-public final class B {
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            final int m = fs.nextInt();
-            final char[][] g = new char[n][m];
-            for (int i = 0; i < n; i++) {
-                g[i] = fs.next().toCharArray();
+        final int n = fs.nextInt();
+        final PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] == b[0]
+                                                                      ? Integer.compare(a[1], b[1])
+                                                                      : Integer.compare(b[0], a[0]));
+        final Set<String> seen = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            final String k = fs.next();
+            final int v = fs.nextInt();
+            if (seen.add(k)) {
+                pq.offer(new int[] { v, i });
             }
-            int x = -1;
-            int y = -1;
-            outer1:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R') {
-                        x = i;
-                        y = j;
-                        break outer1;
-                    }
-                }
-            }
-            boolean ok = true;
-            outer2:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R' && (i < x || j < y)) {
-                        ok = false;
-                        break outer2;
-                    }
-                }
-            }
-            System.out.println(ok ? "YES" : "NO");
         }
+        System.out.println(1 + pq.remove()[1]);
     }
 
     static final class Utils {
@@ -120,7 +104,7 @@ public final class B {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();

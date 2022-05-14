@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class C {
@@ -12,9 +14,47 @@ public final class C {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+            final char[] w = fs.next().toCharArray();
+            final int n = w.length;
+            int res = (int) 1e9;
+            int[] pre = new int[n + 1];
+            for (int i = 1; i <= n; i++) {
+                pre[i] = pre[i - 1] + (w[i - 1] == '0' ? 1 : 0);
+            }
+            int[][] l = getMap(w);
+            reverse(w, 0, n - 1);
+            int[][] r = getMap(w);
+            for (int[] curr : l) {
+                int lo = 0;
+                int hi = n - curr[1];
+                while (lo < hi) {
+                    int mid = lo + hi >>> 1;
+
+                }
+            }
+
         }
+    }
+
+    private static void reverse(char[] str, int start, int end) {
+        while (start < end) {
+            final char t = str[start];
+            str[start] = str[end];
+            str[end] = t;
+            start++;
+            end--;
+        }
+    }
+
+    private static int[][] getMap(char[] w) {
+        final Map<Integer, Integer> map = new LinkedHashMap<>();
+        int curr = 0;
+        map.put(0, -1);
+        for (int i = 0; i < w.length; i++) {
+            curr += w[i] - '0';
+            map.put(curr, i);
+        }
+        return map.entrySet().stream().map(e -> new int[] { e.getKey(), e.getValue() }).toArray(int[][]::new);
     }
 
     static final class Utils {

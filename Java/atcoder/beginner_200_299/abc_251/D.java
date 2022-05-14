@@ -1,4 +1,4 @@
-package codeforces.educational.edu_128;
+package atcoder.beginner_200_299.abc_251;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,42 +6,18 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class B {
+public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            final int m = fs.nextInt();
-            final char[][] g = new char[n][m];
-            for (int i = 0; i < n; i++) {
-                g[i] = fs.next().toCharArray();
-            }
-            int x = -1;
-            int y = -1;
-            outer1:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R') {
-                        x = i;
-                        y = j;
-                        break outer1;
-                    }
-                }
-            }
-            boolean ok = true;
-            outer2:
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (g[i][j] == 'R' && (i < x || j < y)) {
-                        ok = false;
-                        break outer2;
-                    }
-                }
-            }
-            System.out.println(ok ? "YES" : "NO");
+        final StringBuilder sb = new StringBuilder();
+        sb.append(297).append('\n');
+        for (int i = 1; i <= 99; i++) {
+            sb.append(i).append('\n');
+            sb.append(i * 100).append('\n');
+            sb.append(i * 10000).append('\n');
         }
+        System.out.println(sb);
     }
 
     static final class Utils {
@@ -120,7 +96,7 @@ public final class B {
             return new String(buf, 0, cnt);
         }
 
-        public int nextSign() throws IOException {
+        public int readSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();
