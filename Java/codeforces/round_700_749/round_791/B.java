@@ -1,84 +1,63 @@
-package codeforces.educational.edu_128;
+package codeforces.round_700_749.round_791;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
-public final class E {
+public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            int n = fs.nextInt();
-            String l = fs.next();
-            String r = fs.next();
-            int ll = 0;
-            int rr = n - 1;
-            while (ll < n && l.charAt(ll) == '.' && r.charAt(ll) == '.') {
-                ll++;
-            }
-            while (rr >= 0 && l.charAt(rr) == '.' && r.charAt(rr) == '.') {
-                rr--;
-            }
-            l = l.substring(ll, rr + 1);
-            r = r.substring(ll, rr + 1);
-            n = rr - ll + 1;
-            final char[][] g = new char[2][n];
-            g[0] = l.toCharArray();
-            g[1] = r.toCharArray();
-            final int[][] dp = new int[n + 1][3];
-            for (int[] row : dp) {
-                Arrays.fill(row, (int) 1e9);
-            }
-            dp[0][0] = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (dp[i][j] == (int) 1e9) {
-                        continue;
-                    }
-                    if (g[0][i] == '.' && g[1][i] == '.') {
-                        if (j == 0) {
-                            dp[i + 1][0] = dp[i][0];
-                        } else {
-                            dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j] + 1);
-                        }
-                    } else if (g[0][i] == '*' && g[1][i] == '.') {
-                        if (j == 0) {
-                            dp[i + 1][1] = dp[i][0];
-                        } else if (j == 1) {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][1] + 1);
-                        } else {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][2] + 2);
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][2] + 2);
-                        }
-                    } else if (g[0][i] == '.' && g[1][i] == '*') {
-                        if (j == 0) {
-                            dp[i + 1][2] = dp[i][0];
-                        } else if (j == 1) {
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][1] + 2);
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][1] + 2);
-                        } else {
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][2] + 1);
-                        }
-                    } else {
-                        if (j == 0) {
-                            dp[i + 1][1] = 1 + dp[i][0];
-                            dp[i + 1][2] = 1 + dp[i][0];
-                        } else if (j == 1) {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][1] + 2);
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][1] + 2);
-                        } else {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][2] + 2);
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][2] + 2);
-                        }
-                    }
+        final StringBuilder sb = new StringBuilder();
+        final int n = fs.nextInt();
+        final int q = fs.nextInt();
+        long res = 0;
+        boolean seen2 = false;
+        final Map<Integer, Integer> map = new HashMap<>();
+        int def = -1;
+        final int[] arr = fs.nextIntArray(n);
+        for (int i = 0; i < n; i++) {
+            res += arr[i];
+        }
+        for (int i = 0; i < q; i++) {
+            final int type = fs.nextInt();
+            if (!seen2) {
+                if (type == 1) {
+                    final int u = fs.nextInt() - 1;
+                    final int v = fs.nextInt();
+                    res -= arr[u];
+                    res += v;
+                    arr[u] = v;
+                    sb.append(res).append('\n');
+                } else {
+                    final int v = fs.nextInt();
+                    res = (long) n * v;
+                    seen2 = true;
+                    def = v;
+                    sb.append(res).append('\n');
+                }
+            } else {
+                if (type == 1) {
+                    final int u = fs.nextInt() - 1;
+                    final int v = fs.nextInt();
+                    res -= map.getOrDefault(u, def);
+                    res += v;
+                    map.put(u, v);
+                    sb.append(res).append('\n');
+                } else {
+                    final int v = fs.nextInt();
+                    res = (long) n * v;
+                    def = v;
+                    sb.append(res).append('\n');
+                    map.clear();
                 }
             }
-            System.out.println(Math.min(dp[n][1], dp[n][2]));
         }
+        System.out.println(sb);
     }
 
     static final class Utils {

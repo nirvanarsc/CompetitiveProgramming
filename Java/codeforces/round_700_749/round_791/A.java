@@ -1,4 +1,4 @@
-package codeforces.educational.edu_128;
+package codeforces.round_700_749.round_791;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,78 +6,42 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
+public final class A {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
-            int n = fs.nextInt();
-            String l = fs.next();
-            String r = fs.next();
-            int ll = 0;
-            int rr = n - 1;
-            while (ll < n && l.charAt(ll) == '.' && r.charAt(ll) == '.') {
-                ll++;
+            final long n = fs.nextLong();
+            if (n % 2 != 0) {
+                System.out.println(-1);
+                continue;
             }
-            while (rr >= 0 && l.charAt(rr) == '.' && r.charAt(rr) == '.') {
-                rr--;
+            final long l = f1(n / 2);
+            final long r = f2(n / 2);
+            if (l == -1 || r == -1) {
+                System.out.println(-1);
+                continue;
             }
-            l = l.substring(ll, rr + 1);
-            r = r.substring(ll, rr + 1);
-            n = rr - ll + 1;
-            final char[][] g = new char[2][n];
-            g[0] = l.toCharArray();
-            g[1] = r.toCharArray();
-            final int[][] dp = new int[n + 1][3];
-            for (int[] row : dp) {
-                Arrays.fill(row, (int) 1e9);
-            }
-            dp[0][0] = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < 3; j++) {
-                    if (dp[i][j] == (int) 1e9) {
-                        continue;
-                    }
-                    if (g[0][i] == '.' && g[1][i] == '.') {
-                        if (j == 0) {
-                            dp[i + 1][0] = dp[i][0];
-                        } else {
-                            dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j] + 1);
-                        }
-                    } else if (g[0][i] == '*' && g[1][i] == '.') {
-                        if (j == 0) {
-                            dp[i + 1][1] = dp[i][0];
-                        } else if (j == 1) {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][1] + 1);
-                        } else {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][2] + 2);
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][2] + 2);
-                        }
-                    } else if (g[0][i] == '.' && g[1][i] == '*') {
-                        if (j == 0) {
-                            dp[i + 1][2] = dp[i][0];
-                        } else if (j == 1) {
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][1] + 2);
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][1] + 2);
-                        } else {
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][2] + 1);
-                        }
-                    } else {
-                        if (j == 0) {
-                            dp[i + 1][1] = 1 + dp[i][0];
-                            dp[i + 1][2] = 1 + dp[i][0];
-                        } else if (j == 1) {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][1] + 2);
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][1] + 2);
-                        } else {
-                            dp[i + 1][1] = Math.min(dp[i + 1][1], dp[i][2] + 2);
-                            dp[i + 1][2] = Math.min(dp[i + 1][2], dp[i][2] + 2);
-                        }
-                    }
-                }
-            }
-            System.out.println(Math.min(dp[n][1], dp[n][2]));
+            System.out.println(l + " " + r);
+        }
+    }
+
+    private static long f1(long n) {
+        if (n % 3 == 0) {
+            return n / 3;
+        } else if (n % 3 == 1) {
+            return n < 4 ? -1 : (n - 4) / 3 + 2;
+        } else {
+            return n < 2 ? -1 : (n - 2) / 3 + 1;
+        }
+    }
+
+    private static long f2(long n) {
+        if (n % 2 == 0) {
+            return n / 2;
+        } else {
+            return n < 3 ? -1 : (n - 3) / 2 + 1;
         }
     }
 

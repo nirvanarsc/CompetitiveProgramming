@@ -14,31 +14,35 @@ public class P_1091 {
         final Deque<int[]> q = new ArrayDeque<>();
         final int n = grid.length;
         final int m = grid[0].length;
+        final int[][] d = new int[n][m];
+        for (int[] row : d) {
+            Arrays.fill(row, (int) 1e9);
+        }
         if (grid[0][0] == 0) {
+            d[0][0] = 1;
             q.offerLast(new int[] { 0, 0 });
         }
-        final boolean[][] seen = new boolean[n][m];
         for (int level = 1; !q.isEmpty(); level++) {
             for (int size = q.size(); size > 0; size--) {
                 final int[] curr = q.removeFirst();
                 final int x = curr[0];
                 final int y = curr[1];
-                if (x == n - 1 && y == m - 1) {
-                    return level;
+                if (d[x][y] < level) {
+                    continue;
                 }
                 for (int[] dir : DIRS) {
                     final int nx = x + dir[0];
                     final int ny = y + dir[1];
                     if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] == 0) {
-                        if (!seen[nx][ny]) {
-                            seen[nx][ny] = true;
+                        if (d[nx][ny] > d[x][y] + 1) {
+                            d[nx][ny] = d[x][y] + 1;
                             q.offerLast(new int[] { nx, ny });
                         }
                     }
                 }
             }
         }
-        return -1;
+        return d[n - 1][m - 1] == (int) 1e9 ? -1 : d[n - 1][m - 1];
     }
 
     public int shortestPathBinaryMatrixPQ(int[][] grid) {
