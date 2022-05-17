@@ -1,122 +1,126 @@
-package atcoder.beginner_200_299.abc_251;
+package codeforces.round_700_749.round_791;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import java.util.Random;
 
-public final class F {
+public final class D {
 
     static int n;
     static int[][] edges;
     static int[][] g;
-    static UnionFind uf;
-    static StringBuilder sb;
-
-    private static final class UnionFind {
-        private final int[] parent;
-        private final int[] size;
-        private int count;
-
-        private UnionFind(int n) {
-            parent = new int[n];
-            size = new int[n];
-            count = n;
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-                size[i] = 1;
-            }
-        }
-
-        public int find(int p) {
-            // path compression
-            while (p != parent[p]) {
-                parent[p] = parent[parent[p]];
-                p = parent[p];
-            }
-            return p;
-        }
-
-        public void union(int p, int q) {
-            final int rootP = find(p);
-            final int rootQ = find(q);
-            if (rootP == rootQ) {
-                return;
-            }
-            // union by size
-            if (size[rootP] > size[rootQ]) {
-                parent[rootQ] = rootP;
-                size[rootP] += size[rootQ];
-                size[rootQ] = 0;
-            } else {
-                parent[rootP] = rootQ;
-                size[rootQ] += size[rootP];
-                size[rootP] = 0;
-            }
-            count--;
-        }
-
-        public int count() { return count; }
-
-        public int[] size() { return size; }
-    }
+    static int[] val;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         n = fs.nextInt();
         final int m = fs.nextInt();
+        final long k = fs.nextLong() - 1;
         edges = new int[m][2];
+        val = fs.nextIntArray(n);
         for (int i = 0; i < m; i++) {
             edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
-        g = packG();
-        uf = new UnionFind(n);
-        sb = new StringBuilder();
-        dfs(0);
-        uf = new UnionFind(n);
-        final Deque<Integer> dq = new ArrayDeque<>();
-        dq.offerLast(0);
-        while (!dq.isEmpty()) {
-            for (int size = dq.size(); size > 0; size--) {
-                final int u = dq.removeFirst();
-                for (int v : g[u]) {
-                    if (uf.find(u) != uf.find(v)) {
-                        uf.union(u, v);
-                        sb.append(u + 1).append(' ').append(v + 1).append('\n');
-                        dq.offerLast(v);
-                    }
+        if (k == 0) {
+            int res = (int) 1e9;
+            for (int i = 0; i < n; i++) {
+                res = Math.min(res, val[i]);
+            }
+            System.out.println(res);
+            return;
+        }
+        int lo = 0;
+        int hi = (int) 1e9;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (!check(mid, k)) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        System.out.println(check(lo, k) ? lo : -1);
+    }
+
+    private static boolean check(int mid, long k) {
+        final List<int[]> e = new ArrayList<>();
+        final int[] inDeg = new int[n];
+        final boolean[] nodes = new boolean[n];
+        int m = 0;
+        for (int[] edge : edges) {
+            final int u = edge[0];
+            final int v = edge[1];
+            if (val[u] <= mid && val[v] <= mid) {
+                e.add(edge);
+                inDeg[v]++;
+                if (!nodes[u]) {
+                    m++;
+                    nodes[u] = true;
+                }
+                if (!nodes[v]) {
+                    m++;
+                    nodes[v] = true;
                 }
             }
         }
-        System.out.println(sb);
-    }
-
-    private static void dfs(int u) {
-        for (int v : g[u]) {
-            if (uf.find(u) != uf.find(v)) {
-                uf.union(u, v);
-                sb.append(u + 1).append(' ').append(v + 1).append('\n');
-                dfs(v);
+        g = packG(e);
+        final int[] ts = topSort(inDeg, nodes, m);
+        if (ts == null) {
+            return true;
+        }
+        final int[] dp = new int[n];
+        for (int i = m - 1; i >= 0; i--) {
+            final int u = ts[i];
+            for (int v : g[u]) {
+                dp[u] = Math.max(dp[u], dp[v] + 1);
             }
         }
+        int max = 0;
+        for (int i = 0; i < n; i++) {
+            max = Math.max(max, dp[i]);
+        }
+        return max >= k;
     }
 
-    private static int[][] packG() {
+    private static int[] topSort(int[] inDeg, boolean[] nodes, int m) {
+        final Deque<Integer> dq = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            if (inDeg[i] == 0 && nodes[i]) {
+                dq.offerLast(i);
+            }
+        }
+        final int[] topSort = new int[m];
+        int idx = 0;
+        while (!dq.isEmpty()) {
+            final int u = dq.removeFirst();
+            topSort[idx++] = u;
+            for (int v : g[u]) {
+                if (--inDeg[v] == 0) {
+                    dq.offerLast(v);
+                }
+            }
+        }
+        // noinspection ConstantConditions,ReturnOfNull
+        return idx == m ? topSort : null;
+    }
+
+    private static int[][] packG(List<int[]> edges) {
         final int[][] g = new int[n][];
         final int[] size = new int[n];
         for (int[] edge : edges) {
             ++size[edge[0]];
-            ++size[edge[1]];
         }
         for (int i = 0; i < n; i++) {
             g[i] = new int[size[i]];
         }
         for (int[] edge : edges) {
             g[edge[0]][--size[edge[0]]] = edge[1];
-            g[edge[1]][--size[edge[1]]] = edge[0];
         }
         return g;
     }
@@ -197,7 +201,7 @@ public final class F {
             return new String(buf, 0, cnt);
         }
 
-        public int readSign() throws IOException {
+        public int nextSign() throws IOException {
             byte c = read();
             while ('+' != c && '-' != c) {
                 c = read();
