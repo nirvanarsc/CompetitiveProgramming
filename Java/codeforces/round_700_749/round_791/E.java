@@ -8,12 +8,77 @@ import java.util.Random;
 
 public final class E {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final char[] w = fs.next().toCharArray();
+        final boolean[][] dp = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                dp[i][j] = (w[i] == w[j] || w[i] == '?' || w[j] == '?') && (i - j < 2 || dp[i - 1][j + 1]);
+            }
+        }
+        for (boolean[] row : dp) {
+            System.out.println(Arrays.toString(row));
+        }
+        final long[][] pow = new long[17][n];
+        for (int i = 0; i < 17; i++) {
+            pow[i][0] = 1;
+            for (int j = 1; j < n; j++) {
+                pow[i][j] = (pow[i][j - 1] * (i + 1)) % MOD;
+            }
+        }
+        int ordinary = 0;
+        final int[] c = new int[17];
+        final long[] p = new long[17];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (dp[i][j]) {
+                    System.out.println(i + " " + j);
+                    int l = j;
+                    int r = i;
+                    boolean noQ = true;
+                    int count = 0;
+                    while (l <= r) {
+                        if (w[l] == '?' && w[r] == '?') {
+                            count++;
+                            noQ = false;
+                        } else if (w[l] == '?') {
+                            c[w[r] - 'a']++;
+                            noQ = false;
+                        } else if (w[r] == '?') {
+                            c[w[l] - 'a']++;
+                            noQ = false;
+                        }
+                        l++;
+                        r--;
+                    }
+                    if (noQ) {
+                        ordinary = (ordinary + 1) % MOD;
+                    }
+                    for (int k = 0; k < 17; k++) {
+                        p[k] = (p[k] + pow[k][count]) % MOD;
+                    }
+                }
+            }
+        }
+        final int q = fs.nextInt();
+        for (int i = 0; i < q; i++) {
+            long res = ordinary;
+            final char[] curr = fs.next().toCharArray();
+            int mask = 0;
+            for (char l : curr) {
+                mask |= 1 << (l - 'a');
+            }
+            for (int j = 0; j < 17; j++) {
+                if ((mask & (1 << j)) == 0) {
+                    res = (res + c[j]) % MOD;
+                }
+            }
+            res = (res + p[Integer.bitCount(mask)]) % MOD;
+            System.out.println(res);
         }
     }
 
