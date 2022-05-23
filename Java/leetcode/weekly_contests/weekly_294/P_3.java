@@ -28,8 +28,4 @@ public class P_3 {
         }
         return res;
     }
-
-    public static void main(String[] args) {
-
-    }
 }

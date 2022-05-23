@@ -9,8 +9,4 @@ public class P_1 {
         }
         return (curr * 100) / s.length();
     }
-
-    public static void main(String[] args) {
-
-    }
 }
