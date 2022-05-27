@@ -13,7 +13,15 @@ public final class B {
         final int t = fs.nextInt();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final int[] arr = fs.nextIntArray(n);
+            final int[] dp = new int[n + 1];
+            for (int i = 0; i < n; i++) {
+                if ((i + 1) < n && arr[i] > arr[i + 1]) {
+                    dp[i + 2] = Math.max(dp[i + 2], dp[i] + 1);
+                }
+                dp[i + 1] = Math.max(dp[i + 1], dp[i]);
+            }
+            System.out.println(dp[n]);
         }
     }
 

@@ -11,10 +11,50 @@ public final class C {
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
+        final StringBuilder sb = new StringBuilder();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            System.out.println(n);
+            final int[] arr = fs.nextIntArray(n);
+            Utils.shuffleSort(arr);
+            final int[] curr = f(arr, n);
+            if (check(curr, n)) {
+                sb.append("YES\n");
+                for (int i = 0; i < n; i++) {
+                    sb.append(curr[i]).append(' ');
+                }
+                sb.setCharAt(sb.length() - 1, '\n');
+            } else {
+                sb.append("NO\n");
+            }
         }
+        System.out.println(sb);
+    }
+
+    private static int[] f(int[] arr, int n) {
+        final int[] res = new int[n];
+        int idx = 0;
+        for (int i = 0; i < n; i += 2) {
+            res[i] = arr[idx++];
+        }
+        for (int i = 1; i < n; i += 2) {
+            res[i] = arr[idx++];
+        }
+        return res;
+    }
+
+    private static boolean check(int[] arr, int n) {
+        for (int i = 0; i < n; i++) {
+            final int j = (i - 1 + n) % n;
+            final int k = (i + 1) % n;
+            if (arr[j] > arr[i] && arr[i] < arr[k]) {
+                continue;
+            }
+            if (arr[j] < arr[i] && arr[i] > arr[k]) {
+                continue;
+            }
+            return false;
+        }
+        return true;
     }
 
     static final class Utils {
