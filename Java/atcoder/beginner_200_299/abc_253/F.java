@@ -91,21 +91,7 @@ public final class F {
         final int q = fs.nextInt();
         SegTree col = new SegTree(0, m - 1, new int[m]);
         SegTree colR = new SegTree(0, m - 1, new int[m]);
-        long[] rowV = new long[n];
-        for (int i = 0; i < q; i++) {
-            int t = fs.nextInt();
-            if (t == 1) {
-                int l = fs.nextInt() - 1;
-                int r = fs.nextInt() - 1;
-                int x = fs.nextInt();
-                col.update(l, r, x, Long.MAX_VALUE);
-                colR.update(l, r, 0, 1);
-            } else if (t == 2) {
-                int idx = fs.nextInt();
-                int x = fs.nextInt();
-
-            }
-        }
+        // TODO
     }
 
     static final class Utils {
