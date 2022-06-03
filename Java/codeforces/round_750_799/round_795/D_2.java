@@ -3,18 +3,19 @@ package codeforces.round_750_799.round_795;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Random;
-import java.util.TreeSet;
 
 public final class D_2 {
 
     private static class SegTree {
         int leftMost, rightMost;
         SegTree left, right;
-        int max;
+        long max;
 
-        SegTree(int leftMost, int rightMost, int[] arr) {
+        SegTree(int leftMost, int rightMost, long[] arr) {
             this.leftMost = leftMost;
             this.rightMost = rightMost;
             if (leftMost == rightMost) {
@@ -34,9 +35,9 @@ public final class D_2 {
             max = Math.max(left.max, right.max);
         }
 
-        private int query(int l, int r) {
+        private long query(int l, int r) {
             if (r < leftMost || l > rightMost) {
-                return (int) -1e9;
+                return (long) -1e18;
             }
             if (l <= leftMost && rightMost <= r) {
                 return max;
@@ -62,45 +63,53 @@ public final class D_2 {
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int t = fs.nextInt();
-        outer:
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
             final int[] arr = fs.nextIntArray(n);
-            final TreeSet<Integer> ts = new TreeSet<>();
-            final long[] pre = new long[n + 1];
-            for (int i = 0; i < n; i++) {
-                pre[i + 1] = pre[i] + arr[i];
-                if (arr[i] > 0) {
-                    ts.add(i);
-                }
+            if (!check(arr, n)) {
+                System.out.println("No");
+                continue;
             }
-            final SegTree st = new SegTree(0, n - 1, arr);
-            for (int i = 0; i < n; i++) {
-                if (arr[i] > 0) {
-                    final Integer l = ts.lower(i);
-                    if (l != null) {
-                        if (st.query(l, i) < pre[i + 1] - pre[l]) {
-                            System.out.println("No");
-                            continue outer;
-                        }
-                    }
-                    final Integer r = ts.higher(i);
-                    if (r != null) {
-                        if (st.query(i, r) < pre[r + 1] - pre[i]) {
-                            System.out.println("No");
-                            continue outer;
-                        }
-                    }
-                    if (r != null && l != null) {
-                        if (st.query(l, r) < pre[r + 1] - pre[l]) {
-                            System.out.println("No");
-                            continue outer;
-                        }
-                    }
-                }
+            int l = 0;
+            int r = n - 1;
+            while (l < r) {
+                final int curr = arr[r];
+                arr[r] = arr[l];
+                arr[l] = curr;
+                l++;
+                r--;
+            }
+            if (!check(arr, n)) {
+                System.out.println("No");
+                continue;
             }
             System.out.println("Yes");
         }
+    }
+
+    private static boolean check(int[] arr, int n) {
+        final long[] pre = new long[n + 1];
+        for (int i = 0; i < n; i++) {
+            pre[i + 1] = pre[i] + arr[i];
+        }
+        final SegTree l = new SegTree(0, n, pre);
+        final int[] rr = new int[n];
+        final Deque<Integer> dq = new ArrayDeque<>();
+        for (int i = n - 1; i >= 0; i--) {
+            while (!dq.isEmpty() && arr[dq.getFirst()] <= arr[i]) {
+                dq.removeFirst();
+            }
+            rr[i] = dq.isEmpty() ? n : dq.getFirst();
+            dq.addFirst(i);
+        }
+        for (int i = 0; i < n; i++) {
+            if (arr[i] > 0) {
+                if (arr[i] < l.query(i + 1, rr[i]) - pre[i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     static final class Utils {
