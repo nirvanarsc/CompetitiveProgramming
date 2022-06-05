@@ -4,17 +4,42 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int k = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final boolean[] seen = new boolean[n];
+        for (int i = 0; i < n - k; i++) {
+            if (seen[i]) {
+                continue;
+            }
+            final PriorityQueue<Integer> pq = new PriorityQueue<>();
+            int j = i;
+            while (j < n) {
+                seen[j] = true;
+                pq.offer(arr[j]);
+                j += k;
+            }
+            j = i;
+            while (!pq.isEmpty()) {
+                arr[j] = pq.remove();
+                j += k;
+            }
         }
+        boolean ok = true;
+        for (int i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                ok = false;
+                break;
+            }
+        }
+        System.out.println(ok ? "Yes" : "No");
     }
 
     static final class Utils {

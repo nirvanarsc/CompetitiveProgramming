@@ -3,18 +3,40 @@ package atcoder.beginner_200_299.abc_254;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final StringBuilder res = new StringBuilder();
+        for (List<Integer> row : generate(n)) {
+            for (int num : row) {
+                res.append(num).append(' ');
+            }
+            res.setCharAt(res.length() - 1, '\n');
         }
+        System.out.println(res);
+    }
+
+    private static List<List<Integer>> generate(int numRows) {
+        final List<List<Integer>> res = new ArrayList<>();
+        res.add(Collections.singletonList(1));
+        for (int i = 1; i < numRows; i++) {
+            final List<Integer> curr = new ArrayList<>();
+            for (int j = 0; j <= i; j++) {
+                final int l = j == 0 ? 0 : res.get(i - 1).get(j - 1);
+                final int r = j == i ? 0 : res.get(i - 1).get(j);
+                curr.add(l + r);
+            }
+            res.add(curr);
+        }
+        return res;
     }
 
     static final class Utils {

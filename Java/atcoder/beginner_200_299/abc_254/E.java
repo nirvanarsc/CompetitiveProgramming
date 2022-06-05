@@ -3,18 +3,69 @@ package atcoder.beginner_200_299.abc_254;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public final class E {
 
+    static int n;
+    static int[][] edges;
+    static int[][] g;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        n = fs.nextInt();
+        final int m = fs.nextInt();
+        edges = new int[m][2];
+        for (int i = 0; i < m; i++) {
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
+        g = packG();
+        final int q = fs.nextInt();
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < q; i++) {
+            final int u = fs.nextInt() - 1;
+            final int k = fs.nextInt();
+            final Deque<Integer> dq = new ArrayDeque<>();
+            final Set<Integer> seen = new HashSet<>();
+            dq.offerLast(u);
+            seen.add(u);
+            int res = 0;
+            for (int level = 0; !dq.isEmpty() && level <= k; level++) {
+                for (int size = dq.size(); size > 0; size--) {
+                    final int p = dq.removeFirst();
+                    res += p + 1;
+                    for (int v : g[p]) {
+                        if (seen.add(v)) {
+                            dq.offerLast(v);
+                        }
+                    }
+                }
+            }
+            sb.append(res).append('\n');
+        }
+        System.out.println(sb);
+    }
+
+    private static int[][] packG() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+            ++size[edge[1]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+            g[edge[1]][--size[edge[1]]] = edge[0];
+        }
+        return g;
     }
 
     static final class Utils {

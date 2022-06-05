@@ -5,16 +5,39 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.TreeMap;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final TreeMap<Integer, Integer> tm = new TreeMap<>();
+        for (int l = 1; l * l <= n; l++) {
+            tm.put(l * l, l);
         }
+        long res = 0;
+        for (int i = 1; i <= n; i++) {
+            int c = 1;
+            int curr = i;
+            for (int p = 2; p * p <= i; p++) {
+                if (curr % p == 0) {
+                    int count = 0;
+                    while (curr % p == 0) {
+                        curr /= p;
+                        count++;
+                    }
+                    if (count % 2 != 0) {
+                        c *= p;
+                    }
+                }
+            }
+            if (curr > 1) {
+                c *= curr;
+            }
+            res += tm.floorEntry(n / c).getValue();
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
