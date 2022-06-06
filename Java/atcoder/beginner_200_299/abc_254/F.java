@@ -8,12 +8,86 @@ import java.util.Random;
 
 public final class F {
 
+    private static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int gcd;
+
+        SegTree(int leftMost, int rightMost, int[] arr) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+            if (leftMost == rightMost) {
+                gcd = arr[leftMost];
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid, arr);
+                right = new SegTree(mid + 1, rightMost, arr);
+                recalc();
+            }
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            gcd = gcd(left.gcd, right.gcd);
+        }
+
+        private int query(int l, int r) {
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return gcd;
+            }
+            return gcd(left.query(l, r), right.query(l, r));
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int q = fs.nextInt();
+        final int[] a = fs.nextIntArray(n);
+        final int[] b = fs.nextIntArray(n);
+        final int[] da = new int[n - 1];
+        final int[] db = new int[n - 1];
+        for (int i = 0; i < (n - 1); i++) {
+            da[i] = Math.abs(a[i + 1] - a[i]);
+            db[i] = Math.abs(b[i + 1] - b[i]);
+        }
+        SegTree l = null;
+        SegTree r = null;
+        if (n > 1) {
+            l = new SegTree(0, n - 2, da);
+            r = new SegTree(0, n - 2, db);
+        }
+        for (int i = 0; i < q; i++) {
+            final int h1 = fs.nextInt() - 1;
+            final int h2 = fs.nextInt() - 1;
+            final int w1 = fs.nextInt() - 1;
+            final int w2 = fs.nextInt() - 1;
+            int ll = -1;
+            int rr = -1;
+            if (h1 == h2) {
+                ll = a[h1];
+            } else {
+                ll = l.query(h1, h2 - 1);
+            }
+            if (w1 == w2) {
+                rr = b[w1];
+            } else {
+                rr = r.query(w1, w2 - 1);
+            }
+            if (h1 == h2 && w1 == w2) {
+                System.out.println(ll + rr);
+            } else {
+                System.out.println(gcd(ll, rr));
+            }
         }
     }
 
