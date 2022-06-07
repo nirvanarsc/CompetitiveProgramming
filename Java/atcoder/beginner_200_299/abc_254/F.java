@@ -52,43 +52,37 @@ public final class F {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
         final int q = fs.nextInt();
-        final int[] a = fs.nextIntArray(n);
-        final int[] b = fs.nextIntArray(n);
-        final int[] da = new int[n - 1];
-        final int[] db = new int[n - 1];
+        int[] a = fs.nextIntArray(n);
+        int[] b = fs.nextIntArray(n);
+        int[] da = new int[n - 1];
+        int[] db = new int[n - 1];
         for (int i = 0; i < (n - 1); i++) {
             da[i] = Math.abs(a[i + 1] - a[i]);
             db[i] = Math.abs(b[i + 1] - b[i]);
         }
         SegTree l = null;
         SegTree r = null;
-        if (n > 1) {
+        if(n > 1) {
             l = new SegTree(0, n - 2, da);
             r = new SegTree(0, n - 2, db);
         }
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < q; i++) {
-            final int h1 = fs.nextInt() - 1;
-            final int h2 = fs.nextInt() - 1;
-            final int w1 = fs.nextInt() - 1;
-            final int w2 = fs.nextInt() - 1;
-            int ll = -1;
-            int rr = -1;
-            if (h1 == h2) {
-                ll = a[h1];
-            } else {
-                ll = l.query(h1, h2 - 1);
+            int h1 = fs.nextInt() - 1;
+            int h2 = fs.nextInt() - 1;
+            int w1 = fs.nextInt() - 1;
+            int w2 = fs.nextInt() - 1;
+            int res = 0;
+            if (h1 != h2) {
+                res = gcd(res, l.query(h1, h2 - 1));
             }
-            if (w1 == w2) {
-                rr = b[w1];
-            } else {
-                rr = r.query(w1, w2 - 1);
+            if (w1 != w2) {
+                res = gcd(res, r.query(w1, w2 - 1));
             }
-            if (h1 == h2 && w1 == w2) {
-                System.out.println(ll + rr);
-            } else {
-                System.out.println(gcd(ll, rr));
-            }
+            res = gcd(res, a[h1] + b[w1]);
+            sb.append(res).append('\n');
         }
+        System.out.println(sb);
     }
 
     static final class Utils {
