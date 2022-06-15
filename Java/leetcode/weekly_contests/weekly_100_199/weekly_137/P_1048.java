@@ -36,15 +36,17 @@ public class P_1048 {
         g = packG();
         final int[] topSort = topSort();
         final int[] dp = new int[n];
-        int res = 0;
         for (int i = n - 1; i >= 0; i--) {
             final int u = topSort[i];
             for (int v : g[u]) {
                 dp[u] = Math.max(dp[u], dp[v] + 1);
-                res = Math.max(res, dp[u]);
             }
         }
-        return 1 + res;
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            res = Math.max(res, dp[i]);
+        }
+        return res + 1;
     }
 
     private static int[] topSort() {
