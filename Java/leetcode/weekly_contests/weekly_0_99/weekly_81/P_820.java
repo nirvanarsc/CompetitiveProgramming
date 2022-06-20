@@ -11,14 +11,15 @@ public class P_820 {
         final Trie root = new Trie();
         for (String word : words) {
             Trie curr = root;
-            for (int i = word.length() - 1; i >= 0; i--) {
+            final int n = word.length();
+            for (int i = n - 1; i >= 0; i--) {
                 final char c = word.charAt(i);
                 if (curr.children[c - 'a'] == null) {
                     curr.children[c - 'a'] = new Trie();
                 }
                 curr = curr.children[c - 'a'];
             }
-            curr.length = word.length();
+            curr.length = n;
         }
         return dfs(root);
     }
