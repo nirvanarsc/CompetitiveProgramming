@@ -7,29 +7,33 @@ import utils.DataStructures.TreeNode;
 
 public class P_1028 {
 
-    public TreeNode recoverFromPreorder(String S) {
-        int level, val, i = 0;
-        final Deque<TreeNode> stack = new ArrayDeque<>();
-        while (i < S.length()) {
-            for (level = 0; S.charAt(i) == '-'; i++) {
+    public TreeNode recoverFromPreorder(String traversal) {
+        int i = 0;
+        final Deque<TreeNode> dq = new ArrayDeque<>();
+        final int n = traversal.length();
+        final char[] w = traversal.toCharArray();
+        while (i < n) {
+            int level;
+            int val;
+            for (level = 0; w[i] == '-'; i++) {
                 level++;
             }
-            for (val = 0; i < S.length() && S.charAt(i) != '-'; i++) {
-                val = val * 10 + (S.charAt(i) - '0');
+            for (val = 0; i < n && w[i] != '-'; i++) {
+                val = val * 10 + (w[i] - '0');
             }
-            while (stack.size() > level) {
-                stack.removeFirst();
+            while (dq.size() > level) {
+                dq.removeFirst();
             }
             final TreeNode node = new TreeNode(val);
-            if (!stack.isEmpty()) {
-                if (stack.peek().left == null) {
-                    stack.peek().left = node;
+            if (!dq.isEmpty()) {
+                if (dq.getFirst().left == null) {
+                    dq.getFirst().left = node;
                 } else {
-                    stack.peek().right = node;
+                    dq.getFirst().right = node;
                 }
             }
-            stack.addFirst(node);
+            dq.addFirst(node);
         }
-        return stack.removeLast();
+        return dq.removeLast();
     }
 }
