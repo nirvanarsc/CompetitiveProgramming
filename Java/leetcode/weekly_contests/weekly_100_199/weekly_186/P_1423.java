@@ -8,11 +8,9 @@ public class P_1423 {
         for (int i = 1; i <= n; i++) {
             pre[i] = pre[i - 1] + cardPoints[i - 1];
         }
-        int curr = 0;
-        int res = pre[k];
-        for (int i = n - 1, j = k - 1; j >= 0; i--, j--) {
-            curr += cardPoints[i];
-            res = Math.max(res, pre[j] + curr);
+        int res = 0;
+        for (int i = 0; i <= k; i++) {
+            res = Math.max(res, pre[i] + pre[n] - pre[n - (k - i)]);
         }
         return res;
     }
