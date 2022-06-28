@@ -2,6 +2,7 @@ package leetcode.weekly_contests.weekly_200_299.weekly_299;
 
 import java.util.Arrays;
 
+@SuppressWarnings("SuspiciousNameCombination")
 public class P_4 {
 
     static int n;
@@ -12,7 +13,6 @@ public class P_4 {
     static int[] r;
     static int time;
 
-    @SuppressWarnings("SuspiciousNameCombination")
     public int minimumScore(int[] nums, int[][] e) {
         n = nums.length;
         edges = e;

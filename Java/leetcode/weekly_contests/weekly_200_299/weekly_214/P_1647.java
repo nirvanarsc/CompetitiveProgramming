@@ -1,10 +1,6 @@
 package leetcode.weekly_contests.weekly_200_299.weekly_214;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Arrays;
 
 public class P_1647 {
 
@@ -13,31 +9,29 @@ public class P_1647 {
         for (char c : s.toCharArray()) {
             freq[c - 'a']++;
         }
-        final Set<Integer> seen = new HashSet<>();
-        final List<Integer> freqs = new ArrayList<>();
-        for (int f : freq) {
-            if (f > 0) {
-                freqs.add(f);
-            }
-        }
-        freqs.sort(Comparator.reverseOrder());
-        int delete = 0;
-        for (int f : freqs) {
-            if (seen.add(f)) {
+        Arrays.sort(freq);
+        final boolean[] seen = new boolean[freq[25] + 1];
+        int res = 0;
+        for (int i = 0; i < 26; i++) {
+            final int f = freq[i];
+            if (f == 0) {
                 continue;
+            }
+            if (!seen[f]) {
+                seen[f] = true;
             } else {
                 int val = f - 1;
-                while (val > 0 && seen.contains(val)) {
+                while (val > 0 && seen[val]) {
                     val--;
                 }
                 if (val == 0) {
-                    delete += f;
+                    res += f;
                 } else {
-                    delete += f - val;
-                    seen.add(val);
+                    res += f - val;
+                    seen[val] = true;
                 }
             }
         }
-        return delete;
+        return res;
     }
 }

@@ -36,5 +36,4 @@ public class P_3 {
         seen[idx][status] = true;
         return dp[idx][status] = res;
     }
-
 }
