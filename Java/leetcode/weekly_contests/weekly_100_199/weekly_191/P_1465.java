@@ -12,15 +12,15 @@ public class P_1465 {
         long l = 0;
         long r = 0;
         int prev = 0;
-        for (int hh : horizontalCuts) {
-            l = Math.max(l, hh - prev);
-            prev = hh;
+        for (int curr : horizontalCuts) {
+            l = Math.max(l, curr - prev);
+            prev = curr;
         }
         l = Math.max(l, h - prev);
         prev = 0;
-        for (int vv : verticalCuts) {
-            r = Math.max(r, vv - prev);
-            prev = vv;
+        for (int curr : verticalCuts) {
+            r = Math.max(r, curr - prev);
+            prev = curr;
         }
         r = Math.max(r, w - prev);
         return (int) ((l * r) % MOD);
