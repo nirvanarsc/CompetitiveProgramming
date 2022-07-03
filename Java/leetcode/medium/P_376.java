@@ -3,9 +3,6 @@ package leetcode.medium;
 public class P_376 {
 
     public int wiggleMaxLength(int[] nums) {
-        if (nums.length == 0) {
-            return 0;
-        }
         return Math.max(wiggle(nums, true), wiggle(nums, false));
     }
 
