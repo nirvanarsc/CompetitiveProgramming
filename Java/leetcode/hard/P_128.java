@@ -1,5 +1,6 @@
 package leetcode.hard;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class P_128 {
         public int[] size() { return size; }
     }
 
-    public int longestConsecutive(int[] nums) {
+    public int longestConsecutiveMap(int[] nums) {
         final Map<Integer, Integer> index = new HashMap<>();
         final int n = nums.length;
         for (int i = 0; i < n; i++) {
@@ -74,5 +75,42 @@ public class P_128 {
             res = Math.max(res, uf.size[i]);
         }
         return res;
+    }
+
+    public int longestConsecutive(int[] nums) {
+        final int n = nums.length;
+        final UnionFind uf = new UnionFind(n);
+        Arrays.sort(nums);
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i - 1] == nums[i]) {
+                continue;
+            }
+            final int l = lowerBound(nums, nums[i] - 1);
+            final int r = lowerBound(nums, nums[i] + 1);
+            if (l != n && nums[l] == nums[i] - 1) {
+                uf.union(l, i);
+            }
+            if (r != n && nums[r] == nums[i] + 1) {
+                uf.union(r, i);
+            }
+        }
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            res = Math.max(res, uf.size[i]);
+        }
+        return res;
+    }
+
+    private static int lowerBound(int[] arr, int target) {
+        int lo = 0, hi = arr.length;
+        while (lo < hi) {
+            final int mid = lo + hi >>> 1;
+            if (arr[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
     }
 }
