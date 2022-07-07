@@ -6,6 +6,7 @@ public class P_97 {
     static boolean[][] seen;
 
     public boolean isInterleave(String s1, String s2, String s3) {
+        int n = s1.length();
         if (s3.length() != s1.length() + s2.length()) {
             return false;
         }
