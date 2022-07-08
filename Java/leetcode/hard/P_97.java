@@ -2,16 +2,19 @@ package leetcode.hard;
 
 public class P_97 {
 
+    static int n;
+    static int m;
     static int[][] dp;
     static boolean[][] seen;
 
     public boolean isInterleave(String s1, String s2, String s3) {
-        int n = s1.length();
-        if (s3.length() != s1.length() + s2.length()) {
+        n = s1.length();
+        m = s2.length();
+        if (s3.length() != n + m) {
             return false;
         }
-        dp = new int[s1.length() + 1][s2.length() + 1];
-        seen = new boolean[s1.length() + 1][s2.length() + 1];
+        dp = new int[n + 1][m + 1];
+        seen = new boolean[n + 1][m + 1];
         return dfs(s1.toCharArray(), s2.toCharArray(), s3.toCharArray(), 0, 0) > 0;
     }
 
