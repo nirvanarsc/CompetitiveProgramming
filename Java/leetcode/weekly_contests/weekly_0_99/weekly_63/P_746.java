@@ -5,23 +5,27 @@ import java.util.Arrays;
 public class P_746 {
 
     static int[] dp;
+    static boolean[] seen;
+    static int n;
 
     public int minCostClimbingStairs(int[] cost) {
-        dp = new int[cost.length];
-        Arrays.fill(dp, -1);
+        n = cost.length;
+        dp = new int[n];
+        seen = new boolean[n];
         return Math.min(dfs(cost, 0), dfs(cost, 1));
     }
 
     private static int dfs(int[] arr, int idx) {
-        if (idx >= arr.length) {
+        if (idx >= n) {
             return 0;
         }
-        if (dp[idx] != -1) {
+        if (seen[idx]) {
             return dp[idx];
         }
         int res = (int) 1e9;
         res = Math.min(res, arr[idx] + dfs(arr, idx + 1));
         res = Math.min(res, arr[idx] + dfs(arr, idx + 2));
+        seen[idx] = true;
         return dp[idx] = res;
     }
 }
