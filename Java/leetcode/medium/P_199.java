@@ -11,22 +11,22 @@ public class P_199 {
 
     public List<Integer> rightSideView(TreeNode root) {
         final List<Integer> res = new ArrayList<>();
-        final Deque<TreeNode> queue = new ArrayDeque<>();
+        final Deque<TreeNode> dq = new ArrayDeque<>();
         if (root != null) {
-            queue.offerLast(root);
+            dq.offerLast(root);
         }
-        while (!queue.isEmpty()) {
-            final int levelSize = queue.size();
+        while (!dq.isEmpty()) {
+            final int levelSize = dq.size();
             for (int i = 0; i < levelSize; i++) {
-                final TreeNode curr = queue.removeFirst();
+                final TreeNode curr = dq.removeFirst();
                 if (i == 0) {
                     res.add(curr.val);
                 }
                 if (curr.right != null) {
-                    queue.offerLast(curr.right);
+                    dq.offerLast(curr.right);
                 }
                 if (curr.left != null) {
-                    queue.offerLast(curr.left);
+                    dq.offerLast(curr.left);
                 }
             }
         }

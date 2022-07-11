@@ -1,7 +1,5 @@
 package leetcode.weekly_contests.weekly_0_99.weekly_63;
 
-import java.util.Arrays;
-
 public class P_746 {
 
     static int[] dp;
