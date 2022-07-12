@@ -6,12 +6,12 @@ import java.util.List;
 public class P_473 {
 
     static int n;
-    static boolean[] dp;
+    static int[] dp;
     static boolean[] seen;
 
     public boolean makesquare(int[] nums) {
         n = nums.length;
-        dp = new boolean[1 << n];
+        dp = new int[1 << n];
         seen = new boolean[1 << n];
         final int all = (1 << n) - 1;
         long sum = 0;
@@ -21,29 +21,26 @@ public class P_473 {
         if (sum % 4 != 0) {
             return false;
         }
-        return dfs(nums, all, sum / 4, 0);
+        return dfs(nums, all, sum / 4, 0) == 1;
     }
 
-    private static boolean dfs(int[] nums, int mask, long target, long curr) {
+    private static int dfs(int[] nums, int mask, long target, long curr) {
         if (mask == 0) {
-            return curr == 0;
+            return curr == 0 ? 1 : 0;
         }
         if (seen[mask]) {
             return dp[mask];
         }
+        int res = 0;
         for (int i = 0; i < n; i++) {
             if ((mask & (1 << i)) != 0) {
                 if (nums[i] + curr <= target) {
-                    final long nextC = (curr + nums[i]) % target;
-                    if (dfs(nums, mask ^ (1 << i), target, nextC)) {
-                        seen[mask] = true;
-                        return dp[mask] = true;
-                    }
+                    res = Math.max(res, dfs(nums, mask ^ (1 << i), target, (curr + nums[i]) % target));
                 }
             }
         }
         seen[mask] = true;
-        return dp[mask] = false;
+        return dp[mask] = res;
     }
 
     public boolean makesquareMasks(int[] matchsticks) {
