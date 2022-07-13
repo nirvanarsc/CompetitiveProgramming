@@ -11,26 +11,24 @@ public class P_102 {
 
     public List<List<Integer>> levelOrder(TreeNode root) {
         final List<List<Integer>> res = new ArrayList<>();
-        final Deque<TreeNode> queue = new LinkedList<>();
+        final Deque<TreeNode> dq = new LinkedList<>();
         if (root != null) {
-            queue.offerFirst(root);
+            dq.offerFirst(root);
         }
-        while (!queue.isEmpty()) {
-            int levelSize = queue.size();
+        while (!dq.isEmpty()) {
             final List<Integer> level = new ArrayList<>();
-            while (levelSize-- > 0) {
-                final TreeNode curr = queue.removeLast();
+            for (int size = dq.size(); size > 0; size--) {
+                final TreeNode curr = dq.removeLast();
                 level.add(curr.val);
                 if (curr.left != null) {
-                    queue.offerFirst(curr.left);
+                    dq.offerFirst(curr.left);
                 }
                 if (curr.right != null) {
-                    queue.offerFirst(curr.right);
+                    dq.offerFirst(curr.right);
                 }
             }
             res.add(level);
         }
-
         return res;
     }
 }
