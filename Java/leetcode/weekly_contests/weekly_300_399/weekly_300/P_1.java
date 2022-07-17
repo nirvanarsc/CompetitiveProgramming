@@ -1,4 +1,4 @@
-package leetcode.weekly_contests.weekly_300_399;
+package leetcode.weekly_contests.weekly_300_399.weekly_300;
 
 public class P_1 {
 
