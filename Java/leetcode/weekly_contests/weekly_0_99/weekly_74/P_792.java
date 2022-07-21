@@ -33,7 +33,7 @@ public class P_792 {
         for (int i = 0; i < w.length(); i++) {
             final List<Integer> list = g.get(w.charAt(i) - 'a');
             final int lb = lowerBound(list, prev);
-            if (lb == list.size() || list.get(lb) < prev) {
+            if (lb == list.size()) {
                 return false;
             }
             prev = list.get(lb) + 1;
