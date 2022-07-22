@@ -47,29 +47,18 @@ public class P_718 {
         int hi = n;
         while (lo < hi) {
             final int mid = lo + hi + 1 >>> 1;
-            Set<Long> row = null;
-            int ok = 1;
-            for (int i = 0; i < arr.size(); i++) {
-                if (row == null) {
-                    row = new HashSet<>();
-                    for (int j = 0; j <= arr.get(i).length - mid; j++) {
-                        row.add(getHash(hash[i], pow, j, j + mid - 1));
-                    }
-                } else {
-                    final Set<Long> next = new HashSet<>();
-                    for (int j = 0; j <= arr.get(i).length - mid; j++) {
-                        if (row.contains(getHash(hash[i], pow, j, j + mid - 1))) {
-                            next.add(getHash(hash[i], pow, j, j + mid - 1));
-                        }
-                    }
-                    row = next;
-                    if (row.isEmpty()) {
-                        ok = 0;
-                        break;
-                    }
+            final Set<Long> seen = new HashSet<>();
+            boolean ok = false;
+            for (int j = 0; j <= arr.get(0).length - mid; j++) {
+                seen.add(getHash(hash[0], pow, j, j + mid - 1));
+            }
+            for (int j = 0; j <= arr.get(1).length - mid; j++) {
+                if (seen.contains(getHash(hash[1], pow, j, j + mid - 1))) {
+                    ok = true;
+                    break;
                 }
             }
-            if (ok == 1) {
+            if (ok) {
                 lo = mid;
             } else {
                 hi = mid - 1;
