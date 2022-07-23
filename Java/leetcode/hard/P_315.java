@@ -1,8 +1,10 @@
 package leetcode.hard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class P_315 {
 
@@ -57,7 +59,7 @@ public class P_315 {
     }
 
     // Segment Tree
-    public List<Integer> countSmaller(int[] nums) {
+    public List<Integer> countSmallerST(int[] nums) {
         final int max = (int) 1e5;
         final int[] counter = new int[max];
         final SegTree st = new SegTree(0, max - 1, counter);
@@ -73,11 +75,11 @@ public class P_315 {
     // Binary Indexed Tree
     private static final class BIT {
         private final int n;
-        private final long[] data;
+        private final int[] data;
 
         private BIT(int n) {
             this.n = n;
-            data = new long[n + 1];
+            data = new int[n + 1];
         }
 
         public void add(int idx, long val) {
@@ -86,12 +88,12 @@ public class P_315 {
             }
         }
 
-        public long sum(int l, int r) {
+        public int sum(int l, int r) {
             return sum(r) - sum(l - 1);
         }
 
-        private long sum(int idx) {
-            long res = 0;
+        private int sum(int idx) {
+            int res = 0;
             for (int i = idx + 1; i > 0; i -= lsb(i)) {
                 res += data[i];
             }
@@ -118,19 +120,18 @@ public class P_315 {
         }
     }
 
-    public List<Integer> countSmallerBIT(int[] nums) {
+    public List<Integer> countSmaller(int[] nums) {
         final int n = nums.length;
         final int maxNeg = (int) 1e4;
         for (int i = 0; i < n; i++) {
             nums[i] += maxNeg;
         }
         final BIT bit = new BIT(2 * maxNeg + 10);
-        final List<Integer> res = new ArrayList<>(n);
+        final int[] res = new int[n];
         for (int i = n - 1; i >= 0; i--) {
             bit.add(nums[i], 1);
-            res.add((int) bit.sum(0, nums[i] - 1));
+            res[i] = bit.sum(0, nums[i] - 1);
         }
-        Collections.reverse(res);
-        return res;
+        return Arrays.stream(res).boxed().collect(Collectors.toList());
     }
 }
