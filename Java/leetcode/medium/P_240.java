@@ -3,9 +3,6 @@ package leetcode.medium;
 public class P_240 {
 
     public boolean searchMatrix(int[][] matrix, int target) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return false;
-        }
         final int n = matrix.length;
         final int m = matrix[0].length;
         int col = m - 1;
