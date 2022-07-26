@@ -2,6 +2,7 @@ package leetcode.medium;
 
 import utils.DataStructures.TreeNode;
 
+@SuppressWarnings("ConstantConditions")
 public class P_236 {
 
     private static class Pair {
