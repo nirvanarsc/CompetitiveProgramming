@@ -3,18 +3,46 @@ package atcoder.beginner_200_299.abc_259;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final List<int[]> l = normalize(fs.next().toCharArray());
+        final List<int[]> r = normalize(fs.next().toCharArray());
+        if (l.size() != r.size()) {
+            System.out.println("No");
+            return;
         }
+        final int n = l.size();
+        for (int i = 0; i < n; i++) {
+            final int[] ll = l.get(i);
+            final int[] rr = r.get(i);
+            if (ll[1] != rr[1] || ll[0] > rr[0] || ll[0] == 1 && rr[0] > 1) {
+                System.out.println("No");
+                return;
+            }
+        }
+        System.out.println("Yes");
+    }
+
+    private static List<int[]> normalize(char[] w) {
+        final List<int[]> res = new ArrayList<>();
+        final int n = w.length;
+        for (int i = 0; i < n; i++) {
+            int j = i;
+            while (j < n && w[i] == w[j]) {
+                j++;
+            }
+            final int l = j - i;
+            res.add(new int[] { l, w[i] - 'a' });
+            i = j - 1;
+        }
+        return res;
     }
 
     static final class Utils {
