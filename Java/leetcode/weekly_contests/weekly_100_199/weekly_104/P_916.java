@@ -3,12 +3,11 @@ package leetcode.weekly_contests.weekly_100_199.weekly_104;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_916 {
 
-    public List<String> wordSubsets(String[] A, String[] B) {
+    public List<String> wordSubsets(String[] words1, String[] words2) {
         final int[] max = new int[26];
-        for (String w : B) {
+        for (String w : words2) {
             final int[] curr = new int[26];
             for (char c : w.toCharArray()) {
                 curr[c - 'a']++;
@@ -18,7 +17,7 @@ public class P_916 {
             }
         }
         final List<String> res = new ArrayList<>();
-        for (String w : A) {
+        for (String w : words1) {
             final int[] curr = new int[26];
             for (char c : w.toCharArray()) {
                 curr[c - 'a']++;
