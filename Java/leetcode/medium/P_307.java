@@ -107,9 +107,7 @@ public class P_307 {
         SegTree st;
 
         NumArray(int[] nums) {
-            if (nums.length > 0) {
-                st = new SegTree(0, nums.length - 1, nums);
-            }
+            st = new SegTree(0, nums.length - 1, nums);
         }
 
         public void update(int i, int val) {
