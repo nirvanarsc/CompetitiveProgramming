@@ -2,14 +2,12 @@ package leetcode.medium;
 
 public class P_378 {
 
-
-
     public int kthSmallest(int[][] matrix, int k) {
         final int n = matrix.length;
         int lo = matrix[0][0];
         int hi = matrix[n - 1][n - 1];
         while (lo < hi) {
-            final int mid = lo + hi >>> 1;
+            final int mid = lo + (hi - lo) / 2;
             if (countLessOrEqual(matrix, mid, n) < k) {
                 lo = mid + 1;
             } else {
