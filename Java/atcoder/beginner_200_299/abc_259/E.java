@@ -4,17 +4,63 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final Map<Integer, Integer> map = new HashMap<>();
+        final int[][] g = new int[n][];
+        for (int i = 0; i < n; i++) {
+            final int m = fs.nextInt();
+            g[i] = new int[2 * m];
+            for (int j = 0; j < m; j++) {
+                final int u = fs.nextInt();
+                final int v = fs.nextInt();
+                map.merge(u, v, Integer::max);
+                g[i][2 * j] = u;
+                g[i][2 * j + 1] = v;
+            }
         }
+        final Map<Integer, Integer> f = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < g[i].length / 2; j++) {
+                final int u = g[i][2 * j];
+                final int v = g[i][2 * j + 1];
+                if (map.get(u) == v) {
+                    f.merge(u, 1, Integer::sum);
+                }
+            }
+        }
+        for (Map.Entry<Integer, Integer> e : f.entrySet()) {
+            if (e.getValue() > 1) {
+                map.remove(e.getKey());
+            }
+        }
+        int res = 0;
+        boolean empty = false;
+        for (int i = 0; i < n; i++) {
+            boolean has = false;
+            for (int j = 0; j < g[i].length / 2; j++) {
+                final int u = g[i][2 * j];
+                final int v = g[i][2 * j + 1];
+                final Integer v2 = map.get(u);
+                if (v2 != null && v2 == v) {
+                    has = true;
+                }
+            }
+            if (has) {
+                res++;
+            } else if (!empty) {
+                res++;
+                empty = true;
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
