@@ -2,7 +2,7 @@ package leetcode.easy;
 
 import utils.DataStructures.TreeNode;
 
-@SuppressWarnings("ReturnOfNull")
+@SuppressWarnings({ "ReturnOfNull", "ConstantConditions" })
 public class P_108 {
 
     public TreeNode sortedArrayToBST(int[] nums) {
@@ -13,7 +13,6 @@ public class P_108 {
         if (start > end) {
             return null;
         }
-
         final int mid = start + end >>> 1;
         final TreeNode root = new TreeNode(nums[mid]);
         root.left = sortedArrayToBST(nums, start, mid - 1);
