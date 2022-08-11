@@ -15,7 +15,7 @@ public class P_98 {
         if (node == null) {
             return true;
         }
-        if (node.val <= lo || node.val >= hi) {
+        if (!(lo < node.val && node.val < hi)) {
             return false;
         }
         return dfs(node.left, lo, node.val) && dfs(node.right, node.val, hi);
