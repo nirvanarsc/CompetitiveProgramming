@@ -10,11 +10,40 @@ public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int q = fs.nextInt();
+        final int[] arr = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            arr[i] = fs.nextInt();
         }
+        Arrays.sort(arr);
+        final long[] pre = new long[n + 2];
+        for (int i = 1; i <= n + 1; i++) {
+            pre[i] = pre[i - 1] + arr[i - 1];
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < q; i++) {
+            final int x = fs.nextInt();
+            final int idx = upperBound(arr, x - 1);
+            final long ll = (long) idx * x - pre[idx + 1];
+            final long rr = pre[n + 1] - pre[idx + 1] - (long) (n - idx) * x;
+            sb.append(ll + rr).append('\n');
+        }
+        System.out.println(sb);
+    }
+
+    private static int upperBound(int[] arr, int target) {
+        int lo = 0;
+        int hi = arr.length - 1;
+        while (lo < hi) {
+            final int mid = lo + hi + 1 >>> 1;
+            if (arr[mid] > target) {
+                hi = mid - 1;
+            } else {
+                lo = mid;
+            }
+        }
+        return lo;
     }
 
     static final class Utils {
