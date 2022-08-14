@@ -1,7 +1,9 @@
 package leetcode.hard;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,78 +12,85 @@ import java.util.Set;
 
 public class P_126 {
 
+    static Map<Integer, Set<String>> map;
+    static List<List<String>> res;
+    static Set<String> wordSet;
+
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
-        final List<List<String>> res = new ArrayList<>();
-        final Set<String> words = new HashSet<>(wordList);
-        if (!words.contains(endWord)) {
+        map = new HashMap<>();
+        res = new ArrayList<>();
+        wordSet = new HashSet<>(wordList);
+        int step = 0;
+        final Deque<String> dq = new ArrayDeque<>(Collections.singletonList(beginWord));
+        final Set<String> seen = new HashSet<>(Collections.singletonList(beginWord));
+        boolean found = false;
+        outer:
+        while (!dq.isEmpty()) {
+            final Set<String> curr = new HashSet<>();
+            for (int size = dq.size(); size > 0; size--) {
+                final String u = dq.removeFirst();
+                curr.add(u);
+                if (u.equals(endWord)) {
+                    found = true;
+                    break outer;
+                }
+                for (String v : nextLevel(u, seen)) {
+                    dq.offer(v);
+                }
+            }
+            map.put(step++, curr);
+        }
+        if (!found) {
             return res;
         }
-        final Map<String, List<String>> map = new HashMap<>();
-        final Set<String> startSet = new HashSet<>(Collections.singletonList(beginWord));
-        final Set<String> endSet = new HashSet<>(Collections.singletonList(endWord));
-        final List<String> list = new ArrayList<>(Collections.singletonList(beginWord));
-        bfs(startSet, endSet, words, map, false);
-        dfs(beginWord, endWord, map, list, res);
+        final List<String> list = new ArrayList<>(Collections.singletonList(endWord));
+        dfs(endWord, step, list);
         return res;
     }
 
-    private static void dfs(String start,
-                            String endWord,
-                            Map<String, List<String>> map,
-                            List<String> list,
-                            List<List<String>> res) {
-        if (start.equals(endWord)) {
-            res.add(new ArrayList<>(list));
+    private static void dfs(String u, int level, List<String> list) {
+        if (level == 0) {
+            final List<String> copy = new ArrayList<>(list);
+            Collections.reverse(copy);
+            res.add(copy);
             return;
         }
-        if (!map.containsKey(start)) {
-            return;
-        }
-        for (String next : map.get(start)) {
-            list.add(next);
-            dfs(next, endWord, map, list, res);
-            list.remove(list.size() - 1);
+        final Set<String> seen = new HashSet<>();
+        for (String v : map.get(level - 1)) {
+            if (isOkay(v, u) && seen.add(v)) {
+                list.add(v);
+                dfs(v, level - 1, list);
+                list.remove(list.size() - 1);
+            }
         }
     }
 
-    private static void bfs(Set<String> startSet,
-                            Set<String> endSet,
-                            Set<String> words,
-                            Map<String, List<String>> map,
-                            boolean reverse) {
-        if (startSet.isEmpty()) {
-            return;
-        }
-        if (startSet.size() > endSet.size()) {
-            bfs(endSet, startSet, words, map, !reverse);
-            return;
-        }
-        final Set<String> nextSet = new HashSet<>();
-        boolean finish = false;
-        words.removeAll(startSet);
-        for (String word : startSet) {
-            final char[] curr = word.toCharArray();
-            for (int i = 0; i < curr.length; i++) {
-                final char old = curr[i];
-                for (char c = 'a'; c <= 'z'; c++) {
-                    curr[i] = c;
-                    final String next = new String(curr);
-                    if (words.contains(next)) {
-                        if (endSet.contains(next)) {
-                            finish = true;
-                        } else {
-                            nextSet.add(next);
-                        }
-                        final String key = reverse ? next : word;
-                        final String value = reverse ? word : next;
-                        map.computeIfAbsent(key, val -> new ArrayList<>()).add(value);
-                    }
+    private static Set<String> nextLevel(String s, Set<String> seen) {
+        final Set<String> res = new HashSet<>();
+        final int n = s.length();
+        for (int i = 0; i < n; i++) {
+            final int c = s.charAt(i);
+            for (char nc = 'a'; nc <= 'z'; nc++) {
+                if (nc == c) {
+                    continue;
                 }
-                curr[i] = old;
+                final String u = s.substring(0, i) + nc + s.substring(i + 1);
+                if (wordSet.contains(u) && seen.add(u)) {
+                    res.add(u);
+                }
             }
         }
-        if (!finish) {
-            bfs(nextSet, endSet, words, map, reverse);
+        return res;
+    }
+
+    private static boolean isOkay(String l, String r) {
+        final int n = l.length();
+        int d = 0;
+        for (int i = 0; i < n; i++) {
+            if (l.charAt(i) != r.charAt(i)) {
+                d++;
+            }
         }
+        return d == 1;
     }
 }

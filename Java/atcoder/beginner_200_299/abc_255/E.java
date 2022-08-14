@@ -4,17 +4,37 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int[] s = fs.nextIntArray(n - 1);
+        final int[] x = fs.nextIntArray(m);
+        final long[] b = new long[n];
+        for (int i = 1; i < n; i++) {
+            b[i] = s[i - 1] - b[i - 1];
         }
+        final Map<Long, Integer> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                long c = x[j] - b[i];
+                if (i % 2 == 0) {
+                    c = -c;
+                }
+                map.merge(c, 1, Integer::sum);
+            }
+        }
+        int res = 0;
+        for (int v : map.values()) {
+            res = Math.max(res, v);
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
