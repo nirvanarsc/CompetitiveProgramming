@@ -3,18 +3,41 @@ package atcoder.beginner_200_299.abc_257;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        int n = fs.nextInt();
+        final int[] c = fs.nextIntArray(9);
+        final Map<Integer, Integer> f = new HashMap<>();
+        for (int i = 0; i < 9; i++) {
+            f.put(c[i], i + 1);
         }
+        final List<int[]> v = new ArrayList<>();
+        int min = (int) 1e9;
+        for (Map.Entry<Integer, Integer> e : f.entrySet()) {
+            v.add(new int[] { e.getKey(), e.getValue() });
+            min = Math.min(min, e.getKey());
+        }
+        v.sort((a, b) -> Integer.compare(b[1], a[1]));
+        final int q = n / min;
+        final StringBuilder sb = new StringBuilder();
+        int idx = 0;
+        for (int i = 0; i < q; i++) {
+            while (n - v.get(idx)[0] - (q - i - 1) * min < 0) {
+                idx++;
+            }
+            n -= v.get(idx)[0];
+            sb.append(v.get(idx)[1]);
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {
