@@ -10,11 +10,48 @@ public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int q = fs.nextInt();
+        final int x = fs.nextInt();
+        final int[] w = fs.nextIntArray(n);
+        long s = 0;
+        for (int i = 0; i < n; i++) {
+            s += w[i];
         }
+        final long rd = x / s;
+        long rem = x % s;
+        final long[] g = new long[n];
+        long na = rd * n;
+        for (int i = 0; i < n; i++) {
+            while (rem >= 1) {
+                rem -= w[(int) ((i + na) % n)];
+                na++;
+            }
+            g[i] = na;
+            rem += w[i];
+            na--;
+        }
+        final int[][] dp = new int[41][n];
+        for (int i = 0; i < n; i++) {
+            dp[0][i] = (int) ((i + g[i]) % n);
+        }
+        for (int i = 0; i < 40; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i + 1][j] = dp[i][dp[i][j]];
+            }
+        }
+        final StringBuilder res = new StringBuilder();
+        for (int i = 0; i < q; i++) {
+            final long k = fs.nextLong() - 1;
+            int idx = 0;
+            for (int j = 0; j < 41; j++) {
+                if ((k & (1L << j)) != 0) {
+                    idx = dp[j][idx];
+                }
+            }
+            res.append(g[idx]).append('\n');
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
