@@ -9,10 +9,34 @@ import java.util.StringTokenizer;
 
 public final class E {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) {
         final FastScanner fs = new FastScanner();
         final int n = fs.nextInt();
-        System.out.println(n);
+        final char[] w = fs.next().toCharArray();
+        final int[][][] dp = new int[n + 1][1 << 11][11];
+        dp[0][0][0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int mask = 0; mask < 1 << 11; mask++) {
+                final int v = w[i] - 'A' + 1;
+                for (int u = 0; u < 11; u++) {
+                    if (u == v) {
+                        dp[i + 1][mask][v] = (dp[i + 1][mask][v] + dp[i][mask][u]) % MOD;
+                    } else if ((mask & (1 << v)) == 0) {
+                        dp[i + 1][mask | (1 << v)][v] = (dp[i + 1][mask | (1 << v)][v] + dp[i][mask][u]) % MOD;
+                    }
+                    dp[i + 1][mask][u] = (dp[i + 1][mask][u] + dp[i][mask][u]) % MOD;
+                }
+            }
+        }
+        int res = 0;
+        for (int mask = 0; mask < 1 << 11; mask++) {
+            for (int u = 0; u < 11; u++) {
+                res = (res + dp[n][mask][u]) % MOD;
+            }
+        }
+        System.out.println((res - 1 + MOD) % MOD);
     }
 
     static final class Utils {

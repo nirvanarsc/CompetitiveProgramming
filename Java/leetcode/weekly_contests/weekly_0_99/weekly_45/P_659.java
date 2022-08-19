@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 public class P_659 {
-
     static class Interval {
         int end;
         int length;
@@ -21,19 +20,19 @@ public class P_659 {
                                                                          ? Integer.compare(a.length, b.length)
                                                                          : Integer.compare(a.end, b.end));
         for (int num : nums) {
-            while (!pq.isEmpty() && pq.peek().end + 1 < num) {
-                if (pq.poll().length < 3) {
+            while (!pq.isEmpty() && pq.element().end + 1 < num) {
+                if (pq.remove().length < 3) {
                     return false;
                 }
             }
-            if (pq.isEmpty() || pq.peek().end == num) {
+            if (pq.isEmpty() || pq.element().end == num) {
                 pq.offer(new Interval(num, 1));
             } else {
-                pq.offer(new Interval(num, pq.poll().length + 1));
+                pq.offer(new Interval(num, pq.remove().length + 1));
             }
         }
         while (!pq.isEmpty()) {
-            if (pq.poll().length < 3) {
+            if (pq.remove().length < 3) {
                 return false;
             }
         }

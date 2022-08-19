@@ -10,11 +10,32 @@ public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        int k = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        Utils.shuffleSort(arr);
+        long res = 0;
+        int idx = n - 1;
+        while (idx >= 0 && k > 0) {
+            final long len = n - idx;
+            final long diff = arr[idx] - (idx == 0 ? 0 : arr[idx - 1]);
+            final long take = Math.min(diff * len, k);
+            if (take == diff * len) {
+                res += len * (f(arr[idx]) - f(arr[idx] - diff));
+            } else {
+                final long u = take / len;
+                final long v = take % len;
+                res += v * (f(arr[idx]) - f(arr[idx] - u - 1));
+                res += (len - v) * (f(arr[idx]) - f(arr[idx] - u));
+            }
+            k -= take;
+            idx--;
         }
+        System.out.println(res);
+    }
+
+    private static long f(long n) {
+        return (n * (n + 1)) / 2;
     }
 
     static final class Utils {
