@@ -15,9 +15,10 @@ public class P_936 {
             //noinspection ZeroLengthArrayAllocation
             return new int[0];
         }
-        final int[] ret = new int[res.size()];
-        for (int i = 0; i < res.size(); i++) {
-            ret[i] = res.get(res.size() - 1 - i);
+        final int n = res.size();
+        final int[] ret = new int[n];
+        for (int i = 0; i < n; i++) {
+            ret[i] = res.get(n - 1 - i);
         }
         return ret;
     }
