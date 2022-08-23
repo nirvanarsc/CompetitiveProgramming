@@ -14,5 +14,4 @@ public class P_1 {
         }
         return e + Math.max(0, s - initialEnergy + 1);
     }
-
 }
