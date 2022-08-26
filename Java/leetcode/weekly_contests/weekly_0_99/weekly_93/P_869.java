@@ -2,11 +2,10 @@ package leetcode.weekly_contests.weekly_0_99.weekly_93;
 
 import java.util.Arrays;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_869 {
 
-    public boolean reorderedPowerOf2(int N) {
-        final int[] map = f(N);
+    public boolean reorderedPowerOf2(int n) {
+        final int[] map = f(n);
         for (int i = 0; i < 31; i++) {
             if (Arrays.equals(map, f(1 << i))) {
                 return true;
