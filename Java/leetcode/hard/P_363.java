@@ -27,9 +27,9 @@ public class P_363 {
         int sum = 0;
         for (int num : arr) {
             sum += num;
-            final Integer compl = ts.ceiling(sum - k);
-            if (compl != null) {
-                res = Math.max(res, sum - compl);
+            final Integer u = ts.ceiling(sum - k);
+            if (u != null) {
+                res = Math.max(res, sum - u);
             }
             ts.add(sum);
         }
