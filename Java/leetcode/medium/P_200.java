@@ -66,9 +66,11 @@ public class P_200 {
             if (size[rootP] > size[rootQ]) {
                 parent[rootQ] = rootP;
                 size[rootP] += size[rootQ];
+                size[rootQ] = 0;
             } else {
                 parent[rootP] = rootQ;
                 size[rootQ] += size[rootP];
+                size[rootP] = 0;
             }
             count--;
         }
@@ -79,37 +81,33 @@ public class P_200 {
     }
 
     public int numIslands(char[][] grid) {
-        if (grid.length == 0 || grid[0].length == 0) {
-            return 0;
-        }
         final int n = grid.length;
         final int m = grid[0].length;
         final UnionFind uf = new UnionFind(n * m);
-        for (int row = 0; row < n; row++) {
-            for (int col = 0; col < m; col++) {
-                if (grid[row][col] == '1') {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == '1') {
                     for (int[] dir : DIRS) {
-                        final int nx = row + dir[0];
-                        final int ny = col + dir[1];
-                        if (nx >= 0 && nx < n && ny >= 0 && ny < m && grid[nx][ny] == '1') {
-                            uf.union(getIndex(m, row, col), getIndex(m, nx, ny));
+                        final int ni = i + dir[0];
+                        final int nj = j + dir[1];
+                        final int u = i * m + j;
+                        if (ni >= 0 && ni < n && nj >= 0 && nj < m && grid[ni][nj] == '1') {
+                            final int v = ni * m + nj;
+                            uf.union(u, v);
                         }
                     }
                 }
             }
         }
         int res = 0;
-        for (int row = 0; row < n; row++) {
-            for (int col = 0; col < m; col++) {
-                if (grid[row][col] == '1' && uf.find(getIndex(m, row, col)) == getIndex(m, row, col)) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                final int u = i * m + j;
+                if (grid[i][j] == '1' && uf.find(u) == u) {
                     res++;
                 }
             }
         }
         return res;
-    }
-
-    private static int getIndex(int colSize, int r, int c) {
-        return r * colSize + c;
     }
 }
