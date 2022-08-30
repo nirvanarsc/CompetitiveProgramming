@@ -5,9 +5,6 @@ public class P_200 {
     private static final int[][] DIRS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
     public int numIslandsDFS(char[][] grid) {
-        if (grid.length == 0 || grid[0].length == 0) {
-            return 0;
-        }
         final int n = grid.length;
         final int m = grid[0].length;
         int res = 0;
