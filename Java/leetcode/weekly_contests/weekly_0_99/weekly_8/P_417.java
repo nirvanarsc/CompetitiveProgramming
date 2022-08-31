@@ -10,9 +10,6 @@ public class P_417 {
     private static final int[][] DIRS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 
     public List<List<Integer>> pacificAtlantic(int[][] matrix) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return Collections.emptyList();
-        }
         final int n = matrix.length;
         final int m = matrix[0].length;
         final boolean[][] a = new boolean[n][m];
