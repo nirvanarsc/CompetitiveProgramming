@@ -10,11 +10,21 @@ public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        int res = 0;
+        long same = 0;
+        for (int i = 0; i < n; i++) {
+            final int u = arr[i] - 1;
+            if (u == i) {
+                same++;
+            } else if (u > i) {
+                if (arr[u] - 1 == i) {
+                    res++;
+                }
+            }
         }
+        System.out.println(res + (same * (same - 1)) / 2);
     }
 
     static final class Utils {

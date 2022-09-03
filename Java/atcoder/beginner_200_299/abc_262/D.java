@@ -8,13 +8,38 @@ import java.util.Random;
 
 public final class D {
 
+    private static final int MOD = 998244353;
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        int res = 0;
+        for (int i = 1; i <= n; i++) {
+            res = (res + f(arr, n, i)) % MOD;
         }
+        System.out.println(res);
+    }
+
+    private static int f(int[] arr, int n, int m) {
+        final int[][][] dp = new int[n + 1][m + 1][m];
+        dp[0][0][0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= m; j++) {
+                for (int k = 0; k < m; k++) {
+                    if (dp[i][j][k] == 0) {
+                        continue;
+                    }
+                    dp[i + 1][j][k] = (dp[i + 1][j][k] + dp[i][j][k]) % MOD;
+                    if (j != m) {
+                        dp[i + 1][j + 1][(k + (arr[i] % m)) % m] =
+                                (dp[i + 1][j + 1][(k + (arr[i] % m)) % m] + dp[i][j][k]) % MOD;
+
+                    }
+                }
+            }
+        }
+        return dp[n][m][0];
     }
 
     static final class Utils {

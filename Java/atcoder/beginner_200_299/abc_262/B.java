@@ -10,11 +10,25 @@ public final class B {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final boolean[][] g = new boolean[n][n];
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g[u][v] = g[v][u] = true;
         }
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    if (g[i][j] && g[j][k] && g[k][i]) {
+                        res++;
+                    }
+                }
+            }
+        }
+        System.out.println(res);
     }
 
     static final class Utils {
