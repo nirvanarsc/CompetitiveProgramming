@@ -1,4 +1,4 @@
-package atcoder.beginner_200_299.abc_262;
+package atcoder.beginner_200_299.abc_263;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,89 +6,36 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class E {
+public final class C {
 
-    private static final int MOD = 998244353;
-
-    private static class Combinations {
-        long[] factorial;
-        long[] facInverse;
-        long[] inverse;
-
-        Combinations(int n) {
-            final int MAX = n + 2;
-            factorial = new long[MAX];
-            facInverse = new long[MAX];
-            inverse = new long[MAX];
-            factorial[0] = factorial[1] = 1;
-            facInverse[0] = facInverse[1] = 1;
-            inverse[1] = 1;
-            for (int i = 2; i < MAX; i++) {
-                factorial[i] = factorial[i - 1] * i % MOD;
-                final long inv = inverse[i] = MOD - inverse[MOD % i] * (MOD / i) % MOD;
-                facInverse[i] = facInverse[i - 1] * inv % MOD;
-            }
-        }
-
-        long nck(int n, int k) {
-            if (n < k) { return 0; }
-            if (n < 0 || k < 0) { return 0; }
-            return factorial[n] * (facInverse[k] * facInverse[n - k] % MOD) % MOD;
-        }
-
-        // combinations with repetition
-        long ncr(int n, int k) {
-            return nck(n + k - 1, k);
-        }
-
-        // permutations with repetition
-        long npk(int n, int k) {
-            if (n < k) { return 0; }
-            if (n < 0 || k < 0) { return 0; }
-            return factorial[n] * facInverse[n - k] % MOD;
-        }
-
-        long modPow(long a, long n) {
-            long res = 1;
-            while (n > 0) {
-                if (n % 2 != 0) {
-                    res = res * a % MOD;
-                }
-                a = a * a % MOD;
-                n /= 2;
-            }
-            return res;
-        }
-    }
+    static int n;
+    static int m;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final int k = fs.nextInt();
-        final Combinations comb = new Combinations(n);
-        final int[] deg = new int[n];
-        for (int i = 0; i < m; i++) {
-            final int u = fs.nextInt() - 1;
-            final int v = fs.nextInt() - 1;
-            deg[u]++;
-            deg[v]++;
+        n = fs.nextInt();
+        m = fs.nextInt();
+        dfs(new StringBuilder(), 0, 1);
+    }
+
+    private static void dfs(StringBuilder sb, int idx, int curr) {
+        if (idx == n) {
+            System.out.println(sb);
+            return;
         }
-        int odd = 0;
-        int even = 0;
-        for (int i = 0; i < n; i++) {
-            if (deg[i] % 2 != 0) {
-                odd++;
-            } else {
-                even++;
+        if (curr > m) {
+            return;
+        }
+        for (int u = curr; u <= m; u++) {
+            sb.append(u);
+            sb.append(' ');
+            dfs(sb, idx + 1, u + 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            if (u == 10) {
+                sb.deleteCharAt(sb.length() - 1);
             }
         }
-        long res = 0;
-        for (int i = 0; i <= odd && k - i >= 0; i += 2) {
-            final long add = (comb.nck(odd, i) * comb.nck(even, k - i)) % MOD;
-            res = (res + add) % MOD;
-        }
-        System.out.println(res);
     }
 
     static final class Utils {

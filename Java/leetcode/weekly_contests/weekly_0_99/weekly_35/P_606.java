@@ -8,16 +8,15 @@ public class P_606 {
         if (t == null) {
             return "";
         }
-        final StringBuilder sb = new StringBuilder();
-        sb.append(t.val);
         if (t.left == null && t.right != null) {
-            sb.append("()(" + tree2str(t.right) + ')');
-        } else if (t.left != null && t.right == null) {
-            sb.append('(' + tree2str(t.left) + ')');
-        } else if (t.left != null) {
-            sb.append('(' + tree2str(t.left) + ')');
-            sb.append('(' + tree2str(t.right) + ')');
+            return String.format("%d()(%s)", t.val, tree2str(t.right));
         }
-        return sb.toString();
+        if (t.left != null && t.right == null) {
+            return String.format("%d(%s)", t.val, tree2str(t.left));
+        }
+        if (t.left == t.right) {
+            return String.valueOf(t.val);
+        }
+        return String.format("%d(%s)(%s)", t.val, tree2str(t.left), tree2str(t.right));
     }
 }
