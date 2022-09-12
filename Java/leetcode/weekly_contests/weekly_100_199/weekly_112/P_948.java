@@ -4,23 +4,20 @@ import java.util.Arrays;
 
 public class P_948 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int bagOfTokensScore(int[] tokens, int P) {
+    public int bagOfTokensScore(int[] tokens, int power) {
         Arrays.sort(tokens);
-        int curr = 0, res = 0;
-        int i = 0, j = tokens.length - 1;
-        while (i <= j) {
-            int diff = 0;
-            while (i <= j && P >= tokens[i]) {
-                diff++;
-                P -= tokens[i++];
+        final int n = tokens.length;
+        int i = 0;
+        int j = n - 1;
+        int curr = 0;
+        int res = 0;
+        while (i <= j && curr >= 0) {
+            while (i <= j && tokens[i] <= power) {
+                curr++;
+                power -= tokens[i++];
             }
-            if (diff == 0) {
-                break;
-            }
-            curr += diff;
             res = Math.max(res, curr);
-            P += tokens[j--];
+            power += tokens[j--];
             curr--;
         }
         return res;
