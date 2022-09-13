@@ -1,66 +1,47 @@
-package atcoder.beginner_200_299.abc_265;
+package atcoder.beginner_200_299.abc_266;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
-public final class E {
-
-    private static final int MOD = 998244353;
-
-    static int[][] dirs;
-    static Set<String> banned;
+public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        dirs = new int[3][2];
-        for (int i = 0; i < 3; i++) {
-            dirs[i] = fs.nextIntArray(2);
-        }
-        banned = new HashSet<>();
-        for (int i = 0; i < m; i++) {
-            banned.add(fs.nextInt() + "," + fs.nextInt());
-        }
-        final int[][][] dp = new int[n + 1][n + 1][n + 1];
-        dp[0][0][0] = 1;
+        final int[] x = new int[(int) (1e5 + 5)];
+        Arrays.fill(x, -1);
+        final int[] a = new int[(int) (1e5 + 5)];
+        int maxT = 0;
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n - i; j++) {
-                for (int k = 0; k < n - i - j; k++) {
-                    if (dp[i][j][k] == 0) {
-                        continue;
-                    }
-                    final long x = (long) i * dirs[0][0] + (long) j * dirs[1][0] + (long) k * dirs[2][0];
-                    final long y = (long) i * dirs[0][1] + (long) j * dirs[1][1] + (long) k * dirs[2][1];
-                    for (int l = 0; l < 3; l++) {
-                        if (banned.contains((x + dirs[l][0]) + "," + (y + dirs[l][1]))) {
-                            continue;
-                        }
-                        if (l == 0) {
-                            dp[i + 1][j][k] = (dp[i + 1][j][k] + dp[i][j][k]) % MOD;
-                        } else if (l == 1) {
-                            dp[i][j + 1][k] = (dp[i][j + 1][k] + dp[i][j][k]) % MOD;
-                        } else {
-                            dp[i][j][k + 1] = (dp[i][j][k + 1] + dp[i][j][k]) % MOD;
-                        }
-                    }
+            final int t = fs.nextInt();
+            x[t] = fs.nextInt();
+            a[t] = fs.nextInt();
+            maxT = Math.max(maxT, t);
+        }
+        final long[][] dp = new long[maxT + 2][5];
+        for (long[] row : dp) {
+            Arrays.fill(row, (long) -9e18);
+        }
+        dp[0][0] = 0;
+        for (int i = 0; i <= maxT; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (dp[i][j] == (long) -9e18) {
+                    continue;
                 }
+                if (x[i] == j) {
+                    dp[i][j] += a[i];
+                }
+                dp[i + 1][j] = Math.max(dp[i + 1][j], dp[i][j]);
+                dp[i + 1][Math.min(4, j + 1)] = Math.max(dp[i + 1][Math.min(4, j + 1)], dp[i][j]);
+                dp[i + 1][Math.max(0, j - 1)] = Math.max(dp[i + 1][Math.max(0, j - 1)], dp[i][j]);
             }
         }
-        int res = 0;
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= n - i; j++) {
-                for (int k = 0; k <= n - i - j; k++) {
-                    if (i + j + k == n) {
-                        res = (res + dp[i][j][k]) % MOD;
-                    }
-                }
-            }
+        long res = 0;
+        for (int i = 0; i < 5; i++) {
+            res = Math.max(res, dp[maxT + 1][i]);
         }
         System.out.println(res);
     }

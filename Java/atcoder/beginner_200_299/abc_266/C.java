@@ -1,68 +1,47 @@
-package atcoder.beginner_200_299.abc_265;
+package atcoder.beginner_200_299.abc_266;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
-public final class E {
-
-    private static final int MOD = 998244353;
-
-    static int[][] dirs;
-    static Set<String> banned;
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        dirs = new int[3][2];
-        for (int i = 0; i < 3; i++) {
-            dirs[i] = fs.nextIntArray(2);
+        final int[][] p = new int[4][2];
+        for (int i = 0; i < 4; i++) {
+            p[i] = fs.nextIntArray(2);
         }
-        banned = new HashSet<>();
-        for (int i = 0; i < m; i++) {
-            banned.add(fs.nextInt() + "," + fs.nextInt());
-        }
-        final int[][][] dp = new int[n + 1][n + 1][n + 1];
-        dp[0][0][0] = 1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n - i; j++) {
-                for (int k = 0; k < n - i - j; k++) {
-                    if (dp[i][j][k] == 0) {
-                        continue;
-                    }
-                    final long x = (long) i * dirs[0][0] + (long) j * dirs[1][0] + (long) k * dirs[2][0];
-                    final long y = (long) i * dirs[0][1] + (long) j * dirs[1][1] + (long) k * dirs[2][1];
-                    for (int l = 0; l < 3; l++) {
-                        if (banned.contains((x + dirs[l][0]) + "," + (y + dirs[l][1]))) {
-                            continue;
-                        }
-                        if (l == 0) {
-                            dp[i + 1][j][k] = (dp[i + 1][j][k] + dp[i][j][k]) % MOD;
-                        } else if (l == 1) {
-                            dp[i][j + 1][k] = (dp[i][j + 1][k] + dp[i][j][k]) % MOD;
-                        } else {
-                            dp[i][j][k + 1] = (dp[i][j][k + 1] + dp[i][j][k]) % MOD;
-                        }
-                    }
-                }
+        for (int i = 0; i < 4; i++) {
+            final int[] a = p[i];
+            final int[] b = p[(i + 1) % 4];
+            final int[] c = p[(i + 2) % 4];
+            final int[] vb = getVector(b, a);
+            final int[] vc = getVector(c, a);
+            if (counterClockwise(vb, vc) != 1) {
+                System.out.println("No");
+                return;
             }
         }
-        int res = 0;
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= n - i; j++) {
-                for (int k = 0; k <= n - i - j; k++) {
-                    if (i + j + k == n) {
-                        res = (res + dp[i][j][k]) % MOD;
-                    }
-                }
-            }
-        }
-        System.out.println(res);
+        System.out.println("Yes");
+    }
+
+    private static int[] getVector(int[] l, int[] r) {
+        return new int[] { l[0] - r[0], l[1] - r[1] };
+    }
+
+    private static int cross(int[] l, int[] r) {
+        return l[0] * r[1] - l[1] * r[0];
+    }
+
+    private static int counterClockwise(int[] l, int[] r) {
+        final int area = cross(l, r);
+        // +1 = ccw
+        // -1 = cw
+        //  0 = collinear
+        return Integer.compare(area, 0);
     }
 
     static final class Utils {
