@@ -7,8 +7,9 @@ public class P_42 {
 
     public int trapStack(int[] height) {
         final Deque<Integer> dq = new ArrayDeque<>();
+        final int n = height.length;
         int res = 0;
-        for (int i = 0; i < height.length; i++) {
+        for (int i = 0; i < n; i++) {
             while (!dq.isEmpty() && height[i] > height[dq.getFirst()]) {
                 final int prev = dq.removeFirst();
                 if (!dq.isEmpty()) {
