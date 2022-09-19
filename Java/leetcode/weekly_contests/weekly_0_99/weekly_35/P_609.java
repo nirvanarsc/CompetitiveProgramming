@@ -12,14 +12,15 @@ public class P_609 {
         final Map<String, List<String>> f = new HashMap<>();
         for (String p : paths) {
             final String[] split = p.split(" ");
-            final String pre = split[0];
-            for (int i = 1; i < split.length; i++) {
+            final String prefix = split[0];
+            final int n = split.length;
+            for (int i = 1; i < n; i++) {
                 final String curr = split[i];
                 final int l = curr.indexOf('(');
                 final int r = curr.indexOf(')');
                 final String content = curr.substring(l + 1, r);
                 final String fileName = curr.substring(0, l);
-                f.computeIfAbsent(content, val -> new ArrayList<>()).add(pre + '/' + fileName);
+                f.computeIfAbsent(content, val -> new ArrayList<>()).add(prefix + '/' + fileName);
             }
         }
         return f.values()
