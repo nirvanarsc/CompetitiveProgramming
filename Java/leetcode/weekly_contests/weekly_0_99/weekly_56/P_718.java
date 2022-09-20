@@ -1,8 +1,6 @@
 package leetcode.weekly_contests.weekly_0_99.weekly_56;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class P_718 {
@@ -28,31 +26,25 @@ public class P_718 {
     private static final int BASE = 113;
 
     public int findLength(int[] nums1, int[] nums2) {
-        final int n = Math.min(nums1.length, nums2.length);
-        final long[] pow = new long[n + 1];
+        final int n = nums1.length;
+        final int m = nums2.length;
+        final int q = Math.min(n, m);
+        final long[] pow = new long[q + 1];
         pow[0] = 1;
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= q; i++) {
             pow[i] = pow[i - 1] * BASE % MOD;
         }
-        final long[][] hash = new long[2][];
-        final List<int[]> arr = Arrays.asList(nums1, nums2);
-        for (int i = 0; i < arr.size(); i++) {
-            final int m = arr.get(i).length;
-            hash[i] = new long[m + 1];
-            for (int j = 1; j <= m; j++) {
-                hash[i][j] = (hash[i][j - 1] * BASE + (arr.get(i)[j - 1] + 1)) % MOD;
-            }
-        }
+        final long[][] hash = { toHash(nums1), toHash(nums2) };
         int lo = 0;
-        int hi = n;
+        int hi = q;
         while (lo < hi) {
             final int mid = lo + hi + 1 >>> 1;
             final Set<Long> seen = new HashSet<>();
             boolean ok = false;
-            for (int j = 0; j <= arr.get(0).length - mid; j++) {
+            for (int j = 0; j <= n - mid; j++) {
                 seen.add(getHash(hash[0], pow, j, j + mid - 1));
             }
-            for (int j = 0; j <= arr.get(1).length - mid; j++) {
+            for (int j = 0; j <= m - mid; j++) {
                 if (seen.contains(getHash(hash[1], pow, j, j + mid - 1))) {
                     ok = true;
                     break;
@@ -65,6 +57,15 @@ public class P_718 {
             }
         }
         return lo;
+    }
+
+    private static long[] toHash(int[] arr) {
+        final int m = arr.length;
+        final long[] res = new long[m + 1];
+        for (int j = 1; j <= m; j++) {
+            res[j] = (res[j - 1] * BASE + (arr[j - 1] + 1)) % MOD;
+        }
+        return res;
     }
 
     private static long getHash(long[] hash, long[] pow, int l, int r) {
