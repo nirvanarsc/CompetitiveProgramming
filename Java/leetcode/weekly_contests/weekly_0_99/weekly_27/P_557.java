@@ -3,14 +3,20 @@ package leetcode.weekly_contests.weekly_0_99.weekly_27;
 public class P_557 {
 
     public String reverseWords(String s) {
-        final String[] words = s.split(" ");
-        final StringBuilder sb = new StringBuilder();
-        for (String word : words) {
-            for (int j = word.length() - 1; j >= 0; j--) {
-                sb.append(word.charAt(j));
+        final int n = s.length();
+        final char[] res = new char[n];
+        final char[] w = s.toCharArray();
+        for (int i = 0, k = 0; i <= n; i++) {
+            if (i == n || w[i] == ' ') {
+                int j = i - 1;
+                while (j >= 0 && w[j] != ' ') {
+                    res[k++] = w[j--];
+                }
+                if (k < n) {
+                    res[k++] = ' ';
+                }
             }
-            sb.append(' ');
         }
-        return sb.deleteCharAt(sb.length() - 1).toString();
+        return new String(res);
     }
 }
