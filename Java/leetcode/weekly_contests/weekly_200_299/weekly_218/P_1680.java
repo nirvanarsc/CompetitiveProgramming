@@ -6,10 +6,10 @@ public class P_1680 {
 
     public int concatenatedBinary(int n) {
         long res = 0;
-        for (int i = 1; i <= n; i++) {
-            final int msb = Integer.highestOneBit(i) << 1;
-            res = (res * msb) % MOD;
-            res = (res + i) % MOD;
+        for (int u = 1; u <= n; u++) {
+            final int msb = Integer.highestOneBit(u);
+            res = (res * (msb << 1)) % MOD;
+            res = (res + u) % MOD;
         }
         return (int) res;
     }
