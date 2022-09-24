@@ -8,31 +8,31 @@ import utils.DataStructures.TreeNode;
 public class P_113 {
 
     static List<List<Integer>> res;
-    static List<Integer> path;
-    static int[] curr;
+    static int sum;
 
     public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
         res = new ArrayList<>();
-        path = new ArrayList<>();
-        curr = new int[] { targetSum };
-        dfs(root);
+        sum = targetSum;
+        dfs(root, new ArrayList<>());
         return res;
     }
 
-    private static void dfs(TreeNode node) {
+    private static void dfs(TreeNode node, List<Integer> curr) {
         if (node == null) {
             return;
         }
-        curr[0] -= node.val;
-        path.add(node.val);
-        if (node.left == null && node.right == null) {
-            if (curr[0] == 0) {
-                res.add(new ArrayList<>(path));
-            }
+        curr.add(node.val);
+        sum -= node.val;
+        dfs(node.left, curr);
+        fLeaf(node, curr);
+        dfs(node.right, curr);
+        curr.remove(curr.size() - 1);
+        sum += node.val;
+    }
+
+    private static void fLeaf(TreeNode node, List<Integer> curr) {
+        if (node.left == null && node.right == null && sum == 0) {
+            res.add(new ArrayList<>(curr));
         }
-        dfs(node.left);
-        dfs(node.right);
-        curr[0] += node.val;
-        path.remove(path.size() - 1);
     }
 }
