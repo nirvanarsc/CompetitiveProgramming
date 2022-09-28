@@ -1,54 +1,71 @@
-package atcoder.beginner_200_299.abc_269;
+package atcoder.beginner_200_299.abc_270;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-public final class F {
+public final class C {
 
-    private static final int MOD = 998244353;
-    private static int m;
+    static int n;
+    static int[][] edges;
+    static int[][] g;
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        fs.nextInt();
-        m = fs.nextInt();
-        final int q = fs.nextInt();
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < q; i++) {
-            final int r1 = fs.nextInt() - 1;
-            final int r2 = fs.nextInt() - 1;
-            final int c1 = fs.nextInt() - 1;
-            final int c2 = fs.nextInt() - 1;
-            long res = f(r2, c2);
-            res = (res - f(r1 - 1, c2) + MOD) % MOD;
-            res = (res - f(r2, c1 - 1) + MOD) % MOD;
-            res = (res + f(r1 - 1, c1 - 1)) % MOD;
-            sb.append(res).append('\n');
+        n = fs.nextInt();
+        final int x = fs.nextInt() - 1;
+        final int y = fs.nextInt() - 1;
+        edges = new int[n - 1][2];
+        for (int i = 0; i < n - 1; i++) {
+            edges[i] = new int[] { fs.nextInt() - 1, fs.nextInt() - 1 };
         }
+        g = packG();
+        final List<Integer> p = new ArrayList<>();
+        p.add(x);
+        dfs(x, -1, y, p);
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < p.size(); i++) {
+            sb.append(p.get(i) + 1).append(' ');
+        }
+        sb.deleteCharAt(sb.length() - 1);
         System.out.println(sb);
     }
 
-    private static long f(long r, long c) {
-        long s = ((r + 1) * f2(c + 1)) % MOD;
-        final long p = (((c + 1) * f2(r)) % MOD * m) % MOD;
-        s = (s + p) % MOD;
-        long e = (((r + 2) / 2) * ((((2 + c + c % 2) * ((c + 1) / 2)) / 2) % MOD)) % MOD;
-        final long ep = ((2 * m * f2(r / 2)) % MOD * ((c + 1) / 2)) % MOD;
-        e = (e + ep) % MOD;
-        s = (s - e + MOD) % MOD;
-        long o = (((r + 1) / 2) * ((((1 + c + (c % 2 == 0 ? 1 : 0)) * ((c + 2) / 2)) / 2) % MOD)) % MOD;
-        final long v = (((1 + r - (r % 2 == 0 ? 1 : 0)) * ((r + 1) / 2)) / 2) % MOD;
-        final long op = ((v * m) % MOD * ((c + 2) / 2)) % MOD;
-        o = (o + op) % MOD;
-        s = (s - o + MOD) % MOD;
-        return s;
+    private static boolean dfs(int u, int p, int t, List<Integer> path) {
+        if (u == t) {
+            return true;
+        }
+        for (int v : g[u]) {
+            if (v != p) {
+                path.add(v);
+                if (dfs(v, u, t, path)) {
+                    return true;
+                }
+                path.remove(path.size() - 1);
+            }
+        }
+        return false;
     }
 
-    private static long f2(long c) {
-        return ((c * (c + 1)) / 2) % MOD;
+    private static int[][] packG() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+            ++size[edge[1]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+            g[edge[1]][--size[edge[1]]] = edge[0];
+        }
+        return g;
     }
 
     static final class Utils {
