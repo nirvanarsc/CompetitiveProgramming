@@ -10,11 +10,9 @@ public final class F {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
-        }
+        final int n = fs.nextInt();
+        int[] c = fs.nextIntArray(n);
+        int[] x = fs.nextIntArray(n);
     }
 
     static final class Utils {
