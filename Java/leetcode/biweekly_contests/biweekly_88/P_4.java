@@ -1,37 +1,74 @@
 package leetcode.biweekly_contests.biweekly_88;
 
-import java.util.Arrays;
-
 public class P_4 {
 
-    public long minimumMoney(int[][] transactions) {
-        Arrays.sort(transactions,
-                    (a, b) -> f(a, b) == f(b, a) ? Integer.compare(b[0], a[0])
-                                                 : Integer.compare(f(a, b), f(b, a)));
-        long lo = 0;
-        long hi = (long) 9e18;
-        while (lo < hi) {
-            final long mid = lo + hi >>> 1;
-            if (!f(transactions, mid)) {
-                lo = mid + 1;
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int sum;
+
+        SegTree(int leftMost, int rightMost) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = merge(left.sum, right.sum);
+        }
+
+        private void createChildren() {
+            if (left == null || right == null) {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid);
+                right = new SegTree(mid + 1, rightMost);
+                recalc();
+            }
+        }
+
+        public int merge(int l, int r) {
+            return l + r;
+        }
+
+        private int query(int l, int r) {
+            createChildren();
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return sum;
+            }
+            return merge(left.query(l, r), right.query(l, r));
+        }
+
+        private void update(int idx, int val) {
+            createChildren();
+            if (leftMost == rightMost) {
+                sum += val;
             } else {
-                hi = mid;
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
             }
         }
-        return lo;
     }
 
-    private static int f(int[] l, int[] r) {
-        return Math.min(-l[0], -l[0] + l[1] - r[0]);
-    }
-
-    private static boolean f(int[][] t, long mid) {
-        for (int[] tt : t) {
-            if (tt[0] > mid) {
-                return false;
-            }
-            mid = mid - tt[0] + tt[1];
+    public long numberOfPairs(int[] nums1, int[] nums2, int diff) {
+        final int n = nums1.length;
+        long res = 0;
+        final int m = (int) 3e4;
+        final SegTree st = new SegTree(0, 2 * m + 5);
+        for (int i = 0; i < n; i++) {
+            final int u = nums1[i] - nums2[i];
+            res += st.query(0, u + m);
+            st.update(u - diff + m, 1);
         }
-        return true;
+        return res;
     }
 }

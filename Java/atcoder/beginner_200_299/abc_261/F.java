@@ -3,16 +3,96 @@ package atcoder.beginner_200_299.abc_261;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public final class F {
 
+    private static class SegTree {
+        int leftMost, rightMost;
+        SegTree left, right;
+        int sum;
+
+        SegTree(int leftMost, int rightMost) {
+            this.leftMost = leftMost;
+            this.rightMost = rightMost;
+        }
+
+        private void recalc() {
+            if (leftMost == rightMost) {
+                return;
+            }
+            sum = merge(left.sum, right.sum);
+        }
+
+        private void createChildren() {
+            if (left == null || right == null) {
+                final int mid = leftMost + rightMost >>> 1;
+                left = new SegTree(leftMost, mid);
+                right = new SegTree(mid + 1, rightMost);
+                recalc();
+            }
+        }
+
+        public int merge(int l, int r) {
+            return l + r;
+        }
+
+        private int query(int l, int r) {
+            createChildren();
+            if (r < leftMost || l > rightMost) {
+                return 0;
+            }
+            if (l <= leftMost && rightMost <= r) {
+                return sum;
+            }
+            return merge(left.query(l, r), right.query(l, r));
+        }
+
+        private void update(int idx, int val) {
+            createChildren();
+            if (leftMost == rightMost) {
+                sum += val;
+            } else {
+                final int mid = leftMost + rightMost >>> 1;
+                if (idx <= mid) {
+                    left.update(idx, val);
+                } else {
+                    right.update(idx, val);
+                }
+                recalc();
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        int[] c = fs.nextIntArray(n);
-        int[] x = fs.nextIntArray(n);
+        final int[] c = fs.nextIntArray(n);
+        final int[] x = fs.nextIntArray(n);
+        long res = 0;
+        final Map<Integer, List<Integer>> map = new HashMap<>();
+        final SegTree st = new SegTree(0, n);
+        for (int i = 0; i < n; i++) {
+            map.computeIfAbsent(c[i], val -> new ArrayList<>()).add(i);
+        }
+        final int[] dec = new int[n];
+        for (List<Integer> idc : map.values()) {
+            final SegTree curr = new SegTree(0, n);
+            for (int i = idc.size() - 1; i >= 0; i--) {
+                dec[idc.get(i)] += curr.query(0, x[idc.get(i)] - 1);
+                curr.update(x[idc.get(i)], 1);
+            }
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            res += st.query(0, x[i] - 1) - dec[i];
+            st.update(x[i], 1);
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

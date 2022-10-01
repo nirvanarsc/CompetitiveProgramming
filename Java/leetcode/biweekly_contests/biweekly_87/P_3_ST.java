@@ -1,4 +1,4 @@
-package leetcode.biweekly_contests.biweekly_88;
+package leetcode.biweekly_contests.biweekly_87;
 
 public class P_3_ST {
 

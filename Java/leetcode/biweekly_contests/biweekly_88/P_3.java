@@ -2,21 +2,25 @@ package leetcode.biweekly_contests.biweekly_88;
 
 public class P_3 {
 
-    public int[] smallestSubarrays(int[] nums) {
-        final int n = nums.length;
-        final int[] bitIdx = new int[31];
-        final int[] res = new int[n];
-        for (int i = n - 1; i >= 0; i--) {
-            for (int j = 0; j < 31; j++) {
-                if ((nums[i] & (1 << j)) != 0) {
-                    bitIdx[j] = i;
-                }
-            }
-            int idx = i;
-            for (int j = 0; j < 31; j++) {
-                idx = Math.max(idx, bitIdx[j]);
-            }
-            res[i] = idx - i + 1;
+    public int xorAllNums(int[] nums1, int[] nums2) {
+        final int n = nums1.length;
+        final int m = nums2.length;
+        if (n % 2 != 0 && m % 2 != 0) {
+            return f(nums1) ^ f(nums2);
+        }
+        if (n % 2 != 0) {
+            return f(nums2);
+        }
+        if (m % 2 != 0) {
+            return f(nums1);
+        }
+        return 0;
+    }
+
+    private static int f(int[] nums) {
+        int res = 0;
+        for (int num : nums) {
+            res ^= num;
         }
         return res;
     }

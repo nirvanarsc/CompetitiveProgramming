@@ -2,16 +2,35 @@ package leetcode.biweekly_contests.biweekly_88;
 
 public class P_1 {
 
-    public int countDaysTogether(String arriveAlice, String leaveAlice, String arriveBob, String leaveBob) {
-        return Math.max(0, Math.min(f(leaveAlice), f(leaveBob)) - Math.max(f(arriveAlice), f(arriveBob)) + 1);
+    public boolean equalFrequency(String word) {
+        final int n = word.length();
+        final char[] w = word.toCharArray();
+        for (int i = 0; i < n; i++) {
+            if (f(w, i, n)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private static int f(String w) {
-        final int[] d = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-        int res = 0;
-        for (int i = 1; i < Integer.parseInt(w.substring(0, 2)); i++) {
-            res += d[i - 1];
+    private static boolean f(char[] w, int idx, int n) {
+        final int[] f = new int[26];
+        for (int i = 0; i < n; i++) {
+            if (i == idx) {
+                continue;
+            }
+            f[w[i] - 'a']++;
         }
-        return res + Integer.parseInt(w.substring(3));
+        int t = -1;
+        for (int i = 0; i < 26; i++) {
+            if (f[i] > 0) {
+                if (t == -1) {
+                    t = f[i];
+                } else if (f[i] != t) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
