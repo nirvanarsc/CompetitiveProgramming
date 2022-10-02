@@ -4,28 +4,22 @@ public class P_1155 {
 
     private static final int MOD = (int) 1e9 + 7;
 
-    public int numRollsToTarget(int d, int f, int target) {
-        if (d * f < target) {
+    public int numRollsToTarget(int n, int k, int target) {
+        if (n * k < target) {
             return 0;
         }
-        return recurse(d, f, target, 0, new Integer[d + 1][target + 1]);
-    }
-
-    private static int recurse(int d, int f, int target, int curr, Integer[][] dp) {
-        if (d == 0 && curr == target) {
-            return 1;
+        final int[][] dp = new int[n + 1][target + k + 1];
+        dp[0][0] = 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j <= target; j++) {
+                if (dp[i][j] == 0) {
+                    continue;
+                }
+                for (int u = 1; u <= k; u++) {
+                    dp[i + 1][j + u] = (dp[i + 1][j + u] + dp[i][j]) % MOD;
+                }
+            }
         }
-        if (d == 0 || curr > target) {
-            return 0;
-        }
-        if (dp[d][curr] != null) {
-            return dp[d][curr];
-        }
-
-        int res = 0;
-        for (int i = 1; i <= f; i++) {
-            res = (res + recurse(d - 1, f, target, curr + i, dp)) % MOD;
-        }
-        return dp[d][curr] = res;
+        return dp[n][target];
     }
 }
