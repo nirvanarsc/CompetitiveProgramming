@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
 public class P_981 {
 
-    static class TimeMap {
+    class TimeMap {
         Map<String, TreeMap<Integer, String>> map;
 
-        TimeMap() {
+        public TimeMap() {
             map = new HashMap<>();
         }
 
@@ -18,14 +19,9 @@ public class P_981 {
         }
 
         public String get(String key, int timestamp) {
-            if (!map.containsKey(key)) {
-                return "";
-            }
-            final Map.Entry<Integer, String> entry = map.get(key).floorEntry(timestamp);
-            if (entry == null) {
-                return "";
-            }
-            return entry.getValue();
+            final TreeMap<Integer, String> tm = map.getOrDefault(key, new TreeMap<>());
+            final Map.Entry<Integer, String> entry = tm.floorEntry(timestamp);
+            return entry == null ? "" : entry.getValue();
         }
     }
 }
