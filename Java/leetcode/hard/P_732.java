@@ -92,7 +92,7 @@ public class P_732 {
             }
         }
 
-        SegTree st;
+        private final SegTree st;
 
         public MyCalendarThree() {
             st = new SegTree(0, (int) 1e9);
