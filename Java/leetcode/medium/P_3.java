@@ -5,13 +5,15 @@ import java.util.Arrays;
 public class P_3 {
 
     public int lengthOfLongestSubstring(String s) {
-        final char[] str = s.toCharArray();
+        final char[] w = s.toCharArray();
+        final int n = w.length;
         final int[] map = new int[128];
-        int res = 0, j = 0;
-        for (int i = 0; i < str.length; i++) {
-            map[str[i]]++;
-            while (map[str[i]] > 1) {
-                --map[str[j++]];
+        int res = 0;
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            map[w[i]]++;
+            while (map[w[i]] > 1) {
+                --map[w[j++]];
             }
             res = Math.max(res, i - j + 1);
         }
