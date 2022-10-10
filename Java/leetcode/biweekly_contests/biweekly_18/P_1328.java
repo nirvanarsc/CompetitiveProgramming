@@ -3,15 +3,15 @@ package leetcode.biweekly_contests.biweekly_18;
 public class P_1328 {
 
     public String breakPalindrome(String palindrome) {
-        final char[] chars = palindrome.toCharArray();
+        final char[] w = palindrome.toCharArray();
         final int n = palindrome.length();
         for (int i = 0; i < n / 2; i++) {
-            if (palindrome.charAt(i) != 'a') {
-                chars[i] = 'a';
-                return new String(chars);
+            if (w[i] != 'a') {
+                w[i] = 'a';
+                return new String(w);
             }
         }
-        chars[n - 1] = 'b';
-        return n == 1 ? "" : new String(chars);
+        w[n - 1] = 'b';
+        return n == 1 ? "" : new String(w);
     }
 }
