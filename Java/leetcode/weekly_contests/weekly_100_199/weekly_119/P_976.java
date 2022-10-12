@@ -4,12 +4,12 @@ import java.util.Arrays;
 
 public class P_976 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int largestPerimeter(int[] A) {
-        Arrays.sort(A);
-        for (int i = A.length - 1; i >= 2; i--) {
-            if (A[i - 1] + A[i - 2] > A[i]) {
-                return A[i] + A[i - 1] + A[i - 2];
+    public int largestPerimeter(int[] nums) {
+        Arrays.sort(nums);
+        final int n = nums.length;
+        for (int i = n - 1; i >= 2; i--) {
+            if (nums[i - 1] + nums[i - 2] > nums[i]) {
+                return nums[i] + nums[i - 1] + nums[i - 2];
             }
         }
         return 0;
