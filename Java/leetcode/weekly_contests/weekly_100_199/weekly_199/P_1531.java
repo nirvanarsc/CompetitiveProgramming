@@ -5,50 +5,49 @@ import java.util.List;
 
 public class P_1531 {
 
-    static class Pair {
-        char c;
-        int count;
-
-        Pair(char c, int count) {
-            this.c = c;
-            this.count = count;
-        }
-    }
+    static boolean[][][] seen;
+    static int[][][] dp;
 
     public int getLengthOfOptimalCompression(String s, int k) {
-        final List<Pair> count = new ArrayList<>();
-        for (int i = 0; i < s.length(); i++) {
+
+        final List<int[]> count = new ArrayList<>();
+        final int m = s.length();
+        for (int i = 0; i < m; i++) {
             int j = i;
-            while (j < s.length() && s.charAt(j) == s.charAt(i)) {
+            while (j < m && s.charAt(j) == s.charAt(i)) {
                 j++;
             }
-            count.add(new Pair(s.charAt(i), j - i));
+            count.add(new int[] { s.charAt(i) - 'a', j - i });
             i = j - 1;
         }
-        return dfs(count, 0, 0, k, new Integer[count.size()][s.length()][k + 1]);
+        final int n = count.size();
+        seen = new boolean[n][m][k + 1];
+        dp = new int[n][m][k + 1];
+        return dfs(count, 0, 0, k);
     }
 
-    private static int dfs(List<Pair> count, int idx, int rem, int k, Integer[][][] dp) {
+    private static int dfs(List<int[]> count, int idx, int rem, int k) {
         if (idx == count.size()) {
             return 0;
         }
-        if (dp[idx][rem][k] != null) {
+        if (seen[idx][rem][k]) {
             return dp[idx][rem][k];
         }
-        final Pair curr = count.get(idx);
-        final int c = curr.count + rem;
-        int best = l(c) + dfs(count, idx + 1, 0, k, dp);
+        final int[] curr = count.get(idx);
+        final int c = curr[1] + rem;
+        int res = l(c) + dfs(count, idx + 1, 0, k);
         for (int j = 1; j <= c && j <= k; j++) {
-            best = Math.min(best, l(c - j) + dfs(count, idx + 1, 0, k - j, dp));
+            res = Math.min(res, l(c - j) + dfs(count, idx + 1, 0, k - j));
         }
         int temp = k;
         for (int j = idx + 1; j < count.size() && temp >= 0; j++) {
-            if (count.get(j).c == curr.c) {
-                best = Math.min(best, dfs(count, j, c, temp, dp));
+            if (count.get(j)[0] == curr[0]) {
+                res = Math.min(res, dfs(count, j, c, temp));
             }
-            temp -= count.get(j).count;
+            temp -= count.get(j)[1];
         }
-        return dp[idx][rem][k] = best;
+        seen[idx][rem][k] = true;
+        return dp[idx][rem][k] = res;
     }
 
     private static int l(int n) {

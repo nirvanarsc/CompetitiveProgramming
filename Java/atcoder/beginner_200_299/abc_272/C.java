@@ -3,18 +3,37 @@ package atcoder.beginner_200_299.abc_272;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 
 public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final List<Integer> even = new ArrayList<>();
+        final List<Integer> odd = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            final int u = fs.nextInt();
+            if (u % 2 == 0) {
+                even.add(u);
+            } else {
+                odd.add(u);
+            }
         }
+        even.sort(Comparator.naturalOrder());
+        odd.sort(Comparator.naturalOrder());
+        int res = -1;
+        if (even.size() > 1) {
+            res = Math.max(res, even.get(even.size() - 1) + even.get(even.size() - 2));
+        }
+        if (odd.size() > 1) {
+            res = Math.max(res, odd.get(odd.size() - 1) + odd.get(odd.size() - 2));
+        }
+        System.out.println(res);
     }
 
     static final class Utils {

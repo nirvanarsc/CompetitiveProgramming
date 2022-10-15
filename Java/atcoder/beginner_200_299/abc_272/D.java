@@ -3,18 +3,62 @@ package atcoder.beginner_200_299.abc_272;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.List;
 import java.util.Random;
 
 public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final List<int[]> dir = new ArrayList<>();
+        for (int di = -n; di < n; di++) {
+            for (int dj = -n; dj < n; dj++) {
+                if (di * di + dj * dj == m) {
+                    dir.add(new int[] { di, dj });
+                }
+            }
         }
+        final int[][] d = new int[n][n];
+        for (int[] row : d) {
+            Arrays.fill(row, (int) 1e9);
+        }
+        final Deque<int[]> dq = new ArrayDeque<>();
+        dq.offerLast(new int[] { 0, 0 });
+        d[0][0] = 0;
+        for (int level = 0; !dq.isEmpty(); level++) {
+            for (int size = dq.size(); size > 0; size--) {
+                final int[] curr = dq.removeFirst();
+                final int u = curr[0];
+                final int v = curr[1];
+                if (d[u][v] < level) {
+                    continue;
+                }
+                for (int[] ndir : dir) {
+                    final int nu = ndir[0] + u;
+                    final int nv = ndir[1] + v;
+                    if (0 <= nu && nu < n && 0 <= nv && nv < n) {
+                        if (d[nu][nv] > d[u][v] + 1) {
+                            d[nu][nv] = d[u][v] + 1;
+                            dq.offerLast(new int[] { nu, nv });
+                        }
+                    }
+                }
+            }
+        }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                sb.append(d[i][j] == (int) 1e9 ? -1 : d[i][j]).append(' ');
+            }
+            sb.setCharAt(sb.length() - 1, '\n');
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {

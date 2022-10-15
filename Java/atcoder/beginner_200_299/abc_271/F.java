@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public final class F {
@@ -15,31 +17,30 @@ public final class F {
         for (int i = 0; i < n; i++) {
             g[i] = fs.nextIntArray(n);
         }
-        long res = (long) 9e18;
-        for (int bit = 0; bit < 30; bit++) {
-            final int[][] c = new int[n][n];
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    c[i][j] = (g[i][j] & (1 << bit)) != 0 ? 1 : 0;
-                }
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            final Map<Integer, Integer> l = new HashMap<>();
+            final Map<Integer, Integer> r = new HashMap<>();
+            f(g, 0, 0, n - 1 - i, i, 0, l);
+            f(g, n - 1 - i, i, i, n - 1 - i, g[n - 1 - i][i], r);
+            for (Map.Entry<Integer, Integer> e : l.entrySet()) {
+                res += (long) e.getValue() * r.getOrDefault(e.getKey(), 0);
             }
-            final long[][][] dp = new long[n][n][2];
-            dp[0][0][0] = 1;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    for (int k = 0; k < 2; k++) {
-                        if (i < n - 1) {
-                            dp[i + 1][j][k ^ c[i][j]] += dp[i][j][k];
-                        }
-                        if (j < n - 1) {
-                            dp[i][j + 1][k ^ c[i][j]] += dp[i][j][k];
-                        }
-                    }
-                }
-            }
-            res = Math.min(res, dp[n - 1][n - 1][c[n - 1][n - 1]]);
         }
         System.out.println(res);
+    }
+
+    private static void f(int[][] g, int i, int j, int d, int r, int xor, Map<Integer, Integer> map) {
+        if (d == 0 && r == 0) {
+            map.merge(xor ^ g[i][j], 1, Integer::sum);
+            return;
+        }
+        if (d > 0) {
+            f(g, i + 1, j, d - 1, r, xor ^ g[i][j], map);
+        }
+        if (r > 0) {
+            f(g, i, j + 1, d, r - 1, xor ^ g[i][j], map);
+        }
     }
 
     static final class Utils {
