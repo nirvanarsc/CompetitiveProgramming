@@ -4,17 +4,45 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Random;
+import java.util.Set;
 
 public final class E {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
-        final int t = fs.nextInt();
-        for (int test = 0; test < t; test++) {
-            final int n = fs.nextInt();
-            System.out.println(n);
+        final int n = fs.nextInt();
+        final int m = fs.nextInt();
+        final int[] arr = fs.nextIntArray(n);
+        final PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        for (int i = 0; i < n; i++) {
+            int l = 1;
+            if (arr[i] < 0) {
+                l = Math.max(l, (-arr[i] + i) / (i + 1));
+            }
+            final int u = arr[i] + l * (i + 1);
+            pq.offer(new int[] { l, u, i + 1 });
         }
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < m; i++) {
+            final Set<Integer> seen = new HashSet<>();
+            int res = 0;
+            while (!pq.isEmpty() && pq.element()[0] == (i + 1)) {
+                final int[] pop = pq.remove();
+                seen.add(pop[1]);
+                while (seen.contains(res)) {
+                    res++;
+                }
+                if (pop[1] + pop[2] < n) {
+                    pq.offer(new int[] { pop[0] + 1, pop[1] + pop[2], pop[2] });
+                }
+            }
+            sb.append(res).append('\n');
+        }
+        System.out.println(sb);
     }
 
     static final class Utils {
