@@ -34,10 +34,6 @@ public final class E {
                 }
             }
         }
-        long res = 0;
-        for (int i = 0; i <= k; i++) {
-            res = (res + dp[n][i]) % MOD;
-        }
         System.out.println(dp[n][k]);
     }
 
