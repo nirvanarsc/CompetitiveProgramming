@@ -11,12 +11,14 @@ public class P_3 {
             f.merge(w, 1, Integer::sum);
         }
         int res = 0;
+        int odd = 0;
         for (String w : words) {
-            final String rev = new StringBuilder(w).reverse().toString();
+            final String rev = w.charAt(1) + String.valueOf(w.charAt(0));
             if (rev.equals(w)) {
                 int count = f.get(w);
                 if (count % 2 != 0) {
                     count--;
+                    odd = 1;
                 }
                 f.merge(w, -count, Integer::sum);
                 res += count;
@@ -27,15 +29,6 @@ public class P_3 {
                 res += 2 * take;
             }
         }
-        for (String w : words) {
-            if (w.charAt(0) == w.charAt(1)) {
-                final int count = f.get(w);
-                if (count == 1) {
-                    res++;
-                    break;
-                }
-            }
-        }
-        return 2 * res;
+        return 2 * (res + odd);
     }
 }
