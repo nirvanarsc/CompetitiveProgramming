@@ -14,7 +14,7 @@ public final class C2 {
         final StringBuilder sb = new StringBuilder();
         for (int test = 0; test < t; test++) {
             final int n = fs.nextInt();
-            int[] arr = fs.nextIntArray(n);
+            final int[] arr = fs.nextIntArray(n);
             int nonZeroes = 0;
             for (int i = 0; i < n; i++) {
                 if (arr[i] != 0) {
@@ -31,7 +31,7 @@ public final class C2 {
                 continue;
             }
             int idx = 0;
-            int[] map = new int[nonZeroes];
+            final int[] map = new int[nonZeroes];
             int count = 0;
             final StringBuilder curr = new StringBuilder();
             for (int i = 0; i < n; i++) {
@@ -44,19 +44,28 @@ public final class C2 {
                 curr.append(1).append(' ').append(map[0]).append('\n');
             }
             for (int i = 0; i < nonZeroes; i += 2) {
-                if (i > 0) {
-                    if (map[i] - map[i - 1] > 1) {
-                        count++;
-                        curr.append(map[i - 1] + 2).append(' ').append(map[i]).append('\n');
-                    }
-                }
                 count++;
-                if (arr[map[i]] == arr[map[i + 1]]) {
-                    curr.append(map[i] + 1).append(' ').append(map[i + 1] + 1).append('\n');
-                } else {
+                final int l = map[i + 1] - map[i] + 1;
+                if (i > 0 && map[i] - map[i - 1] > 1) {
                     count++;
-                    curr.append(map[i] + 1).append(' ').append(map[i + 1]).append('\n');
-                    curr.append(map[i + 1] + 1).append(' ').append(map[i + 1] + 1).append('\n');
+                    curr.append(map[i - 1] + 2).append(' ').append(map[i]).append('\n');
+                }
+                if (arr[map[i]] == arr[map[i + 1]]) {
+                    if (l % 2 == 0) {
+                        curr.append(map[i] + 1).append(' ').append(map[i + 1] + 1).append('\n');
+                    } else {
+                        count++;
+                        curr.append(map[i] + 1).append(' ').append(map[i] + 1).append('\n');
+                        curr.append(map[i] + 2).append(' ').append(map[i + 1] + 1).append('\n');
+                    }
+                } else {
+                    if (l % 2 != 0) {
+                        curr.append(map[i] + 1).append(' ').append(map[i + 1] + 1).append('\n');
+                    } else {
+                        count++;
+                        curr.append(map[i] + 1).append(' ').append(map[i] + 1).append('\n');
+                        curr.append(map[i] + 2).append(' ').append(map[i + 1] + 1).append('\n');
+                    }
                 }
             }
             if (map[nonZeroes - 1] != n - 1) {
