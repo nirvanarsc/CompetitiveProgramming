@@ -3,22 +3,22 @@ package leetcode.weekly_contests.weekly_100_199.weekly_101;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-@SuppressWarnings({ "InnerClassMayBeStatic", "unused" })
+@SuppressWarnings({ "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
 public class P_901 {
 
     class StockSpanner {
-        Deque<int[]> stack;
+        Deque<int[]> dq;
 
-        StockSpanner() {
-            stack = new ArrayDeque<>();
+        public StockSpanner() {
+            dq = new ArrayDeque<>();
         }
 
         public int next(int price) {
             int curr = 1;
-            while (!stack.isEmpty() && stack.peekFirst()[0] <= price) {
-                curr += stack.removeFirst()[1];
+            while (!dq.isEmpty() && dq.peekFirst()[0] <= price) {
+                curr += dq.removeFirst()[1];
             }
-            stack.addFirst(new int[] { price, curr });
+            dq.addFirst(new int[] { price, curr });
             return curr;
         }
     }
