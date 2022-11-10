@@ -5,12 +5,13 @@ public class P_1047 {
     public String removeDuplicates(String s) {
         final int n = s.length();
         final char[] res = new char[n];
+        final char[] w = s.toCharArray();
         int size = 0;
         for (int i = 0; i < n; i++) {
-            if (size > 0 && res[size - 1] == s.charAt(i)) {
+            if (size > 0 && res[size - 1] == w[i]) {
                 size--;
             } else {
-                res[size++] = s.charAt(i);
+                res[size++] = w[i];
             }
         }
         return new String(res, 0, size);
