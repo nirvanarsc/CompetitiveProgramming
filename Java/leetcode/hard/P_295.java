@@ -26,11 +26,7 @@ public class P_295 {
         }
 
         public double findMedian() {
-            if (odd) {
-                return max.element();
-            } else {
-                return 0.5 * (min.element() + max.element());
-            }
+            return odd ? max.element() : 0.5 * (min.element() + max.element());
         }
     }
 }
