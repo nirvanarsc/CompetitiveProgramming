@@ -2,13 +2,12 @@ package leetcode.medium;
 
 public class P_223 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
-        int curr = (Math.abs(A - C) * Math.abs(B - D)) + (Math.abs(E - G) * Math.abs(F - H));
-        final int m = Math.max(A, E);
-        final int n = Math.max(B, F);
-        final int p = Math.min(C, G);
-        final int q = Math.min(D, H);
+    public int computeArea(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2) {
+        int curr = (Math.abs(ax1 - ax2) * Math.abs(ay1 - ay2)) + (Math.abs(bx1 - bx2) * Math.abs(by1 - by2));
+        final int m = Math.max(ax1, bx1);
+        final int n = Math.max(ay1, by1);
+        final int p = Math.min(ax2, bx2);
+        final int q = Math.min(ay2, by2);
         if (m < p && n < q) {
             curr -= (p - m) * (q - n);
         }
