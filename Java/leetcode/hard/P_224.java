@@ -7,26 +7,26 @@ import java.util.Deque;
 public class P_224 {
 
     public int calculateImproved(String s) {
-        final Deque<Integer> stack = new ArrayDeque<>(Collections.singletonList(1));
-        final char[] chars = s.toCharArray();
-        int result = 0;
+        final Deque<Integer> dq = new ArrayDeque<>(Collections.singletonList(1));
+        final char[] w = s.toCharArray();
+        int res = 0;
         int sign = 1;
         int num = 0;
-        for (char c : chars) {
+        for (char c : w) {
             if (c >= '0' && c <= '9') {
                 num = num * 10 + (c - '0');
             } else if (c == '+' || c == '-') {
-                result += sign * num;
-                sign = stack.getFirst() * (c == '+' ? 1 : -1);
+                res += sign * num;
+                sign = dq.getFirst() * (c == '+' ? 1 : -1);
                 num = 0;
             } else if (c == '(') {
-                stack.addFirst(sign);
+                dq.addFirst(sign);
             } else if (c == ')') {
-                stack.removeFirst();
+                dq.removeFirst();
             }
         }
-        result += sign * num;
-        return result;
+        res += sign * num;
+        return res;
     }
 
     public int calculate(String s) {
