@@ -42,7 +42,7 @@ public class P_279 {
 
     public static int numSquaresBottomUp(int n) {
         final int[] dp = new int[n + 1];
-        Arrays.fill(dp, Integer.MAX_VALUE);
+        Arrays.fill(dp, (int) 1e9);
         dp[0] = 0;
         for (int i = 0; i <= n; i++) {
             for (int j = 1; i + j * j <= n; j++) {
