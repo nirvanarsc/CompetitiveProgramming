@@ -6,13 +6,15 @@ public class P_79 {
 
     static int n;
     static int m;
+    static char[] w;
 
     public boolean exist(char[][] board, String word) {
         n = board.length;
         m = board[0].length;
+        w = word.toCharArray();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (dfs(board, i, j, word, 0)) {
+                if (dfs(board, i, j, 0)) {
                     return true;
                 }
             }
@@ -20,17 +22,17 @@ public class P_79 {
         return false;
     }
 
-    private static boolean dfs(char[][] board, int i, int j, String word, int index) {
-        if (index == word.length()) {
+    private static boolean dfs(char[][] board, int i, int j, int index) {
+        if (index == w.length) {
             return true;
         }
-        if (i < 0 || i == n || j < 0 || j == m || board[i][j] != word.charAt(index)) {
+        if (i < 0 || i == n || j < 0 || j == m || board[i][j] != w[index]) {
             return false;
         }
         final char t = board[i][j];
         board[i][j] = '#';
         for (int[] dir : DIRS) {
-            if (dfs(board, i + dir[0], j + dir[1], word, index + 1)) {
+            if (dfs(board, i + dir[0], j + dir[1], index + 1)) {
                 return true;
             }
         }
