@@ -16,7 +16,7 @@ public class P_446 {
         for (int i = 0; i < n; i++) {
             map.computeIfAbsent((long) nums[i], v -> new ArrayList<>()).add(i);
             for (int j = 0; j < i; j++) {
-                final long target = 2 * (long) nums[j] - nums[i];
+                final long target = 2L * nums[j] - nums[i];
                 for (int k : map.getOrDefault(target, Collections.emptyList())) {
                     if (k < j) {
                         dp[i][j] += dp[j][k] + 1;
@@ -30,9 +30,9 @@ public class P_446 {
 
     public int numberOfArithmeticSlicesConcise(int[] nums) {
         final Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
-        final int length = nums.length;
+        final int n = nums.length;
         int res = 0;
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < n; i++) {
             map.put(i, new HashMap<>());
             for (int j = 0; j < i; j++) {
                 final long diff = (long) nums[i] - nums[j];
