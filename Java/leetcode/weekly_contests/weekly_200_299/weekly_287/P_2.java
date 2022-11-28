@@ -7,8 +7,9 @@ import java.util.List;
 public class P_2 {
 
     public List<List<Integer>> findWinners(int[][] matches) {
-        final int[] losses = new int[(int) (1e5 + 5)];
-        final int[] players = new int[(int) (1e5 + 5)];
+        final int n = (int) (1e5 + 5);
+        final int[] losses = new int[n];
+        final int[] players = new int[n];
         for (int[] p : matches) {
             losses[p[1]]++;
             players[p[0]]++;
@@ -16,7 +17,7 @@ public class P_2 {
         }
         final List<Integer> l = new ArrayList<>();
         final List<Integer> r = new ArrayList<>();
-        for (int i = 0; i < players.length; i++) {
+        for (int i = 0; i < n; i++) {
             if (players[i] > 0) {
                 if (losses[i] == 0) {
                     l.add(i);
