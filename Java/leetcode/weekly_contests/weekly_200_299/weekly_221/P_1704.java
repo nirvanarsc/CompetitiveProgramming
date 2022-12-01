@@ -5,14 +5,13 @@ public class P_1704 {
     public boolean halvesAreAlike(String s) {
         final String vowels = "aeiouAEIOU";
         final int n = s.length();
+        final char[] w = s.toCharArray();
         int count = 0;
         for (int i = 0; i < n / 2; i++) {
-            if (vowels.indexOf(s.charAt(i)) >= 0) {
+            if (vowels.indexOf(w[i]) >= 0) {
                 count++;
             }
-        }
-        for (int i = n / 2; i < n; i++) {
-            if (vowels.indexOf(s.charAt(i)) >= 0) {
+            if (vowels.indexOf(w[i + (n / 2)]) >= 0) {
                 count--;
             }
         }
