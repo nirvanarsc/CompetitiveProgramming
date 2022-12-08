@@ -12,8 +12,8 @@ public class P_872 {
     public boolean leafSimilar(TreeNode root1, TreeNode root2) {
         final Deque<TreeNode> s1 = new ArrayDeque<>();
         final Deque<TreeNode> s2 = new ArrayDeque<>();
-        s1.push(root1);
-        s2.push(root2);
+        s1.addFirst(root1);
+        s2.addFirst(root2);
         while (!s1.isEmpty() && !s2.isEmpty()) {
             if (dfs(s1) != dfs(s2)) {
                 return false;
@@ -25,8 +25,8 @@ public class P_872 {
     private static int dfs(Deque<TreeNode> s) {
         while (true) {
             final TreeNode node = s.removeFirst();
-            if (node.right != null) { s.addFirst(node.right); }
             if (node.left != null) { s.addFirst(node.left); }
+            if (node.right != null) { s.addFirst(node.right); }
             if (node.left == null && node.right == null) {
                 return node.val;
             }
