@@ -3,42 +3,42 @@ package leetcode.easy;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass", "unused" })
 public class P_232 {
 
-    static class MyQueue {
+    class MyQueue {
 
-        Deque<Integer> s1;
-        Deque<Integer> s2;
-        int front;
+        private final Deque<Integer> dq1;
+        private final Deque<Integer> dq2;
+        private int front = -1;
 
-        MyQueue() {
-            s1 = new ArrayDeque<>();
-            s2 = new ArrayDeque<>();
+        public MyQueue() {
+            dq1 = new ArrayDeque<>();
+            dq2 = new ArrayDeque<>();
         }
 
         public void push(int x) {
-            if (s1.isEmpty()) {
+            if (dq1.isEmpty()) {
                 front = x;
             }
-            s1.addFirst(x);
+            dq1.addFirst(x);
         }
 
         public int pop() {
-            if (s2.isEmpty()) {
-                while (!s1.isEmpty()) {
-                    s2.addFirst(s1.removeFirst());
+            if (dq2.isEmpty()) {
+                while (!dq1.isEmpty()) {
+                    dq2.addFirst(dq1.removeFirst());
                 }
             }
-            return s2.removeFirst();
+            return dq2.removeFirst();
         }
 
         public int peek() {
-            return s2.isEmpty() ? front : s2.getFirst();
+            return dq2.isEmpty() ? front : dq2.getFirst();
         }
 
         public boolean empty() {
-            return s1.size() + s2.size() == 0;
+            return dq1.size() + dq2.size() == 0;
         }
     }
 }
