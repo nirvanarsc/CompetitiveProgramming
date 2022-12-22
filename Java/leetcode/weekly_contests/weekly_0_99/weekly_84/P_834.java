@@ -2,15 +2,15 @@ package leetcode.weekly_contests.weekly_0_99.weekly_84;
 
 public class P_834 {
 
-    int n;
-    int[][] edges;
-    int[][] g;
-    int[] size;
-    int[] res;
+    static int n;
+    static int[][] edges;
+    static int[][] g;
+    static int[] size;
+    static int[] res;
 
-    public int[] sumOfDistancesInTree(int n, int[][] edges) {
-        this.n = n;
-        this.edges = edges;
+    public int[] sumOfDistancesInTree(int m, int[][] e) {
+        n = m;
+        edges = e;
         g = packG();
         size = new int[n];
         res = new int[n];
@@ -19,7 +19,7 @@ public class P_834 {
         return res;
     }
 
-    private void dfs1(int u, int par, int d) {
+    private static void dfs1(int u, int par, int d) {
         res[0] += d;
         size[u] = 1;
         for (int v : g[u]) {
@@ -30,7 +30,7 @@ public class P_834 {
         }
     }
 
-    private void dfs2(int u, int par) {
+    private static void dfs2(int u, int par) {
         for (int v : g[u]) {
             if (v != par) {
                 res[v] = res[u] + n - 2 * size[v];
@@ -39,7 +39,7 @@ public class P_834 {
         }
     }
 
-    private int[][] packG() {
+    private static int[][] packG() {
         final int[][] g = new int[n][];
         final int[] size = new int[n];
         for (int[] edge : edges) {
