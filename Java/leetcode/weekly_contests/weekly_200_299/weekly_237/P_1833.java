@@ -6,12 +6,13 @@ public class P_1833 {
 
     public int maxIceCream(int[] costs, int coins) {
         Arrays.sort(costs);
-        for (int i = 0; i < costs.length; i++) {
+        final int n = costs.length;
+        for (int i = 0; i < n; i++) {
             if (coins < costs[i]) {
                 return i;
             }
             coins -= costs[i];
         }
-        return costs.length;
+        return n;
     }
 }
