@@ -9,39 +9,20 @@ import utils.DataStructures.TreeNode;
 
 public class P_144 {
 
-    public List<Integer> preorderIterative(TreeNode root) {
+    public List<Integer> preorderTraversal(TreeNode root) {
         final List<Integer> res = new ArrayList<>();
-        final Deque<TreeNode> stack = new LinkedList<>();
+        final Deque<TreeNode> dq = new LinkedList<>();
         TreeNode curr = root;
-
-        while (!stack.isEmpty() || curr != null) {
+        while (!dq.isEmpty() || curr != null) {
             if (curr != null) {
-                stack.addFirst(curr);
+                dq.addFirst(curr);
                 res.add(curr.val);
                 curr = curr.left;
             } else {
-                curr = stack.removeFirst();
+                curr = dq.removeFirst();
                 curr = curr.right;
             }
         }
-
         return res;
     }
-
-    public List<Integer> preorderTraversal(TreeNode root) {
-        final List<Integer> list = new ArrayList<>();
-        helper(root, list);
-        return list;
-    }
-
-    private static void helper(TreeNode root, List<Integer> list) {
-        if (root == null) {
-            return;
-        }
-
-        list.add(root.val);
-        helper(root.left, list);
-        helper(root.right, list);
-    }
-
 }
