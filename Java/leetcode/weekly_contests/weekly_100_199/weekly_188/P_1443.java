@@ -1,35 +1,53 @@
 package leetcode.weekly_contests.weekly_100_199.weekly_188;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@SuppressWarnings("AccessStaticViaInstance")
 public class P_1443 {
 
-    int res;
+    static int res;
+    static int n;
+    static int[][] edges;
+    static int[][] g;
+    static List<Boolean> hasApple;
 
     public int minTime(int n, int[][] edges, List<Boolean> hasApple) {
-        final Map<Integer, List<Integer>> g = new HashMap<>();
-        for (int[] e : edges) {
-            g.computeIfAbsent(e[0], v -> new ArrayList<>()).add(e[1]);
-            g.computeIfAbsent(e[1], v -> new ArrayList<>()).add(e[0]);
-        }
-        dfs(g, hasApple, 0, -1);
+        res = 0;
+        this.n = n;
+        this.edges = edges;
+        g = packG();
+        this.hasApple = hasApple;
+        dfs(0, -1);
         return res;
     }
 
-    private boolean dfs(Map<Integer, List<Integer>> g, List<Boolean> hasApple, int curr, int par) {
-        boolean take = hasApple.get(curr);
-        for (int n : g.getOrDefault(curr, Collections.emptyList())) {
-            if (n != par) {
-                take |= dfs(g, hasApple, n, curr);
+    private static boolean dfs(int u, int par) {
+        boolean take = hasApple.get(u);
+        for (int v : g[u]) {
+            if (v != par) {
+                take |= dfs(v, u);
             }
         }
-        if (take && curr != 0) {
+        if (take && u != 0) {
             res += 2;
         }
         return take;
+    }
+
+    private static int[][] packG() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+            ++size[edge[1]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+            g[edge[1]][--size[edge[1]]] = edge[0];
+        }
+        return g;
     }
 }
