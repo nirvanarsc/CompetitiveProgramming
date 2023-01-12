@@ -1,37 +1,52 @@
 package leetcode.weekly_contests.weekly_100_199.weekly_198;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+@SuppressWarnings("AccessStaticViaInstance")
 public class P_1519 {
 
+    static int n;
+    static int[][] edges;
+    static int[][] g;
+    static int[] res;
+    static char[] w;
+
     public int[] countSubTrees(int n, int[][] edges, String labels) {
-        final Map<Integer, List<Integer>> g = new HashMap<>();
-        for (int[] e : edges) {
-            g.computeIfAbsent(e[0], l -> new ArrayList<>()).add(e[1]);
-            g.computeIfAbsent(e[1], l -> new ArrayList<>()).add(e[0]);
-        }
-        final int[] res = new int[n];
-        final boolean[] seen = new boolean[n];
-        dfs(g, 0, labels, res, seen);
+        this.n = n;
+        this.edges = edges;
+        g = packG();
+        res = new int[n];
+        w = labels.toCharArray();
+        dfs(0, -1);
         return res;
     }
 
-    private static int[] dfs(Map<Integer, List<Integer>> g, int curr, String labels, int[] res, boolean[] seen) {
-        final int[] cnt = new int[26];
-        if (!seen[curr]) {
-            seen[curr] = true;
-            for (int child : g.getOrDefault(curr, Collections.emptyList())) {
-                final int[] sub = dfs(g, child, labels, res, seen);
-                for (int i = 0; i < 26; ++i) {
-                    cnt[i] += sub[i];
+    private static int[] dfs(int u, int par) {
+        final int[] count = new int[26];
+        for (int v : g[u]) {
+            if (v != par) {
+                final int[] child = dfs(v, u);
+                for (int i = 0; i < 26; i++) {
+                    count[i] += child[i];
                 }
             }
-            res[curr] = ++cnt[labels.charAt(curr) - 'a'];
         }
-        return cnt;
+        res[u] = ++count[w[u] - 'a'];
+        return count;
+    }
+
+    private static int[][] packG() {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+            ++size[edge[1]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+            g[edge[1]][--size[edge[1]]] = edge[0];
+        }
+        return g;
     }
 }
