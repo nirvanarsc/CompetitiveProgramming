@@ -1,24 +1,19 @@
 package leetcode.weekly_contests.weekly_100_199.weekly_105;
 
-@SuppressWarnings("MethodParameterNamingConvention")
 public class P_918 {
 
-    public int maxSubarraySumCircular(int[] A) {
-        int maxSub = -30000;
-        int currMax = -30000;
-        int minSub = 30000;
-        int currMinSub = 30000;
-        int sum = 0;
-        for (int value : A) {
+    public int maxSubarraySumCircular(int[] nums) {
+        int max, currMax, min, currMin, sum;
+        max = currMax = (int) -1e9;
+        min = currMin = (int) 1e9;
+        sum = 0;
+        for (int value : nums) {
             currMax = Math.max(currMax + value, value);
-            maxSub = Math.max(maxSub, currMax);
-            currMinSub = Math.min(currMinSub + value, value);
-            minSub = Math.min(minSub, currMinSub);
+            max = Math.max(max, currMax);
+            currMin = Math.min(currMin + value, value);
+            min = Math.min(min, currMin);
             sum += value;
         }
-        if (maxSub < 0) {
-            return maxSub;
-        }
-        return Math.max(sum - minSub, maxSub);
+        return max < 0 ? max : Math.max(sum - min, max);
     }
 }
