@@ -9,23 +9,41 @@ public class P_491 {
 
     public List<List<Integer>> findSubsequences(int[] nums) {
         final List<List<Integer>> res = new ArrayList<>();
-        dfs(nums, 0, res, new ArrayList<>());
-        return res;
-    }
-
-    private static void dfs(int[] nums, int i, List<List<Integer>> res, List<Integer> curr) {
-        if (curr.size() > 1) {
-            res.add(new ArrayList<>(curr));
-        }
-        final Set<Integer> seen = new HashSet<>();
-        for (int j = i; j < nums.length; j++) {
-            if (seen.add(nums[j])) {
-                if (curr.isEmpty() || curr.get(curr.size() - 1) <= nums[j]) {
-                    curr.add(nums[j]);
-                    dfs(nums, j + 1, res, curr);
-                    curr.remove(curr.size() - 1);
+        final Set<String> seen = new HashSet<>();
+        final int n = nums.length;
+        for (int mask = 0; mask < 1 << n; mask++) {
+            if ((mask & (mask - 1)) == 0) {
+                continue;
+            }
+            final List<Integer> curr = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    curr.add(nums[i]);
+                }
+            }
+            if (f(curr)) {
+                if (seen.add(hash(curr))) {
+                    res.add(curr);
                 }
             }
         }
+        return res;
+    }
+
+    private static boolean f(List<Integer> curr) {
+        for (int i = 0; i < curr.size() - 1; i++) {
+            if (curr.get(i) > curr.get(i + 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String hash(List<Integer> curr) {
+        final StringBuilder sb = new StringBuilder();
+        for (int u : curr) {
+            sb.append(u).append(',');
+        }
+        return sb.toString();
     }
 }
