@@ -3,9 +3,9 @@ package leetcode.medium;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class P_93 {
+public class P_93 {
 
-    public static List<String> restoreIpAddresses(String s) {
+    public List<String> restoreIpAddresses(String s) {
         final List<String> res = new ArrayList<>();
         for (int a = 1; a <= 3; a++) {
             for (int b = a + 1; b <= a + 3; b++) {
@@ -27,14 +27,7 @@ public final class P_93 {
         return res;
     }
 
-    public static boolean isValid(String s) {
+    private static boolean isValid(String s) {
         return (s.charAt(0) != '0' || s.length() <= 1) && Integer.parseInt(s) <= 255;
     }
-
-    public static void main(String[] args) {
-        System.out.println(restoreIpAddresses("25525511135"));
-        System.out.println(restoreIpAddresses("010010"));
-    }
-
-    private P_93() {}
 }
