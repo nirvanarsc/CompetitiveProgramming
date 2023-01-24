@@ -18,11 +18,14 @@ public class P_909 {
                     return level;
                 }
                 for (int i = 1; i <= 6 && curr + i <= n * m; i++) {
-                    final int[] coords = toCoord(curr + i, n, m);
-                    if (board[coords[0]][coords[1]] != -1) {
-                        if (!visited[board[coords[0]][coords[1]]]) {
-                            visited[board[coords[0]][coords[1]]] = true;
-                            q.offerLast(board[coords[0]][coords[1]]);
+                    final int u = curr + i - 1;
+                    final int r = u / m;
+                    final int x = n - r - 1;
+                    final int y = r % 2 != 0 ? (m - (u % m) - 1) : u % m;
+                    if (board[x][y] != -1) {
+                        if (!visited[board[x][y]]) {
+                            visited[board[x][y]] = true;
+                            q.offerLast(board[x][y]);
                         }
                     } else {
                         if (!visited[curr + i]) {
@@ -34,15 +37,5 @@ public class P_909 {
             }
         }
         return -1;
-    }
-
-    private static int[] toCoord(int num, int rows, int cols) {
-        num -= 1;
-        final int r = num / cols;
-        int c = num % cols;
-        if (r % 2 != 0) {
-            c = cols - c - 1;
-        }
-        return new int[] { rows - r - 1, c };
     }
 }
