@@ -1,55 +1,62 @@
 package leetcode.weekly_contests.weekly_0_99.weekly_72;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 
+@SuppressWarnings("AccessStaticViaInstance")
 public class P_787 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
+    static int n;
+    static int[][] edges;
+    static int[][][] g;
+
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        this.n = n;
+        edges = flights;
+        g = packG();
         final PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[2]));
-        final Map<Integer, List<int[]>> g = new HashMap<>();
-        for (int[] f : flights) {
-            g.computeIfAbsent(f[0], v -> new ArrayList<>()).add(new int[] { f[1], f[2] });
+        final int[][] dp = new int[n][k + 1];
+        for (int[] row : dp) {
+            Arrays.fill(row, (int) 1e9);
         }
-        pq.offer(new int[] { src, K + 1, 0 });
+        dp[src][k] = 0;
+        pq.offer(new int[] { src, k, dp[src][k] });
         while (!pq.isEmpty()) {
-            final int[] curr = pq.poll();
-            if (curr[0] == dst) {
-                return curr[2];
+            final int[] curr = pq.remove();
+            final int u = curr[0];
+            final int s = curr[1];
+            final int d = curr[2];
+            if (dp[u][s] < d) {
+                continue;
             }
-            for (int[] next : g.getOrDefault(curr[0], Collections.emptyList())) {
-                if (curr[1] > 0) {
-                    pq.add(new int[] { next[0], curr[1] - 1, curr[2] + next[1] });
+            for (int[] v : g[u]) {
+                final int ns = v[0] == dst ? s : s - 1;
+                if (ns >= 0 && dp[v[0]][ns] > dp[u][s] + v[1]) {
+                    dp[v[0]][ns] = dp[u][s] + v[1];
+                    pq.add(new int[] { v[0], ns, dp[v[0]][ns] });
                 }
             }
         }
-        return -1;
+        int res = (int) 1e9;
+        for (int s = 0; s <= k; s++) {
+            res = Math.min(res, dp[dst][s]);
+        }
+        return res == (int) 1e9 ? -1 : res;
     }
 
-    public int findCheapestPriceBF(int n, int[][] flights, int src, int dst, int k) {
-        int[] cost = new int[n];
-        Arrays.fill(cost, Integer.MAX_VALUE);
-        cost[src] = 0;
-        for (int i = 0; i <= k; i++) {
-            final int[] temp = cost.clone();
-            for (int[] f : flights) {
-                final int curr = f[0];
-                final int next = f[1];
-                final int price = f[2];
-                if (cost[curr] == Integer.MAX_VALUE) {
-                    continue;
-                }
-                temp[next] = Math.min(temp[next], cost[curr] + price);
-            }
-            cost = temp;
+    private static int[][][] packG() {
+        final int[][][] g = new int[n][][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
         }
-        return cost[dst] == Integer.MAX_VALUE ? -1 : cost[dst];
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]][2];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = new int[] { edge[1], edge[2] };
+        }
+        return g;
     }
 }
