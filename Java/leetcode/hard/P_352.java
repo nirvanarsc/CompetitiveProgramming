@@ -2,38 +2,38 @@ package leetcode.hard;
 
 import java.util.TreeMap;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "InnerClassMayBeStatic", "PublicConstructorInNonPublicClass" })
 public class P_352 {
 
-    static class SummaryRanges {
+    class SummaryRanges {
 
-        TreeMap<Integer, int[]> bst;
+        TreeMap<Integer, int[]> tm;
 
-        SummaryRanges() {
-            bst = new TreeMap<>();
+        public SummaryRanges() {
+            tm = new TreeMap<>();
         }
 
         public void addNum(int val) {
-            if (bst.containsKey(val)) {
+            if (tm.containsKey(val)) {
                 return;
             }
-            final Integer l = bst.lowerKey(val);
-            final Integer h = bst.higherKey(val);
-            if (l != null && h != null && bst.get(l)[1] + 1 == val && h == val + 1) {
-                bst.get(l)[1] = bst.get(h)[1];
-                bst.remove(h);
-            } else if (l != null && bst.get(l)[1] + 1 >= val) {
-                bst.get(l)[1] = Math.max(bst.get(l)[1], val);
+            final Integer l = tm.lowerKey(val);
+            final Integer h = tm.higherKey(val);
+            if (l != null && h != null && tm.get(l)[1] + 1 == val && h == val + 1) {
+                tm.get(l)[1] = tm.get(h)[1];
+                tm.remove(h);
+            } else if (l != null && tm.get(l)[1] + 1 >= val) {
+                tm.get(l)[1] = Math.max(tm.get(l)[1], val);
             } else if (h != null && h == val + 1) {
-                bst.put(val, new int[] { val, bst.get(h)[1] });
-                bst.remove(h);
+                tm.put(val, new int[] { val, tm.get(h)[1] });
+                tm.remove(h);
             } else {
-                bst.put(val, new int[] { val, val });
+                tm.put(val, new int[] { val, val });
             }
         }
 
         public int[][] getIntervals() {
-            return bst.values().toArray(int[][]::new);
+            return tm.values().toArray(int[][]::new);
         }
     }
 }
