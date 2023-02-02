@@ -8,20 +8,20 @@ public class P_953 {
             idx[order.charAt(i) - 'a'] = i;
         }
         for (int i = 0; i < words.length - 1; i++) {
-            if (!verify(words[i], words[i + 1], idx)) {
+            if (!verify(words[i].toCharArray(), words[i + 1].toCharArray(), idx)) {
                 return false;
             }
         }
         return true;
     }
 
-    private static boolean verify(String l, String r, int[] idx) {
-        for (int j = 0; j < l.length(); j++) {
-            if (j >= r.length()) {
+    private static boolean verify(char[] l, char[] r, int[] idx) {
+        for (int j = 0; j < l.length; j++) {
+            if (j >= r.length) {
                 return false;
             }
-            final int u = l.charAt(j) - 'a';
-            final int v = r.charAt(j) - 'a';
+            final int u = l[j] - 'a';
+            final int v = r[j] - 'a';
             if (idx[u] > idx[v]) {
                 return false;
             } else if (idx[u] < idx[v]) {
