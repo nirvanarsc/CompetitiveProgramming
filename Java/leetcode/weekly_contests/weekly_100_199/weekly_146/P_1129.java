@@ -1,52 +1,63 @@
 package leetcode.weekly_contests.weekly_100_199.weekly_146;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class P_1129 {
 
-    public int[] shortestAlternatingPaths(int n, int[][] red_edges, int[][] blue_edges) {
+    static int[][][] g;
+    static int[][] d;
+
+    public int[] shortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
+        g = new int[][][] { packG(n, redEdges), packG(n, blueEdges) };
+        d = new int[2][n];
+        Arrays.fill(d[0], (int) 1e9);
+        Arrays.fill(d[1], (int) 1e9);
+        d[0][0] = d[1][0] = 0;
+        bfs();
         final int[] res = new int[n];
-        final Map<Integer, List<Integer>> red = new HashMap<>();
-        final Map<Integer, List<Integer>> blue = new HashMap<>();
-        for (int[] edge : red_edges) { red.computeIfAbsent(edge[0], v -> new ArrayList<>()).add(edge[1]); }
-        for (int[] edge : blue_edges) { blue.computeIfAbsent(edge[0], v -> new ArrayList<>()).add(edge[1]); }
-        final int[][] paths = new int[2][n];
-        Arrays.fill(paths[0], Integer.MAX_VALUE);
-        Arrays.fill(paths[1], Integer.MAX_VALUE);
-        paths[0][0] = 0;
-        paths[1][0] = 0;
-        bfs(red, blue, paths);
         for (int i = 0; i < n; i++) {
-            final int curr = Math.min(paths[0][i], paths[1][i]);
-            res[i] = (curr == Integer.MAX_VALUE) ? -1 : curr;
+            final int curr = Math.min(d[0][i], d[1][i]);
+            res[i] = curr == (int) 1e9 ? -1 : curr;
         }
         return res;
     }
 
-    private static void bfs(Map<Integer, List<Integer>> red, Map<Integer, List<Integer>> blue, int[][] paths) {
+    private static void bfs() {
         final Deque<int[]> q = new ArrayDeque<>();
-        q.offerLast(new int[] { 0, 0 });
-        q.offerLast(new int[] { 0, 1 });
-        while (!q.isEmpty()) {
-            for (int i = q.size(); i > 0; i--) {
+        q.offerLast(new int[] { d[0][0], 0 });
+        q.offerLast(new int[] { d[1][0], 1 });
+        for (int level = 0; !q.isEmpty(); level++) {
+            for (int size = q.size(); size > 0; size--) {
                 final int[] node = q.removeFirst();
+                final int u = node[0];
                 final int color = node[1];
-                final int val = node[0];
-                final Map<Integer, List<Integer>> currLevel = color == 1 ? red : blue;
-                for (int next : currLevel.getOrDefault(val, Collections.emptyList())) {
-                    if (paths[1 - color][next] == Integer.MAX_VALUE) {
-                        paths[1 - color][next] = 1 + paths[color][val];
-                        q.offerLast(new int[] { next, 1 - color });
+                if (d[color][u] < level) {
+                    continue;
+                }
+                for (int v : g[color][u]) {
+                    if (d[1 ^ color][v] > d[color][u] + 1) {
+                        d[1 ^ color][v] = d[color][u] + 1;
+                        q.offerLast(new int[] { v, 1 ^ color });
                     }
                 }
             }
         }
+    }
+
+    private static int[][] packG(int n, int[][] edges) {
+        final int[][] g = new int[n][];
+        final int[] size = new int[n];
+        for (int[] edge : edges) {
+            ++size[edge[0]];
+        }
+        for (int i = 0; i < n; i++) {
+            g[i] = new int[size[i]];
+        }
+        for (int[] edge : edges) {
+            g[edge[0]][--size[edge[0]]] = edge[1];
+        }
+        return g;
     }
 }
