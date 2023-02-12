@@ -38,5 +38,4 @@ public class P_3 {
         seen[idx] = true;
         return dp[idx] = res;
     }
-
 }
