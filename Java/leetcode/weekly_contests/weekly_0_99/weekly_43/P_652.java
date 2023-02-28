@@ -9,21 +9,24 @@ import utils.DataStructures.TreeNode;
 
 public class P_652 {
 
+    static Map<String, Integer> map;
+    static List<TreeNode> res;
+
     public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
-        final List<TreeNode> res = new ArrayList<>();
-        postorder(root, new HashMap<>(), res);
+        map = new HashMap<>();
+        res = new ArrayList<>();
+        dfs(root);
         return res;
     }
 
-    public String postorder(TreeNode cur, Map<String, Integer> map, List<TreeNode> res) {
-        if (cur == null) {
+    private static String dfs(TreeNode node) {
+        if (node == null) {
             return "#";
         }
-        final String key = cur.val + postorder(cur.left, map, res) + postorder(cur.right, map, res);
-        if (map.getOrDefault(key, 0) == 1) {
-            res.add(cur);
+        final String key = node.val + "," + dfs(node.left) + ',' + dfs(node.right);
+        if (map.merge(key, 1, Integer::sum) == 2) {
+            res.add(node);
         }
-        map.merge(key, 1, Integer::sum);
         return key;
     }
 }
