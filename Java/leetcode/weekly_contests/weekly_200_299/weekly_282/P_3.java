@@ -22,5 +22,4 @@ public class P_3 {
         }
         return lo;
     }
-
 }
