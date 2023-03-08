@@ -7,8 +7,7 @@ public class P_875 {
         int hi = (int) 1e9;
         while (lo < hi) {
             final int mid = lo + hi >>> 1;
-            final int curr = getMid(piles, mid);
-            if (curr > h) {
+            if (f(piles, mid) > h) {
                 lo = mid + 1;
             } else {
                 hi = mid;
@@ -17,7 +16,7 @@ public class P_875 {
         return lo;
     }
 
-    private static int getMid(int[] piles, int mid) {
+    private static int f(int[] piles, int mid) {
         int res = 0;
         for (int p : piles) {
             res += (p + mid - 1) / mid;
