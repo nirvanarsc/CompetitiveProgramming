@@ -10,9 +10,6 @@ public class P_109 {
         if (head == null) {
             return null;
         }
-        if (head.next == null) {
-            return new TreeNode(head.val);
-        }
         final ListNode dummy = new ListNode(-1);
         dummy.next = head;
         ListNode slow = dummy;
@@ -25,9 +22,6 @@ public class P_109 {
         final ListNode root = slow.next;
         slow.next.next = null;
         slow.next = null;
-        final TreeNode res = new TreeNode(root.val);
-        res.left = sortedListToBST(dummy.next);
-        res.right = sortedListToBST(right);
-        return res;
+        return new TreeNode(root.val, sortedListToBST(dummy.next), sortedListToBST(right));
     }
 }
