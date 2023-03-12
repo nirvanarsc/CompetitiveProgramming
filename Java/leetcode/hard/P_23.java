@@ -9,7 +9,8 @@ public class P_23 {
 
     public ListNode mergeKLists(ListNode[] lists) {
         final PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.comparingInt(a -> lists[a].val));
-        for (int i = 0; i < lists.length; i++) {
+        final int n = lists.length;
+        for (int i = 0; i < n; i++) {
             if (lists[i] != null) {
                 pq.offer(i);
             }
