@@ -1,43 +1,30 @@
 package leetcode.weekly_contests.weekly_100_199.weekly_115;
 
-import java.util.Collections;
-import java.util.LinkedList;
-
 import utils.DataStructures.TreeNode;
 
 public class P_958 {
 
-    public boolean isCompleteTreeBFS(TreeNode root) {
-        final LinkedList<TreeNode> queue = new LinkedList<>(Collections.singletonList(root));
-        while (queue.peekFirst() != null) {
-            final TreeNode curr = queue.remove();
-            queue.add(curr.left);
-            queue.add(curr.right);
-        }
-        while (!queue.isEmpty() && queue.peekFirst() == null) {
-            queue.poll();
-        }
-        return queue.isEmpty();
-    }
+    static int size;
 
     public boolean isCompleteTree(TreeNode root) {
-        return isCompleteTree(root, 0, countNodes(root));
+        size = countNodes(root);
+        return dfs(root, 1);
     }
 
-    private static boolean isCompleteTree(TreeNode root, int i, int n) {
+    private static boolean dfs(TreeNode root, int curr) {
         if (root == null) {
             return true;
         }
-        if (i >= n) {
+        if (curr > size) {
             return false;
         }
-        return isCompleteTree(root.left, 2 * i + 1, n) && isCompleteTree(root.right, 2 * i + 2, n);
+        return dfs(root.left, 2 * curr) && dfs(root.right, 2 * curr + 1);
     }
 
-    private static int countNodes(TreeNode root) {
-        if (root == null) {
+    private static int countNodes(TreeNode node) {
+        if (node == null) {
             return 0;
         }
-        return 1 + countNodes(root.left) + countNodes(root.right);
+        return 1 + countNodes(node.left) + countNodes(node.right);
     }
 }
