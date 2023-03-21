@@ -9,10 +9,8 @@ public class P_2 {
             if (nums[i] == 0) {
                 int j = i;
                 while (j < n && nums[j] == nums[i]) {
-                    j++;
+                    res += ++j - i;
                 }
-                final long l = j - i;
-                res += (l * (l + 1)) / 2;
                 i = j - 1;
             }
         }
