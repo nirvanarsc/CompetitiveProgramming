@@ -11,13 +11,11 @@ public class P_64 {
         for (int i = 1; i < m; i++) {
             grid[0][i] += grid[0][i - 1];
         }
-
         for (int i = 1; i < n; i++) {
             for (int j = 1; j < m; j++) {
                 grid[i][j] += Math.min(grid[i - 1][j], grid[i][j - 1]);
             }
         }
-
         return grid[n - 1][m - 1];
     }
 }
