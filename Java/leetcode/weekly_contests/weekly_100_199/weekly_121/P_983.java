@@ -2,26 +2,33 @@ package leetcode.weekly_contests.weekly_100_199.weekly_121;
 
 public class P_983 {
 
+    static boolean[] seen;
+    static int[] dp;
+    static int[][] c;
+
     public int mincostTickets(int[] days, int[] costs) {
-        final int[][] dayCost = { { costs[0], 0 }, { costs[1], 6 }, { costs[2], 29 } };
-        return dfs(days, dayCost, 0, 0, new Integer[400]);
+        seen = new boolean[400];
+        dp = new int[400];
+        c = new int[][] { { costs[0], 0 }, { costs[1], 6 }, { costs[2], 29 } };
+        return dfs(days, 0, 0);
     }
 
-    private static int dfs(int[] days, int[][] costs, int ticket, int idx, Integer[] dp) {
+    private static int dfs(int[] days, int ticket, int idx) {
         if (idx == days.length) {
             return 0;
         }
-        if (dp[ticket] != null) {
+        if (seen[ticket]) {
             return dp[ticket];
         }
         int res = (int) 1e9;
         if (days[idx] > ticket) {
-            for (int[] c : costs) {
-                res = Math.min(res, c[0] + dfs(days, costs, days[idx] + c[1], idx + 1, dp));
+            for (int[] c : c) {
+                res = Math.min(res, c[0] + dfs(days, days[idx] + c[1], idx + 1));
             }
         } else {
-            res = dfs(days, costs, ticket, idx + 1, dp);
+            res = dfs(days, ticket, idx + 1);
         }
+        seen[ticket] = true;
         return dp[ticket] = res;
     }
 
