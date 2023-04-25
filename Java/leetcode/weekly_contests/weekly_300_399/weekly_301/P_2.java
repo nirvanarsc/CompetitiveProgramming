@@ -1,34 +1,33 @@
 package leetcode.weekly_contests.weekly_300_399.weekly_301;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 @SuppressWarnings({ "InnerClassMayBeStatic", "unused", "PublicConstructorInNonPublicClass" })
 public class P_2 {
 
     class SmallestInfiniteSet {
 
-        boolean[] set;
-        int smallest;
+        TreeSet<Integer> ts1 = new TreeSet<>();
+        Set<Integer> ts2 = new HashSet<>();
 
         public SmallestInfiniteSet() {
-            set = new boolean[1005];
-            Arrays.fill(set, true);
-            smallest = 1;
+            for (int i = 1; i <= 1000; i++) {
+                ts1.add(i);
+            }
         }
 
         public int popSmallest() {
-            final int res = smallest;
-            set[smallest++] = false;
-            while (!set[smallest]) {
-                smallest++;
-            }
-            return res;
+            //noinspection ConstantConditions
+            final int u = ts1.pollFirst();
+            ts2.add(u);
+            return u;
         }
 
         public void addBack(int num) {
-            set[num] = true;
-            if (num < smallest) {
-                smallest = num;
+            if (ts2.remove(num)) {
+                ts1.add(num);
             }
         }
     }
