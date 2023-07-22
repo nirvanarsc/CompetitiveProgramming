@@ -8,6 +8,13 @@ public class P_4 {
 
     public int minOperations(int[] nums) {
         final int n = nums.length;
+        int ones = 0;
+        for (int num : nums) {
+            ones += num == 1 ? 1 : 0;
+        }
+        if (ones > 0) {
+            return n - ones;
+        }
         int res = (int) 1e9;
         for (int i = 0; i < n; i++) {
             int g = nums[i];
