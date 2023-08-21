@@ -1,4 +1,4 @@
-package atcoder.beginner_300_399.abc_311;
+package atcoder.beginner_300_399.abc_310;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -6,43 +6,50 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class D {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
+        final int t = fs.nextInt();
         final int m = fs.nextInt();
-        final char[][] g = new char[n][m];
-        for (int i = 0; i < n; i++) {
-            g[i] = fs.next().toCharArray();
+        final boolean[][] g = new boolean[n][n];
+        final int[] f = new int[n + 1];
+        f[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            f[i] = i * f[i - 1];
         }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < m; j++) {
-                if (g[i][j] == '#') {
-                    g[i + 1][j] = '#';
-                    if (j + 1 < m) {
-                        g[i + 1][j + 1] = '#';
+        for (int i = 0; i < m; i++) {
+            final int u = fs.nextInt() - 1;
+            final int v = fs.nextInt() - 1;
+            g[u][v] = g[v][u] = true;
+        }
+        final boolean[] good = new boolean[1 << n];
+        outer:
+        for (int mask = 1; mask < (1 << n); mask++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < n; k++) {
+                    if ((mask & (1 << j)) != 0 && ((mask & (1 << k)) != 0)) {
+                        if (g[j][k]) {
+                            continue outer;
+                        }
+                    }
+                }
+            }
+            good[mask] = true;
+        }
+        final int[][] dp = new int[t + 1][1 << n];
+        dp[0][(1 << n) - 1] = 1;
+        for (int i = 0; i < t; i++) {
+            for (int mask = 1; mask < (1 << n); mask++) {
+                for (int subMask = mask; subMask > 0; subMask = (subMask - 1) & mask) {
+                    if (good[subMask]) {
+                        dp[i + 1][mask ^ subMask] += dp[i][mask];
                     }
                 }
             }
         }
-        final int[][] dp = new int[n + 2][m + 1];
-        dp[0][m] = 1;
-        for (int j = m; j >= 0; j--) {
-            for (int i = 0; i < n + 2; i++) {
-                if (i + 1 < n + 2) {
-                    dp[i + 1][j] = (dp[i + 1][j] + dp[i][j]) % MOD;
-                }
-                if (i - 1 >= 0 && j - 1 >= 0) {
-                    if (i == 1 || g[i - 2][j - 1] == '.') {
-                        dp[i - 1][j - 1] = (dp[i - 1][j - 1] + dp[i][j]) % MOD;
-                    }
-                }
-            }
-        }
-        System.out.println(dp[n + 1][0]);
+        System.out.println(dp[t][0] / f[t]);
     }
 
     static final class Utils {

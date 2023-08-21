@@ -1,48 +1,28 @@
-package atcoder.beginner_300_399.abc_311;
+package atcoder.beginner_300_399.abc_310;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
-public final class F {
-
-    private static final int MOD = 998244353;
+public final class C {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final char[][] g = new char[n][m];
+        final Set<String> set = new HashSet<>();
         for (int i = 0; i < n; i++) {
-            g[i] = fs.next().toCharArray();
+            set.add(f(fs.next()));
         }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < m; j++) {
-                if (g[i][j] == '#') {
-                    g[i + 1][j] = '#';
-                    if (j + 1 < m) {
-                        g[i + 1][j + 1] = '#';
-                    }
-                }
-            }
-        }
-        final int[][] dp = new int[n + 2][m + 1];
-        dp[0][m] = 1;
-        for (int j = m; j >= 0; j--) {
-            for (int i = 0; i < n + 2; i++) {
-                if (i + 1 < n + 2) {
-                    dp[i + 1][j] = (dp[i + 1][j] + dp[i][j]) % MOD;
-                }
-                if (i - 1 >= 0 && j - 1 >= 0) {
-                    if (i == 1 || g[i - 2][j - 1] == '.') {
-                        dp[i - 1][j - 1] = (dp[i - 1][j - 1] + dp[i][j]) % MOD;
-                    }
-                }
-            }
-        }
-        System.out.println(dp[n + 1][0]);
+        System.out.println(set.size());
+    }
+
+    private static String f(String w) {
+        final String rev = new StringBuilder(w).reverse().toString();
+        return w.compareTo(rev) <= 0 ? w : rev;
     }
 
     static final class Utils {

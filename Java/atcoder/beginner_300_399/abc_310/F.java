@@ -1,4 +1,4 @@
-package atcoder.beginner_300_399.abc_311;
+package atcoder.beginner_300_399.abc_310;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -12,37 +12,38 @@ public final class F {
 
     public static void main(String[] args) throws IOException {
         final FastReader fs = new FastReader();
+        final long[] inverse = new long[(int) (1e6 + 5)];
+        inverse[1] = 1;
+        for (int i = 2; i < inverse.length; i++) {
+            inverse[i] = MOD - inverse[MOD % i] * (MOD / i) % MOD;
+        }
         final int n = fs.nextInt();
-        final int m = fs.nextInt();
-        final char[][] g = new char[n][m];
+        final int[] arr = fs.nextIntArray(n);
+        final int allBits = (1 << 11) - 1;
+        final long[][] dp = new long[n + 1][(1 << 11)];
+        dp[0][1] = 1;
         for (int i = 0; i < n; i++) {
-            g[i] = fs.next().toCharArray();
-        }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < m; j++) {
-                if (g[i][j] == '#') {
-                    g[i + 1][j] = '#';
-                    if (j + 1 < m) {
-                        g[i + 1][j + 1] = '#';
-                    }
+            for (int mask = 0; mask < (1 << 11); mask++) {
+                dp[i][mask] = (dp[i][mask] * inverse[arr[i]]) % MOD;
+                for (int x = 1; x <= Math.min(10, arr[i]); x++) {
+                    // shift whole mask by x
+                    // (essentially adding rolling x side of die to all current possible bits in our mask)
+                    // this way we calculate all the possible ways to roll 10
+                    // at the end we and it by 0b111111111 (size of mask) to remove any overflowing bits.
+                    final int nextMask = (mask | (mask << x)) & allBits;
+                    dp[i + 1][nextMask] = (dp[i + 1][nextMask] + dp[i][mask]) % MOD;
                 }
+                final long add = (dp[i][mask] * Math.max(0, arr[i] - 10)) % MOD;
+                dp[i + 1][mask] = (dp[i + 1][mask] + add) % MOD;
             }
         }
-        final int[][] dp = new int[n + 2][m + 1];
-        dp[0][m] = 1;
-        for (int j = m; j >= 0; j--) {
-            for (int i = 0; i < n + 2; i++) {
-                if (i + 1 < n + 2) {
-                    dp[i + 1][j] = (dp[i + 1][j] + dp[i][j]) % MOD;
-                }
-                if (i - 1 >= 0 && j - 1 >= 0) {
-                    if (i == 1 || g[i - 2][j - 1] == '.') {
-                        dp[i - 1][j - 1] = (dp[i - 1][j - 1] + dp[i][j]) % MOD;
-                    }
-                }
+        long res = 0;
+        for (int mask = 0; mask < (1 << 11); mask++) {
+            if ((mask & (1 << 10)) != 0) {
+                res = (res + dp[n][mask]) % MOD;
             }
         }
-        System.out.println(dp[n + 1][0]);
+        System.out.println(res);
     }
 
     static final class Utils {
