@@ -14,23 +14,22 @@ public final class D2 {
         final int n = fs.nextInt();
         final long k = fs.nextLong();
         final int d = 60;
-        final int[][] dp = new int[d][(int) (2e5 + 5)];
-        for (int i = 0; i < d; i++) {
+        final int[][] dp = new int[d][n];
+        for (int i = 0; i < n; i++) {
+            dp[0][i] = fs.nextInt() - 1;
+        }
+        for (int i = 1; i < d; i++) {
             for (int j = 0; j < n; j++) {
-                if (i == 0) {
-                    dp[0][j] = fs.nextInt() - 1;
-                } else {
-                    dp[i][j] = dp[i - 1][dp[i - 1][j]];
-                }
+                dp[i][j] = dp[i - 1][dp[i - 1][j]];
             }
         }
-        int v = 0;
-        for (int i = d - 1; i >= 0; i--) {
+        int u = 0;
+        for (int i = 0; i < d; i++) {
             if ((k & (1L << i)) != 0) {
-                v = dp[i][v];
+                u = dp[i][u];
             }
         }
-        System.out.println(v + 1);
+        System.out.println(u + 1);
     }
 
     static final class Utils {
