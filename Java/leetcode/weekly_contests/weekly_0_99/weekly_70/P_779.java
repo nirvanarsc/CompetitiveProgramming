@@ -2,12 +2,7 @@ package leetcode.weekly_contests.weekly_0_99.weekly_70;
 
 public class P_779 {
 
-    @SuppressWarnings("MethodParameterNamingConvention")
-    public int kthGrammar(int N, int K) {
-        int res = 0;
-        for (int i = 0; i < Integer.bitCount(K - 1); i++) {
-            res ^= 1;
-        }
-        return res;
+    public int kthGrammar(int n, int k) {
+        return Integer.bitCount(k - 1) % 2;
     }
 }
