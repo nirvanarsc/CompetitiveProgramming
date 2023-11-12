@@ -16,9 +16,10 @@ public class P_4 {
                 long curr = nums[i];
                 final Map.Entry<Integer, Long> e = map.floorEntry(nums[i] - i);
                 curr += e != null ? e.getValue() : 0;
-                for (Map.Entry<Integer, Long> c = map.ceilingEntry(nums[i] - i);
-                     c != null && c.getValue() < curr; c = map.ceilingEntry(nums[i] - i)) {
+                Map.Entry<Integer, Long> c = map.higherEntry(nums[i] - i);
+                while (c != null && c.getValue() < curr) {
                     map.remove(c.getKey());
+                    c = map.higherEntry(nums[i] - i);
                 }
                 map.merge(nums[i] - i, curr, Long::max);
                 res = Math.max(res, curr);
