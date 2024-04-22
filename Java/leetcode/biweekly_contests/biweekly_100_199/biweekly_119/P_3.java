@@ -1,9 +1,9 @@
-package leetcode.medium;
+package leetcode.biweekly_contests.biweekly_100_199.biweekly_119;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class P_2958 {
+public class P_3 {
 
     public int maxSubarrayLength(int[] nums, int k) {
         final Map<Integer, Integer> f = new HashMap<>();
