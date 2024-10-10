@@ -3,35 +3,22 @@ package leetcode.biweekly_contests.biweekly_0_99.biweekly_49;
 public class P_1813 {
 
     public boolean areSentencesSimilar(String sentence1, String sentence2) {
-        String[] w1 = sentence1.split(" ");
-        String[] w2 = sentence2.split(" ");
-        if (w1.length < w2.length) {
-            final String[] temp = w1;
-            w1 = w2;
-            w2 = temp;
+        final String[] l = sentence1.split(" ");
+        final String[] r = sentence2.split(" ");
+        int start = 0;
+        int end1 = l.length - 1;
+        int end2 = r.length - 1;
+        if (l.length > r.length) {
+            //noinspection TailRecursion
+            return areSentencesSimilar(sentence2, sentence1);
         }
-        int i = 0;
-        int j = 0;
-        int gap = 0;
-        while (i < w1.length && j < w2.length) {
-            if (!w1[i].equals(w2[j])) {
-                int k = i;
-                while (k < w1.length && !w1[k].equals(w2[j])) {
-                    k++;
-                }
-                i = k;
-                gap++;
-            } else {
-                i++;
-                j++;
-            }
+        while (start < l.length && l[start].equals(r[start])) {
+            start++;
         }
-        if (i != w1.length) {
-            gap++;
+        while (end1 >= 0 && l[end1].equals(r[end2])) {
+            end1--;
+            end2--;
         }
-        if (j != w2.length) {
-            gap++;
-        }
-        return gap <= 1;
+        return end1 < start;
     }
 }

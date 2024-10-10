@@ -36,7 +36,7 @@ public final class HighScore {
         final long[] dist = new long[n];
         Arrays.fill(dist, (long) 1e18);
         dist[start] = 0;
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n; i++) {
             for (int[] edge : e) {
                 final int from = edge[0];
                 final int to = edge[1];
@@ -47,7 +47,7 @@ public final class HighScore {
                 dist[to] = Math.min(dist[to], dist[from] + cost);
             }
         }
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n; i++) {
             for (int[] edge : e) {
                 final int from = edge[0];
                 final int to = edge[1];

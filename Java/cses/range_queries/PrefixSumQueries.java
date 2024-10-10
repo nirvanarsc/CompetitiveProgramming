@@ -51,7 +51,8 @@ public final class PrefixSumQueries {
 
         private void update(int idx, int val) {
             if (leftMost == rightMost) {
-                sum = pre = val;
+                sum = val;
+                pre = Math.max(0, val);
             } else {
                 final int mid = leftMost + rightMost >>> 1;
                 if (idx <= mid) {

@@ -98,7 +98,7 @@ public final class SubarraySumQueries {
             final int idx = fs.nextInt() - 1;
             final int val = fs.nextInt();
             st.update(idx, val);
-            sb.append(st.node.best);
+            sb.append(Math.max(0, st.node.best));
             sb.append('\n');
         }
         System.out.println(sb);
