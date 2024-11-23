@@ -28,24 +28,24 @@ public class P_862 {
         return (minLen == Integer.MAX_VALUE) ? -1 : minLen;
     }
 
-    public int shortestSubarray(int[] A, int K) {
-        final int N = A.length;
-        int res = N + 1;
-        final int[] prefixSum = new int[N + 1];
-        for (int i = 0; i < N; i++) {
-            prefixSum[i + 1] = prefixSum[i] + A[i];
+    public int shortestSubarray(int[] nums, int k) {
+        final int n = nums.length;
+        int res = n + 1;
+        final long[] prefixSum = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            prefixSum[i] = prefixSum[i - 1] + nums[i - 1];
         }
         final Deque<Integer> d = new ArrayDeque<>();
-        for (int i = 0; i < N + 1; i++) {
-            while (!d.isEmpty() && prefixSum[i] - prefixSum[d.getFirst()] >= K) {
-                res = Math.min(res, i - d.pollFirst());
+        for (int i = 0; i < n + 1; i++) {
+            while (!d.isEmpty() && prefixSum[i] - prefixSum[d.getFirst()] >= k) {
+                res = Math.min(res, i - d.removeFirst());
             }
             while (!d.isEmpty() && prefixSum[i] <= prefixSum[d.getLast()]) {
-                d.pollLast();
+                d.removeLast();
             }
             d.addLast(i);
         }
-        return res == N + 1 ? -1 : res;
+        return res == n + 1 ? -1 : res;
     }
 
     public int shortestSubarrayEPI(int[] A, int K) {
