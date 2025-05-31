@@ -1,8 +1,8 @@
-package leetcode.medium;
+package leetcode.weekly_contests.weekly_300_399.weekly_381;
 
 import java.util.Arrays;
 
-public class P_3016 {
+public class P_1 {
 
     public int minimumPushes(String word) {
         final int[] f = new int[26];
