@@ -1,9 +1,9 @@
-package leetcode.hard;
+package leetcode.weekly_contests.weekly_400_499.weekly_404;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class P_3203 {
+public class P_4 {
 
     public int minimumDiameterAfterMerge(int[][] edges1, int[][] edges2) {
         final int u = diameter(edges1);
