@@ -1,10 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public final class HasCommonAncestor {
 
@@ -30,10 +28,10 @@ public final class HasCommonAncestor {
         for (int[] p : parentChildPairs) {
             g.computeIfAbsent(p[1], v -> new ArrayList<>()).add(p[0]);
         }
-        final Map<Integer, Integer> visitedCount = new HashMap<>();
-        dfs(g, a, visitedCount, new HashSet<>());
-        dfs(g, b, visitedCount, new HashSet<>());
-        for (Map.Entry<Integer, Integer> e : visitedCount.entrySet()) {
+        final Map<Integer, Integer> f = new HashMap<>();
+        dfs(g, a, f);
+        dfs(g, b, f);
+        for (Map.Entry<Integer, Integer> e : f.entrySet()) {
             if (e.getValue() == 2 && e.getKey() != a && e.getKey() != b) {
                 return true;
             }
@@ -41,15 +39,10 @@ public final class HasCommonAncestor {
         return false;
     }
 
-    private static void dfs(Map<Integer, List<Integer>> g, int curr, Map<Integer, Integer> count,
-                            Set<Integer> seen) {
-        if (seen.contains(curr)) {
-            return;
-        }
-        seen.add(curr);
-        count.merge(curr, 1, Integer::sum);
-        for (int next : g.getOrDefault(curr, Collections.emptyList())) {
-            dfs(g, next, count, seen);
+    private static void dfs(Map<Integer, List<Integer>> g, int u, Map<Integer, Integer> count) {
+        count.merge(u, 1, Integer::sum);
+        for (int v : g.getOrDefault(u, Collections.emptyList())) {
+            dfs(g, v, count);
         }
     }
 
