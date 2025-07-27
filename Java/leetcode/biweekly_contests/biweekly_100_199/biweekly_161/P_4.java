@@ -12,7 +12,7 @@ public class P_4 {
                 C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
             }
         }
-        for (int i = 2; i <= 64; i++) {
+        for (int i = 2; i < 65; i++) {
             depth[i] = 1 + depth[Integer.bitCount(i)];
         }
     }
